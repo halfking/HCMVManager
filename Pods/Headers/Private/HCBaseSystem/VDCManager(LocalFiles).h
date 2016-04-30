@@ -1,0 +1,1 @@
+../../../HCBaseSystem/HCBaseSystem/VDCManager/VDCManager(LocalFiles).h

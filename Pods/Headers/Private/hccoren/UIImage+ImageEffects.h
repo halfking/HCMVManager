@@ -1,0 +1,1 @@
+../../../hccoren/hccoren/UIControls/UIImage+ImageEffects.h

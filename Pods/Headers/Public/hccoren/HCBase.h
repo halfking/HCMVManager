@@ -1,0 +1,1 @@
+../../../hccoren/hccoren/Base/HCBase.h

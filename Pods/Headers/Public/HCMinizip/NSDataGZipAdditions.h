@@ -1,0 +1,1 @@
+../../../HCMinizip/Vendor/NSDataGZipAdditions.h

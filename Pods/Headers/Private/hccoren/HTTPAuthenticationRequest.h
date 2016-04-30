@@ -1,0 +1,1 @@
+../../../hccoren/hccoren/Network/CocoaWebResource/HTTPAuthenticationRequest.h

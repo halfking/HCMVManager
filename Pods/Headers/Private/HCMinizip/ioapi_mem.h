@@ -1,0 +1,1 @@
+../../../HCMinizip/Vendor/Minizip/ioapi_mem.h

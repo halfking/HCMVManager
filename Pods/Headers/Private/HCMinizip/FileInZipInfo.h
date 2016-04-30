@@ -1,0 +1,1 @@
+../../../HCMinizip/Vendor/Objective-Zip/FileInZipInfo.h

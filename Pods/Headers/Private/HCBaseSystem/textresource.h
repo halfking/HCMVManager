@@ -1,0 +1,1 @@
+../../../HCBaseSystem/HCBaseSystem/textresource.h

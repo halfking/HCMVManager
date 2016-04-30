@@ -1,0 +1,1 @@
+../../../hccoren/hccoren/Data/NSEntity.h
