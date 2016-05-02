@@ -20,122 +20,77 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - GPUImage (0.1.7)
-  - GTSDK (1.4.2)
   - HappyDNS (0.2.3)
-  - HCBaseSystem (0.1.2):
+  - HCBaseSystem (0.1.6):
     - AFNetworking (~> 2.6.3)
-    - GTSDK (~> 1.4.2-noidfa)
-    - HCBaseSystem/UIControls (= 0.1.2)
-    - HCBaseSystem/User (= 0.1.2)
-    - HCBaseSystem/VDC (= 0.1.2)
-    - HCBaseSystem/Ver (= 0.1.2)
+    - HCBaseSystem/UIControls (= 0.1.6)
+    - HCBaseSystem/User (= 0.1.6)
+    - HCBaseSystem/VDCManager (= 0.1.6)
+    - HCBaseSystem/Ver (= 0.1.6)
     - hccoren
     - HCMinizip
-    - MOBFoundation_IDFA
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-    - SMSSDK
-    - TuSDK
-    - UMengAnalytics-NO-IDFA
-    - UMengSocial (~> 5.0)
-  - HCBaseSystem/UIControls (0.1.2):
+  - HCBaseSystem/UIControls (0.1.6):
     - AFNetworking (~> 2.6.3)
-    - GTSDK (~> 1.4.2-noidfa)
     - hccoren
     - HCMinizip
-    - MOBFoundation_IDFA
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-    - SMSSDK
-    - TuSDK
-    - UMengAnalytics-NO-IDFA
-    - UMengSocial (~> 5.0)
-  - HCBaseSystem/User (0.1.2):
+  - HCBaseSystem/User (0.1.6):
     - AFNetworking (~> 2.6.3)
-    - GTSDK (~> 1.4.2-noidfa)
     - hccoren
     - HCMinizip
-    - MOBFoundation_IDFA
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-    - SMSSDK
-    - TuSDK
-    - UMengAnalytics-NO-IDFA
-    - UMengSocial (~> 5.0)
-  - HCBaseSystem/VDC (0.1.2):
+  - HCBaseSystem/VDCManager (0.1.6):
     - AFNetworking (~> 2.6.3)
-    - GTSDK (~> 1.4.2-noidfa)
     - HCBaseSystem/User
     - hccoren
     - HCMinizip
-    - MOBFoundation_IDFA
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-    - SMSSDK
-    - TuSDK
-    - UMengAnalytics-NO-IDFA
-    - UMengSocial (~> 5.0)
-  - HCBaseSystem/Ver (0.1.2):
+  - HCBaseSystem/Ver (0.1.6):
     - AFNetworking (~> 2.6.3)
-    - GTSDK (~> 1.4.2-noidfa)
     - hccoren
     - HCMinizip
-    - MOBFoundation_IDFA
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-    - SMSSDK
-    - TuSDK
-    - UMengAnalytics-NO-IDFA
-    - UMengSocial (~> 5.0)
-  - hccoren (0.1.4):
-    - hccoren/Core (= 0.1.4)
-    - hccoren/NetworkAndDatabase (= 0.1.4)
-    - hccoren/UIControls (= 0.1.4)
+  - hccoren (0.1.5):
+    - hccoren/Core (= 0.1.5)
+    - hccoren/NetworkAndDatabase (= 0.1.5)
+    - hccoren/UIControls (= 0.1.5)
     - HCMinizip (~> 1.2.6)
-  - hccoren/Core (0.1.4):
+  - hccoren/Core (0.1.5):
     - HCMinizip (~> 1.2.6)
-  - hccoren/NetworkAndDatabase (0.1.4):
+  - hccoren/NetworkAndDatabase (0.1.5):
     - hccoren/Core
     - HCMinizip (~> 1.2.6)
-  - hccoren/UIControls (0.1.4):
+  - hccoren/UIControls (0.1.5):
     - hccoren/Core
     - HCMinizip (~> 1.2.6)
   - HCMinizip (1.2.6)
-  - MOBFoundation_IDFA (1.5.1)
   - Qiniu (7.0.17):
     - AFNetworking (~> 2.0)
     - HappyDNS (~> 0.2)
   - SDWebImage (3.7.5):
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
-  - SMSSDK (2.0.4)
-  - TuSDK (2.4.5):
-    - GPUImage (~> 0.1.6)
-  - UMengAnalytics-NO-IDFA (3.6.7)
-  - UMengSocial (5.0)
 
 DEPENDENCIES:
-  - HCBaseSystem
-  - hccoren
+  - HCBaseSystem (~> 0.1.6)
+  - hccoren (~> 0.1.5)
   - HCMinizip
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
-  GTSDK: 51a12836895312a872f75a2fe0f2e788dee75b19
   HappyDNS: 6d85942e64c28b4fa61f8c76580398f52d6d1d11
-  HCBaseSystem: d9616e05cb2e5b1bffbdfe3158f90bf230f9e2d5
-  hccoren: 16fc4305c33c4e7bed83bca72c9547a996b33a78
+  HCBaseSystem: 413bbf13fb19be85f2de6b3a67de9f4254a2d183
+  hccoren: 0844d5f776eb73c19ea85bf316bd0ce8f167252b
   HCMinizip: 6a0308924c12593f23c3b949f4142a5b68acd442
-  MOBFoundation_IDFA: f5d3d1f89166f60c6985e34b7d90e6fb5d58fb61
   Qiniu: 2c05af1f9d580c036b18faf832cc98e98bfb21bc
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
-  SMSSDK: 642b6a8c55fd382be44487cd5e0b0710681895f9
-  TuSDK: 72e8998710af7207bfd172e232629cff5486dd31
-  UMengAnalytics-NO-IDFA: 6d02561a00579b2e37718f204eb81347df5d7b8b
-  UMengSocial: 48b67179c492a8cf7803fbb0438b8f55432e2fc1
 
-PODFILE CHECKSUM: 5163cb59c157a4ab06a9653011213b268a84aff4
+PODFILE CHECKSUM: 23e3265ad8674165400390776f69161bc79d2b5d
 
 COCOAPODS: 1.0.0.rc.1

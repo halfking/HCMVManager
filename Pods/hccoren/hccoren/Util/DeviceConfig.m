@@ -29,6 +29,7 @@
 }
 //@synthesize HOST_IP1;
 //@synthesize HOST_PORT1;
+@synthesize IsDebugMode = IsDebugMode_;
 @synthesize InterfaceUrl = InterfaceUrl_;
 @synthesize UploadServer  = UploadServer_;
 @synthesize UploadServices = UploadServices_;
@@ -126,6 +127,7 @@ static DeviceConfig * infor = nil;
             self.UDI = [uidevice uniqueDeviceIdentifier];
         }
     }
+    self.IsDebugMode = NO;
     self.LOCALHOST_PORT = 8099;
     
 #ifdef IOS_7
@@ -266,7 +268,7 @@ static DeviceConfig * infor = nil;
     [self checkNetwork];
     
 }
-- (void)changeConfigs:(NSString *)interfaceUrl imageServer:(NSString *)imageServerPath imageSever2:(NSString *)imageServerPath2 uploadServer:(NSString *)uploadServer uploadService:(NSString *)uploadService
+- (void)changeConfigs:(NSString *)interfaceUrl imageServer:(NSString *)imageServerPath imageSever2:(NSString *)imageServerPath2 uploadServer:(NSString *)uploadServer uploadService:(NSString *)uploadService debugMode:(BOOL)debugMode
 {
     PP_RELEASE(InterfaceUrl_);
     PP_RELEASE(ImagePathRoot_);
@@ -279,6 +281,7 @@ static DeviceConfig * infor = nil;
     imagePathRoot2_ = PP_RETAIN(imageServerPath2);
     UploadServer_ = PP_RETAIN(uploadServer);
     UploadServices_ = PP_RETAIN(uploadService);
+    IsDebugMode_ = debugMode;
 }
 //- (void) getHostName
 //{

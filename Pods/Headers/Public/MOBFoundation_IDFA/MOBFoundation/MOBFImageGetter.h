@@ -1,1 +1,0 @@
-../../../../MOBFoundation_IDFA/MOBFoundation.framework/Headers/MOBFImageGetter.h

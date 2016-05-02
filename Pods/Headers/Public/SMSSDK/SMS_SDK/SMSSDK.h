@@ -1,1 +1,0 @@
-../../../../SMSSDK/SMS_SDK/SMS_SDK.framework/Headers/SMSSDK.h

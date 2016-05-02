@@ -14,54 +14,52 @@
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40511CC6952B00561E33 /* HCMVManager.framework */; };
 		11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED40601CC6952B00561E33 /* HCMVManagerTests.m */; };
-		11ED40771CC6957100561E33 /* hccoren.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40751CC6957100561E33 /* hccoren.framework */; };
-		11ED42AF1CC8DBD200561E33 /* HCBaseSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED42AE1CC8DBD200561E33 /* HCBaseSystem.framework */; };
 		11ED42B11CC8DBDA00561E33 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED42B01CC8DBDA00561E33 /* libicucore.tbd */; };
 		11ED42B31CC8DBE500561E33 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED42B21CC8DBE500561E33 /* libc++.tbd */; };
 		11ED42B51CC8DBEC00561E33 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED42B41CC8DBEC00561E33 /* libstdc++.tbd */; };
-		11ED42DC1CC8DF4D00561E33 /* CMD_CreateMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42B81CC8DF4D00561E33 /* CMD_CreateMTV.h */; };
+		11ED42DC1CC8DF4D00561E33 /* CMD_CreateMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42B81CC8DF4D00561E33 /* CMD_CreateMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42DD1CC8DF4D00561E33 /* CMD_CreateMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42B91CC8DF4D00561E33 /* CMD_CreateMTV.m */; };
-		11ED42DE1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BA1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h */; };
+		11ED42DE1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BA1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42DF1CC8DF4D00561E33 /* CMD_DeleteMBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42BB1CC8DF4D00561E33 /* CMD_DeleteMBMTV.m */; };
-		11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BC1CC8DF4D00561E33 /* CMD_DeleteMyMTV.h */; };
+		11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BC1CC8DF4D00561E33 /* CMD_DeleteMyMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42E11CC8DF4D00561E33 /* CMD_DeleteMyMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42BD1CC8DF4D00561E33 /* CMD_DeleteMyMTV.m */; };
-		11ED42E21CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BE1CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h */; };
+		11ED42E21CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42BE1CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42E31CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42BF1CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m */; };
-		11ED42E41CC8DF4D00561E33 /* CMD_UploadMBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C01CC8DF4D00561E33 /* CMD_UploadMBMTV.h */; };
+		11ED42E41CC8DF4D00561E33 /* CMD_UploadMBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C01CC8DF4D00561E33 /* CMD_UploadMBMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42E51CC8DF4D00561E33 /* CMD_UploadMBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42C11CC8DF4D00561E33 /* CMD_UploadMBMTV.m */; };
-		11ED42E61CC8DF4D00561E33 /* CMD_UploadMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C21CC8DF4D00561E33 /* CMD_UploadMTV.h */; };
+		11ED42E61CC8DF4D00561E33 /* CMD_UploadMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C21CC8DF4D00561E33 /* CMD_UploadMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42E71CC8DF4D00561E33 /* CMD_UploadMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42C31CC8DF4D00561E33 /* CMD_UploadMTV.m */; };
-		11ED42E81CC8DF4D00561E33 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C41CC8DF4D00561E33 /* Material.h */; };
+		11ED42E81CC8DF4D00561E33 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C41CC8DF4D00561E33 /* Material.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42E91CC8DF4D00561E33 /* Material.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42C51CC8DF4D00561E33 /* Material.m */; };
-		11ED42EA1CC8DF4D00561E33 /* MBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C61CC8DF4D00561E33 /* MBMTV.h */; };
+		11ED42EA1CC8DF4D00561E33 /* MBMTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C61CC8DF4D00561E33 /* MBMTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42EB1CC8DF4D00561E33 /* MBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42C71CC8DF4D00561E33 /* MBMTV.m */; };
-		11ED42EC1CC8DF4D00561E33 /* MTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C81CC8DF4D00561E33 /* MTV.h */; };
+		11ED42EC1CC8DF4D00561E33 /* MTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42C81CC8DF4D00561E33 /* MTV.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42ED1CC8DF4D00561E33 /* MTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42C91CC8DF4D00561E33 /* MTV.m */; };
-		11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CA1CC8DF4D00561E33 /* MTVFile.h */; };
+		11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CA1CC8DF4D00561E33 /* MTVFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42EF1CC8DF4D00561E33 /* MTVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42CB1CC8DF4D00561E33 /* MTVFile.m */; };
-		11ED42F01CC8DF4D00561E33 /* MTVLocal.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CC1CC8DF4D00561E33 /* MTVLocal.h */; };
+		11ED42F01CC8DF4D00561E33 /* MTVLocal.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CC1CC8DF4D00561E33 /* MTVLocal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42F11CC8DF4D00561E33 /* MTVLocal.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42CD1CC8DF4D00561E33 /* MTVLocal.m */; };
-		11ED42F21CC8DF4D00561E33 /* MTVUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CE1CC8DF4D00561E33 /* MTVUploader.h */; };
+		11ED42F21CC8DF4D00561E33 /* MTVUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42CE1CC8DF4D00561E33 /* MTVUploader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42F31CC8DF4D00561E33 /* MTVUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42CF1CC8DF4D00561E33 /* MTVUploader.m */; };
-		11ED42F41CC8DF4D00561E33 /* Music.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D01CC8DF4D00561E33 /* Music.h */; };
+		11ED42F41CC8DF4D00561E33 /* Music.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D01CC8DF4D00561E33 /* Music.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42F51CC8DF4D00561E33 /* Music.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42D11CC8DF4D00561E33 /* Music.m */; };
-		11ED42F61CC8DF4D00561E33 /* Musician.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D21CC8DF4D00561E33 /* Musician.h */; };
+		11ED42F61CC8DF4D00561E33 /* Musician.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D21CC8DF4D00561E33 /* Musician.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42F71CC8DF4D00561E33 /* Musician.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42D31CC8DF4D00561E33 /* Musician.m */; };
-		11ED42F81CC8DF4D00561E33 /* MusicTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D41CC8DF4D00561E33 /* MusicTag.h */; };
+		11ED42F81CC8DF4D00561E33 /* MusicTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D41CC8DF4D00561E33 /* MusicTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42D51CC8DF4D00561E33 /* MusicTag.m */; };
-		11ED42FA1CC8DF4D00561E33 /* PageTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D61CC8DF4D00561E33 /* PageTag.h */; };
+		11ED42FA1CC8DF4D00561E33 /* PageTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D61CC8DF4D00561E33 /* PageTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42FB1CC8DF4D00561E33 /* PageTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42D71CC8DF4D00561E33 /* PageTag.m */; };
-		11ED42FC1CC8DF4D00561E33 /* PlayRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D81CC8DF4D00561E33 /* PlayRecord.h */; };
+		11ED42FC1CC8DF4D00561E33 /* PlayRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42D81CC8DF4D00561E33 /* PlayRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42FD1CC8DF4D00561E33 /* PlayRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42D91CC8DF4D00561E33 /* PlayRecord.m */; };
-		11ED42FE1CC8DF4D00561E33 /* UploadRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42DA1CC8DF4D00561E33 /* UploadRecord.h */; };
+		11ED42FE1CC8DF4D00561E33 /* UploadRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED42DA1CC8DF4D00561E33 /* UploadRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED42FF1CC8DF4D00561E33 /* UploadRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED42DB1CC8DF4D00561E33 /* UploadRecord.m */; };
-		11ED43111CC8E2C800561E33 /* HCDBHelper(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED430D1CC8E2C800561E33 /* HCDBHelper(MTV).h */; };
+		11ED43111CC8E2C800561E33 /* HCDBHelper(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED430D1CC8E2C800561E33 /* HCDBHelper(MTV).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43121CC8E2C800561E33 /* HCDBHelper(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED430E1CC8E2C800561E33 /* HCDBHelper(MTV).m */; };
-		11ED43131CC8E2C800561E33 /* MaibaTables.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED430F1CC8E2C800561E33 /* MaibaTables.h */; };
+		11ED43131CC8E2C800561E33 /* MaibaTables.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED430F1CC8E2C800561E33 /* MaibaTables.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43141CC8E2C800561E33 /* MaibaTables.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43101CC8E2C800561E33 /* MaibaTables.m */; };
-		11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43161CC8E2D200561E33 /* UDManager(MTV).h */; };
+		11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43161CC8E2D200561E33 /* UDManager(MTV).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED431B1CC8E2D200561E33 /* UDManager(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43171CC8E2D200561E33 /* UDManager(MTV).m */; };
-		11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43181CC8E2D200561E33 /* VDCManager(MTV).h */; };
+		11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43181CC8E2D200561E33 /* VDCManager(MTV).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED431D1CC8E2D200561E33 /* VDCManager(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43191CC8E2D200561E33 /* VDCManager(MTV).m */; };
 		11ED43281CC8F71000561E33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED43271CC8F71000561E33 /* Foundation.framework */; };
 		11ED432A1CC8F73E00561E33 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED43291CC8F73E00561E33 /* UIKit.framework */; };
@@ -70,41 +68,41 @@
 		11ED43321CC8F76500561E33 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED43311CC8F76500561E33 /* CoreGraphics.framework */; };
 		11ED43341CC8F76C00561E33 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED43331CC8F76C00561E33 /* CoreMedia.framework */; };
 		11ED43361CC8F77300561E33 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED43351CC8F77300561E33 /* CoreVideo.framework */; };
-		11ED43421CC9001C00561E33 /* AudioGenerater.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433A1CC9001C00561E33 /* AudioGenerater.h */; };
+		11ED43421CC9001C00561E33 /* AudioGenerater.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433A1CC9001C00561E33 /* AudioGenerater.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43431CC9001C00561E33 /* AudioGenerater.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED433B1CC9001C00561E33 /* AudioGenerater.m */; };
-		11ED43441CC9001C00561E33 /* ImageToVideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433C1CC9001C00561E33 /* ImageToVideo.h */; };
+		11ED43441CC9001C00561E33 /* ImageToVideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433C1CC9001C00561E33 /* ImageToVideo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43451CC9001C00561E33 /* ImageToVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED433D1CC9001C00561E33 /* ImageToVideo.m */; };
-		11ED43461CC9001C00561E33 /* MediaListModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433E1CC9001C00561E33 /* MediaListModel.h */; };
+		11ED43461CC9001C00561E33 /* MediaListModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED433E1CC9001C00561E33 /* MediaListModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43471CC9001C00561E33 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED433F1CC9001C00561E33 /* MediaListModel.m */; };
-		11ED43481CC9001C00561E33 /* VideoGenerater.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43401CC9001C00561E33 /* VideoGenerater.h */; };
+		11ED43481CC9001C00561E33 /* VideoGenerater.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43401CC9001C00561E33 /* VideoGenerater.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43491CC9001C00561E33 /* VideoGenerater.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43411CC9001C00561E33 /* VideoGenerater.m */; };
-		11ED43551CC9002700561E33 /* AudioItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434B1CC9002700561E33 /* AudioItem.h */; };
+		11ED43551CC9002700561E33 /* AudioItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434B1CC9002700561E33 /* AudioItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43561CC9002700561E33 /* AudioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED434C1CC9002700561E33 /* AudioItem.m */; };
-		11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434D1CC9002700561E33 /* MediaEditManager(Draft).h */; };
+		11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434D1CC9002700561E33 /* MediaEditManager(Draft).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43581CC9002700561E33 /* MediaEditManager(Draft).m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED434E1CC9002700561E33 /* MediaEditManager(Draft).m */; };
-		11ED43591CC9002700561E33 /* MediaEditManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434F1CC9002700561E33 /* MediaEditManager.h */; };
+		11ED43591CC9002700561E33 /* MediaEditManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED434F1CC9002700561E33 /* MediaEditManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43501CC9002700561E33 /* MediaEditManager.m */; };
-		11ED435B1CC9002700561E33 /* MediaItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43511CC9002700561E33 /* MediaItem.h */; };
+		11ED435B1CC9002700561E33 /* MediaItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43511CC9002700561E33 /* MediaItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED435C1CC9002700561E33 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43521CC9002700561E33 /* MediaItem.m */; };
-		11ED435D1CC9002700561E33 /* Samples.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43531CC9002700561E33 /* Samples.h */; };
+		11ED435D1CC9002700561E33 /* Samples.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43531CC9002700561E33 /* Samples.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED435E1CC9002700561E33 /* Samples.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43541CC9002700561E33 /* Samples.m */; };
-		11ED43621CC9003300561E33 /* ReportInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43601CC9003300561E33 /* ReportInfo.h */; };
+		11ED43621CC9003300561E33 /* ReportInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43601CC9003300561E33 /* ReportInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43631CC9003300561E33 /* ReportInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43611CC9003300561E33 /* ReportInfo.m */; };
-		11ED436B1CC903EB00561E33 /* LyricHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43651CC903EB00561E33 /* LyricHelper.h */; };
+		11ED436B1CC903EB00561E33 /* LyricHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43651CC903EB00561E33 /* LyricHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED436C1CC903EB00561E33 /* LyricHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43661CC903EB00561E33 /* LyricHelper.m */; };
-		11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43671CC903EB00561E33 /* LyricItem.h */; };
+		11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43671CC903EB00561E33 /* LyricItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED436E1CC903EB00561E33 /* LyricItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43681CC903EB00561E33 /* LyricItem.m */; };
-		11ED436F1CC903EB00561E33 /* LyricLayerAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43691CC903EB00561E33 /* LyricLayerAnimation.h */; };
+		11ED436F1CC903EB00561E33 /* LyricLayerAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43691CC903EB00561E33 /* LyricLayerAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43701CC903EB00561E33 /* LyricLayerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED436A1CC903EB00561E33 /* LyricLayerAnimation.m */; };
-		11ED43731CC904A200561E33 /* WTPlayerResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43711CC904A200561E33 /* WTPlayerResource.h */; };
+		11ED43731CC904A200561E33 /* WTPlayerResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43711CC904A200561E33 /* WTPlayerResource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43741CC904A200561E33 /* WTPlayerResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43721CC904A200561E33 /* WTPlayerResource.m */; };
-		11ED43771CC9051400561E33 /* WTAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43751CC9051400561E33 /* WTAVAssetExportSession.h */; };
+		11ED43771CC9051400561E33 /* WTAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43751CC9051400561E33 /* WTAVAssetExportSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED43781CC9051400561E33 /* WTAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43761CC9051400561E33 /* WTAVAssetExportSession.m */; };
-		11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43791CC9056800561E33 /* SDAVAssetExportSession.h */; };
+		11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED43791CC9056800561E33 /* SDAVAssetExportSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED437C1CC9056800561E33 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED437A1CC9056800561E33 /* SDAVAssetExportSession.m */; };
 		11FDE7AE1CD539CE00090925 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 11FDE7AD1CD539CE00090925 /* Podfile */; };
-		617E8349E877F4AE3D22D3A8 /* libPods-HCMVManagerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 288FF667254CB05C29EA50D0 /* libPods-HCMVManagerTests.a */; };
-		BCC8E8211C468A6ABAEEA790 /* libPods-HCMVManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17BF4A3B9AC2BD71B94B857A /* libPods-HCMVManager.a */; };
+		1EE5833AE765F5606DCAD94B /* libPods-HCMVManagerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58892658101D106369F85ADE /* libPods-HCMVManagerTests.a */; };
+		AFF003AB1871A3056F0F52CE /* libPods-HCMVManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA6281AF32A51EA1319367B4 /* libPods-HCMVManager.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,7 +116,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		042E6933281BFED2F5571AA4 /* Pods-HCMVManagerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		101D20BEA4571239EE8AC114 /* Pods-HCMVManagerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		114DE5F21CC9C87E004BE152 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -222,11 +220,11 @@
 		11ED437A1CC9056800561E33 /* SDAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAVAssetExportSession.m; sourceTree = "<group>"; };
 		11ED437D1CC926D700561E33 /* mvconfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mvconfig.h; sourceTree = "<group>"; };
 		11FDE7AD1CD539CE00090925 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		17BF4A3B9AC2BD71B94B857A /* libPods-HCMVManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		262E492564D306365F73D3D3 /* Pods-HCMVManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManager/Pods-HCMVManager.debug.xcconfig"; sourceTree = "<group>"; };
-		288FF667254CB05C29EA50D0 /* libPods-HCMVManagerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C86AAA6EEA1B197944FBA9DE /* Pods-HCMVManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManager/Pods-HCMVManager.release.xcconfig"; sourceTree = "<group>"; };
-		EC03291303918FA024598884 /* Pods-HCMVManagerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.release.xcconfig"; sourceTree = "<group>"; };
+		1282A8F00A52BB06B032FE60 /* Pods-HCMVManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManager/Pods-HCMVManager.release.xcconfig"; sourceTree = "<group>"; };
+		58892658101D106369F85ADE /* libPods-HCMVManagerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA6281AF32A51EA1319367B4 /* libPods-HCMVManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D415428B0F44A75BC4AFFEBD /* Pods-HCMVManagerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.release.xcconfig"; sourceTree = "<group>"; };
+		FCE78202A2AAC4AF2A9DB26C /* Pods-HCMVManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManager/Pods-HCMVManager.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,9 +246,7 @@
 				11ED42B51CC8DBEC00561E33 /* libstdc++.tbd in Frameworks */,
 				11ED42B31CC8DBE500561E33 /* libc++.tbd in Frameworks */,
 				11ED42B11CC8DBDA00561E33 /* libicucore.tbd in Frameworks */,
-				11ED42AF1CC8DBD200561E33 /* HCBaseSystem.framework in Frameworks */,
-				11ED40771CC6957100561E33 /* hccoren.framework in Frameworks */,
-				BCC8E8211C468A6ABAEEA790 /* libPods-HCMVManager.a in Frameworks */,
+				AFF003AB1871A3056F0F52CE /* libPods-HCMVManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,7 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */,
-				617E8349E877F4AE3D22D3A8 /* libPods-HCMVManagerTests.a in Frameworks */,
+				1EE5833AE765F5606DCAD94B /* libPods-HCMVManagerTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +270,7 @@
 				11ED405F1CC6952B00561E33 /* HCMVManagerTests */,
 				11ED40521CC6952B00561E33 /* Products */,
 				11ED42B61CC8DBF400561E33 /* Frameworks */,
-				B5D608D1DC939976B08E532C /* Pods */,
+				E633BE80FEF939434CF23008 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -335,8 +331,8 @@
 				11ED42B01CC8DBDA00561E33 /* libicucore.tbd */,
 				11ED42AE1CC8DBD200561E33 /* HCBaseSystem.framework */,
 				11ED40751CC6957100561E33 /* hccoren.framework */,
-				17BF4A3B9AC2BD71B94B857A /* libPods-HCMVManager.a */,
-				288FF667254CB05C29EA50D0 /* libPods-HCMVManagerTests.a */,
+				AA6281AF32A51EA1319367B4 /* libPods-HCMVManager.a */,
+				58892658101D106369F85ADE /* libPods-HCMVManagerTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -466,13 +462,13 @@
 			path = Lyric;
 			sourceTree = "<group>";
 		};
-		B5D608D1DC939976B08E532C /* Pods */ = {
+		E633BE80FEF939434CF23008 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				262E492564D306365F73D3D3 /* Pods-HCMVManager.debug.xcconfig */,
-				C86AAA6EEA1B197944FBA9DE /* Pods-HCMVManager.release.xcconfig */,
-				042E6933281BFED2F5571AA4 /* Pods-HCMVManagerTests.debug.xcconfig */,
-				EC03291303918FA024598884 /* Pods-HCMVManagerTests.release.xcconfig */,
+				FCE78202A2AAC4AF2A9DB26C /* Pods-HCMVManager.debug.xcconfig */,
+				1282A8F00A52BB06B032FE60 /* Pods-HCMVManager.release.xcconfig */,
+				101D20BEA4571239EE8AC114 /* Pods-HCMVManagerTests.debug.xcconfig */,
+				D415428B0F44A75BC4AFFEBD /* Pods-HCMVManagerTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -533,12 +529,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 11ED40651CC6952B00561E33 /* Build configuration list for PBXNativeTarget "HCMVManager" */;
 			buildPhases = (
-				7BE22A367E2848641F4ADE60 /* 📦 Check Pods Manifest.lock */,
+				985C95D17A4439599E3C29A8 /* 📦 Check Pods Manifest.lock */,
 				11ED404C1CC6952B00561E33 /* Sources */,
 				11ED404D1CC6952B00561E33 /* Frameworks */,
 				11ED404E1CC6952B00561E33 /* Headers */,
 				11ED404F1CC6952B00561E33 /* Resources */,
-				D212608BCC35D00784E85364 /* 📦 Copy Pods Resources */,
+				1389126C10EF4569BBAC1F98 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -553,12 +549,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 11ED40681CC6952B00561E33 /* Build configuration list for PBXNativeTarget "HCMVManagerTests" */;
 			buildPhases = (
-				C94C085319C21D1CC859A37F /* 📦 Check Pods Manifest.lock */,
+				1D3192F71B16C37BFA242E06 /* 📦 Check Pods Manifest.lock */,
 				11ED40571CC6952B00561E33 /* Sources */,
 				11ED40581CC6952B00561E33 /* Frameworks */,
 				11ED40591CC6952B00561E33 /* Resources */,
-				7C841F58C02BD563D7030BD8 /* 📦 Embed Pods Frameworks */,
-				FD4B98DA248C56D30644C027 /* 📦 Copy Pods Resources */,
+				0E81BDB4D0B38C3B901D6DBF /* 📦 Embed Pods Frameworks */,
+				BFDDA6A404EDAA63763BE741 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -624,22 +620,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7BE22A367E2848641F4ADE60 /* 📦 Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "📦 Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		7C841F58C02BD563D7030BD8 /* 📦 Embed Pods Frameworks */ = {
+		0E81BDB4D0B38C3B901D6DBF /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -654,22 +635,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C94C085319C21D1CC859A37F /* 📦 Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "📦 Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		D212608BCC35D00784E85364 /* 📦 Copy Pods Resources */ = {
+		1389126C10EF4569BBAC1F98 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -684,7 +650,37 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HCMVManager/Pods-HCMVManager-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FD4B98DA248C56D30644C027 /* 📦 Copy Pods Resources */ = {
+		1D3192F71B16C37BFA242E06 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		985C95D17A4439599E3C29A8 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		BFDDA6A404EDAA63763BE741 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -807,6 +803,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -858,7 +855,7 @@
 		};
 		11ED40661CC6952B00561E33 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 262E492564D306365F73D3D3 /* Pods-HCMVManager.debug.xcconfig */;
+			baseConfigurationReference = FCE78202A2AAC4AF2A9DB26C /* Pods-HCMVManager.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -868,10 +865,98 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/HCBaseSystem\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/GPUImage\"",
+					"\"${PODS_ROOT}/Headers/Public/HCBaseSystem\"",
+					"\"${PODS_ROOT}/Headers/Public/HCMinizip\"",
+					"\"${PODS_ROOT}/Headers/Public/HappyDNS\"",
+					"\"${PODS_ROOT}/Headers/Public/Qiniu\"",
+					"\"${PODS_ROOT}/Headers/Public/SDWebImage\"",
+					"\"${PODS_ROOT}/Headers/Public/SMSSDK\"",
+					"\"${PODS_ROOT}/Headers/Public/hccoren\"",
+				);
 				INFOPLIST_FILE = HCMVManager/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PODS_ROOT)/Lib",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/AFNetworking\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GPUImage\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HCBaseSystem\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HCMinizip\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HappyDNS\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Qiniu\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SDWebImage\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/hccoren\"",
+				);
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"AFNetworking\"",
+					"-l\"GPUImage\"",
+					"-l\"HCBaseSystem\"",
+					"-l\"HCMinizip\"",
+					"-l\"HappyDNS\"",
+					"-l\"Qiniu\"",
+					"-l\"SDWebImage\"",
+					"-l\"hccoren\"",
+					"-l\"iconv\"",
+					"-l\"icucore\"",
+					"-l\"resolv\"",
+					"-l\"sqlite3\"",
+					"-l\"sqlite3.0\"",
+					"-l\"stdc++\"",
+					"-l\"stdc++.6\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreBluetooth\"",
+					"-framework",
+					"\"CoreData\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreLocation\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"IOKit\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"JavaScriptCore\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -880,7 +965,7 @@
 		};
 		11ED40671CC6952B00561E33 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C86AAA6EEA1B197944FBA9DE /* Pods-HCMVManager.release.xcconfig */;
+			baseConfigurationReference = 1282A8F00A52BB06B032FE60 /* Pods-HCMVManager.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -890,10 +975,98 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/HCBaseSystem\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/GPUImage\"",
+					"\"${PODS_ROOT}/Headers/Public/HCBaseSystem\"",
+					"\"${PODS_ROOT}/Headers/Public/HCMinizip\"",
+					"\"${PODS_ROOT}/Headers/Public/HappyDNS\"",
+					"\"${PODS_ROOT}/Headers/Public/Qiniu\"",
+					"\"${PODS_ROOT}/Headers/Public/SDWebImage\"",
+					"\"${PODS_ROOT}/Headers/Public/SMSSDK\"",
+					"\"${PODS_ROOT}/Headers/Public/hccoren\"",
+				);
 				INFOPLIST_FILE = HCMVManager/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Lib",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/AFNetworking\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GPUImage\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HCBaseSystem\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HCMinizip\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/HappyDNS\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Qiniu\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SDWebImage\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/hccoren\"",
+				);
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"AFNetworking\"",
+					"-l\"GPUImage\"",
+					"-l\"HCBaseSystem\"",
+					"-l\"HCMinizip\"",
+					"-l\"HappyDNS\"",
+					"-l\"Qiniu\"",
+					"-l\"SDWebImage\"",
+					"-l\"hccoren\"",
+					"-l\"iconv\"",
+					"-l\"icucore\"",
+					"-l\"resolv\"",
+					"-l\"sqlite3\"",
+					"-l\"sqlite3.0\"",
+					"-l\"stdc++\"",
+					"-l\"stdc++.6\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreBluetooth\"",
+					"-framework",
+					"\"CoreData\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreLocation\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"IOKit\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"JavaScriptCore\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -902,7 +1075,7 @@
 		};
 		11ED40691CC6952B00561E33 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 042E6933281BFED2F5571AA4 /* Pods-HCMVManagerTests.debug.xcconfig */;
+			baseConfigurationReference = 101D20BEA4571239EE8AC114 /* Pods-HCMVManagerTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HCMVManagerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -913,7 +1086,7 @@
 		};
 		11ED406A1CC6952B00561E33 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EC03291303918FA024598884 /* Pods-HCMVManagerTests.release.xcconfig */;
+			baseConfigurationReference = D415428B0F44A75BC4AFFEBD /* Pods-HCMVManagerTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HCMVManagerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

@@ -80,7 +80,7 @@
 //上传服务器，此处不一定保存的是IP
 @property(nonatomic,PP_STRONG)  NSString * UploadServer;
 @property(nonatomic,PP_STRONG)  NSString * UploadServices;
-
+@property (nonatomic,assign) BOOL IsDebugMode;//是否在调试模式
 //图片服务器
 @property(nonatomic,PP_STRONG)  NSString * ImagePathRoot;
 @property(nonatomic,PP_STRONG)  NSString * ImagePathRoot2;
@@ -133,7 +133,7 @@
 +(id)Instance;
 +(DeviceConfig *)config;
 -(NSString*)language;
-- (void) changeConfigs:(NSString *)interfaceUrl imageServer:(NSString*)imageServerPath imageSever2:(NSString *)imageServerPath2 uploadServer:(NSString *)uploadServer uploadService:(NSString*)uploadService;
+- (void) changeConfigs:(NSString *)interfaceUrl imageServer:(NSString*)imageServerPath imageSever2:(NSString *)imageServerPath2 uploadServer:(NSString *)uploadServer uploadService:(NSString*)uploadService debugMode:(BOOL)debugMode;
 
 -(BOOL) activeWLAN;
 -(BOOL) activeWWAN;

@@ -635,21 +635,25 @@
         [[NSNotificationCenter defaultCenter]postNotificationName:NET_CMDTIMEOUT object:nil];
     }
     //block
-#ifndef __OPTIMIZE__
-    if ([header.Data isKindOfClass:[NSDictionary class]]) {
-        NSDictionary * dic = (NSDictionary *)header.Data;
-        NSLog(@"result back:\n%@\n",dic);
-    }
-    else if([header.Data respondsToSelector:@selector(toDicionary)])
+    DeviceConfig * config = [DeviceConfig config];
+    if(config.IsDebugMode)
     {
-        NSDictionary * dic = [header.Data toDicionary];
-        NSLog(@"result back:\n%@\n",dic);
+        //#ifndef __OPTIMIZE__
+        if ([header.Data isKindOfClass:[NSDictionary class]]) {
+            NSDictionary * dic = (NSDictionary *)header.Data;
+            NSLog(@"result back:\n%@\n",dic);
+        }
+        else if([header.Data respondsToSelector:@selector(toDicionary)])
+        {
+            NSDictionary * dic = [header.Data toDicionary];
+            NSLog(@"result back:\n%@\n",dic);
+        }
+        else
+        {
+            NSLog(@"result back:\n%@\n",[header.Data JSONRepresentationEx]);
+        }
+        //#endif
     }
-    else
-    {
-        NSLog(@"result back:\n%@\n",[header.Data JSONRepresentationEx]);
-    }
-#endif
     if(self.CMDCallBack)
     {
         self.CMDCallBack(header.Data);

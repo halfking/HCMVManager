@@ -87,6 +87,7 @@ typedef void (^cmdCallback)(HCCallbackResult *result);
 @property (nonatomic, copy) cmdCallback CMDCallBack;
 //在有指定服务器的时候指定serverURL发送，没有的时候使用默认地址
 @property (nonatomic, strong) NSString *serverURL;
+@property (nonatomic,PP_STRONG) NSString * requestUrlString;//调用的完整的Request Url，包括Post指令
 - (CMDs *)getCMDs;
 - (NSString *)getCMDName;
 - (NSString *)getNotificationName;

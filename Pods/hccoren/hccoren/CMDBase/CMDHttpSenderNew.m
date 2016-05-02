@@ -11,6 +11,7 @@
 #import "CMDHttpHeader.h"
 #import "HCBase.h"
 #import "CMDs.h"
+#import "DeviceConfig.h"
 //#import "ASIHTTPRequest.h"
 //#import "ASIFormDataRequest.h"
 //#import "PublicText.h"
@@ -26,6 +27,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
 {
     if(!cmd) return NO;
     
+    DeviceConfig * config = [DeviceConfig config];
+    
     __block CMDHttpHeader * header = [[CMDHttpHeader alloc]init];
     __block __weak CMDOP * weakCmd = cmd;
     NSString * url = cmd.serverURL;
@@ -33,16 +36,20 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
         url = PP_RETAIN([header toString:weakCmd includeUDI:NO]);
     }
     NSLog(@"拼接命令后%@",url);
+    NSMutableString * parameterString  = nil;
     //    NSURL * url1 = [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-#ifndef __OPTIMIZE__
-    NSMutableString * parameterString = [NSMutableString new];
+//#ifndef __OPTIMIZE__
+    if(config.IsDebugMode)
+    {
+    parameterString = [NSMutableString new];
     [parameterString appendString:url];
     if([url rangeOfString:@"?"].location==NSNotFound)
     {
         [parameterString appendString:@"?"];
     }
+    }
 //    NSURL * url1 = [NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-#endif
+//#endif
 //    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 //    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
 
@@ -59,13 +66,21 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
             objectString = json ? json : object;
         }
         [params setObject:objectString forKey:key];
-#ifndef __OPTIMIZE__
+        if(config.IsDebugMode)
+        {
+//#ifndef __OPTIMIZE__
         [parameterString appendFormat:@"%@=%@&",key,objectString ];
-#endif
+//#endif
+        }
     }
-#ifndef __OPTIMIZE__
-    NSURL * url1 = [NSURL URLWithString:[parameterString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-#endif
+    NSURL * url1 =  nil;
+    if(config.IsDebugMode)
+    {
+//#ifndef __OPTIMIZE__
+    url1 = [NSURL URLWithString:[parameterString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        PP_RELEASE(parameterString);
+//#endif
+    }
     NSString * messageID = cmd.messageID;
     int cmdID = cmd.CMDID;
     if([cmd isPost])
@@ -336,10 +351,13 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
           
        
     }
-#ifndef __OPTIMIZE__
+    if(config.IsDebugMode)
+    {
+//#ifndef __OPTIMIZE__
     [cmd setRequestUrl:[url1 absoluteString]];
     NSLog(@"request:%@",cmd.requestUrl);
-#endif
+//#endif
+    }
     //#endif
     //设置报头
 //    if(cmd.refer)

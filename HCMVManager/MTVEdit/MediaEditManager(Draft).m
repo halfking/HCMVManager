@@ -9,7 +9,9 @@
 #import "MediaEditManager(Draft).h"
 #import <hccoren/base.h>
 #import <hccoren/json.h>
-#import <HCBaseSystem/vdc.h>
+#import <hccoren/images.h>
+#import <HCBaseSystem/VDCManager.h>
+#import <HCBaseSystem/VDCManager(Helper).h>
 
 #import "MediaListModel.h"
 #import "LyricItem.h"
@@ -583,7 +585,7 @@
         [um removeThumnates:fileName size:CGSizeMake(0, 0)];
         
         //相册中的东东不可删除
-        if(![CommonUtil isInAblum:fileName])
+        if(![HCFileManager isInAblum:fileName])
         {
             [um removeFileAtPath:fileName];
         }
@@ -630,7 +632,7 @@
     PP_RELEASE(audioMixUrl_);
     if(mixedAudio)
     {
-        NSString * filePath = [CommonUtil checkPath:mixedAudio];
+        NSString * filePath = [HCFileManager checkPath:mixedAudio];
         if(filePath.length>5)
         {
             NSString * newPath = nil;
@@ -649,9 +651,9 @@
             mixedAudio = nil;
         }
     }
-    if(mixedAudio && mixedAudio.length>5 && [CommonUtil isFileExistAndNotEmpty:mixedAudio size:nil])
+    if(mixedAudio && mixedAudio.length>5 && [HCFileManager isFileExistAndNotEmpty:mixedAudio size:nil])
     {
-        audioMixUrl_ = PP_RETAIN([NSURL fileURLWithPath:[CommonUtil checkPath:mixedAudio]]);
+        audioMixUrl_ = PP_RETAIN([NSURL fileURLWithPath:[HCFileManager checkPath:mixedAudio]]);
     }
     if(videoGenerater_)
     {
@@ -730,9 +732,9 @@
 - (BOOL)cropImageToFile:(NSString *)sourcePath targetSize:(CGSize)targetSize targetPath:(NSString*)targetPath
 {
     if(!sourcePath || !targetPath) return NO;
-    sourcePath = [CommonUtil checkPath:sourcePath];
-    targetPath = [CommonUtil checkPath:targetPath];
-    if([CommonUtil isLocalFile:sourcePath])
+    sourcePath = [HCFileManager checkPath:sourcePath];
+    targetPath = [HCFileManager checkPath:targetPath];
+    if([HCFileManager isLocalFile:sourcePath])
     {
         UIImage * image = [UIImage imageWithContentsOfFile:sourcePath];
         if(!image) return NO;

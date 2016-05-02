@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>GPUImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>HCBaseSystem.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -57,7 +52,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>12E148EDA0B7DBBE71028D17D5A2B76E</key>
+		<key>15B0656BA09086D9E797269A3647B6FF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>247B7B4E15E708FC13C1A048E9BCC031</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -67,32 +67,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4BCD210FCC1D5EC90CB68FE92E682F68</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>6610362E50A6DE8BACCA1F2885CD9157</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>6627E2CE58504A680DE862D5526B302C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7BAB0A8D890C9FB9B0F4E26DFC43B952</key>
+		<key>82446162A6107D70A9E5DE57AB877150</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A9BEE8BBFAD17C53A66C98EB44C0B787</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>B41D01ED46611D9D0C06C6C05150C7E6</key>
+		<key>A08C4B2A4CFE76857939B9C8EC4A5091</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,7 +87,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FCC3A00DC6BEBE1F08BC50C9D6E8D68C</key>
+		<key>E0A565A887CE0A934CCA1F60CD9C1813</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E20AD9A1AF3F3457FF96D690AFDDB1B0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
