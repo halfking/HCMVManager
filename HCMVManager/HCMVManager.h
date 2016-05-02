@@ -20,7 +20,12 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #define HCMVManager_h
 
 #import "VDCManager(MTV).h"
-#import <HCMVManager/Cover.h>
+//#import <HCMVManager/Cover.h>
+
+#import  <HCMVManager/Material.h>
+#import  <HCMVManager/MTVLocal.h>
+#import  <HCMVManager/PageTag.h>
+#import  <HCMVManager/PlayRecord.h>
 #import <HCMVManager/UPloadRecord.h>
 #import <HCMVManager/MTVUploader.h>
 #import <HCMVManager/MBMTV.h>
@@ -36,7 +41,32 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/CMD_UploadMTV.h>
 #import <HCMVManager/CMD_CreateMTV.h>
 
+#import  <HCMVManager/UDManager(MTV).h>
+#import  <HCMVManager/VDCManager(MTV).h>
+#import  <HCMVManager/HCDBHelper(MTV).h>
+#import  <HCMVManager/MaibaTables.h>
+
+#import  <HCMVManager/WTPlayerResource.h>
+#import  <HCMVManager/AudioGenerater.h>
+#import  <HCMVManager/WTAVAssetExportSession.h>
+#import  <HCMVManager/SDAVAssetExportSession.h>
+#import  <HCMVManager/ImageToVideo.h>
+#import  <HCMVManager/MediaListModel.h>
+#import  <HCMVManager/VideoGenerater.h>
+
+#import  <HCMVManager/AudioItem.h>
+#import  <HCMVManager/MediaEditmanager.h>
+#import  <HCMVManager/MediaEditManager(Draft).h>
+#import  <HCMVManager/MediaItem.h>
+#import  <HCMVManager/Samples.h>
+#import  <HCMVManager/ReportInfo.h>
+#import  <HCMVManager/LyricHelper.h>
+#import  <HCMVManager/LyricItem.h>
+#import  <HCMVManager/LyricLayerAnimation.h>
+
+
 #import <HCMVManager/udmanager_full.h>
 #import <HCMVManager/vdcManager_full.h>
+#import <HCMVManager/mvconfig.h>
 
 #endif

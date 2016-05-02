@@ -11,6 +11,7 @@
 		114DE5F51CC9C8A8004BE152 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */; };
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
 		114DE5F91CC9C972004BE152 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */; };
+		11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 11754E531CD7507B00F4DA09 /* HCMVManager.podspec */; };
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40511CC6952B00561E33 /* HCMVManager.framework */; };
 		11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED40601CC6952B00561E33 /* HCMVManagerTests.m */; };
@@ -121,6 +122,7 @@
 		114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		11754E531CD7507B00F4DA09 /* HCMVManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HCMVManager.podspec; sourceTree = "<group>"; };
 		11ED40511CC6952B00561E33 /* HCMVManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HCMVManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11ED40541CC6952B00561E33 /* HCMVManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCMVManager.h; sourceTree = "<group>"; };
 		11ED40561CC6952B00561E33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				11FDE7AD1CD539CE00090925 /* Podfile */,
+				11754E531CD7507B00F4DA09 /* HCMVManager.podspec */,
 				11ED40531CC6952B00561E33 /* HCMVManager */,
 				11ED405F1CC6952B00561E33 /* HCMVManagerTests */,
 				11ED40521CC6952B00561E33 /* Products */,
@@ -606,6 +609,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */,
 				11FDE7AE1CD539CE00090925 /* Podfile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
