@@ -12,7 +12,7 @@
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
 		114DE5F91CC9C972004BE152 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */; };
 		11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 11754E531CD7507B00F4DA09 /* HCMVManager.podspec */; };
-		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; };
+		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -496,7 +496,6 @@
 				11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */,
 				11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */,
 				11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */,
-				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */,
 				11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */,
 				11ED435B1CC9002700561E33 /* MediaItem.h in Headers */,
@@ -528,6 +527,7 @@
 				11ED42F81CC8DF4D00561E33 /* MusicTag.h in Headers */,
 				11ED43731CC904A200561E33 /* WTPlayerResource.h in Headers */,
 				11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */,
+				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11ED42DE1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h in Headers */,
 			);
