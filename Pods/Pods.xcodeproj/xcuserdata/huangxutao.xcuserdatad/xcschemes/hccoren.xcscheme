@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '74ECB14DEF462DDCD7649742D5397946'
+               BlueprintIdentifier = '4A3979F0165297B0480C51AAA12E4515'
                BlueprintName = 'hccoren'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libhccoren.a'>
