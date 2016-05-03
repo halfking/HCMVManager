@@ -32,6 +32,7 @@ typedef int HCImgViewModel;
 
 #define NT_LOCATIONCHANGED      @"REFRESH_LOCATION"
 #define NT_LOCATIONFAILURE      @"LOCATION_FAILURE"
+#define NT_MSGNOTICE            @"NT_MSGNOTICE"
 
 #pragma mark - 一些常用初始值
 #define CENTER_LNG          120.09
@@ -48,9 +49,21 @@ typedef int HCImgViewModel;
 #define MSG_NETWORKERROR    @"哎呀！你的网络好像有点问题哦！"
 #define MSG_ERROR           @"错误信息"
 #define MSG_OPENLOCATIONERROR    @"打开定位服务失败，请检查是否正确开启了定位服务。"
+
+#define EDIT_IKNOWN                 @"知道了"
+#define EDIT_LOGOUT                 @"退出登录"
+#define EDIT_LOGIN                  @"登录"
 #define EDIT_OK                     @"确定"
 #define EDIT_CANCEL                 @"取消"
 #define EDIT_RETRY                  @"重试"
-#define EDIT_IKNOWN                 @"知道了"
+#define EDIT_ABANDONVIDEO           @"我要放弃"
+#define EDIT_SETUPNOW               @"立即设置"
+#define EDIT_EDIT                   @"编辑"
+#define EDIT_SAVE                   @"保存"
+#define EDIT_SEND                   @"发送"
+#define EDIT_SEARCH                 @"搜索"
+#define EDIT_GO                     @"继续"
+#define EDIT_NEXT                   @"下一步"
+
 
 #endif /* config_h */

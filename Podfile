@@ -8,8 +8,8 @@ target 'HCMVManager' do
   # Pods for HCMVManager
 
   pod 'HCMinizip'
-  pod 'hccoren’,’~>0.1.5’
-  pod 'HCBaseSystem’,’~>0.2.1’
+  pod 'hccoren’,’~>0.1.7’
+  pod 'HCBaseSystem’,’~>0.2.2’
 
   target 'HCMVManagerTests' do
     inherit! :search_paths
