@@ -2546,7 +2546,7 @@
     itemView.layer.borderWidth = 1;
     mItem.contentView = itemView;
     
-    itemView.layer.borderColor = [COLOR_BF CGColor];
+    itemView.layer.borderColor = [COLOR_MV_BF CGColor];
     itemView.layer.borderWidth = 2;
     itemView.layer.masksToBounds = YES;
     

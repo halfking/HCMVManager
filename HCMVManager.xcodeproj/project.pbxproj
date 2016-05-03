@@ -12,6 +12,9 @@
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
 		114DE5F91CC9C972004BE152 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */; };
 		11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 11754E531CD7507B00F4DA09 /* HCMVManager.podspec */; };
+		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; };
+		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
+		11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40511CC6952B00561E33 /* HCMVManager.framework */; };
 		11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED40601CC6952B00561E33 /* HCMVManagerTests.m */; };
@@ -123,6 +126,8 @@
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		11754E531CD7507B00F4DA09 /* HCMVManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HCMVManager.podspec; sourceTree = "<group>"; };
+		11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_GetUserMTVBySample.h; sourceTree = "<group>"; };
+		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
 		11ED40511CC6952B00561E33 /* HCMVManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HCMVManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11ED40541CC6952B00561E33 /* HCMVManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCMVManager.h; sourceTree = "<group>"; };
 		11ED40561CC6952B00561E33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -343,6 +348,8 @@
 		11ED42B71CC8DF4D00561E33 /* MTVUpload */ = {
 			isa = PBXGroup;
 			children = (
+				11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */,
+				11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */,
 				11ED42CE1CC8DF4D00561E33 /* MTVUploader.h */,
 				11ED42CF1CC8DF4D00561E33 /* MTVUploader.m */,
 				11ED42B81CC8DF4D00561E33 /* CMD_CreateMTV.h */,
@@ -489,6 +496,7 @@
 				11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */,
 				11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */,
 				11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */,
+				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */,
 				11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */,
 				11ED435B1CC9002700561E33 /* MediaItem.h in Headers */,
@@ -713,6 +721,7 @@
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
 				11ED43781CC9051400561E33 /* WTAVAssetExportSession.m in Sources */,
+				11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */,
 				11ED42DF1CC8DF4D00561E33 /* CMD_DeleteMBMTV.m in Sources */,
 				11ED42DD1CC8DF4D00561E33 /* CMD_CreateMTV.m in Sources */,
 				11ED431D1CC8E2D200561E33 /* VDCManager(MTV).m in Sources */,
@@ -752,6 +761,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */,
+				11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

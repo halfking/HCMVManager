@@ -40,6 +40,7 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/CMD_UploadMBMTV.h>
 #import <HCMVManager/CMD_UploadMTV.h>
 #import <HCMVManager/CMD_CreateMTV.h>
+#import <HCMVManager/CMD_GetUserMTVBySample.h>
 
 #import  <HCMVManager/UDManager(MTV).h>
 #import  <HCMVManager/VDCManager(MTV).h>

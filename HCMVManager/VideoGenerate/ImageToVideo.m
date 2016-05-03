@@ -643,7 +643,7 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         }
         
         //       CAKeyframeAnimation * animation =  [LyricLayerAnimation scaleLyricsN:lyricItemsFiltered size:lrcTextLayer.frame.size font:FONT_TITLES];
-        CAAnimationGroup * animation  = [LyricLayerAnimation animationWithLyrics:lyricItemsFiltered  witAniType:Scale size:lrcTextLayer.frame.size font:FONT_LYRIC rate:rate];
+        CAAnimationGroup * animation  = [LyricLayerAnimation animationWithLyrics:lyricItemsFiltered  witAniType:Scale size:lrcTextLayer.frame.size font:FONT_MV_LYRIC rate:rate];
         
         [lrcTextLayer addAnimation:animation forKey:nil];
         return lrcTextLayer;
