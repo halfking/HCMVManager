@@ -167,7 +167,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDs)
         BOOL isOK = YES;
         if([cmdQueue_ count]>0 ||cmdQueueSended_.count>0)
         {
-            NSLog(@"cmd queue count:%ld not callback:%ld",[cmdQueue_ count],[cmdQueueSended_ count]);
+            NSLog(@"cmd queue count:%d not callback:%d",(int)[cmdQueue_ count],(int)[cmdQueueSended_ count]);
         }
         //超过了，则移除前30个
         if(cmdQueue_.count >50)
@@ -316,7 +316,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDs)
             //            DLog(@"call not back:%d",[_cmdQueueSended count]);
             if([cmdQueue_ count]==0 ||cmdQueueSended_.count==0)
             {
-                NSLog(@"cmd queue count:%ld not callback:%ld",[cmdQueue_ count],[cmdQueueSended_ count]);
+                NSLog(@"cmd queue count:%d not callback:%d",(int)[cmdQueue_ count],(int)[cmdQueueSended_ count]);
             }
         }
         [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(senderTimer) userInfo:nil repeats:NO];

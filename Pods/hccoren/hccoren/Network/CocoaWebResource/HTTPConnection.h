@@ -11,7 +11,7 @@
 
 @protocol fileHandlerProtocol <NSObject>
 - (BOOL) canHandle:(NSString *)path;
-- (id<HTTPResponse>) handleResponse:(NSString *)path;
+- (NSObject<HTTPResponse>*) handleResponse:(NSString *)path;
 @end
 
 #define HTTPConnectionDidDieNotification  @"HTTPConnectionDidDie"

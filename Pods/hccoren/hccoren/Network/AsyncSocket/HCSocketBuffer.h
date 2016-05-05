@@ -29,9 +29,9 @@ typedef u_int16_t HCBufferStatus;
 #else
     NSMutableData * _dataBuffer ;
 #endif
-    int _curPos;
-    int _endPos;
-    int _dataLength;
+    long _curPos;
+    long _endPos;
+    long _dataLength;
 }
 - (int) length;
 #if USEBINARYDATA

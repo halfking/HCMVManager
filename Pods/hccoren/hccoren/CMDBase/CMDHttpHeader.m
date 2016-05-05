@@ -187,8 +187,32 @@
             [cmd calcArgsAndCacheKey];
         }
         argsDic_ = PP_RETAIN(cmd.argsDic);
+        BOOL notAddAnd = NO;
+        if(![cmd isPost])
+        {
+            if([url2 rangeOfString:@"?"].location==NSNotFound)
+            {
+                [url2 appendString:@"?"];
+                notAddAnd = YES;
+            }
+        }
         for (NSString * key in argsDic_.keyEnumerator) {
-            [postContents_ setObject:[argsDic_ objectForKey:key] forKey:key];
+            if(![cmd isPost])
+            {
+                if(notAddAnd)
+                {
+                [url2 appendFormat:@"%@=%@",key,[[argsDic_ objectForKey:key]JSONRepresentationEx]];
+                    notAddAnd = NO;
+                }
+                else
+                {
+                     [url2 appendFormat:@"&%@=%@",key,[[argsDic_ objectForKey:key]JSONRepresentationEx]];
+                }
+            }
+            else
+            {
+                [postContents_ setObject:[argsDic_ objectForKey:key] forKey:key];
+            }
         }
 //#else
 //        if(![nconfig.InterfaceUrl hasSuffix:@"?"])

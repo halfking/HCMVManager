@@ -18,3 +18,17 @@
 #import "RegexKitLite.h"
 #import "HCFileManager.h"
 #endif /* base_h */
+
+/* DeviceConfig 用法 */
+/*
+ DeviceConfig * config = [DeviceConfig config];
+ 
+ #ifndef __OPTIMIZE__
+ BOOL debugMode = YES;
+ #else
+ BOOL debugMode = NO;
+ #endif
+ 
+ [config changeConfigs:CT_INTERFACE imageServer:CT_IMAGESERVERPATH imageSever2:CT_IMAGEPATHROOT uploadServer:CT_UPLOADSERVER uploadService:CT_UPLOADSERVERPATH debugMode:debugMode];
+ 
+*/

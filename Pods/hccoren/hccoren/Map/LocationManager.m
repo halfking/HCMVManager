@@ -227,7 +227,7 @@ static LocationManager * intance_ = nil;
             //            config.Loc_Lat = placemark.location.coordinate.latitude;
             //            config.Loc_Lng = placemark.location.coordinate.longitude;
             //            [config setCurrentLocation:placemark.addressDictionary];
-            NSLog(@"---%@..........%@..cout:%ld",placemark.locality,config.locationAddress,[array count]);
+            NSLog(@"---%@..........%@..cout:%ld",placemark.locality,config.locationAddress,(long)[array count]);
             [[NSNotificationCenter defaultCenter]postNotificationName:NT_LOCATIONCHANGED object:nil];
         }
 //        [NSThread sleepForTimeInterval:5];

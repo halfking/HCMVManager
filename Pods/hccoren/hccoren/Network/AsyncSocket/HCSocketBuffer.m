@@ -33,7 +33,7 @@
 }
 - (int) length
 {
-    return _dataLength;
+    return (int)_dataLength;
 }
 #if USEBINARYDATA
 - (void)calculateLength
@@ -107,7 +107,7 @@
     [self appendBytes:bytes length:(int)data.length];
 #else
     [_dataBuffer appendData:data];
-    _dataLength = [_dataBuffer length];
+    _dataLength = (int)[_dataBuffer length];
 #endif
 }
 - (void)clearData
@@ -118,7 +118,9 @@
 #if USEBINARYDATA
     memset(_byteBuffer,'\0',BUFFER_LENGTH);
 #else
-    [_dataBuffer setData:nil];
+    PP_RELEASE(_dataBuffer);
+    _dataBuffer = [[NSMutableData alloc]init];
+//    [_dataBuffer setData:nil];
 #endif
 }
 #if USEBINARYDATA
@@ -307,14 +309,14 @@
         //NSLog(@"-----Have received data is :%@",aStr1);
 //        [aStr1 release];
         NSString * pageckagelen = nil;
-        int plen = 0;
-        int startPos = _curPos + SOCKETHEADLEN;
+        long plen = 0;
+        long startPos = _curPos + SOCKETHEADLEN;
         @try {
             pageckagelen = [[NSString alloc]initWithData:
                             [_dataBuffer subdataWithRange:
                              NSMakeRange(startPos  , SOCKETPACKAGELEN)]
                                                 encoding:NSUTF8StringEncoding];
-            plen = [pageckagelen integerValue];
+            plen = (long)[pageckagelen integerValue];
             startPos += SOCKETPACKAGELEN + plen;
         }
         @catch (NSException *exception) {
@@ -336,7 +338,7 @@
         }
         if(startPos > [_dataBuffer length])
         {
-            NSLog(@"bound error:%i>%i",startPos,[_dataBuffer length]);
+            NSLog(@"bound error:%li>%li",startPos,(long)[_dataBuffer length]);
         }
         //001013000000020027E90A80c8d6323900000062  40
         //{"data":{},"totalcount":0,"msg":"  33
@@ -344,7 +346,7 @@
         
         //如果服务返回的字节数有问题，有可能需要注意如何处理
         //这个包处理完成后，有可能剩下一些字节是有问题的，如果小于一个包头，则略去
-        int subLen = startPos - _curPos;
+        long subLen = startPos - _curPos;
         if(startPos + SOCKETHEADLEN +SOCKETPACKAGELEN > _dataLength)
             subLen = [_dataBuffer length] - _curPos;
         
@@ -365,7 +367,7 @@
         
         //        [aStr release];
         
-        [self decompressData:curData plen:plen result:packageData];
+        [self decompressData:curData plen:(int)plen result:packageData];
 #ifdef TRACKPAGES
         //        NSData * compressedData = [NSData compressedDataWithData:packageData];
         //        NSLog(@"Not Compressed:%d compressed:%d  rate:%0.2f",packageData.length,compressedData.length,100.00 - compressedData.length * 100.0000/packageData.length );
@@ -411,7 +413,7 @@
                             [data subdataWithRange:
                              NSMakeRange(SOCKETHEADLEN  , SOCKETPACKAGELEN)]
                                                 encoding:NSUTF8StringEncoding];
-            plen = [pageckagelen integerValue];
+            plen = (int)[pageckagelen integerValue];
        
             PP_RELEASE(pageckagelen);
 //            [pageckagelen release];
@@ -419,13 +421,13 @@
         }
         NSData * cpData = [data subdataWithRange:NSMakeRange(SOCKETHEADLEN + SOCKETPACKAGELEN, plen)];
         NSData * ncpData = [NSData dataWithCompressedData:cpData];
-        plen = ncpData.length;
+        plen = (int)ncpData.length;
         
         [result appendData:[data subdataWithRange:NSMakeRange(0, SOCKETHEADLEN)]];
         
         NSString * plenString = [NSString stringWithFormat:@"%d",plen];
         NSMutableString * lenString = [[NSMutableString alloc]initWithCapacity:SOCKETPACKAGELEN];
-        int i = plenString.length;
+        long i = (long)plenString.length;
         while (i < SOCKETPACKAGELEN) {
             [lenString appendString:@"0"];
             i ++;
@@ -461,10 +463,10 @@
     {
   
         NSString * pageckagelen = nil;
-        int plen = 0;
+        long plen = 0;
         
         //取UDI长度
-        int startPos = 0;
+        long startPos = 0;
         if(INCLUDEUDI)
         {
             startPos = SENDSOCKETLEN;
@@ -472,7 +474,7 @@
                             [data subdataWithRange:
                              NSMakeRange(startPos  , 2)]
                                                 encoding:NSUTF8StringEncoding];
-            plen = [pageckagelen integerValue];
+            plen = (long)[pageckagelen integerValue];
             startPos += plen +2;
         }
         PP_RELEASE(pageckagelen);
@@ -482,20 +484,20 @@
                         [data subdataWithRange:
                          NSMakeRange(startPos  , 8)]
                                             encoding:NSUTF8StringEncoding];
-        plen = [pageckagelen integerValue];
+        plen = (long)[pageckagelen integerValue];
         
         NSData * ncpData = [data subdataWithRange:NSMakeRange(startPos, plen)];
         NSData * cpData = [NSData compressedDataWithData:ncpData];
-        plen = cpData.length;
+        plen = (long)cpData.length;
         
         [result appendData:[data subdataWithRange:NSMakeRange(0, startPos)]];
         PP_RELEASE(pageckagelen);
 //        [pageckagelen release];
         
         
-        NSString * plenString = [NSString stringWithFormat:@"%d",plen];
+        NSString * plenString = [NSString stringWithFormat:@"%ld",plen];
         NSMutableString * lenString = [[NSMutableString alloc]initWithCapacity:SOCKETPACKAGELEN];
-        int i = plenString.length;
+        long i = (long)plenString.length;
         while (i < SOCKETPACKAGELEN) {
             [lenString appendString:@"0"];
             i ++;

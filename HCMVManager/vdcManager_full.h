@@ -12,6 +12,10 @@
 #import <hcbasesystem/vdcmanager.h>
 #import <hcbasesystem/vdcmanager(helper).h>
 #import <hcbasesystem/vdcmanager(localfiles).h>
+#import <hcbasesystem/VDCLoaderConnection.h>
+#import <hcbasesystem/VDCTempFileManager(readwriter).h>
+#import <hcbasesystem/VDCTempFileManager.h>
+
 #import "VDCManager(MTV).h"
 
 #endif /* vdcManager_full_h */

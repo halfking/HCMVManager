@@ -12,6 +12,7 @@
 #import "WebSocket.h"
 #import "HTTPLogging.h"
 #import "FileResource.h"
+#import "HCBase.h"
 //#import "VDCFileResource.h"
 //#import "VDCManager.h"
 //#import "VDCManager(Helper).h"
@@ -1623,7 +1624,7 @@ static NSMutableArray *recentNonces;
     
     //    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1);
     NSString *content = text;
-    NSString *length = [NSString stringWithFormat:@"%ld", [[content dataUsingEncoding:NSUTF8StringEncoding] length]];
+    NSString *length = [NSString stringWithFormat:@"%d", (int)[[content dataUsingEncoding:NSUTF8StringEncoding] length]];
     NSString* contentType = [NSString stringWithFormat:@"%@; charset=utf-8", mimeType];
     
     [response setHeaderField:@"Content-Length" value:length];
@@ -1806,7 +1807,7 @@ static NSMutableArray *recentNonces;
     //        }
     //        return [[HttpVideoFileResponse alloc]initWithFilePath:filePath forConnection:self];
     //    }
-    id<HTTPResponse> handle = nil;
+    NSObject<HTTPResponse> * handle = nil;
     if(fileHandlerList_)
     {
         for (id<fileHandlerProtocol> item in fileHandlerList_) {
@@ -1895,8 +1896,9 @@ static NSMutableArray *recentNonces;
         if (matchedRange.location != NSNotFound)
         {
             PP_RELEASE(requestBoundry_);
-            requestBoundry_ = [NSString stringWithFormat:@"%@%@", @"--", [contentType substringWithRange:matchedRange]];
-            PP_RETAIN(requestBoundry_);
+            NSString * temp =[NSString stringWithFormat:@"%@%@", @"--",[contentType substringWithRange:matchedRange]];
+            requestBoundry_ = PP_RETAIN(temp);
+//            PP_RETAIN(requestBoundry_);
             //            newTag = HTTP_REQUEST_BODY_MULTIPART_HEAD;
         }
     }
@@ -1929,7 +1931,7 @@ static NSMutableArray *recentNonces;
         range = NSMakeRange([requestBoundry_ length] + [EOL length], [data length]- [requestBoundry_ length] - [EOL length]);
         const char* bytes = [[data subdataWithRange:range] bytes];
         
-        NSLog(@"bytes %x", bytes);
+        NSLog(@"bytes %s", bytes);
         long length = range.length;
         const char* deol = "\015\012\015\012";
         const char *headEnd = strstr(bytes, deol);
