@@ -1,0 +1,706 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		118CE86A1CE1AF8D00290641 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8691CE1AF8D00290641 /* main.m */; };
+		118CE86D1CE1AF8D00290641 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE86C1CE1AF8D00290641 /* AppDelegate.m */; };
+		118CE8701CE1AF8D00290641 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE86F1CE1AF8D00290641 /* FirstViewController.m */; };
+		118CE8731CE1AF8D00290641 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8721CE1AF8D00290641 /* SecondViewController.m */; };
+		118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 118CE8741CE1AF8D00290641 /* Main.storyboard */; };
+		118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 118CE8771CE1AF8D00290641 /* Assets.xcassets */; };
+		118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 118CE8791CE1AF8D00290641 /* LaunchScreen.storyboard */; };
+		118CE8831CE1AFB600290641 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 118CE8821CE1AFB600290641 /* Podfile */; };
+		118CE8DF1CE1B00D00290641 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 118CE8861CE1B00D00290641 /* Info.plist */; };
+		118CE8E01CE1B00D00290641 /* LyricHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8891CE1B00D00290641 /* LyricHelper.m */; };
+		118CE8E11CE1B00D00290641 /* LyricItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE88B1CE1B00D00290641 /* LyricItem.m */; };
+		118CE8E21CE1B00D00290641 /* LyricLayerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE88D1CE1B00D00290641 /* LyricLayerAnimation.m */; };
+		118CE8E31CE1B00D00290641 /* HCDBHelper(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8901CE1B00D00290641 /* HCDBHelper(MTV).m */; };
+		118CE8E41CE1B00D00290641 /* MaibaTables.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8921CE1B00D00290641 /* MaibaTables.m */; };
+		118CE8E51CE1B00D00290641 /* AudioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8951CE1B00D00290641 /* AudioItem.m */; };
+		118CE8E61CE1B00D00290641 /* MediaEditManager(Draft).m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8971CE1B00D00290641 /* MediaEditManager(Draft).m */; };
+		118CE8E71CE1B00D00290641 /* MediaEditManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8991CE1B00D00290641 /* MediaEditManager.m */; };
+		118CE8E81CE1B00D00290641 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE89B1CE1B00D00290641 /* MediaItem.m */; };
+		118CE8E91CE1B00D00290641 /* Samples.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE89D1CE1B00D00290641 /* Samples.m */; };
+		118CE8EA1CE1B00D00290641 /* CMD_CreateMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8A01CE1B00D00290641 /* CMD_CreateMTV.m */; };
+		118CE8EB1CE1B00D00290641 /* CMD_DeleteMBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8A21CE1B00D00290641 /* CMD_DeleteMBMTV.m */; };
+		118CE8EC1CE1B00D00290641 /* CMD_DeleteMyMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8A41CE1B00D00290641 /* CMD_DeleteMyMTV.m */; };
+		118CE8ED1CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8A61CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m */; };
+		118CE8EE1CE1B00D00290641 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8A81CE1B00D00290641 /* CMD_GetUserMTVBySample.m */; };
+		118CE8EF1CE1B00D00290641 /* CMD_UploadMBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8AA1CE1B00D00290641 /* CMD_UploadMBMTV.m */; };
+		118CE8F01CE1B00D00290641 /* CMD_UploadMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8AC1CE1B00D00290641 /* CMD_UploadMTV.m */; };
+		118CE8F11CE1B00D00290641 /* Material.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8AE1CE1B00D00290641 /* Material.m */; };
+		118CE8F21CE1B00D00290641 /* MBMTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8B01CE1B00D00290641 /* MBMTV.m */; };
+		118CE8F31CE1B00D00290641 /* MTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8B21CE1B00D00290641 /* MTV.m */; };
+		118CE8F41CE1B00D00290641 /* MTVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8B41CE1B00D00290641 /* MTVFile.m */; };
+		118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8B61CE1B00D00290641 /* MTVLocal.m */; };
+		118CE8F61CE1B00D00290641 /* MTVUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8B81CE1B00D00290641 /* MTVUploader.m */; };
+		118CE8F71CE1B00D00290641 /* Music.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8BA1CE1B00D00290641 /* Music.m */; };
+		118CE8F81CE1B00D00290641 /* Musician.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8BC1CE1B00D00290641 /* Musician.m */; };
+		118CE8F91CE1B00D00290641 /* MusicTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8BE1CE1B00D00290641 /* MusicTag.m */; };
+		118CE8FA1CE1B00D00290641 /* PageTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8C01CE1B00D00290641 /* PageTag.m */; };
+		118CE8FB1CE1B00D00290641 /* PlayRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8C21CE1B00D00290641 /* PlayRecord.m */; };
+		118CE8FC1CE1B00D00290641 /* UploadRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8C41CE1B00D00290641 /* UploadRecord.m */; };
+		118CE8FD1CE1B00D00290641 /* ReportInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8C81CE1B00D00290641 /* ReportInfo.m */; };
+		118CE8FE1CE1B00D00290641 /* UDManager(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8CC1CE1B00D00290641 /* UDManager(MTV).m */; };
+		118CE8FF1CE1B00D00290641 /* VDCManager(MTV).m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8CE1CE1B00D00290641 /* VDCManager(MTV).m */; };
+		118CE9001CE1B00D00290641 /* AudioGenerater.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8D21CE1B00D00290641 /* AudioGenerater.m */; };
+		118CE9011CE1B00D00290641 /* ImageToVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8D41CE1B00D00290641 /* ImageToVideo.m */; };
+		118CE9021CE1B00D00290641 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8D61CE1B00D00290641 /* MediaListModel.m */; };
+		118CE9031CE1B00D00290641 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8D81CE1B00D00290641 /* SDAVAssetExportSession.m */; };
+		118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DA1CE1B00D00290641 /* VideoGenerater.m */; };
+		118CE9051CE1B00D00290641 /* WTAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DC1CE1B00D00290641 /* WTAVAssetExportSession.m */; };
+		118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */; };
+		E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.debug.xcconfig"; sourceTree = "<group>"; };
+		118CE8651CE1AF8D00290641 /* HCMVManagerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HCMVManagerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		118CE8691CE1AF8D00290641 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		118CE86B1CE1AF8D00290641 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		118CE86C1CE1AF8D00290641 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		118CE86E1CE1AF8D00290641 /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
+		118CE86F1CE1AF8D00290641 /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
+		118CE8711CE1AF8D00290641 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
+		118CE8721CE1AF8D00290641 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
+		118CE8751CE1AF8D00290641 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		118CE8771CE1AF8D00290641 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		118CE87A1CE1AF8D00290641 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		118CE87C1CE1AF8D00290641 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		118CE8821CE1AFB600290641 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		118CE8851CE1B00D00290641 /* HCMVManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCMVManager.h; sourceTree = "<group>"; };
+		118CE8861CE1B00D00290641 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		118CE8881CE1B00D00290641 /* LyricHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LyricHelper.h; sourceTree = "<group>"; };
+		118CE8891CE1B00D00290641 /* LyricHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LyricHelper.m; sourceTree = "<group>"; };
+		118CE88A1CE1B00D00290641 /* LyricItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LyricItem.h; sourceTree = "<group>"; };
+		118CE88B1CE1B00D00290641 /* LyricItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LyricItem.m; sourceTree = "<group>"; };
+		118CE88C1CE1B00D00290641 /* LyricLayerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LyricLayerAnimation.h; sourceTree = "<group>"; };
+		118CE88D1CE1B00D00290641 /* LyricLayerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LyricLayerAnimation.m; sourceTree = "<group>"; };
+		118CE88F1CE1B00D00290641 /* HCDBHelper(MTV).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HCDBHelper(MTV).h"; sourceTree = "<group>"; };
+		118CE8901CE1B00D00290641 /* HCDBHelper(MTV).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HCDBHelper(MTV).m"; sourceTree = "<group>"; };
+		118CE8911CE1B00D00290641 /* MaibaTables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaibaTables.h; sourceTree = "<group>"; };
+		118CE8921CE1B00D00290641 /* MaibaTables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaibaTables.m; sourceTree = "<group>"; };
+		118CE8941CE1B00D00290641 /* AudioItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioItem.h; sourceTree = "<group>"; };
+		118CE8951CE1B00D00290641 /* AudioItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioItem.m; sourceTree = "<group>"; };
+		118CE8961CE1B00D00290641 /* MediaEditManager(Draft).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MediaEditManager(Draft).h"; sourceTree = "<group>"; };
+		118CE8971CE1B00D00290641 /* MediaEditManager(Draft).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MediaEditManager(Draft).m"; sourceTree = "<group>"; };
+		118CE8981CE1B00D00290641 /* MediaEditManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaEditManager.h; sourceTree = "<group>"; };
+		118CE8991CE1B00D00290641 /* MediaEditManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaEditManager.m; sourceTree = "<group>"; };
+		118CE89A1CE1B00D00290641 /* MediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaItem.h; sourceTree = "<group>"; };
+		118CE89B1CE1B00D00290641 /* MediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaItem.m; sourceTree = "<group>"; };
+		118CE89C1CE1B00D00290641 /* Samples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Samples.h; sourceTree = "<group>"; };
+		118CE89D1CE1B00D00290641 /* Samples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Samples.m; sourceTree = "<group>"; };
+		118CE89F1CE1B00D00290641 /* CMD_CreateMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_CreateMTV.h; sourceTree = "<group>"; };
+		118CE8A01CE1B00D00290641 /* CMD_CreateMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_CreateMTV.m; sourceTree = "<group>"; };
+		118CE8A11CE1B00D00290641 /* CMD_DeleteMBMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_DeleteMBMTV.h; sourceTree = "<group>"; };
+		118CE8A21CE1B00D00290641 /* CMD_DeleteMBMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_DeleteMBMTV.m; sourceTree = "<group>"; };
+		118CE8A31CE1B00D00290641 /* CMD_DeleteMyMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_DeleteMyMTV.h; sourceTree = "<group>"; };
+		118CE8A41CE1B00D00290641 /* CMD_DeleteMyMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_DeleteMyMTV.m; sourceTree = "<group>"; };
+		118CE8A51CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_DeleteSingleUserMaterial.h; sourceTree = "<group>"; };
+		118CE8A61CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_DeleteSingleUserMaterial.m; sourceTree = "<group>"; };
+		118CE8A71CE1B00D00290641 /* CMD_GetUserMTVBySample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_GetUserMTVBySample.h; sourceTree = "<group>"; };
+		118CE8A81CE1B00D00290641 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
+		118CE8A91CE1B00D00290641 /* CMD_UploadMBMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_UploadMBMTV.h; sourceTree = "<group>"; };
+		118CE8AA1CE1B00D00290641 /* CMD_UploadMBMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_UploadMBMTV.m; sourceTree = "<group>"; };
+		118CE8AB1CE1B00D00290641 /* CMD_UploadMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_UploadMTV.h; sourceTree = "<group>"; };
+		118CE8AC1CE1B00D00290641 /* CMD_UploadMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_UploadMTV.m; sourceTree = "<group>"; };
+		118CE8AD1CE1B00D00290641 /* Material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
+		118CE8AE1CE1B00D00290641 /* Material.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Material.m; sourceTree = "<group>"; };
+		118CE8AF1CE1B00D00290641 /* MBMTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMTV.h; sourceTree = "<group>"; };
+		118CE8B01CE1B00D00290641 /* MBMTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMTV.m; sourceTree = "<group>"; };
+		118CE8B11CE1B00D00290641 /* MTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTV.h; sourceTree = "<group>"; };
+		118CE8B21CE1B00D00290641 /* MTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTV.m; sourceTree = "<group>"; };
+		118CE8B31CE1B00D00290641 /* MTVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTVFile.h; sourceTree = "<group>"; };
+		118CE8B41CE1B00D00290641 /* MTVFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTVFile.m; sourceTree = "<group>"; };
+		118CE8B51CE1B00D00290641 /* MTVLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTVLocal.h; sourceTree = "<group>"; };
+		118CE8B61CE1B00D00290641 /* MTVLocal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTVLocal.m; sourceTree = "<group>"; };
+		118CE8B71CE1B00D00290641 /* MTVUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTVUploader.h; sourceTree = "<group>"; };
+		118CE8B81CE1B00D00290641 /* MTVUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTVUploader.m; sourceTree = "<group>"; };
+		118CE8B91CE1B00D00290641 /* Music.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Music.h; sourceTree = "<group>"; };
+		118CE8BA1CE1B00D00290641 /* Music.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Music.m; sourceTree = "<group>"; };
+		118CE8BB1CE1B00D00290641 /* Musician.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Musician.h; sourceTree = "<group>"; };
+		118CE8BC1CE1B00D00290641 /* Musician.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Musician.m; sourceTree = "<group>"; };
+		118CE8BD1CE1B00D00290641 /* MusicTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicTag.h; sourceTree = "<group>"; };
+		118CE8BE1CE1B00D00290641 /* MusicTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicTag.m; sourceTree = "<group>"; };
+		118CE8BF1CE1B00D00290641 /* PageTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageTag.h; sourceTree = "<group>"; };
+		118CE8C01CE1B00D00290641 /* PageTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageTag.m; sourceTree = "<group>"; };
+		118CE8C11CE1B00D00290641 /* PlayRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayRecord.h; sourceTree = "<group>"; };
+		118CE8C21CE1B00D00290641 /* PlayRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayRecord.m; sourceTree = "<group>"; };
+		118CE8C31CE1B00D00290641 /* UploadRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadRecord.h; sourceTree = "<group>"; };
+		118CE8C41CE1B00D00290641 /* UploadRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadRecord.m; sourceTree = "<group>"; };
+		118CE8C51CE1B00D00290641 /* mvconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mvconfig.h; sourceTree = "<group>"; };
+		118CE8C71CE1B00D00290641 /* ReportInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportInfo.h; sourceTree = "<group>"; };
+		118CE8C81CE1B00D00290641 /* ReportInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportInfo.m; sourceTree = "<group>"; };
+		118CE8C91CE1B00D00290641 /* udmanager_full.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = udmanager_full.h; sourceTree = "<group>"; };
+		118CE8CB1CE1B00D00290641 /* UDManager(MTV).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UDManager(MTV).h"; sourceTree = "<group>"; };
+		118CE8CC1CE1B00D00290641 /* UDManager(MTV).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UDManager(MTV).m"; sourceTree = "<group>"; };
+		118CE8CD1CE1B00D00290641 /* VDCManager(MTV).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VDCManager(MTV).h"; sourceTree = "<group>"; };
+		118CE8CE1CE1B00D00290641 /* VDCManager(MTV).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "VDCManager(MTV).m"; sourceTree = "<group>"; };
+		118CE8CF1CE1B00D00290641 /* vdcManager_full.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdcManager_full.h; sourceTree = "<group>"; };
+		118CE8D11CE1B00D00290641 /* AudioGenerater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioGenerater.h; sourceTree = "<group>"; };
+		118CE8D21CE1B00D00290641 /* AudioGenerater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioGenerater.m; sourceTree = "<group>"; };
+		118CE8D31CE1B00D00290641 /* ImageToVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageToVideo.h; sourceTree = "<group>"; };
+		118CE8D41CE1B00D00290641 /* ImageToVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageToVideo.m; sourceTree = "<group>"; };
+		118CE8D51CE1B00D00290641 /* MediaListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaListModel.h; sourceTree = "<group>"; };
+		118CE8D61CE1B00D00290641 /* MediaListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaListModel.m; sourceTree = "<group>"; };
+		118CE8D71CE1B00D00290641 /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
+		118CE8D81CE1B00D00290641 /* SDAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAVAssetExportSession.m; sourceTree = "<group>"; };
+		118CE8D91CE1B00D00290641 /* VideoGenerater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoGenerater.h; sourceTree = "<group>"; };
+		118CE8DA1CE1B00D00290641 /* VideoGenerater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoGenerater.m; sourceTree = "<group>"; };
+		118CE8DB1CE1B00D00290641 /* WTAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTAVAssetExportSession.h; sourceTree = "<group>"; };
+		118CE8DC1CE1B00D00290641 /* WTAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTAVAssetExportSession.m; sourceTree = "<group>"; };
+		118CE8DD1CE1B00D00290641 /* WTPlayerResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTPlayerResource.h; sourceTree = "<group>"; };
+		118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTPlayerResource.m; sourceTree = "<group>"; };
+		434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.release.xcconfig"; sourceTree = "<group>"; };
+		A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		118CE8621CE1AF8D00290641 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		118CE85C1CE1AF8D00290641 = {
+			isa = PBXGroup;
+			children = (
+				118CE8821CE1AFB600290641 /* Podfile */,
+				118CE8841CE1B00D00290641 /* HCMVManager */,
+				118CE8671CE1AF8D00290641 /* HCMVManagerTest */,
+				118CE8661CE1AF8D00290641 /* Products */,
+				A377A727E65101D7176F8D3C /* Pods */,
+				DF397D291DFDB3AA74D619D5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		118CE8661CE1AF8D00290641 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8651CE1AF8D00290641 /* HCMVManagerTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		118CE8671CE1AF8D00290641 /* HCMVManagerTest */ = {
+			isa = PBXGroup;
+			children = (
+				118CE86B1CE1AF8D00290641 /* AppDelegate.h */,
+				118CE86C1CE1AF8D00290641 /* AppDelegate.m */,
+				118CE86E1CE1AF8D00290641 /* FirstViewController.h */,
+				118CE86F1CE1AF8D00290641 /* FirstViewController.m */,
+				118CE8711CE1AF8D00290641 /* SecondViewController.h */,
+				118CE8721CE1AF8D00290641 /* SecondViewController.m */,
+				118CE8741CE1AF8D00290641 /* Main.storyboard */,
+				118CE8771CE1AF8D00290641 /* Assets.xcassets */,
+				118CE8791CE1AF8D00290641 /* LaunchScreen.storyboard */,
+				118CE87C1CE1AF8D00290641 /* Info.plist */,
+				118CE8681CE1AF8D00290641 /* Supporting Files */,
+			);
+			path = HCMVManagerTest;
+			sourceTree = "<group>";
+		};
+		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8691CE1AF8D00290641 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		118CE8841CE1B00D00290641 /* HCMVManager */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8851CE1B00D00290641 /* HCMVManager.h */,
+				118CE8861CE1B00D00290641 /* Info.plist */,
+				118CE8871CE1B00D00290641 /* Lyric */,
+				118CE88E1CE1B00D00290641 /* MTVDB */,
+				118CE8931CE1B00D00290641 /* MTVEdit */,
+				118CE89E1CE1B00D00290641 /* MTVUpload */,
+				118CE8C51CE1B00D00290641 /* mvconfig.h */,
+				118CE8C61CE1B00D00290641 /* Report */,
+				118CE8C91CE1B00D00290641 /* udmanager_full.h */,
+				118CE8CA1CE1B00D00290641 /* Utils */,
+				118CE8CF1CE1B00D00290641 /* vdcManager_full.h */,
+				118CE8D01CE1B00D00290641 /* VideoGenerate */,
+			);
+			name = HCMVManager;
+			path = ../HCMVManager;
+			sourceTree = "<group>";
+		};
+		118CE8871CE1B00D00290641 /* Lyric */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8881CE1B00D00290641 /* LyricHelper.h */,
+				118CE8891CE1B00D00290641 /* LyricHelper.m */,
+				118CE88A1CE1B00D00290641 /* LyricItem.h */,
+				118CE88B1CE1B00D00290641 /* LyricItem.m */,
+				118CE88C1CE1B00D00290641 /* LyricLayerAnimation.h */,
+				118CE88D1CE1B00D00290641 /* LyricLayerAnimation.m */,
+			);
+			path = Lyric;
+			sourceTree = "<group>";
+		};
+		118CE88E1CE1B00D00290641 /* MTVDB */ = {
+			isa = PBXGroup;
+			children = (
+				118CE88F1CE1B00D00290641 /* HCDBHelper(MTV).h */,
+				118CE8901CE1B00D00290641 /* HCDBHelper(MTV).m */,
+				118CE8911CE1B00D00290641 /* MaibaTables.h */,
+				118CE8921CE1B00D00290641 /* MaibaTables.m */,
+			);
+			path = MTVDB;
+			sourceTree = "<group>";
+		};
+		118CE8931CE1B00D00290641 /* MTVEdit */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8941CE1B00D00290641 /* AudioItem.h */,
+				118CE8951CE1B00D00290641 /* AudioItem.m */,
+				118CE8961CE1B00D00290641 /* MediaEditManager(Draft).h */,
+				118CE8971CE1B00D00290641 /* MediaEditManager(Draft).m */,
+				118CE8981CE1B00D00290641 /* MediaEditManager.h */,
+				118CE8991CE1B00D00290641 /* MediaEditManager.m */,
+				118CE89A1CE1B00D00290641 /* MediaItem.h */,
+				118CE89B1CE1B00D00290641 /* MediaItem.m */,
+				118CE89C1CE1B00D00290641 /* Samples.h */,
+				118CE89D1CE1B00D00290641 /* Samples.m */,
+			);
+			path = MTVEdit;
+			sourceTree = "<group>";
+		};
+		118CE89E1CE1B00D00290641 /* MTVUpload */ = {
+			isa = PBXGroup;
+			children = (
+				118CE89F1CE1B00D00290641 /* CMD_CreateMTV.h */,
+				118CE8A01CE1B00D00290641 /* CMD_CreateMTV.m */,
+				118CE8A11CE1B00D00290641 /* CMD_DeleteMBMTV.h */,
+				118CE8A21CE1B00D00290641 /* CMD_DeleteMBMTV.m */,
+				118CE8A31CE1B00D00290641 /* CMD_DeleteMyMTV.h */,
+				118CE8A41CE1B00D00290641 /* CMD_DeleteMyMTV.m */,
+				118CE8A51CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.h */,
+				118CE8A61CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m */,
+				118CE8A71CE1B00D00290641 /* CMD_GetUserMTVBySample.h */,
+				118CE8A81CE1B00D00290641 /* CMD_GetUserMTVBySample.m */,
+				118CE8A91CE1B00D00290641 /* CMD_UploadMBMTV.h */,
+				118CE8AA1CE1B00D00290641 /* CMD_UploadMBMTV.m */,
+				118CE8AB1CE1B00D00290641 /* CMD_UploadMTV.h */,
+				118CE8AC1CE1B00D00290641 /* CMD_UploadMTV.m */,
+				118CE8AD1CE1B00D00290641 /* Material.h */,
+				118CE8AE1CE1B00D00290641 /* Material.m */,
+				118CE8AF1CE1B00D00290641 /* MBMTV.h */,
+				118CE8B01CE1B00D00290641 /* MBMTV.m */,
+				118CE8B11CE1B00D00290641 /* MTV.h */,
+				118CE8B21CE1B00D00290641 /* MTV.m */,
+				118CE8B31CE1B00D00290641 /* MTVFile.h */,
+				118CE8B41CE1B00D00290641 /* MTVFile.m */,
+				118CE8B51CE1B00D00290641 /* MTVLocal.h */,
+				118CE8B61CE1B00D00290641 /* MTVLocal.m */,
+				118CE8B71CE1B00D00290641 /* MTVUploader.h */,
+				118CE8B81CE1B00D00290641 /* MTVUploader.m */,
+				118CE8B91CE1B00D00290641 /* Music.h */,
+				118CE8BA1CE1B00D00290641 /* Music.m */,
+				118CE8BB1CE1B00D00290641 /* Musician.h */,
+				118CE8BC1CE1B00D00290641 /* Musician.m */,
+				118CE8BD1CE1B00D00290641 /* MusicTag.h */,
+				118CE8BE1CE1B00D00290641 /* MusicTag.m */,
+				118CE8BF1CE1B00D00290641 /* PageTag.h */,
+				118CE8C01CE1B00D00290641 /* PageTag.m */,
+				118CE8C11CE1B00D00290641 /* PlayRecord.h */,
+				118CE8C21CE1B00D00290641 /* PlayRecord.m */,
+				118CE8C31CE1B00D00290641 /* UploadRecord.h */,
+				118CE8C41CE1B00D00290641 /* UploadRecord.m */,
+			);
+			path = MTVUpload;
+			sourceTree = "<group>";
+		};
+		118CE8C61CE1B00D00290641 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8C71CE1B00D00290641 /* ReportInfo.h */,
+				118CE8C81CE1B00D00290641 /* ReportInfo.m */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		118CE8CA1CE1B00D00290641 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8CB1CE1B00D00290641 /* UDManager(MTV).h */,
+				118CE8CC1CE1B00D00290641 /* UDManager(MTV).m */,
+				118CE8CD1CE1B00D00290641 /* VDCManager(MTV).h */,
+				118CE8CE1CE1B00D00290641 /* VDCManager(MTV).m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		118CE8D01CE1B00D00290641 /* VideoGenerate */ = {
+			isa = PBXGroup;
+			children = (
+				118CE8D11CE1B00D00290641 /* AudioGenerater.h */,
+				118CE8D21CE1B00D00290641 /* AudioGenerater.m */,
+				118CE8D31CE1B00D00290641 /* ImageToVideo.h */,
+				118CE8D41CE1B00D00290641 /* ImageToVideo.m */,
+				118CE8D51CE1B00D00290641 /* MediaListModel.h */,
+				118CE8D61CE1B00D00290641 /* MediaListModel.m */,
+				118CE8D71CE1B00D00290641 /* SDAVAssetExportSession.h */,
+				118CE8D81CE1B00D00290641 /* SDAVAssetExportSession.m */,
+				118CE8D91CE1B00D00290641 /* VideoGenerater.h */,
+				118CE8DA1CE1B00D00290641 /* VideoGenerater.m */,
+				118CE8DB1CE1B00D00290641 /* WTAVAssetExportSession.h */,
+				118CE8DC1CE1B00D00290641 /* WTAVAssetExportSession.m */,
+				118CE8DD1CE1B00D00290641 /* WTPlayerResource.h */,
+				118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */,
+			);
+			path = VideoGenerate;
+			sourceTree = "<group>";
+		};
+		A377A727E65101D7176F8D3C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */,
+				434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		DF397D291DFDB3AA74D619D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		118CE8641CE1AF8D00290641 /* HCMVManagerTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 118CE87F1CE1AF8D00290641 /* Build configuration list for PBXNativeTarget "HCMVManagerTest" */;
+			buildPhases = (
+				03F24912B3BA8824D4D192BA /* 📦 Check Pods Manifest.lock */,
+				118CE8611CE1AF8D00290641 /* Sources */,
+				118CE8621CE1AF8D00290641 /* Frameworks */,
+				118CE8631CE1AF8D00290641 /* Resources */,
+				274AAA40660D01E1F52468F7 /* 📦 Embed Pods Frameworks */,
+				8AADC574551E491E117F0DF3 /* 📦 Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HCMVManagerTest;
+			productName = HCMVManagerTest;
+			productReference = 118CE8651CE1AF8D00290641 /* HCMVManagerTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		118CE85D1CE1AF8D00290641 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = seenvoice.com;
+				TargetAttributes = {
+					118CE8641CE1AF8D00290641 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 118CE8601CE1AF8D00290641 /* Build configuration list for PBXProject "HCMVManagerTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 118CE85C1CE1AF8D00290641;
+			productRefGroup = 118CE8661CE1AF8D00290641 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				118CE8641CE1AF8D00290641 /* HCMVManagerTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		118CE8631CE1AF8D00290641 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
+				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
+				118CE8831CE1AFB600290641 /* Podfile in Resources */,
+				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
+				118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		03F24912B3BA8824D4D192BA /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		274AAA40660D01E1F52468F7 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8AADC574551E491E117F0DF3 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		118CE8611CE1AF8D00290641 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				118CE8FA1CE1B00D00290641 /* PageTag.m in Sources */,
+				118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */,
+				118CE8E61CE1B00D00290641 /* MediaEditManager(Draft).m in Sources */,
+				118CE8731CE1AF8D00290641 /* SecondViewController.m in Sources */,
+				118CE8F91CE1B00D00290641 /* MusicTag.m in Sources */,
+				118CE9001CE1B00D00290641 /* AudioGenerater.m in Sources */,
+				118CE8FF1CE1B00D00290641 /* VDCManager(MTV).m in Sources */,
+				118CE9011CE1B00D00290641 /* ImageToVideo.m in Sources */,
+				118CE8E71CE1B00D00290641 /* MediaEditManager.m in Sources */,
+				118CE8E91CE1B00D00290641 /* Samples.m in Sources */,
+				118CE8F01CE1B00D00290641 /* CMD_UploadMTV.m in Sources */,
+				118CE8E51CE1B00D00290641 /* AudioItem.m in Sources */,
+				118CE8F41CE1B00D00290641 /* MTVFile.m in Sources */,
+				118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */,
+				118CE8F71CE1B00D00290641 /* Music.m in Sources */,
+				118CE8F11CE1B00D00290641 /* Material.m in Sources */,
+				118CE8ED1CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m in Sources */,
+				118CE9031CE1B00D00290641 /* SDAVAssetExportSession.m in Sources */,
+				118CE9021CE1B00D00290641 /* MediaListModel.m in Sources */,
+				118CE8E41CE1B00D00290641 /* MaibaTables.m in Sources */,
+				118CE8F81CE1B00D00290641 /* Musician.m in Sources */,
+				118CE8EE1CE1B00D00290641 /* CMD_GetUserMTVBySample.m in Sources */,
+				118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */,
+				118CE8F21CE1B00D00290641 /* MBMTV.m in Sources */,
+				118CE8FD1CE1B00D00290641 /* ReportInfo.m in Sources */,
+				118CE8E81CE1B00D00290641 /* MediaItem.m in Sources */,
+				118CE86D1CE1AF8D00290641 /* AppDelegate.m in Sources */,
+				118CE8EF1CE1B00D00290641 /* CMD_UploadMBMTV.m in Sources */,
+				118CE8EB1CE1B00D00290641 /* CMD_DeleteMBMTV.m in Sources */,
+				118CE8F31CE1B00D00290641 /* MTV.m in Sources */,
+				118CE8EC1CE1B00D00290641 /* CMD_DeleteMyMTV.m in Sources */,
+				118CE8EA1CE1B00D00290641 /* CMD_CreateMTV.m in Sources */,
+				118CE8E11CE1B00D00290641 /* LyricItem.m in Sources */,
+				118CE8FC1CE1B00D00290641 /* UploadRecord.m in Sources */,
+				118CE8F61CE1B00D00290641 /* MTVUploader.m in Sources */,
+				118CE8E01CE1B00D00290641 /* LyricHelper.m in Sources */,
+				118CE8701CE1AF8D00290641 /* FirstViewController.m in Sources */,
+				118CE8FB1CE1B00D00290641 /* PlayRecord.m in Sources */,
+				118CE9051CE1B00D00290641 /* WTAVAssetExportSession.m in Sources */,
+				118CE8FE1CE1B00D00290641 /* UDManager(MTV).m in Sources */,
+				118CE8E31CE1B00D00290641 /* HCDBHelper(MTV).m in Sources */,
+				118CE8E21CE1B00D00290641 /* LyricLayerAnimation.m in Sources */,
+				118CE86A1CE1AF8D00290641 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		118CE8741CE1AF8D00290641 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				118CE8751CE1AF8D00290641 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		118CE8791CE1AF8D00290641 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				118CE87A1CE1AF8D00290641 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		118CE87D1CE1AF8D00290641 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		118CE87E1CE1AF8D00290641 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		118CE8801CE1AF8D00290641 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = HCMVManagerTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManagerTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		118CE8811CE1AF8D00290641 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = HCMVManagerTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManagerTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		118CE8601CE1AF8D00290641 /* Build configuration list for PBXProject "HCMVManagerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				118CE87D1CE1AF8D00290641 /* Debug */,
+				118CE87E1CE1AF8D00290641 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		118CE87F1CE1AF8D00290641 /* Build configuration list for PBXNativeTarget "HCMVManagerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				118CE8801CE1AF8D00290641 /* Debug */,
+				118CE8811CE1AF8D00290641 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 118CE85D1CE1AF8D00290641 /* Project object */;
+}

@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "0.1.0"
+  s.version      = "0.1.1"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
@@ -47,11 +47,11 @@ s.source_files  = "HCMVManager/**/*.{h,m,mm,c,cpp}"
 #s.frameworks = "UIKit", "Foundation"
 
 s.libraries = "icucore","stdc++"
-s.xcconfig = { "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES" => "YES","ENABLE_BITCODE" => "YES","DEFINES_MODULE" => "YES","HEADER_SEARCH_PATHS" => "$(inherited)","LIBRARY_SEARCH_PATHS" => "$(inherited)" }
+s.xcconfig = { "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES" => "YES","ENABLE_BITCODE" => "YES","DEFINES_MODULE" => "YES" }
 s.pod_target_xcconfig = { 'LIBRARY_SEARCH_PATHS' => "$(inherited) " }
 # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
 
-s.dependency "HCMinizip", "~> 1.2.6"
+s.dependency "HCMinizip"
 s.dependency "hccoren"
 s.dependency "HCBaseSystem"
 #s.subspec 'lame' do |spec|

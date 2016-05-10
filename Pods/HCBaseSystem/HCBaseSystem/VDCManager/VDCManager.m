@@ -366,6 +366,23 @@ static long childQueueItemCount = 0;
     {
         item = [self createVDCItem:nil key:key];
         item = [self addVDCItemToList:item];
+        if([HCFileManager isLocalFile:filePath])
+        {
+            item.localFileName = [[HCFileManager manager]getFileName:filePath];
+            UInt64 size = [[UDManager sharedUDManager]fileSizeAtPath:item.localFilePath];
+            item.contentLength = size;
+            item.downloadBytes = size;
+        }
+    }
+    else if(item.contentLength<=0)
+    {
+        if([HCFileManager isLocalFile:filePath])
+        {
+            item.localFileName = [[HCFileManager manager]getFileName:filePath];
+            UInt64 size = [[UDManager sharedUDManager]fileSizeAtPath:item.localFilePath];
+            item.contentLength = size;
+            item.downloadBytes = size;
+        }
     }
     [self isItemFileChecked:item];
     if(!item.isCheckedFiles)
@@ -1106,7 +1123,6 @@ static long childQueueItemCount = 0;
             UInt64 size = [[UDManager sharedUDManager]fileSizeAtPath:newPath];
            if(size>0)
            {
-               
            }
             else
             {
