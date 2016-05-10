@@ -12,7 +12,7 @@
 #import "HCBase.h"
 #import "CMDs.h"
 #import "DeviceConfig.h"
-#import "config.h"
+//#import "config.h"
 //#import "ASIHTTPRequest.h"
 //#import "ASIFormDataRequest.h"
 //#import "PublicText.h"

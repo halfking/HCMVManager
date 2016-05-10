@@ -9,7 +9,7 @@
 #ifndef hcbasesystem_config_h
 #define hcbasesystem_config_h
 
-#import <hccoren/config.h>
+#import <hccoren/config_coren.h>
 
 #define DEFAULT_UserSource      1   //用户来源  1 maiba 11 maibah5 2seen 21 seenh5
 #define FILE_USER           @"user.hca"

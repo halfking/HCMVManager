@@ -19,7 +19,7 @@
 #import "ChinaMapShift.h"
 #import "RegexKitLite.h"
 #import "Json.h"
-#import "config.h"
+#import "config_coren.h"
 #import "CommonUtil.h"
 
 @implementation DeviceConfig

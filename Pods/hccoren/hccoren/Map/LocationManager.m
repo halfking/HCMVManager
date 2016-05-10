@@ -12,7 +12,7 @@
 //#import "PublicText.h"
 #import "HCBase.h"
 #import "CommonUtil.h"
-#import "config.h"
+#import "config_coren.h"
 
 @implementation LocationManager
 static LocationManager * intance_ = nil;

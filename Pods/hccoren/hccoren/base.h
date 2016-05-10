@@ -9,7 +9,7 @@
 #ifndef base_h
 #define base_h
 #import "HCBase.h"
-#import "config.h"
+#import "config_coren.h"
 #import "DeviceConfig.h"
 #import "NSEntity.h"
 #import "CommonUtil.h"

@@ -9,7 +9,7 @@
 //#import "GCDAsyncSocket.h"
 #import "HCBase.h"
 #import <UIKit/UIKit.h>
-#import "config.h"
+
 @class CMDs;
 @class AsyncSocket;
 

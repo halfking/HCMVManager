@@ -8,7 +8,7 @@
 
 #import "NSEntity.h"
 #import "HCBase.h"
-#import "config.h"
+#import "config_coren.h"
 //#import "PublicValues.h"
 @interface HCImageItem : HCEntity
 @property (nonatomic,copy) NSString * Title;
