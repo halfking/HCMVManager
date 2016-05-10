@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <hccoren/NSEntity.h>
 #import <hccoren/Reachability.h>
+#import <HCBaseSystem/PublicEnum.h>
+
+#import "mvconfig.h"
 
 #import "Music.h"
 

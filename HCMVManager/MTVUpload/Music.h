@@ -10,8 +10,8 @@
 #import <Foundation/Foundation.h>
 
 #import <hccoren/NSEntity.h>
-#import <hcbasesystem/PublicEnum.h>
-
+//#import <hcbasesystem/PublicEnum.h>
+#import "mvconfig.h"
 @interface Music : HCEntity
 @property (nonatomic,assign) long MusicID;               //后台分配的ID？还是直接用GUID？MuiscID = UserID + TIME + SN
 @property (nonatomic,PP_STRONG) NSString * DownloadUrl; //远端服务器地址
