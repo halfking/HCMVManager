@@ -11,7 +11,8 @@
 #import <hccoren/base.h>
 #import <hccoren/RegexKitLite.h>
 #import <hccoren/images.h>
-#import <hcbasesystem/UDManager(Helper).h>
+//#import <hccoren/HCFileManager.h>
+//#import <hcbasesystem/UDManager(Helper).h>
 #import "MediaEditManager.h"
 
 
@@ -306,7 +307,7 @@
     @synchronized (self) {
         __block BOOL scaleAudio = YES;
         filePath = [NSString stringWithFormat:@"%ld.m4a",[CommonUtil getDateTicks:[NSDate date]]];
-        filePath = [[UDManager sharedUDManager] tempFileFullPath:filePath];
+        filePath = [[HCFileManager manager] tempFileFullPath:filePath];
         
         [self scaleAudio:asset withRate:rate writeFile:filePath
          beginSeconds:beginSeconds endSeconds:endSeconds
@@ -384,7 +385,7 @@
         }
         else
         {
-            NSLog(@"join video:(audio) %ld/%d (%ld)",asset.duration.value,bgScale,asset.duration.timescale);
+            NSLog(@"join video:(audio) %ld/%d (%ld)",asset.duration.value,bgScale,(long)asset.duration.timescale);
         }
         if(rate >0 && rate!=1.0)
         {
@@ -450,7 +451,7 @@
     CMTime startTime = CMTimeMake(0, bgAudioTime.timescale);
     
     NSString * audioFileName = [NSString stringWithFormat:@"%@.m4a",[CommonUtil md5Hash:fileUrl.absoluteString]];
-    NSURL * audioUrl = [NSURL fileURLWithPath:[[UDManager sharedUDManager]tempFileFullPath:audioFileName]];
+    NSURL * audioUrl = [NSURL fileURLWithPath:[[HCFileManager manager]tempFileFullPath:audioFileName]];
     if(tracklist.count>0)
     {
         //申明组合器

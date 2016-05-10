@@ -75,4 +75,8 @@ typedef void (^generateFailure)(CMTime requestTime,NSError *error,NSString *file
                   path:(NSString *)fileName size:(CGSize)size
               callback:(generateCompletedNew)onegenerated
                failure:(generateFailure)failure;
+#pragma mark - dirs
+-(NSString *)getThumnatePath:(NSString *)filename minsecond:(int)minsecond size:(CGSize)size;
+- (BOOL) removeThumnates:(NSString *)orgFileName size:(CGSize) size;
+- (BOOL) removeTempVideos;
 @end

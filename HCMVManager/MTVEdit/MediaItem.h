@@ -11,6 +11,7 @@
 #import <hcbasesystem/publicenum.h>
 #import <CoreMedia/CMTime.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "mvconfig.h"
 
 @interface MediaItemCore : HCEntity
 {
@@ -24,7 +25,7 @@
 @property (nonatomic,PP_STRONG) NSURL * url;
 @property (nonatomic,assign) int degree;//拍摄 方向
 @property (nonatomic,PP_STRONG) NSString * cover;
-@property (nonatomic,assign) CMTime duration; //整个媒体的长度，如果是图片，这里表示图片的播放时间
+@property (nonatomic,assign) CMTime duration; //整个媒体的长度，如果是图片，这里表示图片的播放时间，此长度与PlayRate无关
 @property (nonatomic,assign) CMTime begin;//加入到队列中时，该视频的起点时间，如果为图片，这里为0
 @property (nonatomic,assign) CMTime end;//加入到队列中时，该视频的结束时间，如果为图片，这里为播放时长
 @property (nonatomic,assign) CMTime cutInTime;//前转场的时长
@@ -91,4 +92,5 @@
 
 #pragma mark - some functions
 - (BOOL)isEqual:(MediaItem *)item;
+- (MediaItemCore *)copyAsCore;
 @end

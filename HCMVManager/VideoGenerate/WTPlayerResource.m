@@ -10,7 +10,8 @@
 #import <hccoren/base.h>
 #import <hccoren/RegexKitLite.h>
 #import <hccoren/images.h>
-#import <hcbasesystem/UDManager(Helper).h>
+//#import <hccoren/HCFileManager.h>
+//#import <hcbasesystem/UDManager(Helper).h>
 
 #import "WTAVAssetExportSession.h"
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -406,7 +407,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     
     NSString * fileName = [((NSURL *)[urls objectAtIndex:0]).absoluteString lastPathComponent];
     
-    [[UDManager sharedUDManager]removeThumnates:fileName size:CGSizeMake(0, 0)];
+    [self removeThumnates:fileName size:CGSizeMake(0, 0)];
     
     //统计需要生成的缩略图数据，将生成的缩略图数与外部计算的保持一致,由于精度问题，一般只会少一张
     int timeCount = [[durationList objectForKey:@"count"]intValue];
@@ -466,8 +467,8 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
         
         for (NSDictionary * timeItem in timeItems) {
             CGFloat time = roundf( [[timeItem objectForKey:@"stime"]floatValue] *10)/10.0f;
-            NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)(time * 1000) size:size];
-            if( [[UDManager sharedUDManager]existFileAtPath:path])
+            NSString *path = [self getThumnatePath:fileName minsecond:(int)(time * 1000) size:size];
+            if( [[HCFileManager manager]existFileAtPath:path])
             {
                 completedCount_ ++;
                 
@@ -509,7 +510,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
             
             NSNumber *time = [NSNumber numberWithFloat: prevTotal + CMTimeGetSeconds(requestedTime)];
             
-            NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000) size:size];
+            NSString *path = [self getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000) size:size];
             [UIImageJPEGRepresentation(thumbImg, 1.0) writeToFile:path atomically:YES];
             
             [self didOneImageCreated:prevTotal time:[time floatValue] path:path index:completedCount_ size:size delegate:delegate];
@@ -576,9 +577,9 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     NSString * fileName = [url.absoluteString lastPathComponent];//使用第一个文件的名称 ，这样能保证清理缓存时没有遗漏
     CMTime thumnateTime = time;
 
-    NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)(CMTimeGetSeconds(time)*1000) size:size];
+    NSString *path = [self getThumnatePath:fileName minsecond:(int)(CMTimeGetSeconds(time)*1000) size:size];
     
-    if( [[UDManager sharedUDManager]existFileAtPath:path])
+    if( [[HCFileManager manager]existFileAtPath:path])
     {
         if(completed)
         {
@@ -692,9 +693,9 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     CMTime thumnateTime = CMTimeMakeWithSeconds(cTime, duration.timescale);
     
     
-    NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)(seconds * 1000) size:size];
+    NSString *path = [self getThumnatePath:fileName minsecond:(int)(seconds * 1000) size:size];
     
-    if( [[UDManager sharedUDManager]existFileAtPath:path])
+    if( [[HCFileManager manager]existFileAtPath:path])
     {
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([delegate respondsToSelector:@selector(didGetThumbImage:andPath:index:size:)]) {
@@ -809,7 +810,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     NSArray * timeItems = nil;
     int completedCount = 0;
     
-    [[UDManager sharedUDManager]removeThumnates:fileName size:CGSizeMake(0, 0)];
+    [self removeThumnates:fileName size:CGSizeMake(0, 0)];
     
     //统计需要生成的缩略图数据，将生成的缩略图数与外部计算的保持一致,由于精度问题，一般只会少一张
     int timeCount = [[duration objectForKey:@"count"]intValue];
@@ -862,8 +863,8 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     
     for (NSDictionary * timeItem in timeItems) {
         CGFloat time = round( [[timeItem objectForKey:@"stime"]floatValue] *10)/10.0f;
-        NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)(time * 1000) size:size];
-        if( [[UDManager sharedUDManager]existFileAtPath:path])
+        NSString *path = [self getThumnatePath:fileName minsecond:(int)(time * 1000) size:size];
+        if( [[HCFileManager manager] existFileAtPath:path])
         {
             completedCount ++;
             NSLog(@"--generate:%d has cached",completedCount);
@@ -930,7 +931,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
         if (result == AVAssetImageGeneratorSucceeded) {
             
             UIImage* thumbImg = [UIImage imageWithCGImage: image];
-            NSString *path = [[UDManager sharedUDManager] getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000) size:size];
+            NSString *path = [self getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000) size:size];
             
             [UIImageJPEGRepresentation(thumbImg, 1.0) writeToFile:path atomically:YES];
             
@@ -996,6 +997,54 @@ NSInteger thumnateSecondSort(id num1, id num2, void *context)
         return NSOrderedDescending;
     else
         return NSOrderedSame;
+}
+#pragma mark - file dir helper
+-(NSString *)getThumnatePath:(NSString *)filename minsecond:(int)minsecond size:(CGSize)size
+{
+    if(!filename)
+    {
+        filename = @"";
+    }
+    if([filename rangeOfString:@"/"].length>0)
+    {
+        filename = [filename lastPathComponent];
+    }
+    NSString * path =  [NSString stringWithFormat:@"%@_%@.%@.jpg",filename,[CommonUtil stringWithFixedLength:minsecond withLength:6],NSStringFromCGSize(size)];
+    return [[HCFileManager manager] tempFileFullPath:path];
+}
+- (BOOL) removeThumnates:(NSString *)orgFileName size:(CGSize) size
+{
+    if(!orgFileName)
+    {
+        orgFileName = @"";
+    }
+    if([HCFileManager isLocalFile:orgFileName])
+    {
+        orgFileName = [orgFileName lastPathComponent];
+    }
+    NSString * regEx = nil;
+    if(size.width ==0 || size.height ==0)
+        regEx = [NSString stringWithFormat:@"%@_\\d+\\..*\\.jpg",orgFileName];
+    else
+        regEx = [NSString stringWithFormat:@"%@_\\d+\\.\\{\\d+,\\d+\\}\\.jpg",orgFileName];
+    NSString * dir = [[HCFileManager manager] tempFileFullPath:nil];
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:dir]) return NO;
+    
+    BOOL ret = YES;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:dir] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        if([fileName isMatchedByRegex:regEx])
+        {
+            NSString* fileAbsolutePath = [dir stringByAppendingPathComponent:fileName];
+            if(![[HCFileManager manager] removeFileAtPath:fileAbsolutePath])
+            {
+                ret = NO;
+            }
+        }
+    }
+    return ret;
 }
 
 #pragma mark - singletone alloc release etc.

@@ -10,28 +10,28 @@
 #include <sys/types.h>
 #endif
 
-#ifndef MEDIA_TYPE
-#define MEDIA_TYPE
-enum _MediaItemInQueueType{
-    
-    MediaItemTypeIMAGE,
-    MediaItemTypeVIDEO,
-    MediaItemTypeTRANS,
-    MediaItemTypeAUDIO
-    
-} ;
-typedef u_int8_t MediaItemInQueueType;
-
-#endif
-#ifndef   CUTINOUT_MODE
-#define   CUTINOUT_MODE
-//转场模式类型
-enum _CutInOutMode {
-    CutInOutModeFadeIn = 0,
-    CutInOutModeFadeOut = 1
-};
-typedef u_int8_t  CutInOutMode;
-#endif // CUTINOUT_MODE
+//#ifndef MEDIA_TYPE
+//#define MEDIA_TYPE
+//enum _MediaItemInQueueType{
+//    
+//    MediaItemTypeIMAGE,
+//    MediaItemTypeVIDEO,
+//    MediaItemTypeTRANS,
+//    MediaItemTypeAUDIO
+//    
+//} ;
+//typedef u_int8_t MediaItemInQueueType;
+//
+//#endif
+//#ifndef   CUTINOUT_MODE
+//#define   CUTINOUT_MODE
+////转场模式类型
+//enum _CutInOutMode {
+//    CutInOutModeFadeIn = 0,
+//    CutInOutModeFadeOut = 1
+//};
+//typedef u_int8_t  CutInOutMode;
+//#endif // CUTINOUT_MODE
 
 #ifndef   USERID_TYPE
 #define   USERID_TYPE
@@ -132,34 +132,34 @@ typedef u_int8_t DOMAIN_TYPE;
 #endif // DOMAIN_TYPE_DEF
 
 
-
-#ifndef   NSMUSIC_TYPE
-#define   NSMUSIC_TYPE
-enum _MUSIC_TYPE {
-    MP3         = 0,
-    WAV              = 1
-};
-typedef u_int8_t MUSIC_TYPE;
-#endif // NSMUSIC_TYPE
-
-#ifndef   NSMUSIC_SOURCE
-#define   NSMUSIC_SOURCE
-enum _MUSIC_SOURCE {
-    SAMPLE         = 0,
-    UPLOAD         = 1
-};
-typedef u_int8_t MUSIC_SOURCE;
-#endif // MUSIC_SOURCE
-
-#ifndef   NSVIDEO_COMPLETEDPHARSE
-#define   NSVIDEO_COMPLETEDPHARSE
-enum _VIDEO_COMPLETEDPHARSE {
-    NONE         = 0,
-    MERGE         = 1
-};
-typedef u_int8_t VIDEO_COMPLETEDPHARSE;
-#endif // VIDEO_COMPLETEDPHARSE
-
+//
+//#ifndef   NSMUSIC_TYPE
+//#define   NSMUSIC_TYPE
+//enum _MUSIC_TYPE {
+//    MP3         = 0,
+//    WAV              = 1
+//};
+//typedef u_int8_t MUSIC_TYPE;
+//#endif // NSMUSIC_TYPE
+//
+//#ifndef   NSMUSIC_SOURCE
+//#define   NSMUSIC_SOURCE
+//enum _MUSIC_SOURCE {
+//    SAMPLE         = 0,
+//    UPLOAD         = 1
+//};
+//typedef u_int8_t MUSIC_SOURCE;
+//#endif // MUSIC_SOURCE
+//
+//#ifndef   NSVIDEO_COMPLETEDPHARSE
+//#define   NSVIDEO_COMPLETEDPHARSE
+//enum _VIDEO_COMPLETEDPHARSE {
+//    NONE         = 0,
+//    MERGE         = 1
+//};
+//typedef u_int8_t VIDEO_COMPLETEDPHARSE;
+//#endif // VIDEO_COMPLETEDPHARSE
+//
 
 
 #ifndef PublicEnum_h

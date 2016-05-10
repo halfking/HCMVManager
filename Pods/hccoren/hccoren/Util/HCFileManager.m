@@ -12,11 +12,17 @@
 #import "JSON.h"
 #import <HCMinizip/ZipFile.h>
 #import "CommonUtil.h"
+#include <sys/param.h>
+#include <sys/mount.h>
+
 @interface HCFileManager()
 {
     NSString * applicationRoot_;
     NSString * rootPath_;
     NSString * rootPathMatchString_;
+
+    NSString * tempFileRoot_;
+    NSArray * reservedFileNames_; // 需要保留的文件
 }
 @end
 @implementation HCFileManager
@@ -323,7 +329,291 @@ static HCFileManager * hcFileManager = nil;
         }
     }
 }
+#pragma mark - remove files
+- (UInt64) getSizeFreeForDevice
+{
+    struct statfs buf;
+    long long freespace = -1;
+    if(statfs("/var", &buf) >= 0){
+        freespace = (long long)(buf.f_bsize * buf.f_bfree);
+    }
+    return freespace;
+    //    return [NSString stringWithFormat:@"手机剩余存储空间为：%qi MB" ,freespace/1024/1024];
+}
+//单个文件的大小
+- (long long) fileSizeAtPath:(NSString*) filePath{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    if ([manager fileExistsAtPath:filePath isDirectory:&isDir] ){
+        if(isDir)
+        {
+            return [self folderSizeAtPath:filePath];
+        }
+        else
+        {
+            NSError * error = nil;
+            long long size =  [[manager attributesOfItemAtPath:filePath error:&error] fileSize];
+            if(error)
+            {
+                NSLog(@" get file [%@] size failure:%@",filePath,[error description]);
+            }
+            return size;
+        }
+    }
+    return 0;
+}
+//遍历文件夹获得文件夹大小，返回多少M
+- (CGFloat ) folderSizeAtPath:(NSString*) folderPath{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return 0;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    long long folderSize = 0;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+        folderSize += [self fileSizeAtPath:fileAbsolutePath];
+    }
+    return folderSize/(1024.0*1024.0);
+}
+- (BOOL) removeFilesAtPath:(NSString * )folderPath
+{
+    BOOL ret = YES;
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return 0;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+        if([self removeFileAtPath:fileAbsolutePath]==NO)
+        {
+            ret = NO;
+        }
+    }
+    return ret;
+}
+- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString
+{
+    BOOL ret = YES;
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return NO;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        if([fileName isMatchedByRegex:regexString])
+        {
+            // 去除保留视频音频的内存
+            BOOL equal = NO;
+            for (NSString *file in reservedFileNames_) {
+                if ([fileName isEqualToString:file]) {
+                    equal = YES;
+                    break;
+                }
+            }
+            if (equal) continue;
+            
+            NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+            NSError * error = nil;
+            [manager removeItemAtPath:fileAbsolutePath error:&error];
+            if(error)
+            {
+                NSLog(@" remove file [%@] error:%@",fileAbsolutePath,[error description]);
+                ret = NO;
+            }
+        }
+    }
+    return ret;
+}
+- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString withoutPrefixList:(NSArray *)prefixList
+{
+    BOOL ret = YES;
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return NO;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        if([fileName isMatchedByRegex:regexString])
+        {
+            NSLog(@"%@",fileName);
+            // 去除保留视频音频的内存
+            BOOL equal = NO;
+            for (NSString *file in reservedFileNames_) {
+                if ([fileName isEqualToString:file]) {
+                    equal = YES;
+                }
+            }
+            if (equal) continue;
+            
+            BOOL has = NO;
+            for (NSString *prefix in prefixList) {
+                if ([fileName hasPrefix:prefix]) {
+                    has = YES;
+                }
+            }
+            if (has) continue;
+            
+            NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+            NSError * error = nil;
+            [manager removeItemAtPath:fileAbsolutePath error:&error];
+            if(error)
+            {
+                NSLog(@" remove file [%@] error:%@",fileAbsolutePath,[error description]);
+                ret = NO;
+            }
+        }
+    }
+    return ret;
+}
+- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutPrefixList:(NSArray *)prefixList
+{
+    BOOL ret = YES;
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return NO;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil)
+    {
+        // 去除保留视频音频的内存
+        BOOL equal = NO;
+        for (NSString *file in reservedFileNames_) {
+            if ([fileName isEqualToString:file]) {
+                equal = YES;
+            }
+        }
+        if (equal) continue;
+        
+        BOOL has = NO;
+        for (NSString *prefix in prefixList) {
+            if ([fileName hasPrefix:prefix]) {
+                has = YES;
+            }
+        }
+        if (has) continue;
+        
+        NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+        NSError * error = nil;
+        [manager removeItemAtPath:fileAbsolutePath error:&error];
+        if(error)
+        {
+            NSLog(@" remove file [%@] error:%@",fileAbsolutePath,[error description]);
+            ret = NO;
+        }
+    }
+    return ret;
+}
+- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutRegex:(NSString *)regexString
+{
+    BOOL ret = YES;
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if (![manager fileExistsAtPath:folderPath]) return NO;
+    NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
+    NSString* fileName;
+    while ((fileName = [childFilesEnumerator nextObject]) != nil){
+        if(![fileName isMatchedByRegex:regexString])
+        {
+            // 去除保留视频音频的内存
+            BOOL equal = NO;
+            for (NSString *file in reservedFileNames_) {
+                if ([fileName isEqualToString:file]) {
+                    equal = YES;
+                }
+            }
+            if (equal) continue;
+            
+            NSString* fileAbsolutePath = [folderPath stringByAppendingPathComponent:fileName];
+            NSError * error = nil;
+            [manager removeItemAtPath:fileAbsolutePath error:&error];
+            if(error)
+            {
+                NSLog(@" remove file [%@] error:%@",fileAbsolutePath,[error description]);
+                ret = NO;
+            }
+        }
+    }
+    return ret;
+}
+- (BOOL) removeFileAtPath:(NSString*) filePath{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    BOOL ret  = YES;
+    if ([manager fileExistsAtPath:filePath isDirectory:&isDir] ){
+        if(isDir)
+        {
+            return [self removeFilesAtPath:filePath];
+        }
+        else
+        {
+            NSError * error = nil;
+            ret = [manager removeItemAtPath:filePath error:&error];
+            if(error)
+            {
+                NSLog(@" remove file [%@] error:%@",filePath,[error description]);
+            }
+            return ret;
+        }
+    }
+    return NO;
+}
+- (BOOL)existFileAtPath:(NSString *)path
+{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    BOOL ret  = NO;
+    if ([manager fileExistsAtPath:path isDirectory:&isDir] ){
+        ret = YES;
+    }
+    return ret;
+}
 
+#pragma mark - common path
+//获取本地文件的全路径
+- (NSString *) localFileFullPath:(NSString *)fileUrl
+{
+    NSString * localPath = [self localFileDir];
+    if(fileUrl && fileUrl.length>0)
+    {
+        if([self isFullFilePath:fileUrl])
+            return fileUrl;
+        
+        //lowercaseString];
+        //    fileUrl = [fileUrl lowercaseString];
+        
+        NSString * fileName = [self getFileName:fileUrl];
+        localPath =  [localPath stringByAppendingPathComponent:fileName];
+    }
+    return [self getFilePath:localPath];
+}
+- (NSString *) tempFileFullPath:(NSString *)fileUrl
+{
+    NSString * localPath = [self tempFileDir];
+    if(fileUrl && fileUrl.length>0)
+    {
+        if([self isFullFilePath:fileUrl])
+            return fileUrl;
+        
+        //lowercaseString];
+        //    fileUrl = [fileUrl lowercaseString];
+        
+        NSString * fileName = [self getFileName:fileUrl];
+        localPath =  [localPath stringByAppendingPathComponent:fileName];
+    }
+    return [self getFilePath:localPath];
+}
+- (NSString *) localFileDir
+{
+    return @"localfiles";
+}
+- (NSString *) webRootFileDir
+{
+    return @"docroot";
+}
+- (NSString *) tempFileDir
+{
+    if(!tempFileRoot_ || tempFileRoot_.length==0)
+    {
+        tempFileRoot_ = @"tempfiles";
+    }
+    return tempFileRoot_;
+}
 
 #pragma mark - filename & filePath转换
 - (NSString *)getRootPath

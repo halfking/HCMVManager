@@ -805,33 +805,33 @@
 {
     NSMutableArray *result = [NSMutableArray new];
     for (MediaItem * item in self.mediaList) {
-        MediaItemCore * coreItem = [self covertToCore:item];
+        MediaItemCore * coreItem = [item copyAsCore];
         if(coreItem)
             [result addObject:coreItem];
     }
     return result;
 }
-- (MediaItemCore *)covertToCore:(MediaItem *)item
-{
-    if(!item) return nil;
-    MediaItemCore * coreItem = [[MediaItemCore alloc]init];
-    coreItem.fileName = item.fileName;
-    coreItem.title = item.title;
-    coreItem.cover = item.cover;
-    coreItem.url = item.url;
-    coreItem.key = item.key;
-    coreItem.duration = item.duration;
-    coreItem.begin = item.begin;
-    coreItem.end = item.end;
-    coreItem.originType = item.originType;
-    coreItem.cutInMode = item.cutInMode;
-    coreItem.cutOutMode = item.cutOutMode;
-    coreItem.cutInTime = item.cutInTime;
-    coreItem.cutOutTime = item.cutOutTime;
-    coreItem.playRate = item.playRate;
-    coreItem.timeInArray = item.timeInArray;
-    coreItem.renderSize = item.renderSize;
-    return PP_AUTORELEASE(coreItem);
-}
+//- (MediaItemCore *)covertToCore:(MediaItem *)item
+//{
+//    if(!item) return nil;
+//    MediaItemCore * coreItem = [[MediaItemCore alloc]init];
+//    coreItem.fileName = item.fileName;
+//    coreItem.title = item.title;
+//    coreItem.cover = item.cover;
+//    coreItem.url = item.url;
+//    coreItem.key = item.key;
+//    coreItem.duration = item.duration;
+//    coreItem.begin = item.begin;
+//    coreItem.end = item.end;
+//    coreItem.originType = item.originType;
+//    coreItem.cutInMode = item.cutInMode;
+//    coreItem.cutOutMode = item.cutOutMode;
+//    coreItem.cutInTime = item.cutInTime;
+//    coreItem.cutOutTime = item.cutOutTime;
+//    coreItem.playRate = item.playRate;
+//    coreItem.timeInArray = item.timeInArray;
+//    coreItem.renderSize = item.renderSize;
+//    return PP_AUTORELEASE(coreItem);
+//}
 
 @end

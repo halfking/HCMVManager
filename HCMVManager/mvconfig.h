@@ -10,6 +10,57 @@
 #ifndef mvconfig_h
 #define mvconfig_h
 
+#ifndef MEDIA_TYPE
+#define MEDIA_TYPE
+enum _MediaItemInQueueType{
+    
+    MediaItemTypeIMAGE,
+    MediaItemTypeVIDEO,
+    MediaItemTypeTRANS,
+    MediaItemTypeAUDIO
+    
+} ;
+typedef u_int8_t MediaItemInQueueType;
+
+#endif
+#ifndef   CUTINOUT_MODE
+#define   CUTINOUT_MODE
+//转场模式类型
+enum _CutInOutMode {
+    CutInOutModeFadeIn = 0,
+    CutInOutModeFadeOut = 1
+};
+typedef u_int8_t  CutInOutMode;
+#endif //
+
+#ifndef   NSMUSIC_TYPE
+#define   NSMUSIC_TYPE
+enum _MUSIC_TYPE {
+    MP3         = 0,
+    WAV              = 1
+};
+typedef u_int8_t MUSIC_TYPE;
+#endif // NSMUSIC_TYPE
+
+#ifndef   NSMUSIC_SOURCE
+#define   NSMUSIC_SOURCE
+enum _MUSIC_SOURCE {
+    SAMPLE         = 0,
+    UPLOAD         = 1
+};
+typedef u_int8_t MUSIC_SOURCE;
+#endif // MUSIC_SOURCE
+
+#ifndef   NSVIDEO_COMPLETEDPHARSE
+#define   NSVIDEO_COMPLETEDPHARSE
+enum _VIDEO_COMPLETEDPHARSE {
+    NONE         = 0,
+    MERGE         = 1
+};
+typedef u_int8_t VIDEO_COMPLETEDPHARSE;
+#endif // VIDEO_COMPLETEDPHARSE
+
+
 
 #define UIColorFromRGB(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \

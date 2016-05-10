@@ -155,5 +155,25 @@
     
     PP_SUPERDEALLOC;
 }
-
+- (MediaItemCore *)copyAsCore
+{
+    MediaItemCore * coreItem = [[MediaItemCore alloc]init];
+    coreItem.fileName = self.fileName;
+    coreItem.title = self.title;
+    coreItem.cover = self.cover;
+    coreItem.url = self.url;
+    coreItem.key = self.key;
+    coreItem.duration = self.duration;
+    coreItem.begin = self.begin;
+    coreItem.end = self.end;
+    coreItem.originType = self.originType;
+    coreItem.cutInMode = self.cutInMode;
+    coreItem.cutOutMode = self.cutOutMode;
+    coreItem.cutInTime = self.cutInTime;
+    coreItem.cutOutTime = self.cutOutTime;
+    coreItem.playRate = self.playRate;
+    coreItem.timeInArray = self.timeInArray;
+    coreItem.renderSize = self.renderSize;
+    return PP_AUTORELEASE(coreItem);
+}
 @end
