@@ -141,6 +141,7 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 + (id)Instance;
 + (MediaEditManager *)shareObject;
 + (MediaEditManager *)secondObject; //第二个实例，用于合成片段，这样代码不用大动。
+- (void)setIsFragment:(BOOL)pIsFragement;
 
 - (void) setSampleInfo:(Samples *)sampleMTV;
 - (void) removeSampleInfo:(MTV *)sampleMTV;

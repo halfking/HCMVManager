@@ -15,6 +15,14 @@
 		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
+		11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A681CE384A700A0BE8D /* ActionManager(index).h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A691CE384A700A0BE8D /* ActionManager(index).m */; };
+		11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6A1CE384A700A0BE8D /* ActionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11DE4A731CE384A700A0BE8D /* ActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A6B1CE384A700A0BE8D /* ActionManager.m */; };
+		11DE4A741CE384A700A0BE8D /* ActionProcess.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6C1CE384A700A0BE8D /* ActionProcess.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11DE4A751CE384A700A0BE8D /* ActionProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */; };
+		11DE4A761CE384A700A0BE8D /* MediaAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6E1CE384A700A0BE8D /* MediaAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A6F1CE384A700A0BE8D /* MediaAction.m */; };
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40511CC6952B00561E33 /* HCMVManager.framework */; };
 		11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED40601CC6952B00561E33 /* HCMVManagerTests.m */; };
@@ -128,6 +136,14 @@
 		11754E531CD7507B00F4DA09 /* HCMVManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HCMVManager.podspec; sourceTree = "<group>"; };
 		11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_GetUserMTVBySample.h; sourceTree = "<group>"; };
 		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
+		11DE4A681CE384A700A0BE8D /* ActionManager(index).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(index).h"; sourceTree = "<group>"; };
+		11DE4A691CE384A700A0BE8D /* ActionManager(index).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(index).m"; sourceTree = "<group>"; };
+		11DE4A6A1CE384A700A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
+		11DE4A6B1CE384A700A0BE8D /* ActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManager.m; sourceTree = "<group>"; };
+		11DE4A6C1CE384A700A0BE8D /* ActionProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionProcess.h; sourceTree = "<group>"; };
+		11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionProcess.m; sourceTree = "<group>"; };
+		11DE4A6E1CE384A700A0BE8D /* MediaAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaAction.h; sourceTree = "<group>"; };
+		11DE4A6F1CE384A700A0BE8D /* MediaAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaAction.m; sourceTree = "<group>"; };
 		11ED40511CC6952B00561E33 /* HCMVManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HCMVManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11ED40541CC6952B00561E33 /* HCMVManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCMVManager.h; sourceTree = "<group>"; };
 		11ED40561CC6952B00561E33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -269,6 +285,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
+			isa = PBXGroup;
+			children = (
+				11DE4A681CE384A700A0BE8D /* ActionManager(index).h */,
+				11DE4A691CE384A700A0BE8D /* ActionManager(index).m */,
+				11DE4A6A1CE384A700A0BE8D /* ActionManager.h */,
+				11DE4A6B1CE384A700A0BE8D /* ActionManager.m */,
+				11DE4A6C1CE384A700A0BE8D /* ActionProcess.h */,
+				11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */,
+				11DE4A6E1CE384A700A0BE8D /* MediaAction.h */,
+				11DE4A6F1CE384A700A0BE8D /* MediaAction.m */,
+			);
+			path = MediaEdit;
+			sourceTree = "<group>";
+		};
 		11ED40471CC6952B00561E33 = {
 			isa = PBXGroup;
 			children = (
@@ -294,6 +325,7 @@
 		11ED40531CC6952B00561E33 /* HCMVManager */ = {
 			isa = PBXGroup;
 			children = (
+				11DE4A671CE384A700A0BE8D /* MediaEdit */,
 				11ED43151CC8E2D200561E33 /* Utils */,
 				11ED430C1CC8E2C800561E33 /* MTVDB */,
 				11ED42B71CC8DF4D00561E33 /* MTVUpload */,
@@ -526,6 +558,10 @@
 				11ED42E21CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h in Headers */,
 				11ED42F81CC8DF4D00561E33 /* MusicTag.h in Headers */,
 				11ED43731CC904A200561E33 /* WTPlayerResource.h in Headers */,
+				11DE4A741CE384A700A0BE8D /* ActionProcess.h in Headers */,
+				11DE4A761CE384A700A0BE8D /* MediaAction.h in Headers */,
+				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
+				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
 				11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
@@ -717,6 +753,7 @@
 				11ED43561CC9002700561E33 /* AudioItem.m in Sources */,
 				11ED42EB1CC8DF4D00561E33 /* MBMTV.m in Sources */,
 				11ED42E31CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m in Sources */,
+				11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */,
 				11ED42FD1CC8DF4D00561E33 /* PlayRecord.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
@@ -733,16 +770,19 @@
 				11ED43471CC9001C00561E33 /* MediaListModel.m in Sources */,
 				11ED42F71CC8DF4D00561E33 /* Musician.m in Sources */,
 				11ED43631CC9003300561E33 /* ReportInfo.m in Sources */,
+				11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */,
 				11ED42F51CC8DF4D00561E33 /* Music.m in Sources */,
 				11ED42ED1CC8DF4D00561E33 /* MTV.m in Sources */,
 				11ED43431CC9001C00561E33 /* AudioGenerater.m in Sources */,
 				11ED436C1CC903EB00561E33 /* LyricHelper.m in Sources */,
 				11ED43741CC904A200561E33 /* WTPlayerResource.m in Sources */,
 				11ED437C1CC9056800561E33 /* SDAVAssetExportSession.m in Sources */,
+				11DE4A731CE384A700A0BE8D /* ActionManager.m in Sources */,
 				11ED436E1CC903EB00561E33 /* LyricItem.m in Sources */,
 				11ED42E51CC8DF4D00561E33 /* CMD_UploadMBMTV.m in Sources */,
 				11ED43451CC9001C00561E33 /* ImageToVideo.m in Sources */,
 				11ED42FB1CC8DF4D00561E33 /* PageTag.m in Sources */,
+				11DE4A751CE384A700A0BE8D /* ActionProcess.m in Sources */,
 				11ED42E11CC8DF4D00561E33 /* CMD_DeleteMyMTV.m in Sources */,
 				11ED42F31CC8DF4D00561E33 /* MTVUploader.m in Sources */,
 				11ED42FF1CC8DF4D00561E33 /* UploadRecord.m in Sources */,

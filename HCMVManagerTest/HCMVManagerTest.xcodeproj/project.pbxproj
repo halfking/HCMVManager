@@ -55,6 +55,10 @@
 		118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DA1CE1B00D00290641 /* VideoGenerater.m */; };
 		118CE9051CE1B00D00290641 /* WTAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DC1CE1B00D00290641 /* WTAVAssetExportSession.m */; };
 		118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */; };
+		11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */; };
+		11DE4A601CE2E94200A0BE8D /* ActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */; };
+		11DE4A631CE323A500A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A621CE323A500A0BE8D /* ActionManager(index).m */; };
+		11DE4A661CE33F4900A0BE8D /* ActionProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A651CE33F4900A0BE8D /* ActionProcess.m */; };
 		E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */; };
 /* End PBXBuildFile section */
 
@@ -156,6 +160,14 @@
 		118CE8DC1CE1B00D00290641 /* WTAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTAVAssetExportSession.m; sourceTree = "<group>"; };
 		118CE8DD1CE1B00D00290641 /* WTPlayerResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTPlayerResource.h; sourceTree = "<group>"; };
 		118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTPlayerResource.m; sourceTree = "<group>"; };
+		11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaAction.h; sourceTree = "<group>"; };
+		11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaAction.m; sourceTree = "<group>"; };
+		11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
+		11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManager.m; sourceTree = "<group>"; };
+		11DE4A611CE323A500A0BE8D /* ActionManager(index).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(index).h"; sourceTree = "<group>"; };
+		11DE4A621CE323A500A0BE8D /* ActionManager(index).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(index).m"; sourceTree = "<group>"; };
+		11DE4A641CE33F4900A0BE8D /* ActionProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionProcess.h; sourceTree = "<group>"; };
+		11DE4A651CE33F4900A0BE8D /* ActionProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionProcess.m; sourceTree = "<group>"; };
 		434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.release.xcconfig"; sourceTree = "<group>"; };
 		A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -226,6 +238,7 @@
 				118CE8871CE1B00D00290641 /* Lyric */,
 				118CE88E1CE1B00D00290641 /* MTVDB */,
 				118CE8931CE1B00D00290641 /* MTVEdit */,
+				11DE4A5A1CE2DD8E00A0BE8D /* MediaEdit */,
 				118CE89E1CE1B00D00290641 /* MTVUpload */,
 				118CE8C51CE1B00D00290641 /* mvconfig.h */,
 				118CE8C61CE1B00D00290641 /* Report */,
@@ -363,6 +376,21 @@
 				118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */,
 			);
 			path = VideoGenerate;
+			sourceTree = "<group>";
+		};
+		11DE4A5A1CE2DD8E00A0BE8D /* MediaEdit */ = {
+			isa = PBXGroup;
+			children = (
+				11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */,
+				11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */,
+				11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */,
+				11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */,
+				11DE4A611CE323A500A0BE8D /* ActionManager(index).h */,
+				11DE4A621CE323A500A0BE8D /* ActionManager(index).m */,
+				11DE4A641CE33F4900A0BE8D /* ActionProcess.h */,
+				11DE4A651CE33F4900A0BE8D /* ActionProcess.m */,
+			);
+			path = MediaEdit;
 			sourceTree = "<group>";
 		};
 		A377A727E65101D7176F8D3C /* Pods */ = {
@@ -518,7 +546,9 @@
 				118CE8F01CE1B00D00290641 /* CMD_UploadMTV.m in Sources */,
 				118CE8E51CE1B00D00290641 /* AudioItem.m in Sources */,
 				118CE8F41CE1B00D00290641 /* MTVFile.m in Sources */,
+				11DE4A601CE2E94200A0BE8D /* ActionManager.m in Sources */,
 				118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */,
+				11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */,
 				118CE8F71CE1B00D00290641 /* Music.m in Sources */,
 				118CE8F11CE1B00D00290641 /* Material.m in Sources */,
 				118CE8ED1CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m in Sources */,
@@ -530,8 +560,10 @@
 				118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */,
 				118CE8F21CE1B00D00290641 /* MBMTV.m in Sources */,
 				118CE8FD1CE1B00D00290641 /* ReportInfo.m in Sources */,
+				11DE4A661CE33F4900A0BE8D /* ActionProcess.m in Sources */,
 				118CE8E81CE1B00D00290641 /* MediaItem.m in Sources */,
 				118CE86D1CE1AF8D00290641 /* AppDelegate.m in Sources */,
+				11DE4A631CE323A500A0BE8D /* ActionManager(index).m in Sources */,
 				118CE8EF1CE1B00D00290641 /* CMD_UploadMBMTV.m in Sources */,
 				118CE8EB1CE1B00D00290641 /* CMD_DeleteMBMTV.m in Sources */,
 				118CE8F31CE1B00D00290641 /* MTV.m in Sources */,
