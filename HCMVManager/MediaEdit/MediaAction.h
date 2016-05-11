@@ -8,6 +8,7 @@
 
 #import <hccoren/base.h>
 #import "MediaItem.h"
+/* Action 模板，即Action的抽像操作模式 */
 @interface MediaAction : HCEntity
 @property (nonatomic,assign) int    MediaActionID;
 @property (nonatomic,PP_STRONG) NSString * ActionTitle;
@@ -24,6 +25,7 @@
 - (NSArray *) getSubActionList;
 @end
 
+/* Action 具体操作实例，即Action 操作一次，一条数据*/
 @interface MediaActionDo : MediaAction
 @property (nonatomic,assign) int Index;                 //在队列中的诹号
 @property (nonatomic,assign) CGFloat SecondsInArray;    //效果的位置
@@ -34,6 +36,7 @@
 
 @end
 
+/*用于输出到Player或者合成的素材元素，用一个队列构成一个视频。*/
 @interface MediaWithAction : MediaItemCore
 @property (nonatomic,PP_STRONG) MediaAction * Action;
 - (void)fetchAsCore:(MediaItemCore *)item;

@@ -38,7 +38,14 @@
 @property (nonatomic,assign) CGSize renderSize;//播放大小
 @property (nonatomic,assign) BOOL isOnlyAudio;//是否为音频文件
 
+@property (nonatomic,assign,readonly) CGFloat secondsInArray;//与TimeInArray同值，只是这里用秒表示
+@property (nonatomic,assign,readonly) CGFloat secondsBegin;//同begin
+@property (nonatomic,assign,readonly) CGFloat secondsEnd;//同end
+@property (nonatomic,assign,readonly) CGFloat secondsDurationInArray;//在队列中的长度
+@property (nonatomic,assign,readonly) CGFloat secondsDuration;//同duration，本媒体整体长度
+
 - (NSString *)filePath;
+- (BOOL)isEqual:(MediaItemCore *)item;
 @end
 
 @interface MediaItem : MediaItemCore
@@ -62,12 +69,12 @@
 //@property (nonatomic,assign) CMTime timeInArray;//该媒体在最终合成视频中的起始时间
 //@property (nonatomic,assign) CGFloat playRate;//播放速度
 //@property (nonatomic,assign) CGSize renderSize;//播放大小
-
-@property (nonatomic,assign,readonly) CGFloat secondsInArray;//与TimeInArray同值，只是这里用秒表示
-@property (nonatomic,assign,readonly) CGFloat secondsBegin;//同begin
-@property (nonatomic,assign,readonly) CGFloat secondsEnd;//同end
-@property (nonatomic,assign,readonly) CGFloat secondsDurationInArray;//在队列中的长度
-@property (nonatomic,assign,readonly) CGFloat secondsDuration;//同duration，本媒体整体长度
+//
+//@property (nonatomic,assign,readonly) CGFloat secondsInArray;//与TimeInArray同值，只是这里用秒表示
+//@property (nonatomic,assign,readonly) CGFloat secondsBegin;//同begin
+//@property (nonatomic,assign,readonly) CGFloat secondsEnd;//同end
+//@property (nonatomic,assign,readonly) CGFloat secondsDurationInArray;//在队列中的长度
+//@property (nonatomic,assign,readonly) CGFloat secondsDuration;//同duration，本媒体整体长度
 
 #pragma mark - views;
 @property (nonatomic,PP_STRONG) UIView * contentView;//在轨中的原始图
@@ -91,6 +98,5 @@
 @property (nonatomic,assign) CGFloat generateProgress;
 
 #pragma mark - some functions
-- (BOOL)isEqual:(MediaItem *)item;
 - (MediaItemCore *)copyAsCore;
 @end

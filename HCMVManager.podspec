@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "0.1.5"
+  s.version      = "0.1.6"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
@@ -39,7 +39,7 @@ s.source       = { :git => "https://github.com/halfking/HCMVManager", :tag => s.
 
 s.source_files  = "HCMVManager/**/*.{h,m,mm,c,cpp}"
 #  s.exclude_files = "hccoren/Exclude"
-#s.public_header_files = "HCMVManager/**/*.h"
+s.public_header_files = "HCMVManager/**/*.h"
 
 # s.resource  = "icon.png"
 # s.resources = "Resources/*.png"
