@@ -9,8 +9,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MediaActionDo.h"
 
-#import "MediaAction.h"
 
 @interface ActionProcess : NSObject
 {

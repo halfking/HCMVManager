@@ -10,6 +10,8 @@
 #import "MediaItem.h"
 #import "VideoGenerater.h"
 #import "ActionManager.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 
 @implementation ActionProcess
 - (NSMutableArray *) processActions:(NSArray *)actions sources:(NSMutableArray *) sources

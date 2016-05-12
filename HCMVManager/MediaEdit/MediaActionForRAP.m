@@ -7,6 +7,8 @@
 //
 
 #import "MediaActionForRAP.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 
 @implementation MediaActionForRAP
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources

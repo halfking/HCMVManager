@@ -7,6 +7,8 @@
 //
 
 #import "MediaActionForSlow.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 
 @implementation MediaActionForSlow
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources

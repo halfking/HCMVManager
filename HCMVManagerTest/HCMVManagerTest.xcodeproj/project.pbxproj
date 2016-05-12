@@ -64,6 +64,8 @@
 		11DE4A801CE4660F00A0BE8D /* MediaActionForRAP.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A7F1CE4660F00A0BE8D /* MediaActionForRAP.m */; };
 		11DE4A831CE4662500A0BE8D /* MediaActionForReverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A821CE4662500A0BE8D /* MediaActionForReverse.m */; };
 		11DE4A861CE4665100A0BE8D /* MediaActionForNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A851CE4665100A0BE8D /* MediaActionForNormal.m */; };
+		11DE4A891CE4837A00A0BE8D /* MediaActionDo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */; };
+		11DE4A8C1CE483F300A0BE8D /* MediaWithAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */; };
 		E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */; };
 /* End PBXBuildFile section */
 
@@ -183,6 +185,10 @@
 		11DE4A821CE4662500A0BE8D /* MediaActionForReverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForReverse.m; sourceTree = "<group>"; };
 		11DE4A841CE4665100A0BE8D /* MediaActionForNormal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForNormal.h; sourceTree = "<group>"; };
 		11DE4A851CE4665100A0BE8D /* MediaActionForNormal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForNormal.m; sourceTree = "<group>"; };
+		11DE4A871CE4837A00A0BE8D /* MediaActionDo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionDo.h; sourceTree = "<group>"; };
+		11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionDo.m; sourceTree = "<group>"; };
+		11DE4A8A1CE483F300A0BE8D /* MediaWithAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithAction.h; sourceTree = "<group>"; };
+		11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithAction.m; sourceTree = "<group>"; };
 		434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.release.xcconfig"; sourceTree = "<group>"; };
 		A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -398,6 +404,10 @@
 			children = (
 				11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */,
 				11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */,
+				11DE4A871CE4837A00A0BE8D /* MediaActionDo.h */,
+				11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */,
+				11DE4A8A1CE483F300A0BE8D /* MediaWithAction.h */,
+				11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */,
 				11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */,
 				11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */,
 				11DE4A611CE323A500A0BE8D /* ActionManager(index).h */,
@@ -576,6 +586,7 @@
 				118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */,
 				11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */,
 				118CE8F71CE1B00D00290641 /* Music.m in Sources */,
+				11DE4A891CE4837A00A0BE8D /* MediaActionDo.m in Sources */,
 				118CE8F11CE1B00D00290641 /* Material.m in Sources */,
 				118CE8ED1CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m in Sources */,
 				118CE9031CE1B00D00290641 /* SDAVAssetExportSession.m in Sources */,
@@ -603,6 +614,7 @@
 				118CE8FC1CE1B00D00290641 /* UploadRecord.m in Sources */,
 				118CE8F61CE1B00D00290641 /* MTVUploader.m in Sources */,
 				118CE8E01CE1B00D00290641 /* LyricHelper.m in Sources */,
+				11DE4A8C1CE483F300A0BE8D /* MediaWithAction.m in Sources */,
 				118CE8701CE1AF8D00290641 /* FirstViewController.m in Sources */,
 				118CE8FB1CE1B00D00290641 /* PlayRecord.m in Sources */,
 				118CE9051CE1B00D00290641 /* WTAVAssetExportSession.m in Sources */,

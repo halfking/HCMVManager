@@ -7,6 +7,8 @@
 //
 
 #import "MediaActionForNormal.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 
 @implementation MediaActionForNormal
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources

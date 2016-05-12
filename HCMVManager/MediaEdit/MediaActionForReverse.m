@@ -7,6 +7,8 @@
 //
 
 #import "MediaActionForReverse.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 
 @implementation MediaActionForReverse
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources

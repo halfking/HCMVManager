@@ -7,7 +7,7 @@
 //
 
 #import "MediaAction.h"
-
+#import "MediaActionDo.h"
 @interface MediaActionForFast : MediaActionDo
 
 @end

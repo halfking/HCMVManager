@@ -11,6 +11,8 @@
 
 #import "MediaAction.h"
 #import "MediaItem.h"
+#import "MediaActionDo.h"
+#import "MediaWithAction.h"
 #import "MediaEditManager.h"
 #import "VideoGenerater.h"
 #import "mvconfig.h"
