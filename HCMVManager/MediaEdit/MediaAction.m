@@ -24,6 +24,11 @@
     {
         self.TableName = @"mediaactions";
         self.KeyName = @"MediaActionID";
+        self.Rate = 1;
+        self.DurationInSeconds = -1;
+        self.ReverseSeconds = 0;
+        self.IsMutex = NO;
+        self.IsFilter = NO;
     }
     return self;
 }
@@ -53,6 +58,23 @@
         }
         return subActionsList_;
     }
+}
+- (MediaAction *)copyItem
+{
+    MediaAction * item = [MediaAction new];
+    
+    item.MediaActionID =  self.MediaActionID;
+    item.ActionTitle =  self.ActionTitle;
+    item.ActionIcon = self.ActionIcon;
+    item.ActionType = self.ActionType;
+    item.SubActions = self.SubActions;
+    item.Rate = self.Rate;
+    item.ReverseSeconds =  self.ReverseSeconds;
+    item.DurationInSeconds = self.DurationInSeconds;
+    item.IsMutex = self.IsMutex;
+    item.IsFilter = self.IsFilter;
+    
+    return item;
 }
 - (void)dealloc
 {
@@ -90,6 +112,30 @@
     self.IsMutex = action.IsMutex;
     self.IsFilter = action.IsFilter;
 }
+- (NSMutableArray *)get_MaterialList
+{
+    return materialList_;
+}
+- (NSMutableArray *)buildMaterialProcess:(NSArray *)sources
+{
+    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
+    return nil;
+}
+- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
+{
+    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
+    return nil;
+}
+- (CGFloat) getDurationInFinal:(NSArray *)sources
+{
+    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
+    return -1;
+}
+- (MediaWithAction *)toMediaWithAction:(NSArray *)sources
+{
+    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
+    return nil;
+}
 - (void)dealloc
 {
     PP_RELEASE(Media);
@@ -99,6 +145,7 @@
 
 @implementation MediaWithAction
 @synthesize Action;
+@synthesize finalDuration;
 -(id)init
 {
     self = [super init];
@@ -129,6 +176,17 @@
     self.playRate = item.playRate;
     self.timeInArray = item.timeInArray;
     self.renderSize = item.renderSize;
+    self.playRate = item.playRate;
+    self.isOnlyAudio = item.isOnlyAudio;
+    self.renderSize = item.renderSize;
+    
+}
+- (MediaWithAction *)copyItem
+{
+    MediaWithAction * item = [MediaWithAction new];
+    [item fetchAsCore:(MediaItemCore *)self];
+    item.Action = [self.Action copyItem];
+    return item;
 }
 - (void)dealloc
 {

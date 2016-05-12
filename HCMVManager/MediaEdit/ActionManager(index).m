@@ -19,8 +19,9 @@
 {
     @synchronized (self) {
         [mediaList_ removeAllObjects];
+        NSAssert(videoBgAction_, @"必须先设置了源背景视频才能进行处理!");
         
-        [mediaList_ addObject:videoBg_];
+        [mediaList_ addObject:videoBgAction_];
         ActionProcess * process = [ActionProcess new];
         [process processActions:actionList_ sources:mediaList_];
         durationForTarget_ = process.duration;

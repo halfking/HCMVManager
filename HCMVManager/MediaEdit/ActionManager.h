@@ -14,6 +14,7 @@
 @class MediaActionDo;
 @class MediaItem;
 @class MediaEditManager;
+@class MediaWithAction;
 
 @protocol ActionManagerDelegate <NSObject>
 @optional
@@ -27,6 +28,7 @@
 {
     MediaItem * audioBg_;    //音频背景
     MediaItem * videoBg_;    //源视频
+    MediaWithAction * videoBgAction_; //暂存的源视频Action
     
     NSMutableArray * actionList_;   //效果的列表
 //    NSMutableArray * mediaListBG_;  //背景文件列表
@@ -58,4 +60,5 @@
 
 - (BOOL)removeActionItem:(MediaActionDo *)actionDo;
 
+- (MediaActionDo *) getMediaActionDo:(MediaAction *)action;
 @end

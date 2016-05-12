@@ -9,60 +9,201 @@
 #import "ActionProcess.h"
 #import "MediaItem.h"
 #import "VideoGenerater.h"
+#import "ActionManager.h"
+
 @implementation ActionProcess
-- (void)processAction:(MediaActionDo *)actionDo sources:(NSMutableArray *)sources
+- (NSMutableArray *) processActions:(NSArray *)actions sources:(NSMutableArray *) sources
 {
-    NSMutableArray * overlapList = [self getActionMedia:actionDo];
+    if(!actions || !sources || actions.count==0 || sources.count==0) return nil;
+    NSMutableArray * result = sources;
+    for (MediaActionDo * action in actions) {
+        result = [self processAction:action sources:result];
+    }
+    return result;
+}
+- (NSMutableArray *)processAction:(MediaActionDo *)actionDo sources:(NSMutableArray *)sources
+{
     
-    //暂定4个，1 表示慢速 2 表示加速 3表示Rap 4表示倒放 0表示是一个模板类型的
-    switch (actionDo.ActionType) {
-        case 1: //slow
+    NSMutableArray * overlapList = [actionDo buildMaterialOverlaped:sources];
+    NSMutableArray * materialList = [actionDo buildMaterialProcess:sources];
+    if(!materialList || materialList.count==0)
+    {
+        return sources;
+    }
+    //检查插入的起点对像
+    MediaWithAction * mediaToSplit = [overlapList firstObject];
+    NSAssert(!mediaToSplit, @"无法找到需要分割或移动的素材，数据有问题1");
+    
+    MediaWithAction * secondPharse = [self splitMediaItemAtSeconds:mediaToSplit atSeconds:actionDo.SecondsInArray];
+    NSAssert(!secondPharse, @"无法找到需要分割或移动的素材，数据有问题2");
+    
+    [overlapList insertObject:secondPharse atIndex:0];
+    
+    //检查插入的终点对像
+    MediaWithAction * mediaToTail = nil;
+    if(overlapList.count>2)
+    {
+        mediaToTail = [overlapList lastObject];
+        CGFloat durationChanged = [actionDo getDurationInFinal:sources];
+        CGFloat durationForHeadItemSplit = [self getDurationForAction:secondPharse];
+        MediaWithAction * tailSecond = [self splitMediaItemAtSeconds:mediaToTail
+                                                           atSeconds:secondPharse.secondsInArray
+                                        + durationForHeadItemSplit +durationChanged];
+        
+        //将分割的加入到需要插入的素材列表中
+        if(tailSecond)
         {
-            
+            [materialList addObject:tailSecond];
         }
-            break;
-        case 2: //fast
+    }
+    
+//    CGFloat durationChanged = [self getDurationForActions:overlapList];
+    
+    //将数据插入到原队列中，并且将队列中对像的时间重新计算
+    NSMutableArray * headList = [NSMutableArray new];
+    NSMutableArray * tailList = [NSMutableArray new];
+    BOOL isHead = YES;
+    BOOL isTail = NO;
+    
+    CGFloat secondsInArray = 0;
+    for (MediaWithAction * item in sources) {
+        if(item==mediaToSplit)
         {
-            
-        }
-            break;
-        case 3: //rap
-        {
-            
-        }
-            break;
-        case 4: //reverse
-        {
-            
-        }
-            break;
-            
-        default: //模板类型，暂不支持。即二级类型
-        {
-            NSArray * actions = [actionDo getSubActionList];
-            if(actions && actions.count>0)
+            [headList addObject:mediaToSplit];
+            secondsInArray += [self getDurationForAction:mediaToSplit];
+            isHead = NO;
+            //如果后一段就是从前而切出来的，则直接将其后的加入到队列中
+            if(!mediaToTail || mediaToTail==mediaToSplit||mediaToTail == secondPharse)
             {
-                [self processActions:actions sources:sources];
+                isTail = YES;
             }
         }
-            break;
+        else if(isHead)
+        {
+            [headList addObject:item];
+            secondsInArray += [self getDurationForAction:item];
+        }
+        else if(isTail)
+        {
+            [tailList addObject:item];
+            //secondsInArray += [self getDurationForAction:item];
+        }
+        else if(item == mediaToTail) //由于分割的部分已经加入到了materialList中，所以此处不要添加
+        {
+//            [tailList addObject:mediaToTail];
+            //secondsInArray += [self getDurationForAction:item];
+            isTail = YES;
+            isHead = NO;
+        }
     }
-}
-//将素材插入到队列中
-- (void)insertMediaItemAtSeconds:(MediaItem *)item
-{
+    //插入新对像
+    for (MediaWithAction * item in materialList) {
+        item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+        [headList addObject:item];
+        secondsInArray += [self getDurationForAction:item];
+    }
     
+    //插入尾部的对像
+//    secondsInArray += durationChanged;
+    for (MediaWithAction * item in tailList) {
+        item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+        secondsInArray += [self getDurationForAction:item];
+    }
+    currentDuration_ = secondsInArray;
+    
+    //重新构建完整的列表
+    NSMutableArray * result = [NSMutableArray new];
+    
+    [result addObjectsFromArray:headList];
+    [result addObjectsFromArray:tailList];
+    
+    headList = nil;
+    tailList = nil;
+    
+    return result;
 }
 
-//获取要插入到队列中的素材
-- (NSMutableArray *)getActionMedia:(MediaActionDo *)action
+- (CGFloat)getDurationForAction:(MediaWithAction *)media
+{
+    MediaActionDo * item = [[ActionManager shareObject]getMediaActionDo:media.Action];
+    item.Media = media;
+    
+    return [item getDurationInFinal:nil];
+}
+//从中间将一个媒体一分两段,并修改其各自时长，返回后半段的媒体
+- (MediaWithAction *)splitMediaItemAtSeconds:(MediaWithAction *)media atSeconds:(CGFloat)seconds
+{
+    if(!media || seconds <0)
+    {
+        NSAssert(media, @"传入了不正确的参数 nil");
+        return nil;
+    }
+    if(fabs(seconds - media.secondsInArray)<0.1)
+    {
+        return media;
+    }
+    else if(seconds>media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+    {
+        MediaWithAction * actionSecond = [media copyItem];
+        CMTime endTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(media.begin)+seconds - media.secondsInArray, MAX(media.begin.timescale,DEFAULT_TIMESCALE));
+        media.end = endTime;
+        
+        actionSecond.begin = endTime;
+        
+        return actionSecond;
+    }
+    return nil;
+}
+#pragma mark - 获取受影响的素材队列：需要插入的，需要覆盖的
+//获取要插入素材的队列中的素材
+- (NSMutableArray *)getActionMediaies:(MediaActionDo *)action sources:(NSMutableArray *)sources
 {
     MediaItemCore * item = action.Media;
+    NSMutableArray * result = [NSMutableArray new];
     if(!item)
     {
         item = nil;
     }
-    return nil;
+    
+    //指定了素材
+    if(item)
+    {
+        MediaWithAction * media = [MediaWithAction new];
+        [media fetchAsCore:item];
+        media.Action = [(MediaAction *)action copyItem];
+        
+        //暂定4个，1 表示慢速 2 表示加速 3表示Rap 4表示倒放 0表示是一个模板类型的
+        switch (action.ActionType) {
+            case 1:
+            {
+                
+            }
+                break;
+            case 2:
+            {
+                
+            }
+                break;
+            case 3: //rap
+            {
+                
+            }
+                break;
+            case 4: //reverse
+            {
+            }
+                break;
+                
+            default: //模板类型，暂不支持。即二级类型
+            {
+                
+            }
+                break;
+        }
+
+    }
+    
+    return result;
 }
 
 //获取当前队列中的可能被分割的对像
@@ -93,12 +234,5 @@
         }
     }
     return overlapList;
-}
-- (void) processActions:(NSArray *)actions sources:(NSMutableArray *) sources
-{
-    if(!actions || !sources || actions.count==0 || sources.count==0) return;
-    for (MediaActionDo * action in actions) {
-        [self processAction:action sources:sources];
-    }
 }
 @end

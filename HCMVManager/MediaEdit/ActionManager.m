@@ -14,6 +14,11 @@
 #import "MediaEditManager.h"
 #import "VideoGenerater.h"
 #import "mvconfig.h"
+#import "MediaActionForRAP.h"
+#import "MediaActionForFast.h"
+#import "MediaActionForSlow.h"
+#import "MediaActionForNormal.h"
+#import "MediaActionForReverse.h"
 
 @interface ActionManager()<WTPlayerResourceDelegate,VideoGeneraterDelegate>
 
@@ -73,6 +78,21 @@
     {
         videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
     }
+    PP_RELEASE(videoBgAction_);
+    videoBgAction_ = [MediaWithAction new];
+    [videoBgAction_ fetchAsCore:videoBg_];
+    
+    MediaActionForNormal * action =[MediaActionForNormal new];
+    action.ActionType = 0;
+    action.MediaActionID = 0;
+    action.Rate = 1;
+    action.ReverseSeconds = 0;
+    action.DurationInSeconds = -1;
+    action.IsFilter = NO;
+    action.IsMutex = NO;
+    
+    videoBgAction_.Action = action;
+    
     return YES;
 }
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
@@ -89,12 +109,34 @@
     }
     return YES;
 }
-
+- (MediaActionDo *) getMediaActionDo:(MediaAction *)action
+{
+    MediaActionDo * item = nil;
+    switch (action.ActionType) {
+        case 1:
+            item = [MediaActionForSlow new];
+            break;
+        case 2:
+            item = [MediaActionForFast new];
+            break;
+        case 3:
+            item = [MediaActionForRAP new];
+            break;
+        case 4:
+            item = [MediaActionForReverse new];
+            break;
+        default:
+            item = [MediaActionForNormal new];
+            break;
+    }
+    [item fetchAsAction:action];
+    return item;
+}
 - (BOOL)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                    at:(CGFloat)posSeconds
              duration:(CGFloat)durationInSeconds;
 {
-    MediaActionDo * item = [MediaActionDo new];
+    MediaActionDo * item = [self getMediaActionDo:action];
     if(filePath && filePath.length>0)
     {
         MediaItem * tempItem = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
@@ -114,7 +156,6 @@
         PP_RELEASE(item);
         return NO;
     }
-    [item fetchAsAction:action];
     item.SecondsInArray = posSeconds;
     item.DurationInArray = durationInSeconds;
     
@@ -165,6 +206,18 @@
 {
     if(actionDo)
     {
+        BOOL beginDec = NO;
+        for (MediaActionDo * item in actionList_) {
+            if(item == actionDo)
+            {
+                beginDec = YES;
+            }
+            if(beginDec)
+            {
+                item.Index --;
+            }
+        }
+        
         [actionList_ removeObject:actionDo];
         [self reindexAllActions];
         return YES;
