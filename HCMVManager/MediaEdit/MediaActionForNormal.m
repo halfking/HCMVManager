@@ -20,35 +20,7 @@
     }
     return materialList_;
 }
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
-{
-    NSMutableArray * overlapList = [NSMutableArray new];
-    
-    CGFloat seconds = self.SecondsInArray;
-    CGFloat duration = self.DurationInSeconds;
-    for (MediaWithAction * item in sources) {
-        //第一个或跨界的
-        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
-        {
-            [overlapList addObject:item];
-        }
-        //表示需要覆盖的
-        else if(duration>0)
-        {
-            //被包含在这个区段中的
-            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
-            {
-                [overlapList addObject:item];
-            }
-            //有一部分在范围内，但尾部超过边界的
-            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
-            {
-                [overlapList addObject:item];
-            }
-        }
-    }
-    return overlapList;
-}
+
 - (CGFloat) getDurationInFinal:(NSArray *)sources
 {
     if(!materialList_)

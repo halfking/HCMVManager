@@ -121,11 +121,11 @@
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
     return nil;
 }
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
-{
-    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
-    return nil;
-}
+//- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
+//{
+//    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
+//    return nil;
+//}
 - (CGFloat) getDurationInFinal:(NSArray *)sources
 {
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
@@ -135,6 +135,62 @@
 {
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
     return nil;
+}
+- (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources
+{
+    NSMutableArray * overlapList = [NSMutableArray new];
+    
+    for (MediaWithAction * item in sources) {
+        //左相交
+        if(item.secondsInArray  <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+        {
+            MediaWithAction * newItem = [item copyItem];
+            newItem.begin = CMTimeMakeWithSeconds(newItem.secondsBegin + seconds - item.secondsInArray, newItem.begin.timescale);
+            [overlapList addObject:newItem];
+        }
+        //包含
+        else if(item.secondsInArray > seconds && item.secondsInArray + item.secondsDurationInArray <= seconds + duration)
+        {
+            [overlapList addObject:item];
+        }
+        //右相交
+        else if(item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >seconds +duration)
+        {
+            MediaWithAction * newItem = [item copyItem];
+            newItem.end = CMTimeMakeWithSeconds(newItem.secondsEnd - (item.secondsInArray + item.secondsDurationInArray - seconds - duration), newItem.end.timescale);
+            [overlapList addObject:newItem];
+        }
+    }
+    return overlapList;
+}
+- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
+{
+    NSMutableArray * overlapList = [NSMutableArray new];
+    
+    CGFloat seconds = self.SecondsInArray;
+    CGFloat duration = self.DurationInSeconds;
+    for (MediaWithAction * item in sources) {
+        //第一个或跨界的
+        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+        {
+            [overlapList addObject:item];
+        }
+        //表示需要覆盖的
+        else if(duration>0)
+        {
+            //被包含在这个区段中的
+            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
+            {
+                [overlapList addObject:item];
+            }
+            //有一部分在范围内，但尾部超过边界的
+            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
+            {
+                [overlapList addObject:item];
+            }
+        }
+    }
+    return overlapList;
 }
 - (void)dealloc
 {

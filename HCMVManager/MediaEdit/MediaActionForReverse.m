@@ -11,38 +11,34 @@
 @implementation MediaActionForReverse
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources
 {
-    NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
-    return nil;
-}
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
-{
-    NSMutableArray * overlapList = [NSMutableArray new];
+    if(materialList_ && materialList_.count>0) return materialList_;
     
-    CGFloat seconds = self.SecondsInArray;
-    CGFloat duration = self.DurationInSeconds;
-    for (MediaWithAction * item in sources) {
-        //第一个或跨界的
-        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
-        {
-            [overlapList addObject:item];
-        }
-        //表示需要覆盖的
-        else if(duration>0)
-        {
-            //被包含在这个区段中的
-            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
-            {
-                [overlapList addObject:item];
-            }
-            //有一部分在范围内，但尾部超过边界的
-            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
-            {
-                [overlapList addObject:item];
-            }
-        }
+    
+    MediaItemCore * item = self.Media;
+    
+    if(!item || !item.fileName || item.fileName.length==0)
+    {
+        item = nil;
     }
-    return overlapList;
+    
+    //指定了素材
+    if(item)
+    {
+        MediaWithAction * media = [MediaWithAction new];
+        [media fetchAsCore:item];
+        media.Action = [(MediaAction *)self copyItem];
+        materialList_ = [NSMutableArray arrayWithObject:media];
+        media.finalDuration = [self getDurationInFinal:sources];
+    }
+    else //没有指定，则需要从当前队列中获取
+    {
+        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInSeconds sources:sources];
+    }
+    
+    return materialList_;
+
 }
+
 - (CGFloat) getDurationInFinal:(NSArray *)sources
 {
     if(!materialList_)

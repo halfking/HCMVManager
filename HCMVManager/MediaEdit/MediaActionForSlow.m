@@ -11,9 +11,12 @@
 @implementation MediaActionForSlow
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources
 {
-    MediaItemCore * item = action.Media;
-    NSMutableArray * result = [NSMutableArray new];
-    if(!item)
+    if(materialList_ && materialList_.count>0) return materialList_;
+    
+    
+    MediaItemCore * item = self.Media;
+    
+    if(!item || !item.fileName || item.fileName.length==0)
     {
         item = nil;
     }
@@ -23,69 +26,16 @@
     {
         MediaWithAction * media = [MediaWithAction new];
         [media fetchAsCore:item];
-        media.Action = [(MediaAction *)action copyItem];
-        
-        //暂定4个，1 表示慢速 2 表示加速 3表示Rap 4表示倒放 0表示是一个模板类型的
-        switch (action.ActionType) {
-            case 1:
-            {
-                
-            }
-                break;
-            case 2:
-            {
-                
-            }
-                break;
-            case 3: //rap
-            {
-                
-            }
-                break;
-            case 4: //reverse
-            {
-            }
-                break;
-                
-            default: //模板类型，暂不支持。即二级类型
-            {
-                
-            }
-                break;
-        }
-        
+        media.Action = [(MediaAction *)self copyItem];
+        materialList_ = [NSMutableArray arrayWithObject:media];
+        media.finalDuration = [self getDurationInFinal:sources];
+    }
+    else //没有指定，则需要从当前队列中获取
+    {
+        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInSeconds sources:sources];
     }
     
-    return result;
-}
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
-{
-    NSMutableArray * overlapList = [NSMutableArray new];
-    
-    CGFloat seconds = self.SecondsInArray;
-    CGFloat duration = self.DurationInSeconds;
-    for (MediaWithAction * item in sources) {
-        //第一个或跨界的
-        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
-        {
-            [overlapList addObject:item];
-        }
-        //表示需要覆盖的
-        else if(duration>0)
-        {
-            //被包含在这个区段中的
-            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
-            {
-                [overlapList addObject:item];
-            }
-            //有一部分在范围内，但尾部超过边界的
-            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
-            {
-                [overlapList addObject:item];
-            }
-        }
-    }
-    return overlapList;
+    return materialList_;
 }
 - (CGFloat) getDurationInFinal:(NSArray *)sources
 {
