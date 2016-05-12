@@ -70,4 +70,16 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/vdcManager_full.h>
 #import <HCMVManager/mvconfig.h>
 
+#import <HCMVManager/MediaAction.h>
+#import <HCMVManager/MediaActionDo.h>
+#import <HCMVManager/MediaWithAction.h>
+#import <HCMVManager/ActionManager.h>
+#import <HCMVManager/ActionProcess.h>
+#import <HCMVManager/ActionManager(index).h>
+#import <HCMVManager/MediaActionForSlow.h>
+#import <HCMVManager/MediaActionForFast.h>
+#import <HCMVManager/MediaActionForRAP.h>
+#import <HCMVManager/MediaActionForReverse.h>
+#import <HCMVManager/MediaActionForNormal.h>
+
 #endif
