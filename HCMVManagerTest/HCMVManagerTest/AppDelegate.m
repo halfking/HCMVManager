@@ -7,8 +7,12 @@
 //
 
 #import "AppDelegate.h"
+#import <hccoren/base.h>
+#import "MediaActionDo.h"
+#import "ActionManager.h"
+#import "MediaWithAction.h"
 
-@interface AppDelegate ()
+@interface AppDelegate ()<ActionManagerDelegate>
 
 @end
 
@@ -18,10 +22,30 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    [DeviceConfig config];
+    
+    
+    ActionManager * manager = [ActionManager shareObject];
+    manager.delegate = self;
+    NSString * path = [[NSBundle mainBundle]pathForResource:@"test" ofType:@"mp4"];
+    [manager setBackMV:path begin:0 end:-1];
     
     
     
     return YES;
+}
+
+- (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
+{
+    NSLog(@"-------------**----**--------------------");
+    NSLog(@"duration:%.2f",duration);
+    int index = 0;
+    for (MediaWithAction * item in mediaList) {
+        NSLog(@"--%d--",index);
+        NSLog(@"%@",[item toString]);
+        index ++;
+    }
+    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

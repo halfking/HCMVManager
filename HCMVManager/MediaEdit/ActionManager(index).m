@@ -23,10 +23,17 @@
         
         [mediaList_ addObject:videoBgAction_];
         ActionProcess * process = [ActionProcess new];
-        [process processActions:actionList_ sources:mediaList_];
+        mediaList_ = [process processActions:actionList_ sources:mediaList_];
         durationForTarget_ = process.duration;
+        
+        if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:doProcessOK:duration:)])
+        {
+            [self.delegate ActionManager:self doProcessOK:mediaList_ duration:durationForTarget_];
+        }
+        
         return durationForTarget_;
     }
+  
 }
 //获取在此动作之前的已经存在的素材列表
 - (NSArray *) getMediaBaseLine:(MediaActionDo *)action

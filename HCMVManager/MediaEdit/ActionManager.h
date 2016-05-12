@@ -15,9 +15,10 @@
 @class MediaItem;
 @class MediaEditManager;
 @class MediaWithAction;
-
+@class ActionManager;
 @protocol ActionManagerDelegate <NSObject>
 @optional
+- (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration;
 //-(void) didGetThumbImage:(float)requestTime andPath:(NSString*)path index:(int)index size:(CGSize)size; //index = 0表示只截了当前一张 ，否则表示是一批图中的一张
 //- (void) didGetThumbFailure:(float)requestTime error:(NSString*)error index:(int)index size:(CGSize)size;
 //-(void) didAllThumbsGenerated:(NSArray*) thumbs;

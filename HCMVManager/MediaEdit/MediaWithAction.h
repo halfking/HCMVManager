@@ -14,4 +14,5 @@
 @property (nonatomic,assign) CGFloat finalDuration;
 - (void)fetchAsCore:(MediaItemCore *)item;
 - (MediaWithAction *)copyItem;
+- (NSString *) toString;
 @end

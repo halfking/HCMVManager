@@ -80,6 +80,7 @@
     {
         videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
     }
+    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
     PP_RELEASE(videoBgAction_);
     videoBgAction_ = [MediaWithAction new];
     [videoBgAction_ fetchAsCore:videoBg_];
@@ -95,6 +96,7 @@
     
     videoBgAction_.Action = action;
     
+    [self reindexAllActions];
     return YES;
 }
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds

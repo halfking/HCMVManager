@@ -54,6 +54,10 @@
     item.Action = [self.Action copyItem];
     return item;
 }
+- (NSString *) toString
+{
+    return [NSString stringWithFormat:@"%d(%.2f--%.2f)\t\t%@(%.2f--%.2f)",(int)self.Action.ActionType ,self.secondsInArray,self.finalDuration,[self.fileName lastPathComponent] ,self.secondsBegin,self.secondsEnd];
+}
 - (void)dealloc
 {
     PP_RELEASE(Action);

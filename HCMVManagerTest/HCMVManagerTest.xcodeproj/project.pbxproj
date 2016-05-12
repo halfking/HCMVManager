@@ -66,6 +66,7 @@
 		11DE4A861CE4665100A0BE8D /* MediaActionForNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A851CE4665100A0BE8D /* MediaActionForNormal.m */; };
 		11DE4A891CE4837A00A0BE8D /* MediaActionDo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */; };
 		11DE4A8C1CE483F300A0BE8D /* MediaWithAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */; };
+		11DE4AAA1CE490F000A0BE8D /* test.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 11DE4AA91CE48C4F00A0BE8D /* test.mp4 */; };
 		E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */; };
 /* End PBXBuildFile section */
 
@@ -189,6 +190,7 @@
 		11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionDo.m; sourceTree = "<group>"; };
 		11DE4A8A1CE483F300A0BE8D /* MediaWithAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithAction.h; sourceTree = "<group>"; };
 		11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithAction.m; sourceTree = "<group>"; };
+		11DE4AA91CE48C4F00A0BE8D /* test.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.mp4; sourceTree = "<group>"; };
 		434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.release.xcconfig"; sourceTree = "<group>"; };
 		A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -246,6 +248,7 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11DE4AA91CE48C4F00A0BE8D /* test.mp4 */,
 				118CE8691CE1AF8D00290641 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -509,6 +512,7 @@
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
+				11DE4AAA1CE490F000A0BE8D /* test.mp4 in Resources */,
 				118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
