@@ -23,6 +23,20 @@
 		11DE4A751CE384A700A0BE8D /* ActionProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */; };
 		11DE4A761CE384A700A0BE8D /* MediaAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6E1CE384A700A0BE8D /* MediaAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A6F1CE384A700A0BE8D /* MediaAction.m */; };
+		11DE4A9B1CE4852500A0BE8D /* MediaActionDo.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */; };
+		11DE4A9C1CE4852500A0BE8D /* MediaActionDo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A8E1CE4852500A0BE8D /* MediaActionDo.m */; };
+		11DE4A9D1CE4852500A0BE8D /* MediaActionForFast.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */; };
+		11DE4A9E1CE4852500A0BE8D /* MediaActionForFast.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A901CE4852500A0BE8D /* MediaActionForFast.m */; };
+		11DE4A9F1CE4852500A0BE8D /* MediaActionForNormal.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A911CE4852500A0BE8D /* MediaActionForNormal.h */; };
+		11DE4AA01CE4852500A0BE8D /* MediaActionForNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A921CE4852500A0BE8D /* MediaActionForNormal.m */; };
+		11DE4AA11CE4852500A0BE8D /* MediaActionForRAP.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A931CE4852500A0BE8D /* MediaActionForRAP.h */; };
+		11DE4AA21CE4852500A0BE8D /* MediaActionForRAP.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A941CE4852500A0BE8D /* MediaActionForRAP.m */; };
+		11DE4AA31CE4852500A0BE8D /* MediaActionForReverse.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A951CE4852500A0BE8D /* MediaActionForReverse.h */; };
+		11DE4AA41CE4852500A0BE8D /* MediaActionForReverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A961CE4852500A0BE8D /* MediaActionForReverse.m */; };
+		11DE4AA51CE4852500A0BE8D /* MediaActionForSlow.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A971CE4852500A0BE8D /* MediaActionForSlow.h */; };
+		11DE4AA61CE4852500A0BE8D /* MediaActionForSlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A981CE4852500A0BE8D /* MediaActionForSlow.m */; };
+		11DE4AA71CE4852500A0BE8D /* MediaWithAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A991CE4852500A0BE8D /* MediaWithAction.h */; };
+		11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A9A1CE4852500A0BE8D /* MediaWithAction.m */; };
 		11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ED40541CC6952B00561E33 /* HCMVManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ED405C1CC6952B00561E33 /* HCMVManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11ED40511CC6952B00561E33 /* HCMVManager.framework */; };
 		11ED40611CC6952B00561E33 /* HCMVManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ED40601CC6952B00561E33 /* HCMVManagerTests.m */; };
@@ -144,6 +158,20 @@
 		11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionProcess.m; sourceTree = "<group>"; };
 		11DE4A6E1CE384A700A0BE8D /* MediaAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaAction.h; sourceTree = "<group>"; };
 		11DE4A6F1CE384A700A0BE8D /* MediaAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaAction.m; sourceTree = "<group>"; };
+		11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionDo.h; sourceTree = "<group>"; };
+		11DE4A8E1CE4852500A0BE8D /* MediaActionDo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionDo.m; sourceTree = "<group>"; };
+		11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForFast.h; sourceTree = "<group>"; };
+		11DE4A901CE4852500A0BE8D /* MediaActionForFast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForFast.m; sourceTree = "<group>"; };
+		11DE4A911CE4852500A0BE8D /* MediaActionForNormal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForNormal.h; sourceTree = "<group>"; };
+		11DE4A921CE4852500A0BE8D /* MediaActionForNormal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForNormal.m; sourceTree = "<group>"; };
+		11DE4A931CE4852500A0BE8D /* MediaActionForRAP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForRAP.h; sourceTree = "<group>"; };
+		11DE4A941CE4852500A0BE8D /* MediaActionForRAP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForRAP.m; sourceTree = "<group>"; };
+		11DE4A951CE4852500A0BE8D /* MediaActionForReverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForReverse.h; sourceTree = "<group>"; };
+		11DE4A961CE4852500A0BE8D /* MediaActionForReverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForReverse.m; sourceTree = "<group>"; };
+		11DE4A971CE4852500A0BE8D /* MediaActionForSlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaActionForSlow.h; sourceTree = "<group>"; };
+		11DE4A981CE4852500A0BE8D /* MediaActionForSlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionForSlow.m; sourceTree = "<group>"; };
+		11DE4A991CE4852500A0BE8D /* MediaWithAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithAction.h; sourceTree = "<group>"; };
+		11DE4A9A1CE4852500A0BE8D /* MediaWithAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithAction.m; sourceTree = "<group>"; };
 		11ED40511CC6952B00561E33 /* HCMVManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HCMVManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11ED40541CC6952B00561E33 /* HCMVManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HCMVManager.h; sourceTree = "<group>"; };
 		11ED40561CC6952B00561E33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -288,6 +316,20 @@
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
+				11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */,
+				11DE4A8E1CE4852500A0BE8D /* MediaActionDo.m */,
+				11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */,
+				11DE4A901CE4852500A0BE8D /* MediaActionForFast.m */,
+				11DE4A911CE4852500A0BE8D /* MediaActionForNormal.h */,
+				11DE4A921CE4852500A0BE8D /* MediaActionForNormal.m */,
+				11DE4A931CE4852500A0BE8D /* MediaActionForRAP.h */,
+				11DE4A941CE4852500A0BE8D /* MediaActionForRAP.m */,
+				11DE4A951CE4852500A0BE8D /* MediaActionForReverse.h */,
+				11DE4A961CE4852500A0BE8D /* MediaActionForReverse.m */,
+				11DE4A971CE4852500A0BE8D /* MediaActionForSlow.h */,
+				11DE4A981CE4852500A0BE8D /* MediaActionForSlow.m */,
+				11DE4A991CE4852500A0BE8D /* MediaWithAction.h */,
+				11DE4A9A1CE4852500A0BE8D /* MediaWithAction.m */,
 				11DE4A681CE384A700A0BE8D /* ActionManager(index).h */,
 				11DE4A691CE384A700A0BE8D /* ActionManager(index).m */,
 				11DE4A6A1CE384A700A0BE8D /* ActionManager.h */,
@@ -544,7 +586,9 @@
 				11ED42F21CC8DF4D00561E33 /* MTVUploader.h in Headers */,
 				11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */,
 				11ED42F61CC8DF4D00561E33 /* Musician.h in Headers */,
+				11DE4AA51CE4852500A0BE8D /* MediaActionForSlow.h in Headers */,
 				11ED42E61CC8DF4D00561E33 /* CMD_UploadMTV.h in Headers */,
+				11DE4A9F1CE4852500A0BE8D /* MediaActionForNormal.h in Headers */,
 				11ED435D1CC9002700561E33 /* Samples.h in Headers */,
 				11ED42FE1CC8DF4D00561E33 /* UploadRecord.h in Headers */,
 				11ED43621CC9003300561E33 /* ReportInfo.h in Headers */,
@@ -554,7 +598,10 @@
 				11ED436F1CC903EB00561E33 /* LyricLayerAnimation.h in Headers */,
 				11ED43131CC8E2C800561E33 /* MaibaTables.h in Headers */,
 				11ED43461CC9001C00561E33 /* MediaListModel.h in Headers */,
+				11DE4AA31CE4852500A0BE8D /* MediaActionForReverse.h in Headers */,
+				11DE4AA11CE4852500A0BE8D /* MediaActionForRAP.h in Headers */,
 				11ED43481CC9001C00561E33 /* VideoGenerater.h in Headers */,
+				11DE4A9D1CE4852500A0BE8D /* MediaActionForFast.h in Headers */,
 				11ED42E21CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.h in Headers */,
 				11ED42F81CC8DF4D00561E33 /* MusicTag.h in Headers */,
 				11ED43731CC904A200561E33 /* WTPlayerResource.h in Headers */,
@@ -563,6 +610,8 @@
 				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
 				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
 				11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */,
+				11DE4AA71CE4852500A0BE8D /* MediaWithAction.h in Headers */,
+				11DE4A9B1CE4852500A0BE8D /* MediaActionDo.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11ED42DE1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h in Headers */,
@@ -751,12 +800,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				11ED43561CC9002700561E33 /* AudioItem.m in Sources */,
+				11DE4AA01CE4852500A0BE8D /* MediaActionForNormal.m in Sources */,
 				11ED42EB1CC8DF4D00561E33 /* MBMTV.m in Sources */,
 				11ED42E31CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m in Sources */,
 				11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */,
 				11ED42FD1CC8DF4D00561E33 /* PlayRecord.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
+				11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */,
 				11ED43781CC9051400561E33 /* WTAVAssetExportSession.m in Sources */,
 				11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */,
 				11ED42DF1CC8DF4D00561E33 /* CMD_DeleteMBMTV.m in Sources */,
@@ -764,11 +815,14 @@
 				11ED431D1CC8E2D200561E33 /* VDCManager(MTV).m in Sources */,
 				11ED42E91CC8DF4D00561E33 /* Material.m in Sources */,
 				11ED435E1CC9002700561E33 /* Samples.m in Sources */,
+				11DE4AA21CE4852500A0BE8D /* MediaActionForRAP.m in Sources */,
 				11ED42E71CC8DF4D00561E33 /* CMD_UploadMTV.m in Sources */,
 				11ED43701CC903EB00561E33 /* LyricLayerAnimation.m in Sources */,
 				11ED435C1CC9002700561E33 /* MediaItem.m in Sources */,
+				11DE4AA41CE4852500A0BE8D /* MediaActionForReverse.m in Sources */,
 				11ED43471CC9001C00561E33 /* MediaListModel.m in Sources */,
 				11ED42F71CC8DF4D00561E33 /* Musician.m in Sources */,
+				11DE4A9C1CE4852500A0BE8D /* MediaActionDo.m in Sources */,
 				11ED43631CC9003300561E33 /* ReportInfo.m in Sources */,
 				11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */,
 				11ED42F51CC8DF4D00561E33 /* Music.m in Sources */,
@@ -781,8 +835,10 @@
 				11ED436E1CC903EB00561E33 /* LyricItem.m in Sources */,
 				11ED42E51CC8DF4D00561E33 /* CMD_UploadMBMTV.m in Sources */,
 				11ED43451CC9001C00561E33 /* ImageToVideo.m in Sources */,
+				11DE4A9E1CE4852500A0BE8D /* MediaActionForFast.m in Sources */,
 				11ED42FB1CC8DF4D00561E33 /* PageTag.m in Sources */,
 				11DE4A751CE384A700A0BE8D /* ActionProcess.m in Sources */,
+				11DE4AA61CE4852500A0BE8D /* MediaActionForSlow.m in Sources */,
 				11ED42E11CC8DF4D00561E33 /* CMD_DeleteMyMTV.m in Sources */,
 				11ED42F31CC8DF4D00561E33 /* MTVUploader.m in Sources */,
 				11ED42FF1CC8DF4D00561E33 /* UploadRecord.m in Sources */,
