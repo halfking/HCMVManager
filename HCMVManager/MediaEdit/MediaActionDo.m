@@ -20,6 +20,7 @@
     {
         self.TableName = @"mediaactionsdo";
         self.KeyName = @"MediaActionID,Index";
+        self.DurationInArray = -1;
     }
     return self;
 }
@@ -54,6 +55,22 @@
 {
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
     return -1;
+}
+- (CGFloat) getDurationFinal:(MediaWithAction *)media
+{
+    if(!media||!media.fileName || media.fileName.length<2) return 0;
+    
+    //保存原值
+    NSMutableArray * tempArray = materialList_;
+    CGFloat orgDuration = durationForFinal_;
+    
+    materialList_ = [NSMutableArray arrayWithObject:media];
+    
+    CGFloat duration =  [self getDurationInFinal:nil];
+    //恢复原值
+    materialList_ = tempArray;
+    durationForFinal_ = orgDuration;
+    return duration;
 }
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources
 {

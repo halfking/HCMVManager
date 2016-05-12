@@ -11,6 +11,14 @@
 #import "MediaWithAction.h"
 
 @implementation MediaActionForSlow
+- (id)init
+{
+    if(self =[super init])
+    {
+        self.IsOverlap = YES;
+    }
+    return self;
+}
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources
 {
     if(materialList_ && materialList_.count>0) return materialList_;
@@ -26,9 +34,9 @@
     //指定了素材
     if(item)
     {
-        MediaWithAction * media = [MediaWithAction new];
-        [media fetchAsCore:item];
-        media.Action = [(MediaAction *)self copyItem];
+        MediaWithAction * media = [self toMediaWithAction:sources];
+        
+        media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         materialList_ = [NSMutableArray arrayWithObject:media];
         media.finalDuration = [self getDurationInFinal:sources];
     }
@@ -43,17 +51,25 @@
 {
     if(!materialList_)
     {
-        [self buildMaterialProcess:sources];
+        if(sources)
+        {
+            [self buildMaterialProcess:sources];
+        }
+        else if(self.Media)
+        {
+            MediaWithAction * item = [self toMediaWithAction:sources];
+            materialList_ = [NSMutableArray arrayWithObject:item];
+        }
     }
-    if(durationForFinal_>0) return durationForFinal_;
+    if(!isnan(durationForFinal_) && durationForFinal_>0) return durationForFinal_;
     
     durationForFinal_ = 0;
     for (MediaWithAction * media in materialList_) {
         
         CGFloat duration = 0;
-        if(media.secondsDuration>0)
+        if(media.secondsDurationInArray>0)
         {
-            duration = media.secondsDuration /media.playRate;
+            duration = media.secondsDurationInArray /media.playRate;
         }
         else if(media.Action)
         {
@@ -69,7 +85,7 @@
     MediaWithAction * result = [MediaWithAction new];
     [result fetchAsCore:self.Media];
     result.Action = [(MediaAction *)self copyItem];
-    
+    result.playRate = self.Rate;
     return result;
 }
 @end

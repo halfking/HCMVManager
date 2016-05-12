@@ -56,7 +56,9 @@
 }
 - (NSString *) toString
 {
-    return [NSString stringWithFormat:@"%d(%.2f--%.2f)\t\t%@(%.2f--%.2f)",(int)self.Action.ActionType ,self.secondsInArray,self.finalDuration,[self.fileName lastPathComponent] ,self.secondsBegin,self.secondsEnd];
+    return [NSString stringWithFormat:@"%d(%.2f--%.2f-->%.2f)\t\t%@(%.2f--%.2f) rate:%.2f",(int)self.Action.ActionType ,self.secondsInArray,
+            self.secondsDurationInArray,
+            self.finalDuration,[self.fileName lastPathComponent] ,self.secondsBegin,self.secondsEnd,self.playRate];
 }
 - (void)dealloc
 {

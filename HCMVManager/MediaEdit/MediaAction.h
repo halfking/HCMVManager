@@ -23,6 +23,7 @@
 @property (nonatomic,assign)    CGFloat DurationInSeconds;  //效果延续时间，-1表示不限，此值与Rate无关
 @property (nonatomic,assign)    BOOL IsMutex;       //是否互斥，不能与其它Action重叠
 @property (nonatomic,assign)    BOOL IsFilter;      //是否滤镜
+@property (nonatomic,assign)    BOOL IsOverlap;     //对于源视频是否进行覆盖
 //@property (nonatomic,assign)
 
 - (NSArray *) getSubActionList;

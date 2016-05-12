@@ -16,7 +16,7 @@
 @synthesize ActionTitle,ActionIcon;
 @synthesize ActionType;
 @synthesize SubActions;
-@synthesize Rate,ReverseSeconds,DurationInSeconds,IsMutex,IsFilter;
+@synthesize Rate,ReverseSeconds,DurationInSeconds,IsMutex,IsFilter,IsOverlap;
 -(id)init
 {
     self = [super init];
@@ -29,6 +29,7 @@
         self.ReverseSeconds = 0;
         self.IsMutex = NO;
         self.IsFilter = NO;
+        self.IsOverlap = YES;
     }
     return self;
 }
@@ -73,7 +74,7 @@
     item.DurationInSeconds = self.DurationInSeconds;
     item.IsMutex = self.IsMutex;
     item.IsFilter = self.IsFilter;
-    
+    item.IsOverlap = self.IsOverlap;
     return item;
 }
 - (void)dealloc

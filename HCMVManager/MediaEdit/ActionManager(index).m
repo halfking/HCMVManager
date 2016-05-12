@@ -10,6 +10,7 @@
 #import "MediaAction.h"
 #import "MediaItem.h"
 #import "MediaEditManager.h"
+#import "MediaWithAction.h"
 
 #import "ActionProcess.h"
 
@@ -20,10 +21,11 @@
     @synchronized (self) {
         [mediaList_ removeAllObjects];
         NSAssert(videoBgAction_, @"必须先设置了源背景视频才能进行处理!");
-        
-        [mediaList_ addObject:videoBgAction_];
+        MediaWithAction * bgMedia = [videoBgAction_ copyItem];
+        [mediaList_ addObject:bgMedia];
         ActionProcess * process = [ActionProcess new];
         mediaList_ = [process processActions:actionList_ sources:mediaList_];
+        
         durationForTarget_ = process.duration;
         
         if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:doProcessOK:duration:)])

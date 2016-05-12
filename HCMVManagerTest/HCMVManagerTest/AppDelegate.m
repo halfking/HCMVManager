@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <hccoren/base.h>
+#import "MediaAction.h"
 #import "MediaActionDo.h"
 #import "ActionManager.h"
 #import "MediaWithAction.h"
@@ -29,9 +30,30 @@
     manager.delegate = self;
     NSString * path = [[NSBundle mainBundle]pathForResource:@"test" ofType:@"mp4"];
     [manager setBackMV:path begin:0 end:-1];
-    
-    
-    
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = 1;
+        action.ActionTitle = @"slow";
+        action.ReverseSeconds = 0;
+        action.DurationInSeconds = 1;
+        action.Rate = 0.25;
+        action.IsMutex = NO;
+        action.IsFilter = NO;
+        
+        [manager addActionItem:action filePath:nil at:4 duration:-1];
+    }
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = 2;
+        action.ActionTitle = @"fast";
+        action.ReverseSeconds = 0;
+        action.DurationInSeconds = 2;
+        action.Rate = 2;
+        action.IsMutex = NO;
+        action.IsFilter = NO;
+        
+        [manager addActionItem:action filePath:nil at:7 duration:-1];
+    }
     return YES;
 }
 

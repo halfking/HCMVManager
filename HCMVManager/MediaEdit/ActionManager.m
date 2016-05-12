@@ -82,8 +82,6 @@
     }
     videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
     PP_RELEASE(videoBgAction_);
-    videoBgAction_ = [MediaWithAction new];
-    [videoBgAction_ fetchAsCore:videoBg_];
     
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
@@ -93,8 +91,9 @@
     action.DurationInSeconds = -1;
     action.IsFilter = NO;
     action.IsMutex = NO;
+    action.Media = videoBg_;
     
-    videoBgAction_.Action = action;
+    videoBgAction_ = [action toMediaWithAction:nil];
     
     [self reindexAllActions];
     return YES;
@@ -153,6 +152,17 @@
     else
     {
         item.Media = [videoBg_ copyAsCore];
+        //重新设置开始与结束时间
+        item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
+        //如果外部没有设定时长，则以Action的时长为主
+        if(durationInSeconds <=0)
+        {
+            durationInSeconds = item.DurationInSeconds;
+        }
+        if(durationInSeconds>0)
+        {
+            item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+        }
         //        [item parseCore:[videoBg_ copyAsCore]];
     }
     if(!item.Media || !item.Media.fileName || item.Media.fileName.length<2)
