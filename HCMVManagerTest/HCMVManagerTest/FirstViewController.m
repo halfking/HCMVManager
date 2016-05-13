@@ -130,10 +130,13 @@
 {
     
 }
+#pragma mark - action manager delgates
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {
     NSLog(@"-------------**----**--------------------");
     NSLog(@"duration:%.2f",duration);
+    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
     int index = 0;
     for (MediaWithAction * item in mediaList) {
         NSLog(@"--%d--",index);
@@ -141,6 +144,10 @@
         index ++;
     }
     NSLog(@"**--**--**--**--**--**--**--**--**--**--");
+}
+- (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType
+{
+    NSLog(@"** change actions:%@ type:%d",action.ActionTitle,opType);
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -128,9 +128,21 @@
         }
     }
 }
+//将播放器时间转为原轨时间
 - (CGFloat)getSecondsWithoutAction:(CGFloat)playerSeconds
 {
-#warning need fix 将播放时间变成真实的时间
+    CGFloat secondsInFinal = 0;
+    for (MediaWithAction * item in mediaList_) {
+        if(item.finalDuration <=0) continue;
+        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.finalDuration)
+        {
+            return item.secondsInArray + (playerSeconds - secondsInFinal) * item.secondsDurationInArray /item.finalDuration;
+        }
+        else
+        {
+            secondsInFinal += item.finalDuration;
+        }
+    }
     return playerSeconds;
 }
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action
@@ -206,6 +218,11 @@
     
     [actionList_ addObject:item];
     
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
+    {
+        [self.delegate ActionManager:self actionChanged:item type:0];
+    }
+    
     if(item.isOPCompleted)
     {
         [self reindexAllActions];
@@ -220,6 +237,13 @@
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
+    
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
+    {
+        [self.delegate ActionManager:self actionChanged:action type:1];
+    }
+    
     [self reindexAllActions];
     
     return YES;
@@ -275,6 +299,12 @@
         }
         
         [actionList_ removeObject:actionDo];
+        
+        if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
+        {
+            [self.delegate ActionManager:self actionChanged:actionDo type:2];
+        }
+        
         [self reindexAllActions];
         return YES;
     }
