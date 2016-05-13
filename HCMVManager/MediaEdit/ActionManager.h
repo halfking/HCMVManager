@@ -19,6 +19,7 @@
 @protocol ActionManagerDelegate <NSObject>
 @optional
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration;
+- (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration;
 //-(void) didGetThumbImage:(float)requestTime andPath:(NSString*)path index:(int)index size:(CGSize)size; //index = 0表示只截了当前一张 ，否则表示是一批图中的一张
 //- (void) didGetThumbFailure:(float)requestTime error:(NSString*)error index:(int)index size:(CGSize)size;
 //-(void) didAllThumbsGenerated:(NSArray*) thumbs;
@@ -43,23 +44,32 @@
     MediaEditManager * manager_;        //原有的编辑管理组件
 }
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
-
+@property (nonatomic,assign) BOOL needPlayerItem;
 + (ActionManager *)shareObject;
 
 #pragma mark - action list manager
-- (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
-- (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+- (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+- (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+
+- (BOOL) canAddAction:(MediaAction *)action seconds:(CGFloat)seconds;
+
+//将播放器的时间转成素材轨的时间
+- (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
 
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
-- (BOOL)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
+- (BOOL) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                    at:(CGFloat)posSeconds
              duration:(CGFloat)durationInSeconds;
+
+//当长按时，我们并不知道一个Action的时长，需要结束时再给我们
+- (BOOL) setActionItemDuration:(MediaAction *)action duration:(CGFloat)durationInSeconds;
+
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index;
-- (BOOL)removeActionItem:(MediaAction *)action
+- (BOOL) removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds;
 
-- (BOOL)removeActionItem:(MediaActionDo *)actionDo;
-
+- (BOOL) removeActionItem:(MediaActionDo *)actionDo;
+- (BOOL) removeActions;
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action;
 @end

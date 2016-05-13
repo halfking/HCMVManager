@@ -52,17 +52,27 @@
     CGFloat secondsInArray = 0;
     
     for (MediaWithAction * item in sources) {
-        if(item==mediaToSplit)
+        if(item==mediaToSplit && item.secondsDurationInArray>0)
         {
-            [headList addObject:mediaToSplit];
-            //这里不能用变速后的时长
-            secondsInArray += mediaToSplit.secondsDurationInArray;// [self getDurationForAction:mediaToSplit];
+            //如果起点刚好与新加的动作相同，在非覆盖模式下，此对像后移，但对像地址并没有发生变化，就会出现这种情况。
+            if(mediaToSplit == mediaToTail)
+            {
+                [tailList addObject:mediaToTail];
+            }
+            else
+            {
+                [headList addObject:mediaToSplit];
+                //这里不能用变速后的时长
+                secondsInArray += mediaToSplit.secondsDurationInArray;// [self getDurationForAction:mediaToSplit];
+            }
             isHead = NO;
+            
             //如果后一段就是从前而切出来的，则直接将其后的加入到队列中
             if(!mediaToTail || mediaToTail==mediaToSplit)
             {
                 isTail = YES;
             }
+            continue;
         }
         else if(item == mediaToTail) //由于分割的部分已经加入到了materialList中，所以此处不要添加
         {
@@ -72,12 +82,12 @@
             isHead = NO;
         }
         
-        if(isHead)
+        if(isHead && item.secondsDurationInArray>0)
         {
             [headList addObject:item];
             secondsInArray += item.secondsDurationInArray;// [self getDurationForAction:item];
         }
-        else if(isTail && item!=mediaToSplit)
+        else if(isTail && item!=mediaToSplit && item.secondsDurationInArray>0)
         {
             //如果是覆盖，则不能将这些包含在其中的素材放到结果队列中
             if(actionDo.IsOverlap && [overlapList containsObject:item])
@@ -136,48 +146,83 @@
 - (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps atSeconds:(CGFloat)seconds duration:(CGFloat)duration overlap:(BOOL)isOverlap
 {
     MediaWithAction * media = nil;
-    if(!isOverlap)
-    {
-        media = [overlaps firstObject];
-    }
-    else
-    {
-        media = [overlaps lastObject];
-    }
-    if(!media || seconds <0)
+    
+    if(!overlaps ||overlaps.count==0 || seconds <0 || duration<0)
     {
         NSAssert(media, @"传入了不正确的参数 nil");
         return nil;
     }
-    CGFloat beginChanged = seconds + duration - media.secondsInArray;
-    UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
-    
-    if(fabs(seconds - media.secondsInArray)<0.1)
+    if(isOverlap) //如果是覆盖类型
     {
-        if(beginChanged>0)
+        media = [overlaps lastObject];
+        
+        CGFloat secondsActionEnd = seconds + duration;
+        //计算这个素材的开始时间变化
+        CGFloat beginChanged = secondsActionEnd - media.secondsInArray;
+        
+        UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
+        
+        //从中间截断时
+        if(secondsActionEnd >media.secondsInArray && secondsActionEnd < media.secondsInArray + media.secondsDurationInArray)
         {
-            media.begin = CMTimeMakeWithSeconds(media.secondsBegin + beginChanged,timeScale);
+            //创建后半部
+            MediaWithAction * actionSecond = [media copyItem];
+            actionSecond.finalDuration = -1;
+            
+            //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+            CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+            CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
+            media.end = endTime;
+            media.finalDuration = [self getFinalDurationForMedia:media];
+            
+            
+            actionSecond.begin = CMTimeMakeWithSeconds(actionSecond.secondsBegin + beginChanged, timeScale);;
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(secondsActionEnd,timeScale);
+            actionSecond.finalDuration = [self getFinalDurationForMedia:actionSecond];
+            return actionSecond;
         }
-        media.finalDuration = [self getFinalDurationForMedia:media];
-        return media;
+        else
+        {
+            media.finalDuration = [self getFinalDurationForMedia:media];
+            return media;
+        }
     }
-    else if(seconds>media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+    else
     {
-        MediaWithAction * actionSecond = [media copyItem];
-        actionSecond.finalDuration = -1;
-        CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray;
-        CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
-        media.end = endTime;
+        media = [overlaps firstObject];
         
-        media.finalDuration = [self getFinalDurationForMedia:media];
+        CGFloat beginChanged = seconds + duration - media.secondsInArray;
+        UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
         
-        actionSecond.begin = CMTimeMakeWithSeconds(actionSecond.secondsBegin+beginChanged, timeScale);
-        actionSecond.timeInArray = CMTimeMakeWithSeconds(media.secondsInArray+seconds,timeScale);
-        
-        actionSecond.finalDuration = [self getFinalDurationForMedia:actionSecond];
-        return actionSecond;
+        if(fabs(seconds - media.secondsInArray)<0.1) //起点一致时
+        {
+            if(beginChanged>0)
+            {
+                media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+            }
+            media.finalDuration = [self getFinalDurationForMedia:media];
+            return media;
+        }
+        //从中间截断时
+        else if(seconds>media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+        {
+            //创建后半部
+            MediaWithAction * actionSecond = [media copyItem];
+            actionSecond.finalDuration = -1;
+            
+            //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+            CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray;
+            CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
+            media.end = endTime;
+            
+            media.finalDuration = [self getFinalDurationForMedia:media];
+            
+            actionSecond.begin = endTime;
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+            actionSecond.finalDuration = [self getFinalDurationForMedia:actionSecond];
+            return actionSecond;
+        }
     }
-    
     return nil;
 }
 #pragma mark - 获取受影响的素材队列：需要插入的，需要覆盖的

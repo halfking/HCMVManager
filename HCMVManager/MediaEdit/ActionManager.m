@@ -112,6 +112,27 @@
     }
     return YES;
 }
+- (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)seconds
+{
+    if([self findActionAt:seconds index:-1])
+    {
+        return NO;
+    }
+    else
+    {
+        if(seconds<0||seconds>= videoBg_.secondsDuration)
+            return NO;
+        else
+        {
+            return YES;
+        }
+    }
+}
+- (CGFloat)getSecondsWithoutAction:(CGFloat)playerSeconds
+{
+#warning need fix 将播放时间变成真实的时间
+    return playerSeconds;
+}
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action
 {
     MediaActionDo * item = nil;
@@ -237,6 +258,13 @@
         return YES;
     }
     return NO;
+}
+- (BOOL) removeActions
+{
+    [actionList_ removeAllObjects];
+    [mediaList_ removeAllObjects];
+    [self reindexAllActions];
+    return YES;
 }
 #pragma mark - delegate
 

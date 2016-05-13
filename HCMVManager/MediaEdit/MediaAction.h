@@ -24,6 +24,7 @@
 @property (nonatomic,assign)    BOOL IsMutex;       //是否互斥，不能与其它Action重叠
 @property (nonatomic,assign)    BOOL IsFilter;      //是否滤镜
 @property (nonatomic,assign)    BOOL IsOverlap;     //对于源视频是否进行覆盖
+@property (nonatomic,assign)    BOOL isOPCompleted; //是否操作完成？当Action长按操作时，有可能操作没有完成，需要另外的函数来处理完成
 //@property (nonatomic,assign)
 
 - (NSArray *) getSubActionList;

@@ -8,12 +8,8 @@
 
 #import "AppDelegate.h"
 #import <hccoren/base.h>
-#import "MediaAction.h"
-#import "MediaActionDo.h"
-#import "ActionManager.h"
-#import "MediaWithAction.h"
 
-@interface AppDelegate ()<ActionManagerDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -25,50 +21,11 @@
     
     [DeviceConfig config];
     
-    
-    ActionManager * manager = [ActionManager shareObject];
-    manager.delegate = self;
-    NSString * path = [[NSBundle mainBundle]pathForResource:@"test" ofType:@"mp4"];
-    [manager setBackMV:path begin:0 end:-1];
-    {
-        MediaAction * action = [MediaAction new];
-        action.ActionType = 1;
-        action.ActionTitle = @"slow";
-        action.ReverseSeconds = 0;
-        action.DurationInSeconds = 1;
-        action.Rate = 0.25;
-        action.IsMutex = NO;
-        action.IsFilter = NO;
-        
-        [manager addActionItem:action filePath:nil at:4 duration:-1];
-    }
-    {
-        MediaAction * action = [MediaAction new];
-        action.ActionType = 2;
-        action.ActionTitle = @"fast";
-        action.ReverseSeconds = 0;
-        action.DurationInSeconds = 2;
-        action.Rate = 2;
-        action.IsMutex = NO;
-        action.IsFilter = NO;
-        
-        [manager addActionItem:action filePath:nil at:7 duration:-1];
-    }
-    return YES;
+
+       return YES;
 }
 
-- (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
-{
-    NSLog(@"-------------**----**--------------------");
-    NSLog(@"duration:%.2f",duration);
-    int index = 0;
-    for (MediaWithAction * item in mediaList) {
-        NSLog(@"--%d--",index);
-        NSLog(@"%@",[item toString]);
-        index ++;
-    }
-    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
-}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

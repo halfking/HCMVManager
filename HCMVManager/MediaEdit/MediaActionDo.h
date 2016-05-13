@@ -13,7 +13,7 @@
 @interface MediaActionDo : MediaAction
 {
     NSMutableArray * materialList_;
-    CGFloat durationForFinal_;
+    CGFloat durationForFinal_; //在播放器中的时间
 }
 @property (nonatomic,assign) int Index;                 //在队列中的诹号
 @property (nonatomic,assign) CGFloat SecondsInArray;    //效果的位置

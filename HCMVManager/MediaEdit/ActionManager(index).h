@@ -12,5 +12,5 @@
 #pragma mark - overlap manager
 - (CGFloat) reindexAllActions;
 #pragma mark - export
-//- (NSArray *)exportMediaItems:(
+- (void) generatePlayerItem:(NSArray *)mediaList;
 @end

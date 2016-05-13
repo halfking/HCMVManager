@@ -32,7 +32,10 @@
         {
             [self.delegate ActionManager:self doProcessOK:mediaList_ duration:durationForTarget_];
         }
-        
+        if(self.needPlayerItem)
+        {
+            [self generatePlayerItem:mediaList_];
+        }
         return durationForTarget_;
     }
   
@@ -43,4 +46,8 @@
     return mediaList_;
 }
 #pragma mark - export
+- (void) generatePlayerItem:(NSArray *)mediaList
+{
+    
+}
 @end
