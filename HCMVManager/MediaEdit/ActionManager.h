@@ -57,12 +57,12 @@
 - (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
 
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
-- (BOOL) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
+- (MediaActionDo *) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                    at:(CGFloat)posSeconds
              duration:(CGFloat)durationInSeconds;
 
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
-- (BOOL) setActionItemDuration:(MediaAction *)action duration:(CGFloat)durationInSeconds;
+- (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
 
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index;

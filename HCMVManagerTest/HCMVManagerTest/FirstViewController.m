@@ -18,6 +18,9 @@
 @end
 
 @implementation FirstViewController
+{
+    MediaActionDo * testAction_;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,7 +37,23 @@
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(1040, 20, 64, 44);
+        btn.frame = CGRectMake(104, 20, 64, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"begin" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(beginLongTouch:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+    }
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(204, 20, 64, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"end" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(endLongTouch:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+    }
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(304, 20, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
         [btn setTitle:@"play" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(playItem:) forControlEvents:UIControlEventTouchUpInside];
@@ -58,13 +77,31 @@
         action.IsMutex = NO;
         action.IsFilter = NO;
         
-        [manager addActionItem:action filePath:nil at:4 duration:-1];
+        [manager addActionItem:action filePath:nil at:4 duration:action.DurationInSeconds];
     }
   
 }
 - (void)addItem:(id)sender
 {
      ActionManager * manager = [ActionManager shareObject];
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = 3;
+        action.ActionTitle = @"Rap";
+        action.ReverseSeconds = -1;
+        action.DurationInSeconds = 1;
+        action.Rate = 1;
+        action.IsMutex = NO;
+        action.IsFilter = NO;
+        
+        [manager addActionItem:action filePath:nil at:7 duration:action.DurationInSeconds];
+    }
+
+}
+- (void)beginLongTouch:(id)sender
+{
+    ActionManager * manager = [ActionManager shareObject];
+    
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = 4;
@@ -75,9 +112,19 @@
         action.IsMutex = NO;
         action.IsFilter = NO;
         
-        [manager addActionItem:action filePath:nil at:7 duration:-1];
+        testAction_ = [manager addActionItem:action filePath:nil at:7 duration:-1];
     }
-
+    
+}
+- (void)endLongTouch:(id)sender
+{
+    ActionManager * manager = [ActionManager shareObject];
+    
+    if(!testAction_) return;
+    
+    [manager setActionItemDuration:testAction_ duration:2];
+    
+    
 }
 - (void)playItem:(id)sender
 {

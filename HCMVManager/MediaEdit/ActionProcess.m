@@ -19,7 +19,8 @@
     if(!actions || !sources || actions.count==0 || sources.count==0) return sources;
     NSMutableArray * result = sources;
     for (MediaActionDo * action in actions) {
-        result = [self processAction:action sources:result];
+        if(action.isOPCompleted)
+            result = [self processAction:action sources:result];
     }
     return result;
 }

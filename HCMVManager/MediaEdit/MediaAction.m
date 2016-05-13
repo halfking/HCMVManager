@@ -35,6 +35,18 @@
     }
     return self;
 }
+- (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
+{
+    DurationInSeconds = DurationInSecondsA;
+    if(DurationInSeconds >=0)
+    {
+        self.isOPCompleted = YES;
+    }
+    else
+    {
+        self.isOPCompleted = NO;
+    }
+}
 - (void)setSubActions:(NSString *)SubActionsA
 {
     PP_RELEASE(SubActions);

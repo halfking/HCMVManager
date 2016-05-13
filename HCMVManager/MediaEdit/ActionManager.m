@@ -156,7 +156,7 @@
     [item fetchAsAction:action];
     return item;
 }
-- (BOOL)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
+- (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                    at:(CGFloat)posSeconds
              duration:(CGFloat)durationInSeconds;
 {
@@ -176,10 +176,11 @@
         //重新设置开始与结束时间
         item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
         //如果外部没有设定时长，则以Action的时长为主
-        if(durationInSeconds <=0)
-        {
-            durationInSeconds = item.DurationInSeconds;
-        }
+//        if(durationInSeconds <=0)
+//        {
+//            durationInSeconds = item.DurationInSeconds;
+//        }
+        //DurationInSecons为小于0时，表示长度未定，一般在长按按钮时发生
         if(durationInSeconds>0)
         {
             item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
@@ -189,20 +190,40 @@
     if(!item.Media || !item.Media.fileName || item.Media.fileName.length<2)
     {
         PP_RELEASE(item);
-        return NO;
+        return nil;
     }
-    item.SecondsInArray = posSeconds;
+    item.SecondsInArray = posSeconds + action.ReverseSeconds;
     item.DurationInArray = durationInSeconds;
-    
+    if(durationInSeconds<=0)
+    {
+        item.isOPCompleted = NO;
+    }
+    else
+    {
+        item.isOPCompleted = YES;
+    }
     item.Index = (int)actionList_.count;
     
     [actionList_ addObject:item];
     
+    if(item.isOPCompleted)
+    {
+        [self reindexAllActions];
+    }
+    return item;
+}
+//针对长按等操作，延后设置Action时长
+- (BOOL)setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds
+{
+    if(!action) return NO;
+    if(![actionList_ containsObject:action]) return NO;
+    action.DurationInSeconds = durationInSeconds;
+    action.DurationInArray = durationInSeconds;
+    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     [self reindexAllActions];
     
     return YES;
 }
-
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index
 {

@@ -70,7 +70,7 @@
         {
             duration = media.Action.DurationInSeconds / media.Action.Rate;
        }
-        durationForFinal_ += duration *3; //重复3次
+        durationForFinal_ += duration ; //重复3次
     }
     return durationForFinal_;
 }
