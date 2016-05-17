@@ -495,7 +495,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
     AVURLAsset *movieAsset = nil;
     NSLog(@"play item url:%@",[url absoluteString]);
     
-        movieAsset = [AVURLAsset URLAssetWithURL:url options:nil];
+    movieAsset = [AVURLAsset URLAssetWithURL:url options:nil];
     AVPlayerItem * playerItem = [AVPlayerItem playerItemWithAsset:movieAsset];
     [self changeCurrentPlayerItem:playerItem];
     
@@ -629,31 +629,24 @@ static HCPlayerSimple *sharedPlayerView = nil;
         timeObserver_ = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1, 25)
                                                                   queue:NULL
                                                              usingBlock:^(CMTime time){
-                                                                 //                                                                 __strong HCPlayerSimple *strongSelf = weakSelf;
                                                                  if(weakSelf && !timerDoing_)
                                                                  {
                                                                      timerDoing_ = YES;
                                                                      __strong HCPlayerSimple *strongSelf = weakSelf;
                                                                      
-                                                                     //                                                                     CGFloat endTime = [strongSelf getSecondsEnd];
                                                                      
-                                                                     
-                                                                     //                                                                     CGFloat seconds  = [strongSelf getSecondsBeforeCurrentItem] + CMTimeGetSeconds(time);
                                                                      CGFloat seconds  = CMTimeGetSeconds(time);
                                                                      [strongSelf setDurationWhenWithSeconds:seconds];
                                                                      
                                                                      [strongSelf videoPlayer:strongSelf
                                                                                timeDidChange:seconds];
                                                                      
-                                                                     //结束
-                                                                     //                                                                     if(endTime > 0){
-                                                                     //                                                                         NSLog(@"endtime:%.2f,seconds:%.2f",endTime,seconds);
-                                                                     //                                                                         if(seconds >= endTime -0.01)
-                                                                     //                                                                         {
-                                                                     //                                                                             [strongSelf pause];
-                                                                     //                                                                             [strongSelf videoPlayerDidReachEnd:nil];
-                                                                     //                                                                         }
-                                                                     //                                                                     }
+                                                                     //                                                                     结束
+                                                                     if(secondsEnd_ > 0 && seconds >=secondsEnd_){
+//                                                                         NSLog(@"endtime:%.2f,seconds:%.2f",secondsEnd_,seconds);
+                                                                             [strongSelf pause];
+                                                                             [strongSelf videoPlayerDidReachEnd:weakSelf];
+                                                                     }
                                                                      timerDoing_ = NO;
                                                                  }
                                                              }];

@@ -301,6 +301,17 @@
         [manager_ addActionItem:action filePath:nil at:seconds duration:-1];
     }
 }
+- (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
+{
+    if(playerSimple == rPlayer_)
+    {
+        
+    }
+    else if(playerSimple == player_)
+    {
+        
+    }
+}
 #pragma mark - delegate
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
 {
