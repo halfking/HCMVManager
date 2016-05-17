@@ -330,7 +330,7 @@
         previewAVPlayItem.videoComposition = copyVideoComposition;
         previewAVPlayItem.audioMix = _audioMixOnce;
         
-        NSLog(@"playeritemstatus:%d",previewAVPlayItem.status);
+        NSLog(@"playeritemstatus:%d",(int)previewAVPlayItem.status);
         if(previewAVPlayItem.error)
         {
             NSLog(@"playeritem error:%@",[previewAVPlayItem.error localizedDescription]);
@@ -505,7 +505,7 @@
             NSLog(@"export error:%@",[joinVideoExporter.error localizedDescription]);
             return NO;
         }
-        NSLog(@"export status:%d",joinVideoExporter.status);
+        NSLog(@"export status:%d",(int)joinVideoExporter.status);
     }
     else
     {
@@ -600,15 +600,16 @@
         [joinVideoExporter cancelExport];
         joinVideoExporter = nil;
     }
-    mixComposition = [[AVMutableComposition alloc] init];
-    NSMutableArray *layers  = [[NSMutableArray alloc] init];
-    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableVideoCompositionLayerInstruction *curLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-    //将当前层保存到音频层管理器中
     
-    AVAsset *curAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:path_]];
-    AVAsset *rAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:rPath_]];
+//    mixComposition = [[AVMutableComposition alloc] init];
+//    NSMutableArray *layers  = [[NSMutableArray alloc] init];
+//    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+//    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+//    AVMutableVideoCompositionLayerInstruction *curLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+//    //将当前层保存到音频层管理器中
+//    
+//    AVAsset *curAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:path_]];
+//    AVAsset *rAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:rPath_]];
     
     
     //    for (int i = 0; i< items_.count; i ++) {
@@ -733,17 +734,17 @@
                       failure:(MEFailure)failure
 {
     NSLog(@"start join video!");
-    NSURL * pathForFinalVideo = [self finalVideoUrl];
-    joinVideoExporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-    joinVideoExporter.outputURL = pathForFinalVideo;
-    joinVideoExporter.outputFileType = AVFileTypeQuickTimeMovie;
-    joinVideoExporter.shouldOptimizeForNetworkUse = YES;
-    joinVideoExporter.videoComposition = mainComposition;
-    [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self exportDidFinish:joinVideoExporter];
-        });
-    }];
+//    NSURL * pathForFinalVideo = [self finalVideoUrl];
+//    joinVideoExporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+//    joinVideoExporter.outputURL = pathForFinalVideo;
+//    joinVideoExporter.outputFileType = AVFileTypeQuickTimeMovie;
+//    joinVideoExporter.shouldOptimizeForNetworkUse = YES;
+//    joinVideoExporter.videoComposition = mainComposition;
+//    [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self exportDidFinish:joinVideoExporter];
+//        });
+//    }];
     return NO;
 }
 
@@ -1682,7 +1683,7 @@
     {
         NSLog(@"join video:(mix bgaudio) %@",[error localizedDescription]);
     }
-    NSLog(@"join video:(bg audio) %ld/%d (%ld)",duration.value,bgScale,duration.timescale);
+    NSLog(@"join video:(bg audio) %ld/%d (%ld)",(long)duration.value,(int)bgScale,(long)duration.timescale);
     
     if(rate >0 && rate!=1.0)
     {
