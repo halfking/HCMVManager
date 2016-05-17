@@ -7,15 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */; };
 		114DE5F31CC9C87E004BE152 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F21CC9C87E004BE152 /* QuartzCore.framework */; };
 		114DE5F51CC9C8A8004BE152 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */; };
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
 		114DE5F91CC9C972004BE152 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */; };
-		115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2621CEB2CA300768602 /* AVAssetReverseSession.h */; };
+		115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2621CEB2CA300768602 /* AVAssetReverseSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		115EE2681CEB2CA300768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2631CEB2CA300768602 /* AVAssetReverseSession.m */; };
-		115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2641CEB2CA300768602 /* AVAssetToolsConstants.h */; };
+		115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2641CEB2CA300768602 /* AVAssetToolsConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		115EE26A1CEB2CA300768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2651CEB2CA300768602 /* AVAssetToolsConstants.m */; };
-		115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2661CEB2CA300768602 /* AVAssetToolsMacros.h */; };
+		115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2661CEB2CA300768602 /* AVAssetToolsMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 11754E531CD7507B00F4DA09 /* HCMVManager.podspec */; };
 		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
@@ -149,6 +151,8 @@
 
 /* Begin PBXFileReference section */
 		101D20BEA4571239EE8AC114 /* Pods-HCMVManagerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
+		1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
 		114DE5F21CC9C87E004BE152 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -340,6 +344,8 @@
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
+				1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */,
+				1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */,
 				11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */,
 				11DE4A8E1CE4852500A0BE8D /* MediaActionDo.m */,
 				11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */,
@@ -593,10 +599,8 @@
 				11ED43771CC9051400561E33 /* WTAVAssetExportSession.h in Headers */,
 				11ED42EC1CC8DF4D00561E33 /* MTV.h in Headers */,
 				11ED42EA1CC8DF4D00561E33 /* MBMTV.h in Headers */,
-				115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */,
 				11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */,
 				11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */,
-				115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */,
 				11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */,
 				11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */,
 				11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */,
@@ -613,7 +617,6 @@
 				11ED42FC1CC8DF4D00561E33 /* PlayRecord.h in Headers */,
 				11ED42F21CC8DF4D00561E33 /* MTVUploader.h in Headers */,
 				11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */,
-				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11ED42F61CC8DF4D00561E33 /* Musician.h in Headers */,
 				11ED42E61CC8DF4D00561E33 /* CMD_UploadMTV.h in Headers */,
 				11ED435D1CC9002700561E33 /* Samples.h in Headers */,
@@ -641,6 +644,10 @@
 				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
 				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
 				11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */,
+				115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */,
+				115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */,
+				1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */,
+				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11DE4AAC1CE4EC2500A0BE8D /* mediaedit_full.h in Headers */,
@@ -835,6 +842,7 @@
 				11ED42E31CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m in Sources */,
 				11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */,
 				11ED42FD1CC8DF4D00561E33 /* PlayRecord.m in Sources */,
+				1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
 				11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */,

@@ -33,14 +33,15 @@
 
 @property (assign,nonatomic) CGRect mainBounds;
 @property (assign,nonatomic) BOOL playing;
-@property (assign,nonatomic) BOOL isFull;
-@property (assign,nonatomic) CGFloat secondsPlaying;
-@property (nonatomic,strong) NSString * playerItemKey;
+@property (assign,nonatomic,readonly) CGFloat secondsPlaying;
+//@property (nonatomic,strong) NSString * playerItemKey;
 @property (nonatomic, assign) BOOL isEcoCancellationMode;
 
 @property (nonatomic,assign) BOOL cachingWhenPlaying;   //在播放时是否缓存文件
 
+//用于全局一个播放器时，可以在列表中显示时，找到当前的Player，并且自由处理
 + (instancetype)sharedHCPlayerSimple;
+
 - (id)initWithFrame:(CGRect) frame;
 - (AVPlayerLayer *)currentLayer;
 - (BOOL) canPlay;
@@ -60,8 +61,7 @@
 - (void) changeCurrentItemPath:(NSString *)path;
 - (void) setItemOrgPath:(NSString *)orgPath;
 - (BOOL) isCurrentPath:(NSString *)path;
-//- (BOOL) isCurrentMTV:(MTV*)mtvItem;
-- (void) resetPlayItemKey;
+
 - (NSURL *) getUrlFromString:(NSString *)urlString;
 
 - (CGFloat) getSecondsEnd;
@@ -79,5 +79,5 @@
 
 - (void)readyToRelease;
  
-- (void)setPlayerTransform:(CATransform3D)transform position:(CGPoint)position;
+//- (void)setPlayerTransform:(CATransform3D)transform position:(CGPoint)position;
 @end

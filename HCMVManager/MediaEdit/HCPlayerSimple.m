@@ -33,8 +33,8 @@
     
     int pauseCount_;//即检测到播放速率为0的次数
     
-    CATransform3D transform_;
-    CGPoint position_;
+//    CATransform3D transform_;
+//    CGPoint position_;
 }
 @synthesize player = player_;
 @synthesize playerItem = playerItem_;
@@ -55,11 +55,11 @@
     }
 }
 
-- (void)setPlayerTransform:(CATransform3D)transform position:(CGPoint)position
-{
-    transform_  = transform;
-    position_ = position;
-}
+//- (void)setPlayerTransform:(CATransform3D)transform position:(CGPoint)position
+//{
+//    transform_  = transform;
+//    position_ = position;
+//}
 
 
 static dispatch_once_t t;
@@ -80,8 +80,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
         
         [self clearPlayerContents];
         
-        transform_ = CATransform3DIdentity;
-        position_ = self.center;
+//        transform_ = CATransform3DIdentity;
+//        position_ = self.center;
         //
         //        {
         //            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(didTapped:)];
@@ -340,11 +340,11 @@ static HCPlayerSimple *sharedPlayerView = nil;
     
     [self.layer addSublayer:_playerLayer];
     
-    if(!CATransform3DIsIdentity(transform_))
-    {
-        _playerLayer.transform = transform_;
-        _playerLayer.position = position_;
-    }
+//    if(!CATransform3DIsIdentity(transform_))
+//    {
+//        _playerLayer.transform = transform_;
+//        _playerLayer.position = position_;
+//    }
     if(self.playerItem.status == AVPlayerItemStatusFailed)
     {
         NSLog(@"playeritem error:%@",[self.playerItem.error localizedDescription]);
@@ -456,11 +456,11 @@ static HCPlayerSimple *sharedPlayerView = nil;
     }
 }
 #pragma mark - player item
-- (void)resetPlayItemKey
-{
-    self.playerItemKey =nil;
-    PP_RELEASE(currentPlayUrl_);
-}
+//- (void)resetPlayItemKey
+//{
+//    self.playerItemKey =nil;
+//    PP_RELEASE(currentPlayUrl_);
+//}
 - (void) changeCurrentPlayerItem:(AVPlayerItem *)item
 {
     if(playerItem_!=item)
@@ -516,8 +516,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 - (BOOL) isCurrentPath:(NSString *)path
 {
     if(!path || path.length==0) return NO;
-    if(self.playerItemKey && [self.playerItemKey isEqual:path])
-        return YES;
+//    if(self.playerItemKey && [self.playerItemKey isEqual:path])
+//        return YES;
     if(orgPath_ && [orgPath_ isEqualToString:path])
         return YES;
     //如果敀展名相同也可以的
