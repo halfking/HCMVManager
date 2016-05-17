@@ -131,14 +131,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
                     progress:(MEProgress)progress
                              ready:(MEPlayerItemReady)itemReady;
 
-- (BOOL)generateMVWithActions:(NSArray *)mediaWithActions
-             audio:(NSString *)audioPath
-             begin:(CMTime)beginTime
-               end:(CMTime)endTime
-     bgAudioVolume:(CGFloat)volume
-        singVolume:(CGFloat)singVolume
-          progress:(MEProgress)progress
-             ready:(MEPlayerItemReady)itemReady
-         completed:(MECompleted)complted
-           failure:(MEFailure)failure;
+
+//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
+- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
 @end

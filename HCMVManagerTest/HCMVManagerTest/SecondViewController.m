@@ -359,14 +359,30 @@
 {
     [player pause];
     [rPlayer_ pause];
-    //    SItem * finish = [[SItem alloc] init];
-    //    finish.eTime = CMTimeGetSeconds(player.currentItem.currentTime);
-    //    [Sitems_ addObject:finish];
-    //    NSLog(@"item cnt = %ld", Sitems_.count);
-    //    if (oPath_ && rPath_) {
-    //        SJoin * join = [[SJoin alloc] initWithPath:oPath_ withReverse:rPath_ withSitems:Sitems_];
-    //        [join join];
-    //    }
+    VideoGenerater * vg = [[VideoGenerater alloc]init];
+    [vg resetGenerateInfo];
+//    videoGenerater_.waterMarkFile = waterMarkFile_;
+//    videoGenerater_.mergeRate = mergeRate_;
+//    videoGenerater_.volRampSeconds = volRampSeconds_;
+//    
+//    [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
+//    [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
+    
+    NSArray * actionList = [manager_ getMediaList];
+    
+    BOOL ret = [vg generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
+    {
+        [vg generatePreviewAsset:mediaList   bgVolume:1
+                      singVolume:1
+                      completion:^(BOOL finished)
+         {
+              [vg generateMVFile:mediaList retryCount:0];
+         }];
+    }];
+    if(!ret)
+    {
+        NSLog(@"generate failure.");
+    }
 }
 
 - (void)didReceiveMemoryWarning {

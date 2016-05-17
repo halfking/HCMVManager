@@ -48,7 +48,7 @@
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
 @property (nonatomic,assign) BOOL needPlayerItem;
 + (ActionManager *)shareObject;
-
+- (void) clear;
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
@@ -77,5 +77,5 @@
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action;
 
 #pragma mark - other functions
-
+- (NSArray *) getMediaList;
 @end

@@ -721,33 +721,15 @@
     //    mainComposition.renderSize = _RenderSize;
     return NO;
 }
-
-- (BOOL)generateMVWithActions:(NSArray *)mediaWithActions
-                        audio:(NSString *)audioPath
-                        begin:(CMTime)beginTime
-                          end:(CMTime)endTime
-                bgAudioVolume:(CGFloat)volume
-                   singVolume:(CGFloat)singVolume
-                     progress:(MEProgress)progress
-                        ready:(MEPlayerItemReady)itemReady
-                    completed:(MECompleted)complted
-                      failure:(MEFailure)failure
+//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
+- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^)(NSArray *))complted
 {
-    NSLog(@"start join video!");
-//    NSURL * pathForFinalVideo = [self finalVideoUrl];
-//    joinVideoExporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-//    joinVideoExporter.outputURL = pathForFinalVideo;
-//    joinVideoExporter.outputFileType = AVFileTypeQuickTimeMovie;
-//    joinVideoExporter.shouldOptimizeForNetworkUse = YES;
-//    joinVideoExporter.videoComposition = mainComposition;
-//    [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self exportDidFinish:joinVideoExporter];
-//        });
-//    }];
+    if(complted)
+    {
+        complted(nil);
+    }
     return NO;
 }
-
 ////检查队列中的视频数据，如果在设定的时间范围外的，排除，并且重新计算相对于设定的时间的起止位置
 ////resetBegin 是否以新视频的起点位置作为0 点？否，则以原视频的位置作为原点计算位置。比如从原视频10秒开始，那么10秒的位置在新视频中为0
 //- (NSMutableArray *)checkMediaQueue:(NSArray*)mediaItemQueue beginTime:(CMTime)beginTime endTime:(CMTime)endTime resetBegin:(BOOL)resetBegin

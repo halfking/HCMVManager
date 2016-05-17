@@ -69,6 +69,10 @@
     durationForAudio_ = 0;
     durationForTarget_ = 0;
 }
+- (NSArray *)getMediaList
+{
+    return mediaList_;
+}
 #pragma mark - action list manager
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
