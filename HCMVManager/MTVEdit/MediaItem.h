@@ -21,6 +21,7 @@
 @property (nonatomic,assign,readonly,getter=get_isImg) BOOL isImg;//是图片还是视频
 @property (nonatomic,readwrite) MediaItemInQueueType originType;
 @property (nonatomic,PP_STRONG) NSString * fileName;
+@property (nonatomic,PP_STRONG) NSString * fileNameGenerated; //经过加减速或滤镜处理过的文件，标准从0开始，到文件尾结束，加入到视频中时，不用处理开始与结束时间。
 @property (nonatomic,PP_STRONG) NSString * title;
 @property (nonatomic,PP_STRONG) NSURL * url;
 @property (nonatomic,assign) int degree;//拍摄 方向
@@ -46,6 +47,7 @@
 
 - (NSString *)filePath;
 - (BOOL)isEqual:(MediaItemCore *)item;
+- (void)fetchAsCore:(MediaItemCore *)item;
 @end
 
 @interface MediaItem : MediaItemCore

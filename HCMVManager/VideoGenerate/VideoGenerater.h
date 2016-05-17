@@ -132,6 +132,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
                              ready:(MEPlayerItemReady)itemReady;
 
 
-//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
-- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
+
+//将视频倒序来放
+- (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath complted:(void (^)(NSString * filePath))complted;
 @end

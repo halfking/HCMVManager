@@ -73,6 +73,28 @@
 {
     return mediaList_;
 }
+//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
+- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^)(NSArray *))complted
+{
+    NSMutableArray * resultList = [NSMutableArray new];
+    for (MediaWithAction * action in mediaWithActions) {
+        MediaItem * item = [[MediaItem alloc]init];
+        [item fetchAsCore:(MediaItemCore*)action];
+        if(item.fileNameGenerated && item.fileNameGenerated.length>0)
+        {
+#warning 需要修改此处的开始与结束时间，以便于处理
+            item.begin = CMTimeMakeWithSeconds(0,item.begin.timescale);
+            item.end = item.duration;
+            item.fileName = item.fileNameGenerated;
+        }
+        [resultList addObject:item];
+    }
+    if(complted)
+    {
+        complted(resultList);
+    }
+    return NO;
+}
 #pragma mark - action list manager
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {

@@ -20,6 +20,7 @@
 #import "MediaListModel.h"
 #import "AudioGenerater.h"
 #import "MediaEditManager.h"
+#import "AVAssetReverseSession.h"
 
 @interface VideoGenerater()
 {
@@ -721,15 +722,7 @@
     //    mainComposition.renderSize = _RenderSize;
     return NO;
 }
-//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
-- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^)(NSArray *))complted
-{
-    if(complted)
-    {
-        complted(nil);
-    }
-    return NO;
-}
+
 ////检查队列中的视频数据，如果在设定的时间范围外的，排除，并且重新计算相对于设定的时间的起止位置
 ////resetBegin 是否以新视频的起点位置作为0 点？否，则以原视频的位置作为原点计算位置。比如从原视频10秒开始，那么10秒的位置在新视频中为0
 //- (NSMutableArray *)checkMediaQueue:(NSArray*)mediaItemQueue beginTime:(CMTime)beginTime endTime:(CMTime)endTime resetBegin:(BOOL)resetBegin
@@ -1046,6 +1039,48 @@
     
     composition.animationTool = [AVVideoCompositionCoreAnimationTool
                                  videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+}
+- (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath complted:(void (^)(NSString * filePath))complted
+{
+    if(![HCFileManager isExistsFile:sourcePath])
+    {
+        NSLog(@"file not exists:%@",sourcePath);
+        return NO;
+    }
+    if(!targetPath||targetPath.length<2)
+    {
+        NSLog(@"target file name is nil");
+        return NO;
+    }
+    if([HCFileManager isExistsFile:targetPath])
+        {
+            [[HCFileManager manager] removeFileAtPath:targetPath];
+        }
+    
+    AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:sourcePath]];
+    AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
+    NSURL *outputURL = [NSURL fileURLWithPath:targetPath];
+    
+    session.outputFileType = AVFileTypeMPEG4;
+    session.outputURL = outputURL;
+    [session reverseAsynchronouslyWithCompletionHandler:^{
+        if (session.status == AVAssetReverseSessionStatusCompleted) {
+            NSURL *outputURL = session.outputURL;
+            NSLog(@"reverse mv file finished:%@",[outputURL path]);
+            if(complted)
+            {
+                complted([outputURL path]);
+            }
+        } else {
+            
+            NSLog(@"rever failed");
+            if(complted)
+            {
+                complted(nil);
+            }
+        }
+    }];
+    return YES;
 }
 #pragma mark - 合成标题
 - (AVVideoCompositionCoreAnimationTool *)compositeTitleAndLyric:(NSArray*)lyricItems duration:(CMTime)duration size:(CGSize)size rate:(CGFloat)rate

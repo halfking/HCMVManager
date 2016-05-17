@@ -22,7 +22,7 @@
 @synthesize secondsInArray;
 @synthesize secondsBegin,secondsEnd;
 @synthesize secondsDurationInArray,secondsDuration;
-
+@synthesize fileNameGenerated;
 -(id)init
 {
     self = [super init];
@@ -41,6 +41,7 @@
     PP_RELEASE(title);
     PP_RELEASE(cover);
     PP_RELEASE(url);
+    PP_RELEASE(fileNameGenerated);
     
     PP_SUPERDEALLOC;
 }
@@ -177,5 +178,30 @@
     coreItem.timeInArray = self.timeInArray;
     coreItem.renderSize = self.renderSize;
     return PP_AUTORELEASE(coreItem);
+}
+- (void)fetchAsCore:(MediaItemCore *)item
+{
+    if(!item) return;
+    
+    self.fileName = item.fileName;
+    self.title = item.title;
+    self.cover = item.cover;
+    self.url = item.url;
+    self.key = item.key;
+    self.duration = item.duration;
+    self.begin = item.begin;
+    self.end = item.end;
+    self.originType = item.originType;
+    self.cutInMode = item.cutInMode;
+    self.cutOutMode = item.cutOutMode;
+    self.cutInTime = item.cutInTime;
+    self.cutOutTime = item.cutOutTime;
+    self.playRate = item.playRate;
+    self.timeInArray = item.timeInArray;
+    self.renderSize = item.renderSize;
+    self.playRate = item.playRate;
+    self.isOnlyAudio = item.isOnlyAudio;
+    self.renderSize = item.renderSize;
+    self.fileNameGenerated = item.fileNameGenerated;
 }
 @end

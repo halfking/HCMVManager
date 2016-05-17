@@ -78,4 +78,6 @@
 
 #pragma mark - other functions
 - (NSArray *) getMediaList;
+//将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
+- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
 @end

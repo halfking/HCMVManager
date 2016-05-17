@@ -15,7 +15,7 @@
 @interface MediaWithAction : MediaItemCore
 @property (nonatomic,PP_STRONG) MediaAction * Action;
 @property (nonatomic,assign) CGFloat finalDuration;
-- (void)fetchAsCore:(MediaItemCore *)item;
+
 - (MediaWithAction *)copyItem;
 - (NSString *) toString;
 @end

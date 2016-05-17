@@ -15,7 +15,7 @@
 #import "ActionManager.h"
 #import "MediaAction.h"
 #import "WTPlayerResource.h"
-
+#import <hccoren/base.h>
 @interface SecondViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate>
 @property (nonatomic, strong) AVAssetReverseSession *reverseSession;
 @end
@@ -131,35 +131,43 @@
     [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
     [player play];
     repeatTime_ = kCMTimeZero;
-    if (!_reverseSession) {
-        NSURL *fileURL = [NSURL fileURLWithPath:oPath_];
-        AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
-        AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
-        NSString *outputURL = [NSTemporaryDirectory() stringByAppendingPathComponent:@"output.mp4"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:outputURL]) {
-            [[NSFileManager defaultManager] removeItemAtPath:outputURL error:nil];
-        }
-        session.outputFileType = AVFileTypeMPEG4;
-        session.outputURL = [NSURL fileURLWithPath:outputURL];
-        [session reverseAsynchronouslyWithCompletionHandler:^{
-            if (session.status == AVAssetReverseSessionStatusCompleted) {
-                NSLog(@"finished");
-                NSURL *outputURL = session.outputURL;
-                rPath_ = [outputURL path];
-                AVAsset * asset = [AVAsset assetWithURL:outputURL];
-                AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-                rPlayer_ = [AVPlayer playerWithPlayerItem:item];
-                rLayer_ = [AVPlayerLayer playerLayerWithPlayer:rPlayer_];
-                rLayer_.frame = CGRectMake(0, 0, 414, 414.0 / 16 * 9);
-                rLayer_.opacity = 0;
-                [self.view.layer addSublayer:rLayer_];
-            } else {
-                NSLog(@"rever failed");
-            }
-        }];
-        
-        _reverseSession = session;
-    }
+    
+    NSString *outputPath = [[HCFileManager manager]tempFileFullPath:[NSString stringWithFormat:@"reverse%ld.mp4",[CommonUtil getDateTicks:[NSDate date]]]];
+    
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg generateMVReverse:oPath_ target:outputPath complted:^(NSString * filePath){
+        AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
+        AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
+        rPlayer_ = [AVPlayer playerWithPlayerItem:item];
+        rLayer_ = [AVPlayerLayer playerLayerWithPlayer:rPlayer_];
+        rLayer_.frame = CGRectMake(0, 0, 414, 414.0 / 16 * 9);
+        rLayer_.opacity = 0;
+        [self.view.layer addSublayer:rLayer_];
+    }];
+    
+//    if (!_reverseSession) {
+//        NSURL *fileURL = [NSURL fileURLWithPath:oPath_];
+//        AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
+//        AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
+//        NSString *outputURL = [NSTemporaryDirectory() stringByAppendingPathComponent:@"output.mp4"];
+//        if ([[NSFileManager defaultManager] fileExistsAtPath:outputURL]) {
+//            [[NSFileManager defaultManager] removeItemAtPath:outputURL error:nil];
+//        }
+//        session.outputFileType = AVFileTypeMPEG4;
+//        session.outputURL = [NSURL fileURLWithPath:outputURL];
+//        [session reverseAsynchronouslyWithCompletionHandler:^{
+//            if (session.status == AVAssetReverseSessionStatusCompleted) {
+//                NSLog(@"finished");
+//                NSURL *outputURL = session.outputURL;
+//                rPath_ = [outputURL path];
+//                
+//            } else {
+//                NSLog(@"rever failed");
+//            }
+//        }];
+//        
+//        _reverseSession = session;
+//    }
 }
 -(void)repeat:(UIButton *)sender
 {
@@ -370,7 +378,7 @@
     
     NSArray * actionList = [manager_ getMediaList];
     
-    BOOL ret = [vg generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
+    BOOL ret = [manager_ generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
     {
         [vg generatePreviewAsset:mediaList   bgVolume:1
                       singVolume:1
