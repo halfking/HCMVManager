@@ -9,6 +9,16 @@
 #import <hccoren/base.h>
 #import "MediaItem.h"
 
+typedef NS_ENUM(int, SType)
+{
+    SNormal = 0,
+    SSlow,
+    SFast,
+    SRepeat,
+    SReverse,
+    SModel = 9999
+};
+
 @class MediaWithAction;
 
 /* Action 模板，即Action的抽像操作模式 */
@@ -16,7 +26,7 @@
 @property (nonatomic,assign) int    MediaActionID;
 @property (nonatomic,PP_STRONG) NSString * ActionTitle;
 @property (nonatomic,PP_STRONG) NSString * ActionIcon;
-@property (nonatomic,assign) int ActionType;//暂定4个，1 表示慢速 2 表示加速 3表示Rap 4表示倒放 0表示无特效 99999表示是一个模板类型的，
+@property (nonatomic,assign) SType ActionType;//暂定4个，1 表示慢速 2 表示加速 3表示Rap 4表示倒放 0表示无特效 99999表示是一个模板类型的，
 @property (nonatomic,PP_STRONG) NSString * SubActions;
 @property (nonatomic,assign)    CGFloat Rate;           //对播放速度的影响
 @property (nonatomic,assign)    CGFloat ReverseSeconds;  //从当前播放位置的何处开始。如-1，表示从当前位置前一秒开始生效

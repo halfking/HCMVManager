@@ -8,8 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SecondViewController : UIViewController
+#import <AVFoundation/AVFoundation.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
+#define RepeatTime 1.5
+@interface SecondViewController : UIViewController
+{
+    AVPlayer * player;
+    AVPlayerLayer * layer;
+    CFTimeInterval pausedTime1;
+}
+@property(strong, nonatomic) UIView * Preview;
+@property(strong, nonatomic) UIView * Progress;
+@property(strong, nonatomic) UIView * Menu;
 
 @end
 

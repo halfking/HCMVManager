@@ -787,9 +787,12 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     //    generator.maximumSize = size;
     [generator generateCGImagesAsynchronouslyForTimes:thumbnailTimes completionHandler:handler];
 }
-- (BOOL) getVideoThumbs:(NSURL *)url alAsset:(ALAsset *)alAsset  targetThumnateFileName:(NSString *)fileName
+- (BOOL) getVideoThumbs:(NSURL *)url
+                alAsset:(ALAsset *)alAsset
+ targetThumnateFileName:(NSString *)fileName
                   begin:(float) start
-                 andEnd:(float) end andStep:(float)step
+                 andEnd:(float) end
+                andStep:(float)step
                andCount:(int)count
                 andSize:(CGSize)size
                callback:(generateCompletedNew)onegenerated
@@ -909,8 +912,11 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     }
     return YES;
 }
-- (void)generateImages:(AVAsset*)asset times:(NSArray *)thumbnailTimes prevTotal:(CGFloat)prevTotal
-                  path:(NSString *)fileName size:(CGSize)size
+- (void)generateImages:(AVAsset*)asset
+                 times:(NSArray *)thumbnailTimes
+             prevTotal:(CGFloat)prevTotal
+                  path:(NSString *)fileName
+                  size:(CGSize)size
               callback:(generateCompletedNew)onegenerated
                failure:(generateFailure)failure
 {

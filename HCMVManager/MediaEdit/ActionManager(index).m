@@ -13,6 +13,7 @@
 #import "MediaWithAction.h"
 
 #import "ActionProcess.h"
+#import "WTPlayerResource.h"
 
 @implementation ActionManager(index)
 #pragma mark - overlap manager
@@ -49,5 +50,11 @@
 - (void) generatePlayerItem:(NSArray *)mediaList
 {
     
+}
+
+- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize
+{
+    
+    return NO;
 }
 @end

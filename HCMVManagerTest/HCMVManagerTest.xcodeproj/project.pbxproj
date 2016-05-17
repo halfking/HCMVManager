@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */; };
+		115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */; };
+		115EE2601CEAFD1500768602 /* SJoin.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE25F1CEAFD1500768602 /* SJoin.m */; };
 		118CE86A1CE1AF8D00290641 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8691CE1AF8D00290641 /* main.m */; };
 		118CE86D1CE1AF8D00290641 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE86C1CE1AF8D00290641 /* AppDelegate.m */; };
 		118CE8701CE1AF8D00290641 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE86F1CE1AF8D00290641 /* FirstViewController.m */; };
@@ -72,6 +75,13 @@
 
 /* Begin PBXFileReference section */
 		053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.debug.xcconfig"; sourceTree = "<group>"; };
+		115EE2571CEAFC1A00768602 /* AVAssetReverseSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetReverseSession.h; sourceTree = "<group>"; };
+		115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetReverseSession.m; sourceTree = "<group>"; };
+		115EE2591CEAFC1A00768602 /* AVAssetToolsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsConstants.h; sourceTree = "<group>"; };
+		115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetToolsConstants.m; sourceTree = "<group>"; };
+		115EE25B1CEAFC1A00768602 /* AVAssetToolsMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsMacros.h; sourceTree = "<group>"; };
+		115EE25E1CEAFD1500768602 /* SJoin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SJoin.h; sourceTree = "<group>"; };
+		115EE25F1CEAFD1500768602 /* SJoin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SJoin.m; sourceTree = "<group>"; };
 		118CE8651CE1AF8D00290641 /* HCMVManagerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HCMVManagerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		118CE8691CE1AF8D00290641 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		118CE86B1CE1AF8D00290641 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -207,6 +217,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		115EE2561CEAFC1A00768602 /* AVReverse */ = {
+			isa = PBXGroup;
+			children = (
+				115EE2571CEAFC1A00768602 /* AVAssetReverseSession.h */,
+				115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */,
+				115EE2591CEAFC1A00768602 /* AVAssetToolsConstants.h */,
+				115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */,
+				115EE25B1CEAFC1A00768602 /* AVAssetToolsMacros.h */,
+			);
+			path = AVReverse;
+			sourceTree = "<group>";
+		};
 		118CE85C1CE1AF8D00290641 = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +406,9 @@
 		118CE8D01CE1B00D00290641 /* VideoGenerate */ = {
 			isa = PBXGroup;
 			children = (
+				115EE25E1CEAFD1500768602 /* SJoin.h */,
+				115EE25F1CEAFD1500768602 /* SJoin.m */,
+				115EE2561CEAFC1A00768602 /* AVReverse */,
 				118CE8D11CE1B00D00290641 /* AudioGenerater.h */,
 				118CE8D21CE1B00D00290641 /* AudioGenerater.m */,
 				118CE8D31CE1B00D00290641 /* ImageToVideo.h */,
@@ -572,6 +597,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				115EE2601CEAFD1500768602 /* SJoin.m in Sources */,
 				118CE8FA1CE1B00D00290641 /* PageTag.m in Sources */,
 				118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */,
 				118CE8E61CE1B00D00290641 /* MediaEditManager(Draft).m in Sources */,
@@ -579,6 +605,7 @@
 				118CE8F91CE1B00D00290641 /* MusicTag.m in Sources */,
 				118CE9001CE1B00D00290641 /* AudioGenerater.m in Sources */,
 				118CE8FF1CE1B00D00290641 /* VDCManager(MTV).m in Sources */,
+				115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */,
 				118CE9011CE1B00D00290641 /* ImageToVideo.m in Sources */,
 				118CE8E71CE1B00D00290641 /* MediaEditManager.m in Sources */,
 				118CE8E91CE1B00D00290641 /* Samples.m in Sources */,
@@ -598,6 +625,7 @@
 				11DE4A831CE4662500A0BE8D /* MediaActionForReverse.m in Sources */,
 				118CE8E41CE1B00D00290641 /* MaibaTables.m in Sources */,
 				118CE8F81CE1B00D00290641 /* Musician.m in Sources */,
+				115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */,
 				118CE8EE1CE1B00D00290641 /* CMD_GetUserMTVBySample.m in Sources */,
 				118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */,
 				11DE4A7D1CE465F100A0BE8D /* MediaActionForFast.m in Sources */,

@@ -288,12 +288,12 @@
 }
 +(CAAnimationGroup *)buildTitleAnimates:(NSString *)title singer:(NSString*)singer size:(CGSize)size font:(UIFont *)font
 {
-    CMTime duration = CMTimeMakeWithSeconds(3, 1000);
-    
-    UIColor * color = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-    UIColor * shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
-    
-    UIImage * blankImage = [self imageFromText:@"" size:size font:font color:color shadowColor:nil];
+//    CMTime duration = CMTimeMakeWithSeconds(3, 1000);
+//    
+//    UIColor * color = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+//    UIColor * shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+//    
+//    UIImage * blankImage = [self imageFromText:@"" size:size font:font color:color shadowColor:nil];
     
     //    CAKeyframeAnimation * overlay = [self scaleLyricsN:lyrics size:size font:font];
     //

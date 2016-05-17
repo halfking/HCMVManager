@@ -62,9 +62,12 @@ typedef void (^generateFailure)(CMTime requestTime,NSError *error,NSString *file
 
 //获取一个视频的截图
 //targetThumnateFileName 目标文件的名字，不含路径
-- (BOOL) getVideoThumbs:(NSURL *)url alAsset:(ALAsset *)alAsset targetThumnateFileName:(NSString *)fileName
+- (BOOL) getVideoThumbs:(NSURL *)url
+                alAsset:(ALAsset *)alAsset
+ targetThumnateFileName:(NSString *)fileName
                   begin:(float) start
-                 andEnd:(float) end andStep:(float)step
+                 andEnd:(float) end
+                andStep:(float)step
                andCount:(int)count
                 andSize:(CGSize)size
                callback:(generateCompletedNew)onegenerated
@@ -78,5 +81,5 @@ typedef void (^generateFailure)(CMTime requestTime,NSError *error,NSString *file
 #pragma mark - dirs
 -(NSString *)getThumnatePath:(NSString *)filename minsecond:(int)minsecond size:(CGSize)size;
 - (BOOL) removeThumnates:(NSString *)orgFileName size:(CGSize) size;
-- (BOOL) removeTempVideos;
+//- (BOOL) removeTempVideos;
 @end

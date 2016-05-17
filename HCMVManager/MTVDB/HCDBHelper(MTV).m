@@ -88,7 +88,7 @@
     }
     
 }
-+ (void)updateMtvAudioRemoteUrl:(NSInteger)mtvID removeUrl:(NSString *)removeUrl
++ (void)updateMtvAudioRemoteUrl:(long)mtvID removeUrl:(NSString *)removeUrl
 {
     if(mtvID==0) return;
     NSString * sql = [NSString stringWithFormat:@"update mtvs set AudioRemoteUrl='%@' where mtvid=%li;",removeUrl?removeUrl:@"",(long)mtvID];

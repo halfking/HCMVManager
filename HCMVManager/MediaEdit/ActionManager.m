@@ -22,7 +22,9 @@
 #import "MediaActionForNormal.h"
 #import "MediaActionForReverse.h"
 
-@interface ActionManager()<WTPlayerResourceDelegate,VideoGeneraterDelegate>
+#import "WTPlayerResource.h"
+
+@interface ActionManager()<VideoGeneraterDelegate>
 
 @end
 @implementation ActionManager
@@ -237,7 +239,7 @@
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
-    
+    action.isOPCompleted = YES;
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {
@@ -318,5 +320,25 @@
     return YES;
 }
 #pragma mark - delegate
-
+- (void)VideoGenerater:(VideoGenerater*)queue didPlayerItemReady:(AVPlayerItem *)playerItem
+{
+    NSLog(@"playeritem ready...");
+}
+- (void)VideoGenerater:(VideoGenerater *)queue didItemsChanged:(BOOL)finished
+{
+    NSLog(@"items changed:%d",finished);
+}
+- (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress
+{
+    NSLog(@"progress:%f",progress);
+}
+- (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error
+{
+    NSLog(@"generate failure:%@",msg);
+    NSLog(@"error:%@",[error localizedDescription]);
+}
+- (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
+{
+    NSLog(@"generate completed:%@",[fileUrl path]);
+}
 @end
