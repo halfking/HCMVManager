@@ -2208,7 +2208,16 @@
     
     return joinVideoUrl;
 }
-
+- (void) setBlock:(MEProgress)progress
+            ready:(MEPlayerItemReady)itemReady
+        completed:(MECompleted)complted
+          failure:(MEFailure)failure
+{
+    progressBlock_ = progress;
+    itemReadyBlock_ = itemReady;
+    completedBlock_ = complted;
+    failureBlock_ = failure;
+}
 #pragma mark - remove clear
 - (void)removeFileAssociateWithPath:(NSString *)path
 {

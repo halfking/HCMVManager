@@ -11,6 +11,11 @@
 		114DE5F51CC9C8A8004BE152 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */; };
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
 		114DE5F91CC9C972004BE152 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */; };
+		115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2621CEB2CA300768602 /* AVAssetReverseSession.h */; };
+		115EE2681CEB2CA300768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2631CEB2CA300768602 /* AVAssetReverseSession.m */; };
+		115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2641CEB2CA300768602 /* AVAssetToolsConstants.h */; };
+		115EE26A1CEB2CA300768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2651CEB2CA300768602 /* AVAssetToolsConstants.m */; };
+		115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EE2661CEB2CA300768602 /* AVAssetToolsMacros.h */; };
 		11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 11754E531CD7507B00F4DA09 /* HCMVManager.podspec */; };
 		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
@@ -148,6 +153,11 @@
 		114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		114DE5F81CC9C972004BE152 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		115EE2621CEB2CA300768602 /* AVAssetReverseSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetReverseSession.h; sourceTree = "<group>"; };
+		115EE2631CEB2CA300768602 /* AVAssetReverseSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetReverseSession.m; sourceTree = "<group>"; };
+		115EE2641CEB2CA300768602 /* AVAssetToolsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsConstants.h; sourceTree = "<group>"; };
+		115EE2651CEB2CA300768602 /* AVAssetToolsConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetToolsConstants.m; sourceTree = "<group>"; };
+		115EE2661CEB2CA300768602 /* AVAssetToolsMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsMacros.h; sourceTree = "<group>"; };
 		11754E531CD7507B00F4DA09 /* HCMVManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HCMVManager.podspec; sourceTree = "<group>"; };
 		11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_GetUserMTVBySample.h; sourceTree = "<group>"; };
 		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
@@ -315,6 +325,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		115EE2611CEB2CA300768602 /* AVReverse */ = {
+			isa = PBXGroup;
+			children = (
+				115EE2621CEB2CA300768602 /* AVAssetReverseSession.h */,
+				115EE2631CEB2CA300768602 /* AVAssetReverseSession.m */,
+				115EE2641CEB2CA300768602 /* AVAssetToolsConstants.h */,
+				115EE2651CEB2CA300768602 /* AVAssetToolsConstants.m */,
+				115EE2661CEB2CA300768602 /* AVAssetToolsMacros.h */,
+			);
+			path = AVReverse;
+			sourceTree = "<group>";
+		};
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,6 +514,7 @@
 		11ED43391CC9001C00561E33 /* VideoGenerate */ = {
 			isa = PBXGroup;
 			children = (
+				115EE2611CEB2CA300768602 /* AVReverse */,
 				11ED43711CC904A200561E33 /* WTPlayerResource.h */,
 				11ED43721CC904A200561E33 /* WTPlayerResource.m */,
 				11ED433A1CC9001C00561E33 /* AudioGenerater.h */,
@@ -570,8 +593,10 @@
 				11ED43771CC9051400561E33 /* WTAVAssetExportSession.h in Headers */,
 				11ED42EC1CC8DF4D00561E33 /* MTV.h in Headers */,
 				11ED42EA1CC8DF4D00561E33 /* MBMTV.h in Headers */,
+				115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */,
 				11ED431A1CC8E2D200561E33 /* UDManager(MTV).h in Headers */,
 				11ED43571CC9002700561E33 /* MediaEditManager(Draft).h in Headers */,
+				115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */,
 				11ED42E01CC8DF4D00561E33 /* CMD_DeleteMyMTV.h in Headers */,
 				11ED437B1CC9056800561E33 /* SDAVAssetExportSession.h in Headers */,
 				11ED431C1CC8E2D200561E33 /* VDCManager(MTV).h in Headers */,
@@ -588,6 +613,7 @@
 				11ED42FC1CC8DF4D00561E33 /* PlayRecord.h in Headers */,
 				11ED42F21CC8DF4D00561E33 /* MTVUploader.h in Headers */,
 				11ED40551CC6952B00561E33 /* HCMVManager.h in Headers */,
+				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11ED42F61CC8DF4D00561E33 /* Musician.h in Headers */,
 				11ED42E61CC8DF4D00561E33 /* CMD_UploadMTV.h in Headers */,
 				11ED435D1CC9002700561E33 /* Samples.h in Headers */,
@@ -818,11 +844,13 @@
 				11ED42DD1CC8DF4D00561E33 /* CMD_CreateMTV.m in Sources */,
 				11ED431D1CC8E2D200561E33 /* VDCManager(MTV).m in Sources */,
 				11ED42E91CC8DF4D00561E33 /* Material.m in Sources */,
+				115EE26A1CEB2CA300768602 /* AVAssetToolsConstants.m in Sources */,
 				11ED435E1CC9002700561E33 /* Samples.m in Sources */,
 				11DE4AA21CE4852500A0BE8D /* MediaActionForRAP.m in Sources */,
 				11ED42E71CC8DF4D00561E33 /* CMD_UploadMTV.m in Sources */,
 				11ED43701CC903EB00561E33 /* LyricLayerAnimation.m in Sources */,
 				11ED435C1CC9002700561E33 /* MediaItem.m in Sources */,
+				115EE2681CEB2CA300768602 /* AVAssetReverseSession.m in Sources */,
 				11DE4AA41CE4852500A0BE8D /* MediaActionForReverse.m in Sources */,
 				11ED43471CC9001C00561E33 /* MediaListModel.m in Sources */,
 				11ED42F71CC8DF4D00561E33 /* Musician.m in Sources */,

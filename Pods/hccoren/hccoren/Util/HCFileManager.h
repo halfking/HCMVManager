@@ -45,7 +45,8 @@
 
 
 #pragma mark - fileName
-- (NSString *)getRootPath;
+- (NSString *) getFileNameByTicks:(NSString *)fileName;
+- (NSString *) getRootPath;
 //只记录相对位置。相对转绝对
 - (BOOL) isFullFilePath:(NSString *)filePath;
 - (NSString *) getFileName:(NSString*)filePath;

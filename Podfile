@@ -8,7 +8,7 @@ target 'HCMVManager' do
   # Pods for HCMVManager
 
   pod 'HCMinizip'
-  pod 'hccoren’,'~>0.3.3'
+  pod 'hccoren’,'~>0.3.4'
   pod 'HCBaseSystem’,'~>0.3.3'
 
   target 'HCMVManagerTests' do

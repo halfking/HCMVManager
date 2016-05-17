@@ -12,6 +12,7 @@
 #import "JSON.h"
 #import <HCMinizip/ZipFile.h>
 #import "CommonUtil.h"
+#import "CommonUtil(Date).h"
 #include <sys/param.h>
 #include <sys/mount.h>
 
@@ -616,6 +617,24 @@ static HCFileManager * hcFileManager = nil;
 }
 
 #pragma mark - filename & filePath转换
+- (NSString *) getFileNameByTicks:(NSString *)fileName
+{
+    if(!fileName) return nil;
+    
+    NSRange r = [fileName rangeOfString:@"." options:NSBackwardsSearch];
+    if(r.location !=NSNotFound)
+    {
+        return [NSString stringWithFormat:@"%@_%ld%@",
+                [fileName substringToIndex:r.location],
+                [CommonUtil getDateTicks:[NSDate date]],
+                [fileName substringFromIndex:r.location]
+                ];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%@_%ld",fileName,[CommonUtil getDateTicks:[NSDate date]]];
+    }
+}
 - (NSString *)getRootPath
 {
     if(!rootPath_ || rootPath_.length==0)

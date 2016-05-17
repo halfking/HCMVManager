@@ -8,7 +8,7 @@
 
 #import "ActionManager.h"
 #import "ActionManager(index).h"
-
+#import <hccoren/base.h>
 #import "MediaAction.h"
 #import "MediaItem.h"
 #import "MediaActionDo.h"
@@ -47,7 +47,7 @@
     if(self == [super init])
     {
         actionList_ = [NSMutableArray new];
-//        mediaListBG_ = [NSMutableArray new];
+        //        mediaListBG_ = [NSMutableArray new];
         mediaList_ = [NSMutableArray new];
         mediaListFilter_ = [NSMutableArray new];
         manager_ = [MediaEditManager new];
@@ -63,15 +63,19 @@
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
-//    [mediaListBG_ removeAllObjects];
+    //    [mediaListBG_ removeAllObjects];
     
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
 }
-- (NSArray *)getMediaList
+- (NSArray *) getMediaList
 {
     return mediaList_;
+}
+- (MediaItem *) getBaseVideo
+{
+    return videoBg_;
 }
 //将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
 - (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^)(NSArray *))complted
@@ -98,18 +102,42 @@
 #pragma mark - action list manager
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
-    PP_RELEASE(videoBg_);
-    videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
-    if(beginSeconds>0 && beginSeconds < videoBg_.secondsDuration)
     {
-        videoBg_.begin = CMTimeMakeWithSeconds(beginSeconds,DEFAULT_TIMESCALE);
+        PP_RELEASE(videoBg_);
+        videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
+        if(beginSeconds>0 && beginSeconds < videoBg_.secondsDuration)
+        {
+            videoBg_.begin = CMTimeMakeWithSeconds(beginSeconds,DEFAULT_TIMESCALE);
+        }
+        if(endSeconds >0 && endSeconds < videoBg_.secondsDuration)
+        {
+            videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
+        }
+        videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
+        PP_RELEASE(videoBgAction_);
     }
-    if(endSeconds >0 && endSeconds < videoBg_.secondsDuration)
     {
-        videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
+        PP_RELEASE(reverseBG_);
+        
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
+        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
+        
+        VideoGenerater * vg = [VideoGenerater new];
+        __weak ActionManager * weakSelf = self;
+        [vg generateMVReverse:filePath target:outputPath
+                     complted:^(NSString * filePathNew){
+                         reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
+                         reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
+                         reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
+                         
+                         __strong ActionManager * strongSelf = weakSelf;
+                         if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+                         {
+                             [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+                         }
+                     }];
     }
-    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
-    PP_RELEASE(videoBgAction_);
+    
     
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
@@ -197,8 +225,8 @@
     return item;
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
-                   at:(CGFloat)posSeconds
-             duration:(CGFloat)durationInSeconds;
+                              at:(CGFloat)posSeconds
+                        duration:(CGFloat)durationInSeconds;
 {
     MediaActionDo * item = [self getMediaActionDo:action];
     if(filePath && filePath.length>0)
@@ -216,10 +244,10 @@
         //重新设置开始与结束时间
         item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
         //如果外部没有设定时长，则以Action的时长为主
-//        if(durationInSeconds <=0)
-//        {
-//            durationInSeconds = item.DurationInSeconds;
-//        }
+        //        if(durationInSeconds <=0)
+        //        {
+        //            durationInSeconds = item.DurationInSeconds;
+        //        }
         //DurationInSecons为小于0时，表示长度未定，一般在长按按钮时发生
         if(durationInSeconds>0)
         {

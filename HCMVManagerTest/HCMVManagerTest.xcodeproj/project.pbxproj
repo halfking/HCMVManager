@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2111CEB8549006BB441 /* HCPlayerSimple.m */; };
 		115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */; };
 		115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */; };
 		118CE86A1CE1AF8D00290641 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8691CE1AF8D00290641 /* main.m */; };
@@ -74,6 +75,8 @@
 
 /* Begin PBXFileReference section */
 		053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.debug.xcconfig"; sourceTree = "<group>"; };
+		1122A2101CEB8549006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
+		1122A2111CEB8549006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
 		115EE2571CEAFC1A00768602 /* AVAssetReverseSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetReverseSession.h; sourceTree = "<group>"; };
 		115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetReverseSession.m; sourceTree = "<group>"; };
 		115EE2591CEAFC1A00768602 /* AVAssetToolsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsConstants.h; sourceTree = "<group>"; };
@@ -425,6 +428,8 @@
 		11DE4A5A1CE2DD8E00A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
+				1122A2101CEB8549006BB441 /* HCPlayerSimple.h */,
+				1122A2111CEB8549006BB441 /* HCPlayerSimple.m */,
 				11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */,
 				11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */,
 				11DE4A871CE4837A00A0BE8D /* MediaActionDo.h */,
@@ -594,6 +599,7 @@
 			files = (
 				118CE8FA1CE1B00D00290641 /* PageTag.m in Sources */,
 				118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */,
+				1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */,
 				118CE8E61CE1B00D00290641 /* MediaEditManager(Draft).m in Sources */,
 				118CE8731CE1AF8D00290641 /* SecondViewController.m in Sources */,
 				118CE8F91CE1B00D00290641 /* MusicTag.m in Sources */,

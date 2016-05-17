@@ -9,6 +9,7 @@
 
 #import "SecondViewController.h"
 #import <VideoToolbox/VideoToolbox.h>
+#import "mvconfig.h"
 #import "AVAssetReverseSession.h"
 #import "MediaActionDo.h"
 #import "VideoGenerater.h"
@@ -16,7 +17,8 @@
 #import "MediaAction.h"
 #import "WTPlayerResource.h"
 #import <hccoren/base.h>
-@interface SecondViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate>
+#import "HCPlayerSimple.h"
+@interface SecondViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,HCPlayerSimpleDelegate>
 @property (nonatomic, strong) AVAssetReverseSession *reverseSession;
 @end
 
@@ -54,14 +56,19 @@
     NSTimer *  repeatTimer_;
     int repeatCnt_;
     CMTime repeatTime_;
-    AVPlayer * rPlayer_;
-    AVPlayerLayer * rLayer_;
+    
+    HCPlayerSimple * player_;
+    HCPlayerSimple * rPlayer_;
     
 
     NSString * oPath_;
     NSString * rPath_;
     
     ActionManager * manager_;
+    
+    MediaItem * reverseVideo_;
+    MediaItem * baseVideo_;
+    BOOL viewShowed_;
 }
 
 - (void)viewDidLoad {
@@ -69,6 +76,11 @@
     manager_ = [ActionManager shareObject];
     manager_.delegate = self;
     [manager_ removeActions];
+    
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
+    viewShowed_ = NO;
+    [manager_ setBackMV:oPath_ begin:0 end:-1];
+    
     // Do any additional setup after loading the view, typically from a nib.
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -78,15 +90,6 @@
 }
 -(void)layoutNew
 {
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
-    AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:oPath_]];
-    AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-    
-    player = [AVPlayer playerWithPlayerItem:item];
-    layer = [AVPlayerLayer playerLayerWithPlayer:player];
-    layer.frame = CGRectMake(0, 0, 414, 414.0 /16 * 9);
-    [self.view.layer addSublayer:layer];
-    
     slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
     [slow_ setFrame:CGRectMake(20, 450, 60, 30)];
     [slow_ setTitle:@"slow" forState:UIControlStateNormal];
@@ -129,46 +132,57 @@
     [self.view addSubview:rate2x_];
     [rate1x_ addTarget:self action:@selector(repeat:) forControlEvents:UIControlEventTouchUpInside];
     [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
-    [player play];
+    
     repeatTime_ = kCMTimeZero;
     
-    NSString *outputPath = [[HCFileManager manager]tempFileFullPath:[NSString stringWithFormat:@"reverse%ld.mp4",[CommonUtil getDateTicks:[NSDate date]]]];
-    
-    VideoGenerater * vg = [VideoGenerater new];
-    [vg generateMVReverse:oPath_ target:outputPath complted:^(NSString * filePath){
-        AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
-        AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-        rPlayer_ = [AVPlayer playerWithPlayerItem:item];
-        rLayer_ = [AVPlayerLayer playerLayerWithPlayer:rPlayer_];
-        rLayer_.frame = CGRectMake(0, 0, 414, 414.0 / 16 * 9);
-        rLayer_.opacity = 0;
-        [self.view.layer addSublayer:rLayer_];
-    }];
-    
-//    if (!_reverseSession) {
-//        NSURL *fileURL = [NSURL fileURLWithPath:oPath_];
-//        AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
-//        AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
-//        NSString *outputURL = [NSTemporaryDirectory() stringByAppendingPathComponent:@"output.mp4"];
-//        if ([[NSFileManager defaultManager] fileExistsAtPath:outputURL]) {
-//            [[NSFileManager defaultManager] removeItemAtPath:outputURL error:nil];
-//        }
-//        session.outputFileType = AVFileTypeMPEG4;
-//        session.outputURL = [NSURL fileURLWithPath:outputURL];
-//        [session reverseAsynchronouslyWithCompletionHandler:^{
-//            if (session.status == AVAssetReverseSessionStatusCompleted) {
-//                NSLog(@"finished");
-//                NSURL *outputURL = session.outputURL;
-//                rPath_ = [outputURL path];
-//                
-//            } else {
-//                NSLog(@"rever failed");
-//            }
-//        }];
-//        
-//        _reverseSession = session;
-//    }
+    if(!viewShowed_)
+    {
+        if(baseVideo_)
+        {
+            [self buildPlayer];
+        }
+        if(reverseVideo_)
+        {
+            [self buildReversePlayer];
+        }
+    }
+    viewShowed_ = YES;
 }
+#pragma mark - buildPlayer
+- (void) buildPlayer
+{
+    if(!baseVideo_)
+    {
+        NSLog(@"no base item");
+        return;
+    }
+    AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:baseVideo_.filePath]];
+    AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
+    
+    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
+    [player_ changeCurrentPlayerItem:item];
+    player_.delegate = self;
+    [self.view.layer addSublayer:[player_ currentLayer]];
+    [player_ play];
+}
+- (void) buildReversePlayer
+{
+    if(!reverseVideo_)
+    {
+        NSLog(@"no reverse item");
+        return;
+    }
+    AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:reverseVideo_.filePath]];
+    AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
+    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
+    [player_ changeCurrentPlayerItem:item];
+    player_.delegate = self;
+    AVPlayerLayer * playerLayer = [player_ currentLayer];
+    
+    playerLayer.opacity = 0;
+    [self.view.layer addSublayer:playerLayer];
+}
+#pragma mark - button events
 -(void)repeat:(UIButton *)sender
 {
     [repeatTimer_ invalidate];
@@ -178,9 +192,9 @@
         repeatTime_ = kCMTimeZero;
         return;
     }
-    [player pause];
+
     if (CMTimeGetSeconds(repeatTime_) == 0) {
-        repeatTime_ = player.currentItem.currentTime;
+        repeatTime_ = player_.playerItem.currentTime;
         NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
         //记录这个repeat的时间点(repeat片段的终点)
         CGFloat secondsPlaying = CMTimeGetSeconds(repeatTime_);
@@ -200,11 +214,11 @@
 }
 -(void)reverseStart:(UIButton *)sender
 {
-    CMTime playerTime =  [player.currentItem currentTime];
+    CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
-    CMTime reverSeconds = [rPlayer_.currentItem currentTime];
-    CMTime reverDuration = [rPlayer_.currentItem duration];
+    CMTime reverSeconds = [rPlayer_.playerItem currentTime];
+    CMTime reverDuration = [rPlayer_.playerItem duration];
     
     
     if (!sender.selected) {
@@ -237,7 +251,7 @@
 }
 -(void)slow:(UIButton *)sender
 {
-    CMTime playerTime =  [player currentTime];
+    CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
         sender.selected = NO;
@@ -263,7 +277,7 @@
 }
 -(void)fast:(UIButton *)sender
 {
-    CMTime playerTime =  [player currentTime];
+    CMTime playerTime =  [player_ durationWhen];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
         sender.selected = NO;
@@ -288,29 +302,41 @@
     }
 }
 #pragma mark - delegate
+- (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
+{
+    baseVideo_ = [manager getBaseVideo];
+    reverseVideo_ = reverseVideo;
+    if(viewShowed_)
+    {
+        [self buildPlayer];
+        [self buildReversePlayer];
+    }
+}
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
     NSLog(@"action changed");
     
-    player.rate = action.Rate;
+    player_.rate = action.Rate;
+    
     //repeater
     if(action.ActionType == SRepeat)
     {
-        [player seekToTime:CMTimeMake(action.DurationInSeconds + action.ReverseSeconds  , repeatTime_.timescale)
-           toleranceBefore:kCMTimeZero
-            toleranceAfter:kCMTimeZero
-         completionHandler:^(BOOL finished) {
-             if (finished) {
-                 [player play];
-                 CMTime afterseek = player.currentItem.currentTime;
+        [player_ seek:action.DurationInSeconds + action.ReverseSeconds accurate:YES];
+//        [player_ seekToTime:CMTimeMake(action.DurationInSeconds + action.ReverseSeconds  , repeatTime_.timescale)
+//           toleranceBefore:kCMTimeZero
+//            toleranceAfter:kCMTimeZero
+//         completionHandler:^(BOOL finished) {
+//             if (finished) {
+                 [player_ play];
+                 CMTime afterseek = player_.playerItem.currentTime;
                  CGFloat diff = CMTimeGetSeconds(repeatTime_) - CMTimeGetSeconds(afterseek);
                  NSLog(@"diff = %.3f afterseek time = %.3f", diff, CMTimeGetSeconds(afterseek));
                  
                  //repeater three times
                  repeatTimer_ = [NSTimer scheduledTimerWithTimeInterval:diff target:self selector:@selector(repeat:) userInfo:nil repeats:YES];
                  repeatCnt_ ++ ;
-             }
-         }];
+//             }
+//         }];
         
     }
     else if(action.ActionType == SSlow)
@@ -325,29 +351,23 @@
     {
         if(action.isOPCompleted==NO)
         {
-            [player pause];
-            if (rLayer_ && rPlayer_) {
-                CMTime diff = CMTimeMakeWithSeconds(CMTimeGetSeconds(player.currentItem.duration) - CMTimeGetSeconds(player.currentItem.currentTime), player.currentItem.currentTime.timescale);
-                NSLog(@"player reverse at time %.3f", CMTimeGetSeconds(diff));
-                [rPlayer_ seekToTime:diff toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^(BOOL finished) {
-                    if (finished) {
-                        [rPlayer_ play];
-                        rLayer_.opacity = 1;
-                    }
-                }];
+            [player_ pause];
+            if (rPlayer_) {
+                CGFloat diff = CMTimeGetSeconds([player_ duration]) - CMTimeGetSeconds([player_ durationWhen]);
+                NSLog(@"player reverse at time %.3f", diff);
+                [rPlayer_ seek:diff accurate:YES];
+                [rPlayer_ play];
+                [rPlayer_ currentLayer].opacity = 1;
             }
         }
         else
         {
             [rPlayer_ pause];
             NSLog(@"normal play");
-            CMTime diff = CMTimeMakeWithSeconds(CMTimeGetSeconds(rPlayer_.currentItem.duration) - CMTimeGetSeconds(rPlayer_.currentItem.currentTime), rPlayer_.currentItem.currentTime.timescale);
-            [player seekToTime:diff toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^(BOOL finished) {
-                if (finished) {
-                    [player play];
-                    rLayer_.opacity = 0;
-                }
-            }];
+            CGFloat diff = CMTimeGetSeconds([rPlayer_ duration]) - CMTimeGetSeconds([rPlayer_ durationWhen]);
+            [player_ seek:diff accurate:YES];
+            [player_ play];
+            [rPlayer_ currentLayer].opacity = 0;
         }
     }
     else
@@ -365,22 +385,35 @@
 }
 -(void)join:(UIButton *)sender
 {
-    [player pause];
+    [player_ pause];
     [rPlayer_ pause];
+    
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];
-//    videoGenerater_.waterMarkFile = waterMarkFile_;
-//    videoGenerater_.mergeRate = mergeRate_;
-//    videoGenerater_.volRampSeconds = volRampSeconds_;
-//    
-//    [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
-//    [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
+    vg.waterMarkFile = CT_WATERMARKFILE;
+    vg.mergeRate = 1;
+    vg.volRampSeconds = 0.5;
+    
+    [vg setTimeForMerge:0 end:-1];
+    [vg setTimeForAudioMerge:0 end:-1];
     
     NSArray * actionList = [manager_ getMediaList];
     
+    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+        NSLog(@"progress %f",progress);
+    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+        NSLog(@"playerItem Ready");
+        
+    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+        NSLog(@"generate completed.  %@",[mvUrl path]);
+    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+    }];
+    
     BOOL ret = [manager_ generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
     {
-        [vg generatePreviewAsset:mediaList   bgVolume:1
+        [vg generatePreviewAsset:mediaList
+                        bgVolume:1
                       singVolume:1
                       completion:^(BOOL finished)
          {

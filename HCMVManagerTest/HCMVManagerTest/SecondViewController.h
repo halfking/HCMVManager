@@ -14,8 +14,8 @@
 #define RepeatTime 1.5
 @interface SecondViewController : UIViewController
 {
-    AVPlayer * player;
-    AVPlayerLayer * layer;
+//    AVPlayer * player;
+//    AVPlayerLayer * layer;
     CFTimeInterval pausedTime1;
 }
 @property(strong, nonatomic) UIView * Preview;
