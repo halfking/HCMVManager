@@ -7,8 +7,9 @@
 //
 
 #import "Samples.h"
+#import <hccoren/base.h>
 #import <hcbasesystem/user_wt.h>
-#import <hcbasesystem/updown.h>
+//#import <hcbasesystem/updown.h>
 @implementation Samples
 
 @synthesize SampleID,UserID;
@@ -327,7 +328,7 @@
     }
     else
     {
-        FileName = [[UDManager sharedUDManager]getFileName:filePath];
+        FileName = [[HCFileManager manager]getFileName:filePath];
         localFilePath_ = nil;
     }
 }
@@ -346,7 +347,7 @@
 {
     if(!localFilePath_)
     {
-        localFilePath_ = [[UDManager sharedUDManager]getFilePath:FileName];
+        localFilePath_ = [[HCFileManager manager]getFilePath:FileName];
     }
     return localFilePath_;
 }

@@ -291,7 +291,7 @@
         {
             NSString * mm = [draft objectForKey:@"mergefile"];
             
-            *mergeFile = [[UDManager sharedUDManager]getFilePath:mm];
+            *mergeFile = [[HCFileManager manager]getFilePath:mm];
         }
         if(mergeItem && [draft objectForKey:@"mergeitem"])
         {
@@ -381,7 +381,7 @@
     }
     if(self.mergeFilePath && self.mergeFilePath.length>5)
     {
-        NSString * tempFile = [[UDManager sharedUDManager]getFileName:self.mergeFilePath];
+        NSString * tempFile = [[HCFileManager manager]getFileName:self.mergeFilePath];
         if(tempFile)
         {
             [draft setObject:tempFile forKey:@"mergefile"];
@@ -528,7 +528,7 @@
 {
     if(!item || item.SampleID<=0) return NO;
     
-    UDManager * um = [UDManager sharedUDManager];
+    HCFileManager * um = [HCFileManager manager];
     NSMutableArray * mediaList = [NSMutableArray new];
     //    NSMutableArray * playItemList = [NSMutableArray new];
     NSMutableArray * audioList = [NSMutableArray new];
@@ -582,7 +582,7 @@
     for (int i = (int)mediaList.count-1;i>=0;i--) {
         MediaItem * item = mediaList[i];
         NSString * fileName = item.filePath;
-        [um removeThumnates:fileName size:CGSizeMake(0, 0)];
+        [[UDManager sharedUDManager] removeThumnates:fileName size:CGSizeMake(0, 0)];
         
         //相册中的东东不可删除
         if(![HCFileManager isInAblum:fileName])
@@ -664,7 +664,7 @@
 - (BOOL)rememberDraftJson:(VDCItem *)item content:(NSString*)contentJson
 {
     if(!item || !item.tempFilePath) return NO;
-    UDManager * fm = [UDManager sharedUDManager];
+    HCFileManager * fm = [HCFileManager manager];
     NSString * targetPath = [fm tempFileFullPath:[NSString stringWithFormat:@"%@.mp4.draft",item.key]];
     if([fm existFileAtPath:targetPath])
     {
@@ -693,7 +693,7 @@
 - (void)removeDraftJson:(VDCItem *)item
 {
     if(!item || !item.key) return;
-    UDManager * fm = [UDManager sharedUDManager];
+    HCFileManager * fm = [HCFileManager manager];
     NSString * targetPath = [fm tempFileFullPath:[NSString stringWithFormat:@"%@.mp4.draft",item.key]];
     if([fm existFileAtPath:targetPath])
     {

@@ -7,7 +7,7 @@
 //
 
 #import "AudioItem.h"
-#import <hcbasesystem/updown.h>
+//#import <hcbasesystem/updown.h>
 
 @implementation AudioItem
 @synthesize fileName;
@@ -44,14 +44,14 @@
 }
 - (void)setFileName:(NSString *)fileNameA
 {
-    fileName  = [[UDManager sharedUDManager]getFileName:fileNameA];
+    fileName  = [[HCFileManager manager]getFileName:fileNameA];
     filePath_ = nil;
 }
 - (NSString *)filePath
 {
     if(!filePath_)
     {
-        filePath_ = [[UDManager sharedUDManager]getFilePath:fileName];
+        filePath_ = [[HCFileManager manager]getFilePath:fileName];
     }
     return filePath_;
 }

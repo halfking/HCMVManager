@@ -455,7 +455,7 @@
     joinVideoExporter = [SDAVAssetExportSession exportSessionWithAsset:_mixComposition];
     joinVideoExporter.outputURL = pathForFinalVideo;
     
-    [[UDManager sharedUDManager]removeFileAtPath:[pathForFinalVideo path]];
+    [[HCFileManager manager]removeFileAtPath:[pathForFinalVideo path]];
     
     joinVideoExporter.outputFileType = AVFileTypeMPEG4;
     
@@ -1572,7 +1572,7 @@
     //需要判断是否已经将人声与背景合成了
     int justUseBgAudio =!hasAudioJoined || ( bgmAsset && hasAudioJoined && [[bgmAsset.URL path]isEqualToString:[joinAudioUrl path]])?1:0;
     //是否已经合成的，然后下载过来的。根据文件所在的目录可以判断
-    BOOL isCapture =  [[udManager_ getFileName:[bgvUrl path]] hasPrefix:[udManager_ localFileDir]]?NO:YES;
+    BOOL isCapture =  [[[HCFileManager manager] getFileName:[bgvUrl path]] hasPrefix:[udManager_ localFileDir]]?NO:YES;
     if((bgmAsset && justUseBgAudio==1) || isCapture)
     {
         AVMutableAudioMixInputParameters * trackMix = [self addAudioTrackWithUrl:bgmAsset.URL composite:mixComposition maxTime:curTimeCnt rate:rate needScaleIfRateNotZero:!useAudioInVideo vol:(hasAudioJoined?bgAudioVolume_:1)];
@@ -2271,11 +2271,11 @@
     {
         NSString * path = [joinAudioUrl absoluteString];
         if(![path hasSuffix:@"mp4.m4a"] && ![path hasSuffix:@"mp4.mp3"])
-            [udManager_ removeFileAtPath:[HCFileManager checkPath:path]];
+            [[HCFileManager manager] removeFileAtPath:[HCFileManager checkPath:path]];
     }
     if(joinVideoUrl)
     {
-        [udManager_ removeFileAtPath:[HCFileManager checkPath:joinVideoUrl.absoluteString]];
+        [[HCFileManager manager] removeFileAtPath:[HCFileManager checkPath:joinVideoUrl.absoluteString]];
     }
 }
 - (void)clear

@@ -8,6 +8,7 @@
 
 #import "VDCManager(MTV).h"
 #import "UDManager(MTV).h"
+#import <hccoren/base.h>
 @implementation VDCManager(MTV)
 - (VDCItem *) getVDCItemByMtv:(MTV*)mtv urlString:(NSString *)urlString
 {
@@ -86,9 +87,9 @@
         }
         NSString * matchRegex = [NSString stringWithFormat:@"%@.(m4a|mp4|jpg)",item.Key];
         NSString * dir = [[UDManager sharedUDManager]localFileFullPath:nil];
-        [[UDManager sharedUDManager]removeFilesAtPath:dir matchRegex:matchRegex];
+        [[HCFileManager manager]removeFilesAtPath:dir matchRegex:matchRegex];
         dir = [[UDManager sharedUDManager]tempFileFullPath:nil];
-        [[UDManager sharedUDManager]removeFilesAtPath:dir matchRegex:matchRegex];
+        [[HCFileManager manager]removeFilesAtPath:dir matchRegex:matchRegex];
     }
     if(item.FileName && item.FileName.length>0)
     {
@@ -97,7 +98,7 @@
         fileName = [fileName stringByReplacingOccurrencesOfString:@"." withString:@"\\."];
         fileName = [fileName stringByReplacingOccurrencesOfString:@"-" withString:@"\\-"];
         NSString * matchRegex = [NSString stringWithFormat:@"%@.*",fileName];
-        [[UDManager sharedUDManager]removeFilesAtPath:dir matchRegex:matchRegex];
+        [[HCFileManager manager]removeFilesAtPath:dir matchRegex:matchRegex];
     }
 }
 @end

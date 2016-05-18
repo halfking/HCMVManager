@@ -8,7 +8,8 @@
 
 #import "MTV.h"
 #import <hccoren/json.h>
-#import <hcbasesystem/UpDown.h>
+#import <hccoren/base.h>
+#import <hcbasesystem/updown.h>
 #import <hcbasesystem/user_wt.h>
 #import <hcbasesystem/VDCManager.h>
 
@@ -482,7 +483,7 @@
     }
     else
     {
-        FileName = [[UDManager sharedUDManager]getFileName:filePath];
+        FileName = [[HCFileManager manager]getFileName:filePath];
         localFilePath_ = nil;
     }
 }
@@ -495,7 +496,7 @@
     }
     else
     {
-        AudioFileName = [[UDManager sharedUDManager]getFileName:audioPath];
+        AudioFileName = [[HCFileManager manager]getFileName:audioPath];
         localAudioPath_ = nil;
     }
 }
@@ -503,14 +504,14 @@
 {
     if(!localFilePath_)
     {
-        localFilePath_ =  [[UDManager sharedUDManager]getFilePath:FileName];
+        localFilePath_ =  [[HCFileManager manager]getFilePath:FileName];
     }
     return localFilePath_;
 }
 - (NSString *)getAudioPathN
 {
     if(!localAudioPath_)
-        localAudioPath_ = [[UDManager sharedUDManager]getFilePath:AudioFileName];
+        localAudioPath_ = [[HCFileManager manager]getFilePath:AudioFileName];
     return localAudioPath_;
 }
 @end

@@ -1023,7 +1023,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(MTVUploader)
     //regEx = @".*\\.mp4\\.mtd$";
     regEx = @".*\\.mp4\\.mtd$|.*\\.mov\\.mtd$|.*\\.MOV\\.mtd$";
     
-    UDManager * ud = [UDManager sharedUDManager];
+    HCFileManager * ud = [HCFileManager manager];
+    
     NSString * dir = [ud getFilePath:[ud localFileDir]];
     
     NSFileManager* manager = [NSFileManager defaultManager];
@@ -1142,15 +1143,15 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(MTVUploader)
 {
     if(item.FileName && item.FileName.length>0)
     {
-        [[UDManager sharedUDManager]removeFileAtPath:[item getFilePathN]];
+        [[HCFileManager manager]removeFileAtPath:[item getFilePathN]];
     }
     
     if (item.AudioFileName && item.AudioFileName.length>0) {
-        [[UDManager sharedUDManager]removeFileAtPath:[item getAudioPathN]];
+        [[HCFileManager manager]removeFileAtPath:[item getAudioPathN]];
     }
     
     if (item.coverPath) {
-        [[UDManager sharedUDManager]removeFileAtPath:item.coverPath];
+        [[HCFileManager manager]removeFileAtPath:item.coverPath];
     }
     NSString * checkPath = item.infoPath;
     if(!checkPath || checkPath.length<2)
@@ -1158,7 +1159,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(MTVUploader)
         NSString * checkFile = [NSString stringWithFormat:@"%@.%@",[item.FileName lastPathComponent],@"mtd"];
         checkPath = [[UDManager sharedUDManager]localFileFullPath:checkFile];
     }
-    [[UDManager sharedUDManager]removeFileAtPath:checkPath];
+    [[HCFileManager manager]removeFileAtPath:checkPath];
     return YES;
 }
 - (void)removeMtvLocalInfo:(MTVLocal *)item
@@ -1169,7 +1170,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(MTVUploader)
         NSString * checkFile = [NSString stringWithFormat:@"%@.%@",[item.FileName lastPathComponent],@"mtd"];
         checkPath = [[UDManager sharedUDManager]localFileFullPath:checkFile];
     }
-    [[UDManager sharedUDManager]removeFileAtPath:checkPath];
+    [[HCFileManager manager]removeFileAtPath:checkPath];
 }
 - (void)saveMTVInfoToLocalDir:(MTVLocal *)item
 {
@@ -1183,7 +1184,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(MTVUploader)
             checkPath = [[UDManager sharedUDManager]localFileFullPath:checkFile];
             item.infoPath = checkPath;
         }
-        [[UDManager sharedUDManager]removeFileAtPath:checkPath];
+        [[HCFileManager manager]removeFileAtPath:checkPath];
         NSString * json = [item toJson];
         NSError * error = nil;
         [json writeToFile:checkPath atomically:YES encoding:NSUTF8StringEncoding error:&error];

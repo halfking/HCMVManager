@@ -466,7 +466,7 @@
             
             NSURL *url = [NSURL fileURLWithPath:fullPath];
             imageItem.url = url;
-            imageItem.fileName = [udManager_ getFileName:fullPath];
+            imageItem.fileName = [[HCFileManager manager] getFileName:fullPath];
             
             imageItem.status = YES;
             //将文件路径保存
