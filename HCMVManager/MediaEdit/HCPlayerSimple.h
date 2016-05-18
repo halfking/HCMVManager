@@ -7,8 +7,8 @@
 
 @protocol HCPlayerSimpleDelegate <NSObject>
 @optional
-- (void)playerSimpleIsReadyToPlayVideo:(HCPlayerSimple *)playerSimple;
-- (void)playerSimpleDidReachEnd:(HCPlayerSimple *)playerSimple;
+- (void)playerSimple:(HCPlayerSimple *)playerSimple itemReady:(AVPlayerItem *)item;
+- (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple loadedTimeRangeDidChange:(float)duration;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple didFailWithError:(NSError *)error;

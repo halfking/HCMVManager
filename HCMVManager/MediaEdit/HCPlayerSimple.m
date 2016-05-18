@@ -219,9 +219,9 @@ static HCPlayerSimple *sharedPlayerView = nil;
             [self hideActivityView];
             if(count>0)
             {
-                if(self.delegate && [self.delegate respondsToSelector:@selector(playerSimpleIsReadyToPlayVideo:)])
+                if(self.delegate && [self.delegate respondsToSelector:@selector(playerSimple:itemReady:)])
                 {
-                    [self.delegate playerSimpleIsReadyToPlayVideo:self];
+                    [self.delegate playerSimple:self itemReady:player_.currentItem];
                 }
             }
             count = 0;
@@ -827,17 +827,17 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     [self setDurationWithPlayeritem:videoPlayer.playerItem];
     
-    if ([videoPlayer.delegate respondsToSelector:@selector(playerSimpleIsReadyToPlayVideo:)])
+    if ([videoPlayer.delegate respondsToSelector:@selector(playerSimple:itemReady:)])
     {
-        [videoPlayer.delegate playerSimpleIsReadyToPlayVideo:videoPlayer];
+        [videoPlayer.delegate playerSimple:videoPlayer itemReady:videoPlayer.playerItem];
     }
 }
 
 - (void)videoPlayerDidReachEnd:(HCPlayerSimple *)videoPlayer
 {
-    if ([videoPlayer.delegate respondsToSelector:@selector(playerSimpleDidReachEnd:)])
+    if ([videoPlayer.delegate respondsToSelector:@selector(playerSimple:reachEnd:)])
     {
-        [videoPlayer.delegate playerSimpleDidReachEnd:videoPlayer];
+        [videoPlayer.delegate playerSimple:videoPlayer reachEnd:[videoPlayer getSecondsEnd]];
     }
 }
 
