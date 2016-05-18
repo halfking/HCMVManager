@@ -71,7 +71,9 @@
     MediaItem * baseVideo_;
     BOOL viewShowed_;
     
-    MediaWithAction * currentAction_;
+    MediaActionDo * currentAction_;
+    
+    UIActivityIndicatorView * indicatorView_;
 }
 
 - (void)viewDidLoad {
@@ -165,11 +167,17 @@
     }
     AVAsset * asset = [AVAsset assetWithURL:baseVideo_.url];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-    
-    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
-    [player_ changeCurrentPlayerItem:item];
-    player_.delegate = self;
-    [self.view.layer addSublayer:[player_ currentLayer]];
+    if(player_)
+    {
+        [player_ changeCurrentPlayerItem:item];
+    }
+    else
+    {
+        player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
+        [player_ changeCurrentPlayerItem:item];
+        player_.delegate = self;
+        [self.view.layer addSublayer:[player_ currentLayer]];
+    }
     [NSThread sleepForTimeInterval:0.1];
     [player_ play];
 }
@@ -182,13 +190,64 @@
     }
     AVAsset * asset = [AVAsset assetWithURL:reverseVideo_.url];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-    rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
-    [rPlayer_ changeCurrentPlayerItem:item];
-    rPlayer_.delegate = self;
-    AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
+    if(rPlayer_)
+    {
+        [rPlayer_ changeCurrentPlayerItem:item];
+        AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
+        playerLayer.opacity = 0;
+    }
+    else
+    {
+        rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
+        [rPlayer_ changeCurrentPlayerItem:item];
+        rPlayer_.delegate = self;
+        AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
+        
+        playerLayer.opacity = 0;
+        [self.view.layer addSublayer:playerLayer];
+    }
+}
+- (void) showIndicatorView
+{
+    if(![NSThread isMainThread])
+    {
+        if(!indicatorView_)
+        {
+            indicatorView_ = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            indicatorView_.frame = CGRectMake(0, 0, 80, 80);
+            indicatorView_.center = self.view.center;
+            [self.view addSubview:indicatorView_];
+        }
+        else
+        {
+            indicatorView_.hidden = NO;
+        }
+        [indicatorView_ startAnimating];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showIndicatorView];
+        });
+    }
+}
+- (void) hideIndicatorView
+{
+    if(![NSThread isMainThread])
+    {
+        if(indicatorView_)
+        {
+            [indicatorView_ stopAnimating];
+            indicatorView_.hidden = YES;
+        }
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideIndicatorView];
+        });
+    }
     
-    playerLayer.opacity = 0;
-    [self.view.layer addSublayer:playerLayer];
 }
 #pragma mark - button events
 -(void)repeat:(UIButton *)sender
@@ -263,6 +322,7 @@
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
         sender.selected = NO;
+        NSLog(@"player action seconds:%f",seconds);
         MediaActionDo * actionDo = [manager_ findActionAt:seconds - 0.1 index:-1];
         if(actionDo)
         {
@@ -279,6 +339,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = YES;
         action.IsMutex = NO;
+        action.Rate = 0.33333;
         action.isOPCompleted = NO;
         [manager_ addActionItem:action filePath:nil at:seconds duration:-1];
     }
@@ -303,6 +364,7 @@
         MediaAction * action = [MediaAction new];
         action.ActionType = SFast;
         action.ReverseSeconds = 0 ;
+        action.Rate = 3.0;
         action.IsOverlap = YES;
         action.IsMutex = NO;
         action.isOPCompleted = NO;
@@ -312,6 +374,7 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
+    NSLog(@"---- player seconds:%f",cmTime);
     if(playerSimple == rPlayer_)
     {
         
@@ -323,15 +386,37 @@
 }
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
+    CGFloat endSeconds = end>0?end:-1;
     if(playerSimple == rPlayer_)
     {
-        
+        if(endSeconds<0)
+            endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
     }
     else if(playerSimple == player_)
     {
+        if(endSeconds<0)
+            endSeconds = CMTimeGetSeconds([player_ durationWhen]);
         [player_ seek:0 accurate:YES];
         [player_ play];
     }
+    //自动结束没有结束的动作
+    if(currentAction_ && currentAction_.isOPCompleted==NO)
+    {
+        CGFloat duration = [manager_ getSecondsWithoutAction:endSeconds];
+        duration -= currentAction_.SecondsInArray;
+        [manager_ setActionItemDuration:currentAction_ duration:duration];
+        currentAction_ = nil;
+        
+        [self resetAllButtons];
+    }
+    [self join:nil];
+}
+- (void)resetAllButtons
+{
+    slow_.selected = NO;
+    fast_.selected = NO;
+    rate1x_.selected = NO;
+    rate2x_.selected = NO;
 }
 #pragma mark - delegate
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
@@ -350,6 +435,7 @@
     
     player_.rate = action.Rate;
     
+    currentAction_ = action;
     //repeater
     if(action.ActionType == SRepeat)
     {
@@ -417,8 +503,12 @@
 }
 -(void)join:(UIButton *)sender
 {
+    [self showIndicatorView];
+    
     [player_ pause];
     [rPlayer_ pause];
+    
+    [manager_ saveDraft];
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];
@@ -438,8 +528,14 @@
         
     } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
         NSLog(@"generate completed.  %@",[mvUrl path]);
+        
+        [manager_ setBackMV:[mvUrl path] begin:0 end:-1];
+        
+        [self hideIndicatorView];
+        
     } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
         NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+        [self hideIndicatorView];
     }];
     
     BOOL ret = [manager_ generateMediaListWithActions:actionList complted:^(NSArray * mediaList)

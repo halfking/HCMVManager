@@ -40,6 +40,11 @@
     NSMutableArray * mediaList_;    //素材文件列表
     NSMutableArray * mediaListFilter_;//滤镜列表
     
+    //每次播放一个循环，将会生成一个视频
+    NSMutableArray * videoBGHistroy_;
+    NSMutableArray * reverseBgHistory_;
+    NSMutableArray * actionsHistory_;
+    
     CGFloat durationForSource_;         //源时长
     CGFloat durationForTarget_;         //最终目标时长
     CGFloat durationForAudio_;          //音频时长
@@ -69,6 +74,7 @@
 
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index;
+- (MediaWithAction *)findMediaItemAt:(CGFloat)seconds;
 - (BOOL) removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds;
 
@@ -81,4 +87,7 @@
 - (NSArray *) getMediaList;
 //将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
 - (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
+- (BOOL)saveDraft;
+- (BOOL)loadLastDraft;
+
 @end

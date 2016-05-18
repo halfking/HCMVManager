@@ -14,7 +14,9 @@
 //如果片断是合成过的，那么Rate就应该均为1，如果是源视频，有可能不会1
 @interface MediaWithAction : MediaItemCore
 @property (nonatomic,PP_STRONG) MediaAction * Action;
-@property (nonatomic,assign) CGFloat finalDuration;
+@property (nonatomic,assign)CGFloat durationInPlaying;//实际播放的时间，与Rate相关,可以用视频来计算实际播放时长
+@property (nonatomic,assign) CGFloat durationInFinalArray;//在队列中占用的时长，Rate=1
+@property (nonatomic,assign) CGFloat secondsInFinalArray;//基于Rate=1时的在队列中的位置时间。
 
 - (MediaWithAction *)copyItem;
 - (NSString *) toString;

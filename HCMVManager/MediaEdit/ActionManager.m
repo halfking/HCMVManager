@@ -53,6 +53,11 @@
         mediaListFilter_ = [NSMutableArray new];
         manager_ = [MediaEditManager new];
         [manager_ setIsFragment:NO];
+        
+        videoBGHistroy_ = [NSMutableArray new];
+        reverseBgHistory_ = [NSMutableArray new];
+        actionsHistory_ = [NSMutableArray new];
+        
         manager_.delegate = self;
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
@@ -66,7 +71,10 @@
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
-    //    [mediaListBG_ removeAllObjects];
+    
+    [videoBGHistroy_ removeAllObjects];
+    [reverseBgHistory_ removeAllObjects];
+    [actionsHistory_ removeAllObjects];
     
     durationForSource_ = 0;
     durationForAudio_ = 0;
@@ -110,6 +118,10 @@
         NSString * filePathOrg = videoBg_.filePath;
         if([filePath isEqualToString:filePathOrg])
         {
+            if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+            {
+                [self.delegate ActionManager:self reverseGenerated:reverseBG_];
+            }
             return YES;
         }
         isReverseHasGenerated_ = NO;
@@ -204,18 +216,19 @@
     }
 }
 //将播放器时间转为原轨时间
+//当Rate发生变化时，播放器的时间并不发生变化，即播放到同一片段时，播放器返回的时钟值在不同速率时是相同的
 - (CGFloat)getSecondsWithoutAction:(CGFloat)playerSeconds
 {
     CGFloat secondsInFinal = 0;
     for (MediaWithAction * item in mediaList_) {
-        if(item.finalDuration <=0) continue;
-        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.finalDuration)
+        if(item.durationInFinalArray <=0) continue;
+        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.durationInFinalArray)
         {
-            return item.secondsInArray + (playerSeconds - secondsInFinal) * item.secondsDurationInArray /item.finalDuration;
+            return item.secondsInFinalArray + (playerSeconds - secondsInFinal);// * item.secondsDurationInArray /item.durationInFinalArray;
         }
         else
         {
-            secondsInFinal += item.finalDuration;
+            secondsInFinal += item.durationInFinalArray;
         }
     }
     return playerSeconds;
@@ -349,6 +362,19 @@
     }
     return retItem;
 }
+- (MediaWithAction *)findMediaItemAt:(CGFloat)seconds
+{
+    MediaWithAction * retItem = nil;
+    for (int i = (int)mediaList_.count -1; i>=0; i--) {
+        MediaWithAction * item = actionList_[i];
+        if(item.secondsInFinalArray <=seconds && item.durationInFinalArray + item.secondsInFinalArray >seconds)
+        {
+            retItem = item;
+            break;
+        }
+    }
+    return retItem;
+}
 - (BOOL)removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds
 {
@@ -390,6 +416,41 @@
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [self reindexAllActions];
+    return YES;
+}
+#pragma mark - draft manager
+- (BOOL) saveDraft
+{
+    if(!videoBg_ || !reverseBG_)
+    {
+        NSLog(@"no data to save....");
+        return NO;
+    }
+    if(actionList_.count>0)
+    {
+        [videoBGHistroy_ addObject:videoBg_];
+        [reverseBgHistory_ addObject:reverseBG_];
+        [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+        
+        NSLog(@"items saved.");
+    }
+    else
+    {
+        NSLog(@"no data need save.");
+    }
+    
+    return YES;
+}
+- (BOOL) loadLastDraft
+{
+    if(videoBGHistroy_.count<=0) return NO;
+    
+    videoBg_ = [videoBGHistroy_ lastObject];
+    reverseBG_ = [reverseBgHistory_ lastObject];
+    [actionList_ removeAllObjects];
+    [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
+    [self reindexAllActions];
+    NSLog(@"last draft loaded.");
     return YES;
 }
 #pragma mark - delegate

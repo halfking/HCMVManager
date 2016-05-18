@@ -27,7 +27,7 @@
         item.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         
         materialList_ = [NSMutableArray arrayWithObject:item];
-        item.finalDuration = [self getDurationInFinal:sources];
+        item.durationInPlaying = [self getDurationInFinal:sources];
 
 // 可能多重调用，因此，注释
 //        item.finalDuration = [self getDurationInFinal:sources];

@@ -11,7 +11,9 @@
 
 @implementation MediaWithAction
 @synthesize Action;
-@synthesize finalDuration;
+@synthesize durationInFinalArray;
+@synthesize secondsInFinalArray;
+@synthesize durationInPlaying;
 -(id)init
 {
     self = [super init];
@@ -27,13 +29,22 @@
     MediaWithAction * item = [MediaWithAction new];
     [item fetchAsCore:(MediaItemCore *)self];
     item.Action = [self.Action copyItem];
+    item.secondsInFinalArray = self.secondsInFinalArray;
+    item.durationInFinalArray = self.durationInFinalArray;
+    item.durationInPlaying = self.durationInPlaying;
     return item;
 }
 - (NSString *) toString
 {
-    return [NSString stringWithFormat:@"%d(%.2f--%.2f-->%.2f)\t\t%@(%.2f--%.2f) rate:%.2f",(int)self.Action.ActionType ,self.secondsInArray,
+    return [NSString stringWithFormat:@"%d(%.2f--%.2f-->final:%.2f-->%.2f) total:%.2f\n\t\t%@(%.2f--%.2f) rate:%.2f",
+            (int)self.Action.ActionType,
+            self.secondsInArray,
             self.secondsDurationInArray,
-            self.finalDuration,[self.fileName lastPathComponent] ,self.secondsBegin,self.secondsEnd,self.playRate];
+            self.secondsInFinalArray,
+            self.durationInFinalArray,
+            self.durationInPlaying,
+            [self.fileName lastPathComponent] ,
+            self.secondsBegin,self.secondsEnd,self.playRate];
 }
 - (void)dealloc
 {

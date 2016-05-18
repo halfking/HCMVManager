@@ -38,7 +38,7 @@
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         materialList_ = [NSMutableArray arrayWithObject:media];
-        media.finalDuration = [self getDurationInFinal:sources];
+        media.durationInPlaying = [self getDurationInFinal:sources];
 
     }
     else //没有指定，则需要从当前队列中获取

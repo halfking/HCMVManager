@@ -144,7 +144,10 @@
 //1、如果不是覆盖，则取第一个对像，则直接切为两段即可
 //2、如果是覆盖，则取最后一个对像，计算需要去除的量
 //3、最后计算这些拆分对像的最终播放时长。
-- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps atSeconds:(CGFloat)seconds duration:(CGFloat)duration overlap:(BOOL)isOverlap
+- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
+                                   atSeconds:(CGFloat)seconds
+                                    duration:(CGFloat)duration
+                                     overlap:(BOOL)isOverlap
 {
     MediaWithAction * media = nil;
     
@@ -168,23 +171,23 @@
         {
             //创建后半部
             MediaWithAction * actionSecond = [media copyItem];
-            actionSecond.finalDuration = -1;
+            actionSecond.durationInPlaying = -1;
             
             //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
             CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
             CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
             media.end = endTime;
-            media.finalDuration = [self getFinalDurationForMedia:media];
+            media.durationInPlaying = [self getFinalDurationForMedia:media];
             
             
             actionSecond.begin = CMTimeMakeWithSeconds(actionSecond.secondsBegin + beginChanged, timeScale);;
             actionSecond.timeInArray = CMTimeMakeWithSeconds(secondsActionEnd,timeScale);
-            actionSecond.finalDuration = [self getFinalDurationForMedia:actionSecond];
+            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
             return actionSecond;
         }
         else
         {
-            media.finalDuration = [self getFinalDurationForMedia:media];
+            media.durationInPlaying = [self getFinalDurationForMedia:media];
             return media;
         }
     }
@@ -201,7 +204,7 @@
             {
                 media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
             }
-            media.finalDuration = [self getFinalDurationForMedia:media];
+            media.durationInPlaying = [self getFinalDurationForMedia:media];
             return media;
         }
         //从中间截断时
@@ -209,18 +212,18 @@
         {
             //创建后半部
             MediaWithAction * actionSecond = [media copyItem];
-            actionSecond.finalDuration = -1;
+            actionSecond.durationInPlaying = -1;
             
             //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
             CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray;
             CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
             media.end = endTime;
             
-            media.finalDuration = [self getFinalDurationForMedia:media];
+            media.durationInPlaying = [self getFinalDurationForMedia:media];
             
             actionSecond.begin = endTime;
             actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
-            actionSecond.finalDuration = [self getFinalDurationForMedia:actionSecond];
+            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
             return actionSecond;
         }
     }
