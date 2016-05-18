@@ -114,7 +114,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 #pragma mark - play pause
 - (BOOL)canPlay
 {
-    if(self.playerItem || [player_ currentItem])
+    if((self.playerItem && self.playerItem.status == AVPlayerItemStatusReadyToPlay)
+       || ([player_ currentItem] && [player_ currentItem].status == AVPlayerItemStatusReadyToPlay))
     {
         return YES;
     }

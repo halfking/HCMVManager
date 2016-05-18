@@ -174,10 +174,10 @@
     }
     AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:reverseVideo_.filePath]];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
-    [player_ changeCurrentPlayerItem:item];
-    player_.delegate = self;
-    AVPlayerLayer * playerLayer = [player_ currentLayer];
+    rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
+    [rPlayer_ changeCurrentPlayerItem:item];
+    rPlayer_.delegate = self;
+    AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
     
     playerLayer.opacity = 0;
     [self.view.layer addSublayer:playerLayer];
