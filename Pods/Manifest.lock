@@ -21,60 +21,60 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - HappyDNS (0.2.4)
-  - HCBaseSystem (0.3.3):
+  - HCBaseSystem (0.3.4):
     - AFNetworking (~> 2.6.3)
-    - HCBaseSystem/Comments (= 0.3.3)
-    - HCBaseSystem/UIControls (= 0.3.3)
-    - HCBaseSystem/User (= 0.3.3)
-    - HCBaseSystem/VDCManager (= 0.3.3)
-    - HCBaseSystem/Ver (= 0.3.3)
+    - HCBaseSystem/Comments (= 0.3.4)
+    - HCBaseSystem/UIControls (= 0.3.4)
+    - HCBaseSystem/User (= 0.3.4)
+    - HCBaseSystem/VDCManager (= 0.3.4)
+    - HCBaseSystem/Ver (= 0.3.4)
     - hccoren
     - HCMinizip
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-  - HCBaseSystem/Comments (0.3.3):
-    - AFNetworking (~> 2.6.3)
-    - HCBaseSystem/User
-    - hccoren
-    - HCMinizip
-    - Qiniu (~> 7.0)
-    - SDWebImage (~> 3.7.5)
-  - HCBaseSystem/UIControls (0.3.3):
-    - AFNetworking (~> 2.6.3)
-    - hccoren
-    - HCMinizip
-    - Qiniu (~> 7.0)
-    - SDWebImage (~> 3.7.5)
-  - HCBaseSystem/User (0.3.3):
-    - AFNetworking (~> 2.6.3)
-    - hccoren
-    - HCMinizip
-    - Qiniu (~> 7.0)
-    - SDWebImage (~> 3.7.5)
-  - HCBaseSystem/VDCManager (0.3.3):
+  - HCBaseSystem/Comments (0.3.4):
     - AFNetworking (~> 2.6.3)
     - HCBaseSystem/User
     - hccoren
     - HCMinizip
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-  - HCBaseSystem/Ver (0.3.3):
+  - HCBaseSystem/UIControls (0.3.4):
     - AFNetworking (~> 2.6.3)
     - hccoren
     - HCMinizip
     - Qiniu (~> 7.0)
     - SDWebImage (~> 3.7.5)
-  - hccoren (0.3.4):
-    - hccoren/Core (= 0.3.4)
-    - hccoren/NetworkAndDatabase (= 0.3.4)
-    - hccoren/UIControls (= 0.3.4)
+  - HCBaseSystem/User (0.3.4):
+    - AFNetworking (~> 2.6.3)
+    - hccoren
+    - HCMinizip
+    - Qiniu (~> 7.0)
+    - SDWebImage (~> 3.7.5)
+  - HCBaseSystem/VDCManager (0.3.4):
+    - AFNetworking (~> 2.6.3)
+    - HCBaseSystem/User
+    - hccoren
+    - HCMinizip
+    - Qiniu (~> 7.0)
+    - SDWebImage (~> 3.7.5)
+  - HCBaseSystem/Ver (0.3.4):
+    - AFNetworking (~> 2.6.3)
+    - hccoren
+    - HCMinizip
+    - Qiniu (~> 7.0)
+    - SDWebImage (~> 3.7.5)
+  - hccoren (0.3.6):
+    - hccoren/Core (= 0.3.6)
+    - hccoren/NetworkAndDatabase (= 0.3.6)
+    - hccoren/UIControls (= 0.3.6)
     - HCMinizip (~> 1.2.6)
-  - hccoren/Core (0.3.4):
+  - hccoren/Core (0.3.6):
     - HCMinizip (~> 1.2.6)
-  - hccoren/NetworkAndDatabase (0.3.4):
+  - hccoren/NetworkAndDatabase (0.3.6):
     - hccoren/Core
     - HCMinizip (~> 1.2.6)
-  - hccoren/UIControls (0.3.4):
+  - hccoren/UIControls (0.3.6):
     - hccoren/Core
     - HCMinizip (~> 1.2.6)
   - HCMinizip (1.2.6)
@@ -86,19 +86,19 @@ PODS:
   - SDWebImage/Core (3.7.6)
 
 DEPENDENCIES:
-  - HCBaseSystem (~> 0.3.3)
-  - hccoren (~> 0.3.4)
+  - HCBaseSystem (~> 0.3.4)
+  - hccoren (~> 0.3.6)
   - HCMinizip
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   HappyDNS: 86ab4be498cc5cc884002b248979cd130cfbe10e
-  HCBaseSystem: f01b304cda2f37532ec7075870fa323f0f7a4e81
-  hccoren: 10bde441110febdc1462b36f29bd6d58c53e7a7d
+  HCBaseSystem: 6f9b872083ab1ef0325dc15a244db62763dca0fd
+  hccoren: 810aeb0fd527286f89f3177891e24d225831a8ae
   HCMinizip: 6a0308924c12593f23c3b949f4142a5b68acd442
   Qiniu: 7a9c2a2bbdec02ae84b92051637e1e9ea3d182fb
   SDWebImage: c325cf02c30337336b95beff20a13df489ec0ec9
 
-PODFILE CHECKSUM: 3f2a922d07c4c2a781c5c625cebc8b527c1274cc
+PODFILE CHECKSUM: c8f8c28ae98cb418d281cab4ec2b74db49fd777d
 
 COCOAPODS: 1.0.0.rc.2

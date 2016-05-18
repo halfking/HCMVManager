@@ -66,6 +66,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(UDManager)
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(changeUserID:) name:NT_USERIDCHANGED object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(willEnterBackground:) name:NT_WILLENTERBACK object:nil];
         UserID = [[UserManager sharedUserManager]userID];
+        fileManager_ = [HCFileManager manager];
     }
     return self;
 }
@@ -764,7 +765,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(UDManager)
                     else
                     {
                         notice = NO;
-                        [self removeFileAtPath:path];
+                        [[HCFileManager manager] removeFileAtPath:path];
                         fileUrl = [fileUrl stringByAppendingString:[NSString stringWithFormat:@"?t=%ld",[CommonUtil getDateTicks:[NSDate date]]]];
                     }
                 }

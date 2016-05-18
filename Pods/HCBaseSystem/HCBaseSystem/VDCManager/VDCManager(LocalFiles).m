@@ -72,7 +72,7 @@
     {
         if(newPath)
         {
-            item.localFileName = [[UDManager sharedUDManager]getFileName:newPath];
+            item.localFileName = [[HCFileManager manager]getFileName:newPath];
 //            item.localFilePath = newPath;
         }
         item.downloadBytes = size;

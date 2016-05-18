@@ -227,7 +227,7 @@
     if(!path ||path.length <10) return path;
     //check files
     NSString * regex = @"/Application/[^/]+|/Applications/[^/]+";
-    NSString * localApplication = [[UDManager sharedUDManager] getApplicationPath];
+    NSString * localApplication = [[HCFileManager manager] getApplicationPath];
     if(localApplication)
     {
         return  [path stringByReplacingOccurrencesOfRegex:regex withString:localApplication];
@@ -335,7 +335,7 @@
         NSString * filePath = [self getTempFilePathForLocalUrl:[self getLocalWebUrl:key]];
         if([[UDManager sharedUDManager]existFileAtPath:filePath])
         {
-            [[UDManager sharedUDManager]removeFileAtPath:filePath];
+            [[HCFileManager manager]removeFileAtPath:filePath];
         }
         [self removeDownloadUrlFromFile:filePath];
         [self removeTempFiles:filePath
@@ -349,7 +349,7 @@
         {
             [self removeDownloadUrlFromFile:filePath];
             
-            return [[UDManager sharedUDManager]removeFileAtPath:filePath];
+            return [[HCFileManager manager]removeFileAtPath:filePath];
         }
     }
     return NO;

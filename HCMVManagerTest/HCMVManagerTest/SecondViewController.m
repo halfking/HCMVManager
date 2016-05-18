@@ -15,6 +15,7 @@
 #import "VideoGenerater.h"
 #import "ActionManager.h"
 #import "MediaAction.h"
+#import "MediaWithAction.h"
 #import "WTPlayerResource.h"
 #import <hccoren/base.h>
 #import "HCPlayerSimple.h"
@@ -60,7 +61,7 @@
     HCPlayerSimple * player_;
     HCPlayerSimple * rPlayer_;
     
-
+    
     NSString * oPath_;
     NSString * rPath_;
     
@@ -69,6 +70,8 @@
     MediaItem * reverseVideo_;
     MediaItem * baseVideo_;
     BOOL viewShowed_;
+    
+    MediaWithAction * currentAction_;
 }
 
 - (void)viewDidLoad {
@@ -90,63 +93,67 @@
 }
 -(void)layoutNew
 {
-    slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
-    [slow_ setFrame:CGRectMake(20, 450, 60, 30)];
-    [slow_ setTitle:@"slow" forState:UIControlStateNormal];
-    [slow_ setTitle:@"normal" forState:UIControlStateSelected];
-    slow_.titleLabel.font = [UIFont systemFontOfSize:14];
-    [slow_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:slow_];
-    
-    fast_ = [UIButton buttonWithType:UIButtonTypeCustom];
-    [fast_ setFrame:CGRectMake(100, 450, 60, 30)];
-    [fast_ setTitle:@"fast" forState:UIControlStateNormal];
-    [fast_ setTitle:@"normal" forState:UIControlStateSelected];
-    fast_.titleLabel.font = [UIFont systemFontOfSize:14];
-    [fast_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:fast_];
-    
-    joinBtn_ = [UIButton buttonWithType:UIButtonTypeCustom];
-    [joinBtn_ setFrame:CGRectMake(180, 450, 60, 30)];
-    [joinBtn_ setTitle:@"join" forState:UIControlStateNormal];
-    joinBtn_.titleLabel.font = [UIFont systemFontOfSize:14];
-    [joinBtn_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:joinBtn_];
-    
-    [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
-    [fast_ addTarget:self action:@selector(fast:) forControlEvents:UIControlEventTouchUpInside];
-    [joinBtn_ addTarget:self action:@selector(join:) forControlEvents:UIControlEventTouchUpInside];
-    
-    rate1x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-    [rate1x_ setFrame:CGRectMake(20, 400, 60, 30)];
-    [rate1x_ setTitle:@"repeat" forState:UIControlStateNormal];
-    rate1x_.titleLabel.font = [UIFont systemFontOfSize:14];
-    [rate1x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:rate1x_];
-    rate2x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-    [rate2x_ setFrame:CGRectMake(100, 400, 60, 30)];
-    [rate2x_ setTitle:@"reverse" forState:UIControlStateNormal];
-    [rate2x_ setTitle:@"origin" forState:UIControlStateSelected];
-    rate2x_.titleLabel.font = [UIFont systemFontOfSize:14];
-    [rate2x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.view addSubview:rate2x_];
-    [rate1x_ addTarget:self action:@selector(repeat:) forControlEvents:UIControlEventTouchUpInside];
-    [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
-    
-    repeatTime_ = kCMTimeZero;
-    
     if(!viewShowed_)
     {
-        if(baseVideo_)
+        slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [slow_ setFrame:CGRectMake(20, 450, 60, 30)];
+        [slow_ setTitle:@"slow" forState:UIControlStateNormal];
+        [slow_ setTitle:@"normal" forState:UIControlStateSelected];
+        slow_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [slow_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.view addSubview:slow_];
+        
+        fast_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [fast_ setFrame:CGRectMake(100, 450, 60, 30)];
+        [fast_ setTitle:@"fast" forState:UIControlStateNormal];
+        [fast_ setTitle:@"normal" forState:UIControlStateSelected];
+        fast_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [fast_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.view addSubview:fast_];
+        
+        joinBtn_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [joinBtn_ setFrame:CGRectMake(180, 450, 60, 30)];
+        [joinBtn_ setTitle:@"join" forState:UIControlStateNormal];
+        joinBtn_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [joinBtn_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.view addSubview:joinBtn_];
+        
+        [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
+        [fast_ addTarget:self action:@selector(fast:) forControlEvents:UIControlEventTouchUpInside];
+        [joinBtn_ addTarget:self action:@selector(join:) forControlEvents:UIControlEventTouchUpInside];
+        
+        rate1x_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [rate1x_ setFrame:CGRectMake(20, 400, 60, 30)];
+        [rate1x_ setTitle:@"repeat" forState:UIControlStateNormal];
+        rate1x_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [rate1x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.view addSubview:rate1x_];
+        rate2x_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [rate2x_ setFrame:CGRectMake(100, 400, 60, 30)];
+        [rate2x_ setTitle:@"reverse" forState:UIControlStateNormal];
+        [rate2x_ setTitle:@"origin" forState:UIControlStateSelected];
+        rate2x_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [rate2x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.view addSubview:rate2x_];
+        [rate1x_ addTarget:self action:@selector(repeat:) forControlEvents:UIControlEventTouchUpInside];
+        [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
+        
+        repeatTime_ = kCMTimeZero;
+        
+        if(!viewShowed_)
         {
-            [self buildPlayer];
+            if(baseVideo_)
+            {
+                [self buildPlayer];
+            }
+            if(reverseVideo_)
+            {
+                [self buildReversePlayer];
+            }
         }
-        if(reverseVideo_)
-        {
-            [self buildReversePlayer];
-        }
+        
+        viewShowed_ = YES;
     }
-    viewShowed_ = YES;
 }
 #pragma mark - buildPlayer
 - (void) buildPlayer
@@ -156,13 +163,14 @@
         NSLog(@"no base item");
         return;
     }
-    AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:baseVideo_.filePath]];
+    AVAsset * asset = [AVAsset assetWithURL:baseVideo_.url];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
     
-    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
+    player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
     [player_ changeCurrentPlayerItem:item];
     player_.delegate = self;
     [self.view.layer addSublayer:[player_ currentLayer]];
+    [NSThread sleepForTimeInterval:0.1];
     [player_ play];
 }
 - (void) buildReversePlayer
@@ -172,9 +180,9 @@
         NSLog(@"no reverse item");
         return;
     }
-    AVAsset * asset = [AVAsset assetWithURL:[NSURL fileURLWithPath:reverseVideo_.filePath]];
+    AVAsset * asset = [AVAsset assetWithURL:reverseVideo_.url];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
-    rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 0, 414, 414.0 /16 * 9)];
+    rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
     [rPlayer_ changeCurrentPlayerItem:item];
     rPlayer_.delegate = self;
     AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
@@ -192,7 +200,7 @@
         repeatTime_ = kCMTimeZero;
         return;
     }
-
+    
     if (CMTimeGetSeconds(repeatTime_) == 0) {
         repeatTime_ = player_.playerItem.currentTime;
         NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
@@ -301,6 +309,7 @@
         [manager_ addActionItem:action filePath:nil at:seconds duration:-1];
     }
 }
+#pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
     if(playerSimple == rPlayer_)
@@ -310,6 +319,18 @@
     else if(playerSimple == player_)
     {
         
+    }
+}
+- (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
+{
+    if(playerSimple == rPlayer_)
+    {
+        
+    }
+    else if(playerSimple == player_)
+    {
+        [player_ seek:0 accurate:YES];
+        [player_ play];
     }
 }
 #pragma mark - delegate
@@ -333,21 +354,21 @@
     if(action.ActionType == SRepeat)
     {
         [player_ seek:action.DurationInSeconds + action.ReverseSeconds accurate:YES];
-//        [player_ seekToTime:CMTimeMake(action.DurationInSeconds + action.ReverseSeconds  , repeatTime_.timescale)
-//           toleranceBefore:kCMTimeZero
-//            toleranceAfter:kCMTimeZero
-//         completionHandler:^(BOOL finished) {
-//             if (finished) {
-                 [player_ play];
-                 CMTime afterseek = player_.playerItem.currentTime;
-                 CGFloat diff = CMTimeGetSeconds(repeatTime_) - CMTimeGetSeconds(afterseek);
-                 NSLog(@"diff = %.3f afterseek time = %.3f", diff, CMTimeGetSeconds(afterseek));
-                 
-                 //repeater three times
-                 repeatTimer_ = [NSTimer scheduledTimerWithTimeInterval:diff target:self selector:@selector(repeat:) userInfo:nil repeats:YES];
-                 repeatCnt_ ++ ;
-//             }
-//         }];
+        //        [player_ seekToTime:CMTimeMake(action.DurationInSeconds + action.ReverseSeconds  , repeatTime_.timescale)
+        //           toleranceBefore:kCMTimeZero
+        //            toleranceAfter:kCMTimeZero
+        //         completionHandler:^(BOOL finished) {
+        //             if (finished) {
+        [player_ play];
+        CMTime afterseek = player_.playerItem.currentTime;
+        CGFloat diff = CMTimeGetSeconds(repeatTime_) - CMTimeGetSeconds(afterseek);
+        NSLog(@"diff = %.3f afterseek time = %.3f", diff, CMTimeGetSeconds(afterseek));
+        
+        //                 //repeater three times
+        //                 repeatTimer_ = [NSTimer scheduledTimerWithTimeInterval:diff target:self selector:@selector(repeat:) userInfo:nil repeats:YES];
+        //                 repeatCnt_ ++ ;
+        //             }
+        //         }];
         
     }
     else if(action.ActionType == SSlow)
@@ -422,15 +443,15 @@
     }];
     
     BOOL ret = [manager_ generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
-    {
-        [vg generatePreviewAsset:mediaList
-                        bgVolume:1
-                      singVolume:1
-                      completion:^(BOOL finished)
-         {
-              [vg generateMVFile:mediaList retryCount:0];
-         }];
-    }];
+                {
+                    [vg generatePreviewAsset:mediaList
+                                    bgVolume:1
+                                  singVolume:1
+                                  completion:^(BOOL finished)
+                     {
+                         [vg generateMVFile:mediaList retryCount:0];
+                     }];
+                }];
     if(!ret)
     {
         NSLog(@"generate failure.");

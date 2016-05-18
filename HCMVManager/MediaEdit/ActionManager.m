@@ -30,7 +30,8 @@
 @implementation ActionManager
 {
     
-    
+    BOOL isReverseGenerating_;
+    BOOL isReverseHasGenerated_;
 }
 +(id)shareObject
 {
@@ -53,6 +54,8 @@
         manager_ = [MediaEditManager new];
         [manager_ setIsFragment:NO];
         manager_.delegate = self;
+        isReverseGenerating_ = NO;
+        isReverseHasGenerated_ = NO;
     }
     return self;
 }
@@ -102,6 +105,17 @@
 #pragma mark - action list manager
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
+    if(isReverseHasGenerated_ && videoBg_ )
+    {
+        NSString * filePathOrg = videoBg_.filePath;
+        if([filePath isEqualToString:filePathOrg])
+        {
+            return YES;
+        }
+        isReverseHasGenerated_ = NO;
+    }
+    if(isReverseGenerating_) return NO;
+    isReverseGenerating_ = YES;
     {
         PP_RELEASE(videoBg_);
         videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
@@ -126,15 +140,20 @@
         __weak ActionManager * weakSelf = self;
         [vg generateMVReverse:filePath target:outputPath
                      complted:^(NSString * filePathNew){
-                         reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
-                         reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
-                         reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
-                         
-                         __strong ActionManager * strongSelf = weakSelf;
-                         if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+                         if(filePathNew)
                          {
-                             [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+                             isReverseHasGenerated_ = YES;
+                             reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
+                             reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
+                             reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
+                             
+                             __strong ActionManager * strongSelf = weakSelf;
+                             if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+                             {
+                                 [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+                             }
                          }
+                         isReverseGenerating_ = NO;
                      }];
     }
     

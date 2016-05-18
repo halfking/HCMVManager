@@ -669,7 +669,10 @@ static HCFileManager * hcFileManager = nil;
         {
             return YES;
         }
-        return NO;
+        else if([filePath rangeOfString:@"/var/containers/"].location!=NSNotFound)
+            return YES;
+        else
+            return NO;
     }
     else
     {
@@ -689,6 +692,10 @@ static HCFileManager * hcFileManager = nil;
         if(range.location!=NSNotFound)
         {
             filePath = [filePath substringFromIndex:range.location + range.length+1];
+            return filePath;
+        }
+        else if([filePath rangeOfString:@"/var/containers/"].location!=NSNotFound)
+        {
             return filePath;
         }
         else

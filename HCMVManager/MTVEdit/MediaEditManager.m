@@ -315,10 +315,9 @@
     {
         //文件全部当作本地的，不考虑远程文件
         MediaItem * item = [[MediaItem alloc]init];
-        item.fileName = [[UDManager sharedUDManager]getFileName:[videoUrl path]];
+        item.fileName = [[HCFileManager manager]getFileName:[videoUrl path]];
         //        item.filePath = [CommonUtil checkPath:videoUrl.absoluteString];
         item.url = videoUrl;
-        
         AVURLAsset *asset=[[AVURLAsset alloc] initWithURL:videoUrl options:nil];
         NSArray * array = [asset tracksWithMediaType:AVMediaTypeVideo];
         if(array.count>0)
@@ -518,7 +517,7 @@
     if(audio)
     {
         AudioItem * item = [[AudioItem alloc]init];
-        item.fileName = [[UDManager sharedUDManager]getFileName:[audio path]];
+        item.fileName = [[HCFileManager manager]getFileName:[audio path]];
         item.url = audio;
         
         AVURLAsset *asset=[[AVURLAsset alloc] initWithURL:video options:nil];
@@ -706,7 +705,7 @@
     {
         coverImageUrl = PP_RETAIN(filePath);
         
-        coverMedialItem_.fileName = [[UDManager sharedUDManager]getFileName:filePath];
+        coverMedialItem_.fileName = [[HCFileManager manager]getFileName:filePath];
         //        coverMedialItem_.filePath = filePath;
         
         if(self.mergeMTVItem)
@@ -1023,7 +1022,7 @@
             {
                 if(![HCFileManager isInAblum:item.filePath])
                 {
-                    [um removeFileAtPath:item.filePath];
+                    [[HCFileManager manager] removeFileAtPath:item.filePath];
                 }
             }
         }
@@ -1294,7 +1293,7 @@
         }
         else
         {
-            item.fileName = [[UDManager sharedUDManager]getFileName:localFile];
+            item.fileName = [[HCFileManager manager]getFileName:localFile];
         }
         if(!item.key||item.key.length==0)
         {
@@ -4035,7 +4034,7 @@ static BOOL isGenerateAudioing_ = NO;
         //相册中的东东不可删除
         if(![HCFileManager isInAblum:fileName])
         {
-            [um removeFileAtPath:fileName];
+            [[HCFileManager manager] removeFileAtPath:fileName];
         }
     }
     //    if(playItemList_)
@@ -4055,7 +4054,7 @@ static BOOL isGenerateAudioing_ = NO;
     //    }
     for (int i = (int) audioList_.count-1;i>=0;i--) {
         AudioItem * item = audioList_[i];
-        [um removeFileAtPath:item.filePath];
+        [[HCFileManager manager] removeFileAtPath:item.filePath];
     }
     //    if(coverMedialItem_)
     //    {
@@ -4191,7 +4190,7 @@ static BOOL isGenerateAudioing_ = NO;
     if(![newFilePath isEqualToString:videoPath])
     {
         [HCFileManager copyFile:videoPath target:newFilePath overwrite:YES];
-        [[UDManager sharedUDManager]removeFileAtPath:videoPath];
+        [[HCFileManager manager]removeFileAtPath:videoPath];
         
     }
     if(audioPath && audioPath.length>0)
@@ -4202,7 +4201,7 @@ static BOOL isGenerateAudioing_ = NO;
         {
             [HCFileManager copyFile:audioPath target:newAudioPath overwrite:YES];
             [self setMixedAudio:newAudioPath];
-            [[UDManager sharedUDManager]removeFileAtPath:audioPath];
+            [[HCFileManager manager]removeFileAtPath:audioPath];
             if(self.mergeMTVItem && self.mergeMTVItem.AudioFileName && [[self.mergeMTVItem getAudioPathN] isEqualToString:audioPath])
             {
                 [self.mergeMTVItem setAudioPathN: newAudioPath];

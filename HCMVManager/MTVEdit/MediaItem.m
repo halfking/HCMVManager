@@ -7,8 +7,8 @@
 //
 //
 #import "MediaItem.h"
-#import <hcbasesystem/updown.h>
-
+//#import <hcbasesystem/updown.h>
+#import <hccoren/base.h>
 
 @implementation MediaItemCore
 @synthesize fileName,title,cover,url,key;
@@ -47,14 +47,14 @@
 }
 - (void)setFileName:(NSString *)fileNameA
 {
-    fileName  = [[UDManager sharedUDManager]getFileName:fileNameA];
+    fileName  = [[HCFileManager manager]getFileName:fileNameA];
     filePath_ = nil;
 }
 - (NSString *)filePath
 {
     if(!filePath_)
     {
-        filePath_ = [[UDManager sharedUDManager]getFilePath:fileName];
+        filePath_ = [[HCFileManager manager]getFilePath:fileName];
     }
     
     return filePath_;
@@ -106,7 +106,31 @@
     }
     return NO;
 }
-
+- (void)fetchAsCore:(MediaItemCore *)item
+{
+    if(!item) return;
+    
+    self.fileName = item.fileName;
+    self.title = item.title;
+    self.cover = item.cover;
+    self.url = item.url;
+    self.key = item.key;
+    self.duration = item.duration;
+    self.begin = item.begin;
+    self.end = item.end;
+    self.originType = item.originType;
+    self.cutInMode = item.cutInMode;
+    self.cutOutMode = item.cutOutMode;
+    self.cutInTime = item.cutInTime;
+    self.cutOutTime = item.cutOutTime;
+    self.playRate = item.playRate;
+    self.timeInArray = item.timeInArray;
+    self.renderSize = item.renderSize;
+    self.playRate = item.playRate;
+    self.isOnlyAudio = item.isOnlyAudio;
+    self.renderSize = item.renderSize;
+    self.fileNameGenerated = item.fileNameGenerated;
+}
 @end
 @implementation MediaItem
 //@synthesize filePath,title,cover,url,key;
@@ -177,31 +201,8 @@
     coreItem.playRate = self.playRate;
     coreItem.timeInArray = self.timeInArray;
     coreItem.renderSize = self.renderSize;
+    coreItem.fileNameGenerated = self.fileNameGenerated;
     return PP_AUTORELEASE(coreItem);
 }
-- (void)fetchAsCore:(MediaItemCore *)item
-{
-    if(!item) return;
-    
-    self.fileName = item.fileName;
-    self.title = item.title;
-    self.cover = item.cover;
-    self.url = item.url;
-    self.key = item.key;
-    self.duration = item.duration;
-    self.begin = item.begin;
-    self.end = item.end;
-    self.originType = item.originType;
-    self.cutInMode = item.cutInMode;
-    self.cutOutMode = item.cutOutMode;
-    self.cutInTime = item.cutInTime;
-    self.cutOutTime = item.cutOutTime;
-    self.playRate = item.playRate;
-    self.timeInArray = item.timeInArray;
-    self.renderSize = item.renderSize;
-    self.playRate = item.playRate;
-    self.isOnlyAudio = item.isOnlyAudio;
-    self.renderSize = item.renderSize;
-    self.fileNameGenerated = item.fileNameGenerated;
-}
+
 @end

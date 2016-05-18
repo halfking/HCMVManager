@@ -23,8 +23,8 @@
 //创建所有的缓存目录
 - (BOOL)checkAllDireictories;
 
-- (NSString *) getRootPath;
-- (NSString *) getApplicationPath;
+//- (NSString *) getRootPath;
+//- (NSString *) getApplicationPath;
 - (NSString *) getLocalFilePathForUrl:(NSString *)webUrl extension:(NSString *)ext;
 - (NSString *) removeApplicationPath:(NSString *)filePath;
 //- (NSArray *) getLocalFilesForMusic:(int)pageSize;
@@ -58,19 +58,19 @@
 - (BOOL)        existFileAtPath:(NSString *)path;
 
 //只记录相对位置。相对转绝对
-- (BOOL) isFullFilePath:(NSString *)filePath;
-- (NSString *) getFileName:(NSString*)filePath;
-- (NSString *) getFilePath:(NSString *)fileName;
+//- (BOOL) isFullFilePath:(NSString *)filePath;
+//- (NSString *) getFileName:(NSString*)filePath;
+//- (NSString *) getFilePath:(NSString *)fileName;
 
 - (NSString *)getThumnatePath:(NSString *)filename minsecond:(int)minsecond size:(CGSize)size;
 - (BOOL) removeThumnates:(NSString *)orgFileName size:(CGSize) size;
 - (BOOL) removeTempVideos;
-- (BOOL) removeFileAtPath:(NSString*) filePath;
-- (BOOL) removeFilesAtPath:(NSString * )folderPath;
-- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString;
-- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutRegex:(NSString *)regexString;
-- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutPrefixList:(NSArray *)prefixList;
-- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString withoutPrefixList:(NSArray *)prefixList;
+//- (BOOL) removeFileAtPath:(NSString*) filePath;
+//- (BOOL) removeFilesAtPath:(NSString * )folderPath;
+//- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString;
+//- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutRegex:(NSString *)regexString;
+//- (BOOL) removeFilesAtPath:(NSString * )folderPath withoutPrefixList:(NSArray *)prefixList;
+//- (BOOL) removeFilesAtPath:(NSString * )folderPath matchRegex:(NSString *)regexString withoutPrefixList:(NSArray *)prefixList;
 
 
 //filetype 0:MTV的路径(FilePath)   1:唱的声音的路径(AudioPath)

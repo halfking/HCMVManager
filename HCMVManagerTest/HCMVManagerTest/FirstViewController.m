@@ -67,6 +67,7 @@
     manager.delegate = self;
     NSString * path = [[NSBundle mainBundle]pathForResource:@"test" ofType:@"mp4"];
     [manager setBackMV:path begin:0 end:-1];
+    
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = 1;

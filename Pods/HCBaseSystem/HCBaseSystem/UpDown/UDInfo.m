@@ -7,8 +7,8 @@
 //
 
 #import "UDInfo.h"
-#import "UDManager(Helper).h"
-
+//#import "UDManager(Helper).h"
+#import <hccoren/base.h>
 @implementation UDInfo
 @synthesize Key,ErrorInfo;
 @synthesize LocalFileName,RemoteUrl,OrgUrl;
@@ -59,7 +59,7 @@
 {
     if(LocalFileNameA && LocalFileNameA.length>0)
     {
-        LocalFileName = [[UDManager sharedUDManager]getFileName:LocalFileNameA];
+        LocalFileName = [[HCFileManager manager]getFileName:LocalFileNameA];
     }
     else
     {
@@ -71,7 +71,7 @@
 {
     if(!localFilePath_)
     {
-        localFilePath_ = [[UDManager sharedUDManager]getFilePath:LocalFileName];
+        localFilePath_ = [[HCFileManager manager]getFilePath:LocalFileName];
     }
     return localFilePath_;
 }

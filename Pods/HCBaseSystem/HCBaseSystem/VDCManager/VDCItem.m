@@ -8,9 +8,10 @@
 //
 
 #import "VDCItem.h"
+#import <hccoren/base.h>
 //#import "Reachability.h"
-#import "UDManager.h"
-#import "UDManager(Helper).h"
+//#import "UDManager.h"
+//#import "UDManager(Helper).h"
 
 #import "VDCManager.h"
 @implementation VDCItem
@@ -80,7 +81,7 @@
 }
 - (NSString *)getPlayUrlOrPath
 {
-    UDManager * ud = [UDManager sharedUDManager];
+    HCFileManager * ud = [HCFileManager manager];
     
     //首先看本地文件是否存在
     NSString * path = [ud getFilePath:localFileName];
@@ -102,7 +103,7 @@
 }
 - (NSString *)tempFilePath
 {
-    UDManager * ud = [UDManager sharedUDManager];
+    HCFileManager * ud = [HCFileManager manager];
     NSString * path = [ud getFilePath:tempFileName];
     return path;
 }
@@ -110,7 +111,7 @@
 {
     if(!localFilePath_)
     {
-        UDManager * ud = [UDManager sharedUDManager];
+        HCFileManager * ud = [HCFileManager manager];
         localFilePath_ = [ud getFilePath:localFileName];
     }
     return localFilePath_;
@@ -119,7 +120,7 @@
 {
     if(!localAudioPath_)
     {
-        UDManager * ud = [UDManager sharedUDManager];
+        HCFileManager * ud = [HCFileManager manager];
         localAudioPath_ = [ud getFilePath:AudioFileName];
     }
     return localAudioPath_;

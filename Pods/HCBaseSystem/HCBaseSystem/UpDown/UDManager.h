@@ -9,7 +9,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <hccoren/HCBase.h>
+#import <hccoren/base.h>
 #import "UDDelegate.h"
 #import "PublicEnum.h"
 #import <UIKit/UIKit.h>
@@ -33,6 +33,7 @@ typedef BOOL (^NeedStop)(NSString * filePath,NSString * key);
     NSString * rootPath_;
     NSString * rootPathMatchString_;
     NSArray * reservedFileNames_; // 需要保留的文件
+    HCFileManager * fileManager_;
     
 }
 @property(nonatomic,assign) long UserID;

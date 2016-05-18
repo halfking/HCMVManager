@@ -336,7 +336,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
     }
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:player_];
     _playerLayer.frame = self.bounds;
-    NSLog(@"self.bounds:%@",NSStringFromCGRect(_playerLayer.frame));
+    NSLog(@"player layer bounds:%@",NSStringFromCGRect(_playerLayer.frame));
     _playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
     
     [self.layer addSublayer:_playerLayer];
@@ -1069,7 +1069,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 #pragma mark - init dealloc
 - (void)readyToRelease
 {
-    [self resetPlayer];
+     [self clearObserver];
+//    [self resetPlayer];
     PP_RELEASE(_delegate);
     sharedPlayerView = nil;
 }
@@ -1077,6 +1078,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     NSLog(@"player simple dealloc...");
     [self readyToRelease];
+    [self resetPlayer];
+    
     PP_SUPERDEALLOC;
 }
 @end

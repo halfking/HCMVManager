@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import <hccoren/base.h>
-
+#import <HCBaseSystem/UpDown.h>
 @interface AppDelegate ()
 
 @end
@@ -20,7 +20,7 @@
     // Override point for customization after application launch.
     
     [DeviceConfig config];
-    
+    [[UDManager sharedUDManager]checkAllDireictories];
 
        return YES;
 }

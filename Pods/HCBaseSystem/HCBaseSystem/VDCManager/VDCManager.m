@@ -208,7 +208,7 @@ static long childQueueItemCount = 0;
         isExists = [[UDManager sharedUDManager]isFileExistAndNotEmpty:item.localFilePath size:&size pathAlter:&path];
         if(isExists && size>0)
         {
-            item.localFileName = [[UDManager sharedUDManager]getFileName:path];
+            item.localFileName = [[HCFileManager manager] getFileName:path];
 //            item.localFilePath = path;
             item.downloadBytes = size;
             item.contentLength = size;
@@ -254,7 +254,7 @@ static long childQueueItemCount = 0;
                                                                      size:&size];
         if(hasFile && size>0)
         {
-            item.AudioFileName = [[UDManager sharedUDManager]getFileName:path];
+            item.AudioFileName = [[HCFileManager manager]getFileName:path];
         }
         else
         {
@@ -330,8 +330,8 @@ static long childQueueItemCount = 0;
     }
     
     item.key = key;
-    item.localFileName = [[UDManager sharedUDManager]getFileName:localFilePath];
-    item.tempFileName = [[UDManager sharedUDManager]getFileName:tempFilePath];
+    item.localFileName = [[HCFileManager manager]getFileName:localFilePath];
+    item.tempFileName = [[HCFileManager manager]getFileName:tempFilePath];
 //    item.localFilePath = localFilePath;
 //    item.tempFilePath = tempFilePath;
     item.localWebUrl = localWebUrl;
@@ -900,13 +900,13 @@ static long childQueueItemCount = 0;
             item.downloadBytes -= fileInfo.length;
             fileInfo.length = 0;
             fileInfo.isDownloading = NO;
-            [[UDManager sharedUDManager]removeFileAtPath:fileInfo.filePath];
+            [[HCFileManager manager]removeFileAtPath:fileInfo.filePath];
         }
         PP_RELEASE(removeFileList);
         
         if(item.AudioPath&& item.AudioPath.length>0)
         {
-            [[UDManager sharedUDManager]removeFileAtPath:item.AudioPath];
+            [[HCFileManager manager]removeFileAtPath:item.AudioPath];
         }
         //        if(item.AudioTempPath&& item.AudioTempPath.length>0)
         //        {
@@ -975,10 +975,10 @@ static long childQueueItemCount = 0;
     if(includeLocal)
     {
         if (item.localFilePath) {
-            [[UDManager sharedUDManager]removeFileAtPath:item.localFilePath];
+            [[HCFileManager manager]removeFileAtPath:item.localFilePath];
         }
         if (item.AudioPath) {
-            [[UDManager sharedUDManager]removeFileAtPath:item.AudioPath];
+            [[HCFileManager manager]removeFileAtPath:item.AudioPath];
         }
     }
     [self removeTempFiles:item.tempFilePath
@@ -1015,7 +1015,7 @@ static long childQueueItemCount = 0;
     //    }
     if(item.AudioPath && item.AudioPath.length>0)
     {
-        [[UDManager sharedUDManager]removeFileAtPath:item.AudioPath];
+        [[HCFileManager manager]removeFileAtPath:item.AudioPath];
     }
 }
 - (void)removeItemList
@@ -1064,7 +1064,7 @@ static long childQueueItemCount = 0;
     if(!item.remoteUrl || item.remoteUrl.length<=3) return NO;
     if([HCFileManager isLocalFile:item.remoteUrl])
     {
-        item.localFileName = [[UDManager sharedUDManager]getFileName:item.remoteUrl];
+        item.localFileName = [[HCFileManager manager]getFileName:item.remoteUrl];
         
         UInt64 size = [[UDManager sharedUDManager] fileSizeAtPath:item.localFilePath];
         if(size>0){
@@ -1787,7 +1787,7 @@ static long childQueueItemCount = 0;
     }
     if(currentFile && !currentFile.isDownloading)
     {
-        [[UDManager sharedUDManager]removeFileAtPath:currentFile.filePath];
+        [[HCFileManager manager]removeFileAtPath:currentFile.filePath];
         currentFile.length = 0;
         dispatch_async(downloadItemQueue_, ^(void)
                        {
@@ -2435,7 +2435,7 @@ static long childQueueItemCount = 0;
                     if(size != item.contentLength) //文件有问题
                     {
                         NSLog(@"DOWN size not match(%llu-----%llu)",size,item.contentLength);
-                        [[UDManager sharedUDManager]removeFileAtPath:item.localFilePath];
+                        [[HCFileManager manager]removeFileAtPath:item.localFilePath];
                         item.isCheckedFiles = NO;
                         
                         [self checkItemFile:item removePartFile:YES];
@@ -2941,7 +2941,7 @@ static long childQueueItemCount = 0;
             
             //            if(operation.isCancelled==NO)
             //            {
-            [[UDManager sharedUDManager]removeFileAtPath:fileToDownload.filePath];
+            [[HCFileManager manager]removeFileAtPath:fileToDownload.filePath];
             fileToDownload.length=0;
             fileToDownload.changeUrlTicks = YES;
             
@@ -2967,7 +2967,7 @@ static long childQueueItemCount = 0;
         [self removeFromDownloadList:fileToDownload];
         //        if(operation.isCancelled==NO)
         //        {
-        [[UDManager sharedUDManager]removeFileAtPath:fileToDownload.filePath];
+        [[HCFileManager manager]removeFileAtPath:fileToDownload.filePath];
         fileToDownload.length=0;
         fileToDownload.changeUrlTicks = YES;
         //                [[NSNotificationCenter defaultCenter]postNotificationName:@"DOWNLOADERROR" object:[fileToDownload.parentItem.removeUrl copy]];
