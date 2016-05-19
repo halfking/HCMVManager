@@ -40,8 +40,8 @@
         materialList_ = [NSMutableArray arrayWithObject:media];
         media.durationInPlaying = [self getDurationInFinal:sources];
         
-        media.secondsInFinalArray = media.secondsInArray;
-        media.durationInFinalArray = media.secondsDurationInArray;
+//        media.secondsInFinalArray = media.secondsInArray;
+//        media.durationInFinalArray = media.secondsDurationInArray;
 
     }
     else //没有指定，则需要从当前队列中获取

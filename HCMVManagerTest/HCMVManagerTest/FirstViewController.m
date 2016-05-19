@@ -70,7 +70,7 @@
     
     ActionManager * manager = [ActionManager shareObject];
     manager.delegate = self;
-    NSString * path = [[NSBundle mainBundle]pathForResource:@"test" ofType:@"mp4"];
+    NSString * path = [[NSBundle mainBundle]pathForResource:@"4" ofType:@"m4v"];
     [manager setBackMV:path begin:0 end:-1];
     
     {

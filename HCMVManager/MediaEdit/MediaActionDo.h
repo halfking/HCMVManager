@@ -22,9 +22,12 @@
 @property (nonatomic,PP_STRONG,readonly,getter=get_MaterialList) NSMutableArray * MaterialList;
 
 - (void)fetchAsAction:(MediaAction *)action;
+
+- (NSMutableArray *)processAction:(NSMutableArray *)sources;
 - (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
+
 - (CGFloat) getDurationInFinal:(NSArray *)sources;
 - (CGFloat) getDurationInPlaying:(MediaWithAction *)media;
 - (CGFloat) getDurationInFinalArray:(MediaWithAction *)media;

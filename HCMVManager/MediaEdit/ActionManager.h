@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "WTPlayerResource.h"
-
+#import "VideoGenerater.h"
 #define SECONDS_NOTVALID 999999
 
 @class MediaAction;
@@ -27,13 +27,16 @@
 //当播放器的内容需要发生改变时，将当前要处理的内容传给播放器
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay;
 
+- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover;
+- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error;
+- (void)ActionManager:(ActionManager *)manager generateProgress:(CGFloat)progress;
 //-(void) didGetThumbImage:(float)requestTime andPath:(NSString*)path index:(int)index size:(CGSize)size; //index = 0表示只截了当前一张 ，否则表示是一批图中的一张
 //- (void) didGetThumbFailure:(float)requestTime error:(NSString*)error index:(int)index size:(CGSize)size;
 //-(void) didAllThumbsGenerated:(NSArray*) thumbs;
 //- (void) didGenerateFailure:(NSError *)error file:(NSString *)filePath;
 
 @end
-@interface ActionManager : NSObject
+@interface ActionManager : NSObject<VideoGeneraterDelegate>
 {
     MediaItem * audioBg_;    //音频背景
     MediaItem * reverseBG_;  //倒序的视频
@@ -76,6 +79,7 @@
 
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
+- (BOOL) ensureActions:(CGFloat)currentSeconds; //将未完成的Action完成，一般用于播放完成
 
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index;

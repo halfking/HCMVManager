@@ -11,7 +11,9 @@
 @interface ActionManager(index)
 #pragma mark - overlap manager
 - (CGFloat) reindexAllActions;
+- (CGFloat) processNewActions;
 #pragma mark - export
+- (BOOL) generateMV;
 - (void) generatePlayerItem:(NSArray *)mediaList;
 
 - (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;

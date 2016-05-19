@@ -385,7 +385,7 @@
         }
         else
         {
-            NSLog(@"join video:(audio) %ld/%d (%ld)",asset.duration.value,bgScale,(long)asset.duration.timescale);
+            NSLog(@"join video:(audio) %ld/%ld (%ld)",asset.duration.value,bgScale,(long)asset.duration.timescale);
         }
         if(rate >0 && rate!=1.0)
         {

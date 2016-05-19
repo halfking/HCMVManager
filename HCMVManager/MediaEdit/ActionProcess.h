@@ -17,9 +17,9 @@
     CGFloat currentDuration_;
 }
 @property (nonatomic,assign) CGFloat duration;
-- (NSMutableArray *) processAction:(MediaActionDo *)actionDo
-                           sources:(NSMutableArray *)sources;
+//- (NSMutableArray *) processAction:(MediaActionDo *)actionDo
+//                           sources:(NSMutableArray *)sources;
 //                    secondsInArray:(CGFloat)secondsInArray
 //               secondsInFinalArray:(CGFloat)secondsInFinalArray;
-- (NSMutableArray *) processActions:(NSArray *)actions sources:(NSMutableArray *) sources;
+//- (NSMutableArray *) processActions:(NSArray *)actions sources:(NSMutableArray *) sources;
 @end

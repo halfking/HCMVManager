@@ -30,8 +30,8 @@
         materialList_ = [NSMutableArray arrayWithObject:item];
         item.durationInPlaying = [self getDurationInFinal:sources];
         
-        item.secondsInFinalArray = item.secondsInArray;
-        item.durationInFinalArray = item.secondsDurationInArray;
+//        item.secondsInFinalArray = item.secondsInArray;
+//        item.durationInFinalArray = item.secondsDurationInArray;
 
 // 可能多重调用，因此，注释
 //        item.finalDuration = [self getDurationInFinal:sources];

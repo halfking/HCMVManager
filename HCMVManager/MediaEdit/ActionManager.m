@@ -24,7 +24,7 @@
 
 #import "WTPlayerResource.h"
 
-@interface ActionManager()<VideoGeneraterDelegate>
+@interface ActionManager()
 
 @end
 @implementation ActionManager
@@ -66,7 +66,7 @@
 }
 - (void)clear
 {
-
+    
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
@@ -145,6 +145,8 @@
     }
     if(isReverseGenerating_) return NO;
     isReverseGenerating_ = YES;
+    
+    //设置正向视频
     {
         PP_RELEASE(videoBg_);
         videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
@@ -157,12 +159,15 @@
             videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
         }
         videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
-      
+        
         PP_RELEASE(videoBgAction_);
     }
+    //生成反向的视频
     {
-        PP_RELEASE(reverseBG_);
-        
+        if(reverseBG_)
+        {
+            PP_RELEASE(reverseBG_);
+        }
         NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
         NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
         
@@ -239,14 +244,14 @@
 {
     CGFloat secondsInFinal = 0;
     for (MediaWithAction * item in mediaList_) {
-        if(item.durationInFinalArray <=0) continue;
-        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.durationInFinalArray)
+        if(item.secondsDurationInArray <=0) continue;
+        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.secondsDurationInArray && item.secondsInArrayNotConfirm == NO)
         {
-            return item.secondsInFinalArray + (playerSeconds - secondsInFinal);// * item.secondsDurationInArray /item.durationInFinalArray;
+            return item.secondsInArray + (playerSeconds - secondsInFinal);// * item.secondsDurationInArray /item.durationInFinalArray;
         }
         else
         {
-            secondsInFinal += item.durationInFinalArray;
+            secondsInFinal += item.secondsDurationInArray;
         }
     }
     return playerSeconds;
@@ -337,7 +342,8 @@
     
     //    if(item.isOPCompleted)
     //    {
-    [self reindexAllActions];
+    [self processNewActions];
+    //    [self reindexAllActions];
     //    }
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
     {
@@ -351,7 +357,7 @@
 {
     if(!action) return NO;
     if(![actionList_ containsObject:action]) return NO;
-   
+    
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
@@ -362,7 +368,8 @@
         [self.delegate ActionManager:self actionChanged:action type:1];
     }
     
-    [self reindexAllActions];
+    mediaList_ = [action processAction:mediaList_];
+//    [self reindexAllActions];
     
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
@@ -372,6 +379,20 @@
     }
     
     return YES;
+}
+//将未完成的Action完成，一般用于播放完成
+- (BOOL) ensureActions:(CGFloat)currentSeconds
+{
+    MediaActionDo * action = [actionList_ lastObject];
+    if(action.isOPCompleted==NO)
+    {
+        CGFloat duration = [self getSecondsWithoutAction:currentSeconds];
+        duration -= action.SecondsInArray;
+        [self setActionItemDuration:action duration:duration];
+        
+        return YES;
+    }
+    return NO;
 }
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index
@@ -412,7 +433,9 @@
     MediaWithAction * retItem = nil;
     for (int i = (int)mediaList_.count -1; i>=0; i--) {
         MediaWithAction * item = mediaList_[i];
-        if(item.secondsInFinalArray <=seconds && item.durationInFinalArray + item.secondsInFinalArray >seconds)
+        if(!item.secondsInArrayNotConfirm   //只有开始时间已经确定了的才能参与选择
+           && item.secondsInArray <=seconds
+           && item.secondsDurationInArray + item.secondsInArray >seconds)
         {
             retItem = item;
             break;
@@ -495,7 +518,7 @@
     [actionList_ removeAllObjects];
     [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
     [self reindexAllActions];
-    NSLog(@"last draft loaded.");
+    NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
 }
 - (BOOL) needGenerateForOP
@@ -514,14 +537,30 @@
 - (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress
 {
     NSLog(@"progress:%f",progress);
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:)])
+    {
+        [self.delegate ActionManager:self generateProgress:progress];
+    }
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error
 {
     NSLog(@"generate failure:%@",msg);
     NSLog(@"error:%@",[error localizedDescription]);
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:)])
+    {
+        [self.delegate ActionManager:self genreateFailure:error];
+    }
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
-    NSLog(@"generate completed:%@",[fileUrl path]);
+    
+    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
+    NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+    [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];
+    NSLog(@"generate completed:%@",filePath);
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:)])
+    {
+        [self.delegate ActionManager:self generateOK:filePath cover:cover];
+    }
 }
 @end

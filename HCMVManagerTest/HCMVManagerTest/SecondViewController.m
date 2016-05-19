@@ -14,6 +14,7 @@
 #import "MediaActionDo.h"
 #import "VideoGenerater.h"
 #import "ActionManager.h"
+#import "ActionManager(index).h"
 #import "MediaAction.h"
 #import "MediaWithAction.h"
 #import "WTPlayerResource.h"
@@ -83,7 +84,7 @@
     manager_.delegate = self;
     [manager_ removeActions];
     
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"4" ofType:@"m4v"];
     viewShowed_ = NO;
     [manager_ setBackMV:oPath_ begin:0 end:-1];
     
@@ -450,15 +451,10 @@
         [player_ pause];
     }
     //自动结束没有结束的动作
-    if(currentAction_ && currentAction_.isOPCompleted==NO)
-    {
-        CGFloat duration = [manager_ getSecondsWithoutAction:endSeconds];
-        duration -= currentAction_.SecondsInArray;
-        [manager_ setActionItemDuration:currentAction_ duration:duration];
-        currentAction_ = nil;
-        
-        [self resetAllButtons];
-    }
+    [manager_ ensureActions:endSeconds];
+    
+    [self resetAllButtons];
+    
     [self join:nil];
 }
 - (void)resetAllButtons
@@ -489,28 +485,19 @@
         return ;
     }
     NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-    if(currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
-    {
-        if(mediaToPlay.Action.ActionType!=SReverse)
-        {
-            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-            [player_ setRate:mediaToPlay.playRate];
-            [player_ play];
-        }
-        else
-        {
-            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-            [rPlayer_ setRate:mediaToPlay.playRate];
-            [rPlayer_ play];
-        }
-    }
-    else
-    {
+//    if((currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
+//       ||
+//       ([mediaToPlay isSampleAsset:baseVideo_])
+//       ||
+//       ([mediaToPlay isSampleAsset:reverseVideo_])
+//       )
+//    {
         if(mediaToPlay.Action.ActionType!=SReverse)
         {
             [rPlayer_ pause];
-            [rPlayer_ currentLayer].opacity = 0;
             [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [player_ currentLayer].opacity = 1;
+            [rPlayer_ currentLayer].opacity = 0;
             [player_ setRate:mediaToPlay.playRate];
             [player_ play];
         }
@@ -518,11 +505,34 @@
         {
             [player_ pause];
             [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [rPlayer_ currentLayer].opacity = 1;
+            [player_ currentLayer].opacity = 0;
             [rPlayer_ setRate:mediaToPlay.playRate];
             [rPlayer_ play];
-            [rPlayer_ currentLayer].opacity = 1;
         }
-    }
+//    }
+//    else
+//    {
+//        if(mediaToPlay.Action.ActionType!=SReverse)
+//        {
+//            [rPlayer_ pause];
+//            [rPlayer_ currentLayer].opacity = 0;
+//            [player_ currentLayer].opacity = 1;
+//            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+//            [player_ setRate:mediaToPlay.playRate];
+//            [player_ play];
+//        }
+//        else
+//        {
+//            [player_ pause];
+//            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+//            [rPlayer_ setRate:mediaToPlay.playRate];
+//            [rPlayer_ play];
+//            [player_ currentLayer].opacity = 0;
+//            [rPlayer_ currentLayer].opacity = 1;
+//        }
+//    }
+    currentMedia_ = mediaToPlay;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
@@ -548,8 +558,22 @@
 {
     NSLog(@"action playerItem ready");
 }
+- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover
+{
+    [manager_ setBackMV:filePath begin:0 end:-1];
+    
+    [manager_ removeActions];
+    
+    [self hideIndicatorView];
+}
+- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error
+{
+    [self hideIndicatorView];
+}
+
 - (void)reset:(UIButton *)sender
 {
+    [self resetAllButtons];
     [player_ pause];
     [rPlayer_ pause];
     [player_ setRate:1];
@@ -565,63 +589,13 @@
     [player_ pause];
     [rPlayer_ pause];
     
-    if(![manager_ needGenerateForOP])
+    if(![manager_ generateMV])
     {
         [player_ seek:0 accurate:YES];
         [player_ play];
         return;
     }
-    [manager_ saveDraft];
     
-    VideoGenerater * vg = [[VideoGenerater alloc]init];
-    [vg resetGenerateInfo];
-    vg.waterMarkFile = CT_WATERMARKFILE;
-    vg.mergeRate = 1;
-    vg.volRampSeconds = 0;
-    vg.compositeLyric = NO;
-    [vg setRenderSize:baseVideo_.renderSize orientation:UIDeviceOrientationPortrait withFontCamera:NO];
-    
-    [vg setTimeForMerge:0 end:-1];
-    [vg setTimeForAudioMerge:0 end:-1];
-    
-    NSArray * actionList = [manager_ getMediaList];
-    
-    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-        NSLog(@"progress %f",progress);
-    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-        NSLog(@"playerItem Ready");
-        
-    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-        NSLog(@"generate completed.  %@",[mvUrl path]);
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
-        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-        
-        [manager_ setBackMV:filePath begin:0 end:-1];
-        
-        [manager_ removeActions];
-        
-        [self hideIndicatorView];
-        
-    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-        [self hideIndicatorView];
-    }];
-    
-    BOOL ret = [manager_ generateMediaListWithActions:actionList complted:^(NSArray * mediaList)
-                {
-                    [vg generatePreviewAsset:mediaList
-                                    bgVolume:1
-                                  singVolume:1
-                                  completion:^(BOOL finished)
-                     {
-                         [vg generateMVFile:mediaList retryCount:0];
-                     }];
-                }];
-    if(!ret)
-    {
-        NSLog(@"generate failure.");
-    }
 }
 
 - (void)didReceiveMemoryWarning {
