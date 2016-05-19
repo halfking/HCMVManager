@@ -74,8 +74,8 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/MediaActionDo.h>
 #import <HCMVManager/MediaWithAction.h>
 #import <HCMVManager/ActionManager.h>
-#import <HCMVManager/ActionProcess.h>
 #import <HCMVManager/ActionManager(index).h>
+#import <HCMVManager/ActionProcess.h>
 #import <HCMVManager/MediaActionForSlow.h>
 #import <HCMVManager/MediaActionForFast.h>
 #import <HCMVManager/MediaActionForRAP.h>
@@ -83,9 +83,9 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/MediaActionForNormal.h>
 
 #import <HCMVManager/HCPlayerSimple.h>
-#import <AVAssetReverseSession.h>
-#import <AVAssetToolsConstants.h>
-#import <AVAssetToolsMacros.h>
+#import <HCMVManager/AVAssetReverseSession.h>
+#import <HCMVManager/AVAssetToolsConstants.h>
+#import <HCMVManager/AVAssetToolsMacros.h>
 
 
 #endif
