@@ -361,10 +361,12 @@
     CGFloat seconds = self.SecondsInArray;
     CGFloat duration = self.DurationInSeconds;
     for (MediaWithAction * item in sources) {
+        MediaWithAction * matchItem = nil;
         //第一个或跨界的
         if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
         {
-            [overlapList addObject:item];
+            matchItem = item;
+            
         }
         //表示需要覆盖的
         else if(duration>0)
@@ -372,15 +374,27 @@
             //被包含在这个区段中的
             if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
             {
-                [overlapList addObject:item];
+                matchItem = item;
             }
             //有一部分在范围内，但尾部超过边界的
             else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
             {
-                [overlapList addObject:item];
+                matchItem = item;
+            }
+        }
+        if(matchItem )
+        {
+            if(fabs(matchItem.secondsInArray - self.SecondsInArray)<0.01 && matchItem.Action.ActionType == self.ActionType)
+            {
+                NSLog(@"matched..same....");
+            }
+            else
+            {
+                [overlapList addObject:matchItem];
             }
         }
     }
+    
     return overlapList;
 }
 
