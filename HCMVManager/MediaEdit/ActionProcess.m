@@ -13,6 +13,8 @@
 #import "MediaActionDo.h"
 #import "MediaWithAction.h"
 
+
+
 @implementation ActionProcess
 - (NSMutableArray *) processActions:(NSArray *)actions sources:(NSMutableArray *) sources
 {
@@ -175,6 +177,8 @@
 //1、如果不是覆盖，则取第一个对像，则直接切为两段即可
 //2、如果是覆盖，则取最后一个对像，计算需要去除的量
 //3、最后计算这些拆分对像的最终播放时长。
+//如果 duration <0 表示当前对像时长未确定，则后面的所有数据均无限后延。
+
 - (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
                                    atSeconds:(CGFloat)seconds
                                     duration:(CGFloat)duration
@@ -182,87 +186,86 @@
 {
     MediaWithAction * media = nil;
     
-    if(!overlaps ||overlaps.count==0 || seconds <0 || duration<0)
+    
+    if(!overlaps ||overlaps.count==0 || seconds <0)
     {
         NSAssert(media, @"传入了不正确的参数 nil");
         return nil;
     }
+    
     if(isOverlap) //如果是覆盖类型
     {
         media = [overlaps lastObject];
-        
-        CGFloat secondsActionEnd = seconds + duration;
-        //计算这个素材的开始时间变化
-        CGFloat beginChanged = secondsActionEnd - media.secondsInArray;
-        
-        UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
-        
-        //从中间截断时
-        if(secondsActionEnd >media.secondsInArray && secondsActionEnd < media.secondsInArray + media.secondsDurationInArray)
-        {
-            //创建后半部
-            MediaWithAction * actionSecond = [media copyItem];
-            actionSecond.durationInPlaying = -1;
-            
-            //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
-            CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
-            CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
-            media.end = endTime;
-            media.durationInPlaying = [self getFinalDurationForMedia:media];
-            media.durationInFinalArray = media.secondsDurationInArray;
-            media.secondsInFinalArray = media.secondsInArray;
-            
-            actionSecond.begin = CMTimeMakeWithSeconds(actionSecond.secondsBegin + beginChanged, timeScale);;
-            actionSecond.timeInArray = CMTimeMakeWithSeconds(secondsActionEnd,timeScale);
-            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
-            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
-            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
-            return actionSecond;
-        }
-        else
-        {
-            media.durationInPlaying = [self getFinalDurationForMedia:media];
-            return media;
-        }
     }
     else
     {
         media = [overlaps firstObject];
+    }
+    
+    UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
+    
+    //从中间截断时
+    if(seconds>=media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+    {
+        //创建后半部
+        MediaWithAction * actionSecond = [media copyItem];
+        actionSecond.durationInPlaying = -1;
         
-        CGFloat beginChanged = seconds + duration - media.secondsInArray;
-        UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
+        //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+        CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+        CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
+        media.end = endTime;
+        media.durationInPlaying = [self getFinalDurationForMedia:media];
+        media.durationInFinalArray = media.secondsDurationInArray;
+        media.secondsInFinalArray = media.secondsInArray;
         
-        if(fabs(seconds - media.secondsInArray)<0.1) //起点一致时
+       
+        if(duration>=0) //当插入的素材有确定时长时
         {
-            if(beginChanged>0)
+            if(isOverlap)
+            {
+                actionSecond.begin = CMTimeMakeWithSeconds(media.secondsEnd +duration, timeScale);
+            }
+            else
+            {
+                actionSecond.begin = media.end;
+            }
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds + duration,timeScale);
+            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
+            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
+        }
+        else //无确定时长时
+        {
+            actionSecond.begin = media.end;
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(SECONDS_NOTVALID,timeScale);
+            actionSecond.durationInPlaying = 0;
+            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
+            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
+        }
+        return actionSecond;
+    }
+    else //如果是全部覆盖
+    {
+        if(isOverlap) //没有从中间截断，则需要全部弃用
+        {
+            media.end = media.begin;
+            media.durationInFinalArray = 0;
+            media.durationInPlaying = 0;
+            return media;
+        }
+        else
+        {
+            if(duration>=0)
             {
                 media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
                 media.secondsInFinalArray = media.secondsInArray;
             }
-            media.durationInPlaying = [self getFinalDurationForMedia:media];
-            return media;
-        }
-        //从中间截断时
-        else if(seconds>media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
-        {
-            //创建后半部
-            MediaWithAction * actionSecond = [media copyItem];
-            actionSecond.durationInPlaying = -1;
-            
-            //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
-            CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray;
-            CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
-            media.end = endTime;
-            media.durationInFinalArray = media.secondsDurationInArray;
-            
-            media.durationInPlaying = [self getFinalDurationForMedia:media];
-            
-            actionSecond.begin = endTime;
-            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
-            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
-            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
-            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
-            return actionSecond;
+            else
+            {
+                media.timeInArray = CMTimeMakeWithSeconds(SECONDS_NOTVALID,timeScale);
+                media.secondsInFinalArray = media.secondsInArray;
+            }
         }
     }
     return nil;

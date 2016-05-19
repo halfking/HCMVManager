@@ -37,6 +37,31 @@
     self.IsMutex = action.IsMutex;
     self.IsFilter = action.IsFilter;
 }
+- (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
+{
+    [super setDurationInSeconds:DurationInSecondsA];
+    if(self.Media)
+    {
+        if(DurationInSecondsA>=0)
+            self.Media.end = CMTimeMakeWithSeconds(self.Media.secondsBegin + DurationInSecondsA, self.Media.begin.timescale);
+        else
+            self.Media.end = CMTimeMakeWithSeconds(self.Media.secondsDuration, self.Media.end.timescale);
+    }
+    if(self.MaterialList && self.MaterialList.count==1)
+    {
+        MediaWithAction * media = [self.MaterialList firstObject];
+        if(DurationInSecondsA>=0)
+            media.end = CMTimeMakeWithSeconds(media.secondsBegin + DurationInSecondsA, media.begin.timescale);
+        else
+            media.end = CMTimeMakeWithSeconds(media.secondsDuration, media.end.timescale);
+        media.durationInFinalArray = media.secondsDurationInArray;
+        media.durationInPlaying = [self getDurationInPlaying:media];
+    }
+    else if(self.MaterialList && self.MaterialList.count>1)
+    {
+        NSLog(@"这种多个对像的情况没有处理。。。。");
+    }
+}
 - (NSMutableArray *)get_MaterialList
 {
     return materialList_;
@@ -60,6 +85,10 @@
 {
     if(!media||!media.fileName || media.fileName.length<2) return 0;
     
+    if(media.playRate>0)
+    {
+        return media.secondsDurationInArray / media.playRate;
+    }
     //保存原值
     NSMutableArray * tempArray = materialList_;
     CGFloat orgDuration = durationForFinal_;

@@ -10,6 +10,8 @@
 #import <UIKit/UIKit.h>
 #import "WTPlayerResource.h"
 
+#define SECONDS_NOTVALID 999999
+
 @class MediaAction;
 @class MediaActionDo;
 @class MediaItem;
@@ -92,5 +94,6 @@
 - (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
 - (BOOL)saveDraft;
 - (BOOL)loadLastDraft;
+- (BOOL) needGenerateForOP;
 
 @end

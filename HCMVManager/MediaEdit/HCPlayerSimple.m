@@ -98,6 +98,10 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     return _playerLayer;
 }
+- (AVPlayer *) currentPlayer
+{
+    return player_;
+}
 - (void)resetPlayer
 {
     //    if(self.loader)

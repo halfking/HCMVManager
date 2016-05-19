@@ -43,7 +43,8 @@
 + (instancetype)sharedHCPlayerSimple;
 
 - (id)initWithFrame:(CGRect) frame;
-- (AVPlayerLayer *)currentLayer;
+- (AVPlayerLayer *) currentLayer;
+- (AVPlayer *) currentPlayer;
 - (BOOL) canPlay;
 - (void) play;
 - (BOOL) play:(CGFloat)begin end:(CGFloat)end;

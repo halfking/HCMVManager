@@ -334,6 +334,7 @@
 {
     if(!action) return NO;
     if(![actionList_ containsObject:action]) return NO;
+   
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
@@ -371,10 +372,18 @@
         
         for (int i = (int)actionList_.count -1; i>=0; i--) {
             MediaActionDo * item = actionList_[i];
-            if(item.SecondsInArray <=seconds && item.DurationInArray + item.SecondsInArray >seconds)
+            if(item.SecondsInArray - seconds < 0.04)
             {
-                retItem = item;
-                break;
+                if(item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - seconds > 0.04)
+                {
+                    retItem = item;
+                    break;
+                }
+                else if(item.DurationInArray <0)
+                {
+                    retItem = item;
+                    break;
+                }
             }
         }
         
@@ -385,7 +394,7 @@
 {
     MediaWithAction * retItem = nil;
     for (int i = (int)mediaList_.count -1; i>=0; i--) {
-        MediaWithAction * item = actionList_[i];
+        MediaWithAction * item = mediaList_[i];
         if(item.secondsInFinalArray <=seconds && item.durationInFinalArray + item.secondsInFinalArray >seconds)
         {
             retItem = item;
@@ -471,6 +480,10 @@
     [self reindexAllActions];
     NSLog(@"last draft loaded.");
     return YES;
+}
+- (BOOL) needGenerateForOP
+{
+    return actionList_.count>0;
 }
 #pragma mark - delegate
 - (void)VideoGenerater:(VideoGenerater*)queue didPlayerItemReady:(AVPlayerItem *)playerItem

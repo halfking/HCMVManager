@@ -100,6 +100,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 - (BOOL) generateMVFile:(NSArray *)mediaList
              retryCount:(int)retryCount;// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume;
 
+- (BOOL) generateMVSegments:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end;
 /*
  中止合成进程
  */
@@ -122,14 +123,14 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 
 + (CGAffineTransform) getPlayerTrans:(UIDeviceOrientation)orientation defaultTrans:(CGAffineTransform)defaultTrans;
 
-- (BOOL)generatePreviewWithActions:(NSArray *)mediaWithActions
-                       audio:(NSString *)audioPath
-                       begin:(CMTime)beginTime
-                         end:(CMTime)endTime
-               bgAudioVolume:(CGFloat)volume
-                  singVolume:(CGFloat)singVolume
-                    progress:(MEProgress)progress
-                             ready:(MEPlayerItemReady)itemReady;
+//- (BOOL)generatePreviewWithActions:(NSArray *)mediaWithActions
+//                       audio:(NSString *)audioPath
+//                       begin:(CMTime)beginTime
+//                         end:(CMTime)endTime
+//               bgAudioVolume:(CGFloat)volume
+//                  singVolume:(CGFloat)singVolume
+//                    progress:(MEProgress)progress
+//                             ready:(MEPlayerItemReady)itemReady;
 
 
 

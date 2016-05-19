@@ -172,6 +172,7 @@
     if(player_)
     {
         [player_ changeCurrentPlayerItem:item];
+        [self.view.layer addSublayer:[player_ currentLayer]];
     }
     else
     {
@@ -197,6 +198,7 @@
         [rPlayer_ changeCurrentPlayerItem:item];
         AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
         playerLayer.opacity = 0;
+        [self.view.layer addSublayer:playerLayer];
     }
     else
     {
@@ -320,12 +322,49 @@
 }
 -(void)slow:(UIButton *)sender
 {
+    [player_ pause];
+    
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+        NSLog(@"progress %f",progress);
+    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+        NSLog(@"playerItem Ready");
+        
+    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+        NSLog(@"generate completed.  %@",[mvUrl path]);
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+        
+        [self hideIndicatorView];
+        
+    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+        [self hideIndicatorView];
+    }];
+    if([vg generateMVSegments:oPath_ begin:2 end:10])
+    {
+        [vg generateMVFile:nil retryCount:0];
+    }
+    
+    
+    return ;
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
         sender.selected = NO;
         NSLog(@"player action seconds:%f",seconds);
-        MediaActionDo * actionDo = [manager_ findActionAt:seconds - 0.1 index:-1];
+        MediaWithAction * media = [manager_ findMediaItemAt:seconds];
+        
+        MediaActionDo * actionDo = nil;
+        if([media.Action isKindOfClass:[MediaActionDo class]])
+        {
+            actionDo = (MediaActionDo *)media.Action;
+        }
+        else
+        {
+            actionDo = [manager_ findActionAt:media.secondsInArray index:-1];
+        }
         if(actionDo)
         {
             CGFloat duration = [manager_ getSecondsWithoutAction:seconds];
@@ -376,7 +415,7 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
-    NSLog(@"---- player seconds:%f",cmTime);
+    NSLog(@"---- player seconds:%f rate:%.2f",cmTime,[playerSimple currentPlayer].rate);
     if(playerSimple == rPlayer_)
     {
         
@@ -399,8 +438,8 @@
     {
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([player_ durationWhen]);
-//        [player_ seek:0 accurate:YES];
-//        [player_ play];
+        //        [player_ seek:0 accurate:YES];
+        //        [player_ play];
         [player_ pause];
     }
     //自动结束没有结束的动作
@@ -491,7 +530,7 @@
     NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
     int index = 0;
     for (MediaWithAction * item in mediaList) {
-        NSLog(@"--%d--",index);
+        NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
         NSLog(@"%@",[item toString]);
         index ++;
     }
@@ -508,14 +547,20 @@
     [player_ pause];
     [rPlayer_ pause];
     
+    if(![manager_ needGenerateForOP])
+    {
+        [player_ seek:0 accurate:YES];
+        [player_ play];
+        return;
+    }
     [manager_ saveDraft];
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];
     vg.waterMarkFile = CT_WATERMARKFILE;
     vg.mergeRate = 1;
-    vg.volRampSeconds = 0.5;
-    
+    vg.volRampSeconds = 0;
+    vg.compositeLyric = NO;
     [vg setRenderSize:baseVideo_.renderSize orientation:UIDeviceOrientationPortrait withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
@@ -530,8 +575,13 @@
         
     } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
         NSLog(@"generate completed.  %@",[mvUrl path]);
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
+        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
         
-        [manager_ setBackMV:[mvUrl path] begin:0 end:-1];
+        [manager_ setBackMV:filePath begin:0 end:-1];
+        
+        [manager_ removeActions];
         
         [self hideIndicatorView];
         
