@@ -66,15 +66,32 @@
 }
 - (void)clear
 {
-    PP_RELEASE(audioBg_);
-    PP_RELEASE(videoBg_);
+
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
     
+    for (int i = 1;i<videoBGHistroy_.count;i++) {
+        MediaItem * item = videoBGHistroy_[i];
+        [[HCFileManager manager]removeFileAtPath:item.filePath];
+    }
+    
+    for (int i = 0;i<reverseBgHistory_.count;i++) {
+        MediaItem * item = reverseBgHistory_[i];
+        [[HCFileManager manager]removeFileAtPath:item.filePath];
+    }
+    if(reverseBG_ && reverseBG_.filePath)
+    {
+        [[HCFileManager manager]removeFileAtPath:reverseBG_.filePath];
+    }
+    
     [videoBGHistroy_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
     [actionsHistory_ removeAllObjects];
+    
+    PP_RELEASE(audioBg_);
+    PP_RELEASE(videoBg_);
+    PP_RELEASE(reverseBG_);
     
     durationForSource_ = 0;
     durationForAudio_ = 0;

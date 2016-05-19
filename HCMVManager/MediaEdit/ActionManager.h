@@ -59,7 +59,7 @@
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
 @property (nonatomic,assign) BOOL needPlayerItem;
 + (ActionManager *)shareObject;
-- (void) clear;
+- (void) clear;  //清除数据及临时文件，最后一个文件不清除
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
@@ -91,9 +91,9 @@
 #pragma mark - other functions
 - (NSArray *) getMediaList;
 //将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
-- (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
-- (BOOL)saveDraft;
-- (BOOL)loadLastDraft;
+- (BOOL) generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
+- (BOOL) saveDraft;
+- (BOOL) loadLastDraft;
 - (BOOL) needGenerateForOP;
 
 @end

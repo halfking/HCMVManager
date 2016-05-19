@@ -181,6 +181,10 @@ static HCPlayerSimple *sharedPlayerView = nil;
 }
 - (void)setRate:(CGFloat)rate
 {
+    if(rate ==0)
+    {
+        NSLog(@"set play rate zero.");
+    }
     playRate_ = rate;
     if(player_ && player_.rate!=0)
     {

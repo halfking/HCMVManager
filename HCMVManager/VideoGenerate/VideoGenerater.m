@@ -444,6 +444,10 @@
     joinVideoExporter.audioMix = _audioMixOnce;
     
     CGSize renderSize = _mixComposition.naturalSize;// [self getRenderSize];
+    if(renderSize.width==0||renderSize.height==0)
+    {
+        renderSize = [self getRenderSize];
+    }
     NSNumber *width =  [NSNumber numberWithFloat:renderSize.width];
     NSNumber *height=  [NSNumber numberWithFloat:renderSize.height];
     
@@ -530,6 +534,8 @@
     }
     AVAssetTrack * track = [tracklist firstObject];
     size = track.naturalSize;
+    
+    renderSize_ = size;
     
     AVMutableVideoComposition * mainComposition =  [AVMutableVideoComposition videoComposition];
     AVMutableComposition * mixComposition = [[AVMutableComposition alloc] init];
@@ -967,9 +973,7 @@
     lastGenerateKey_ = [self getKeyForMediaList:mediaList];
     
     AVMutableVideoComposition *mainComposition;
-    AVMutableComposition *mixComposition;
-    
-    mixComposition = [[AVMutableComposition alloc] init];
+    AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
     
     CMTime curTimeCnt = kCMTimeZero;
     NSMutableArray *layers  = [[NSMutableArray alloc] init];
@@ -1061,6 +1065,7 @@
     mainComposition.frameDuration = time;
     mainComposition.renderSize =  size;//CGSizeMake(640, 480);//
     
+    
     if(self.compositeLyric)
     {
         CMTime lyricDuration = curTimeCnt;
@@ -1074,6 +1079,7 @@
     
     NSLog(@"prejoin:%@",NSStringFromCGSize(size));
     
+    mixComposition.naturalSize = size;
     _mixComposition = PP_RETAIN((AVMutableComposition*)mixComposition);
     _videoComposition = PP_RETAIN((AVMutableVideoComposition*)mainComposition);
     _audioMixOnce = PP_RETAIN((AVMutableAudioMix*)bgmMix);

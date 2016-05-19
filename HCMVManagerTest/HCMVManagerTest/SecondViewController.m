@@ -117,14 +117,14 @@
         
         joinBtn_ = [UIButton buttonWithType:UIButtonTypeCustom];
         [joinBtn_ setFrame:CGRectMake(180, 450, 60, 30)];
-        [joinBtn_ setTitle:@"join" forState:UIControlStateNormal];
+        [joinBtn_ setTitle:@"reset" forState:UIControlStateNormal];
         joinBtn_.titleLabel.font = [UIFont systemFontOfSize:14];
         [joinBtn_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self.view addSubview:joinBtn_];
         
         [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
         [fast_ addTarget:self action:@selector(fast:) forControlEvents:UIControlEventTouchUpInside];
-        [joinBtn_ addTarget:self action:@selector(join:) forControlEvents:UIControlEventTouchUpInside];
+        [joinBtn_ addTarget:self action:@selector(reset:) forControlEvents:UIControlEventTouchUpInside];
         
         rate1x_ = [UIButton buttonWithType:UIButtonTypeCustom];
         [rate1x_ setFrame:CGRectMake(20, 400, 60, 30)];
@@ -256,15 +256,15 @@
 #pragma mark - button events
 -(void)repeat:(UIButton *)sender
 {
-    [repeatTimer_ invalidate];
-    repeatTimer_ = nil;
-    if (repeatCnt_ > 2) {
-        repeatCnt_ = 0;
-        repeatTime_ = kCMTimeZero;
-        return;
-    }
+//    [repeatTimer_ invalidate];
+//    repeatTimer_ = nil;
+//    if (repeatCnt_ > 2) {
+//        repeatCnt_ = 0;
+//        repeatTime_ = kCMTimeZero;
+//        return;
+//    }
     
-    if (CMTimeGetSeconds(repeatTime_) == 0) {
+//    if (CMTimeGetSeconds(repeatTime_) == 0) {
         repeatTime_ = player_.playerItem.currentTime;
         NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
         //记录这个repeat的时间点(repeat片段的终点)
@@ -276,10 +276,11 @@
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.isOPCompleted = YES;
+        action.Rate = 1;
+    
+        [manager_ addActionItem:action filePath:nil at:secondsPlaying duration:1];
         
-        [manager_ addActionItem:action filePath:nil at:secondsPlaying duration:-1];
-        
-    }
+//    }
     
     
 }
@@ -299,6 +300,7 @@
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.isOPCompleted = NO;
+        action.Rate = 1;
         if([manager_ addActionItem:action filePath:nil at:seconds duration:-1])
         {
             sender.selected = YES;
@@ -320,35 +322,36 @@
         
     }
 }
+- (void)subtractMV
+{
+        VideoGenerater * vg = [VideoGenerater new];
+        [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+            NSLog(@"progress %f",progress);
+        } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+            NSLog(@"playerItem Ready");
+    
+        } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+            NSLog(@"generate completed.  %@",[mvUrl path]);
+            NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+            NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+            [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+    
+            [self hideIndicatorView];
+    
+        } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+            NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+            [self hideIndicatorView];
+        }];
+        if([vg generateMVSegments:oPath_ begin:2 end:10])
+        {
+            [vg generateMVFile:nil retryCount:0];
+        }
+}
 -(void)slow:(UIButton *)sender
 {
     [player_ pause];
     
-    VideoGenerater * vg = [VideoGenerater new];
-    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-        NSLog(@"progress %f",progress);
-    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-        NSLog(@"playerItem Ready");
-        
-    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-        NSLog(@"generate completed.  %@",[mvUrl path]);
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
-        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-        
-        [self hideIndicatorView];
-        
-    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-        [self hideIndicatorView];
-    }];
-    if([vg generateMVSegments:oPath_ begin:2 end:10])
-    {
-        [vg generateMVFile:nil retryCount:0];
-    }
-    
-    
-    return ;
+
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
@@ -424,6 +427,10 @@
     {
         
     }
+//    if(currentMedia_ && currentMedia_.secondsInArray + currentMedia_.secondsDurationInArray - 0.02 < cmTime)
+//    {
+//        [[ActionManager shareObject]checkActionForPlayViaTime:cmTime];
+//    }
 }
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
@@ -481,6 +488,7 @@
         [rPlayer_ pause];
         return ;
     }
+    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
     if(currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
     {
         if(mediaToPlay.Action.ActionType!=SReverse)
@@ -540,9 +548,19 @@
 {
     NSLog(@"action playerItem ready");
 }
+- (void)reset:(UIButton *)sender
+{
+    [player_ pause];
+    [rPlayer_ pause];
+    [player_ setRate:1];
+    [[ActionManager shareObject]clear];
+    [manager_ setBackMV:oPath_ begin:0 end:-1];
+}
 -(void)join:(UIButton *)sender
 {
     [self showIndicatorView];
+    
+    [player_ setRate:1];
     
     [player_ pause];
     [rPlayer_ pause];
