@@ -369,7 +369,7 @@
     }
     
     mediaList_ = [action processAction:mediaList_];
-//    [self reindexAllActions];
+    //    [self reindexAllActions];
     
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
@@ -386,10 +386,18 @@
     MediaActionDo * action = [actionList_ lastObject];
     if(action.isOPCompleted==NO)
     {
-        CGFloat duration = [self getSecondsWithoutAction:currentSeconds];
-        duration -= action.SecondsInArray;
-        [self setActionItemDuration:action duration:duration];
-        
+        if(action.ActionType==SReverse)
+        {
+            currentSeconds = reverseBG_.secondsDuration - currentSeconds;
+            CGFloat duration = MAX(action.SecondsInArray - currentSeconds,0);
+            [self setActionItemDuration:action duration:duration];
+        }
+        else
+        {
+            CGFloat duration = [self getSecondsWithoutAction:currentSeconds];
+            duration -= action.SecondsInArray;
+            [self setActionItemDuration:action duration:duration];
+        }
         return YES;
     }
     return NO;

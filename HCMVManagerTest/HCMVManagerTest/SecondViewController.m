@@ -76,6 +76,8 @@
     MediaWithAction * currentMedia_;
     
     UIActivityIndicatorView * indicatorView_;
+    
+    BOOL showTimeChanged_;
 }
 
 - (void)viewDidLoad {
@@ -88,6 +90,7 @@
     viewShowed_ = NO;
     [manager_ setBackMV:oPath_ begin:0 end:-1];
     
+    showTimeChanged_ = YES;
     // Do any additional setup after loading the view, typically from a nib.
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -309,14 +312,16 @@
         
     } else {
         sender.selected = NO;
-        MediaActionDo * actionDo = [manager_ findActionAt:seconds - 0.1 index:-1];
+        MediaActionDo * actionDo = [manager_ findActionAt:seconds index:-1];
         if(actionDo)
         {
-            CGFloat duration = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-            seconds = seconds + seconds - duration;
+            //反向没有变速，可以直接获取
+            //反向轨转成正向轨
+            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
+//            seconds =  seconds - duration;
             CGFloat end = [manager_ getSecondsWithoutAction:seconds];
-            
-            duration = end - actionDo.SecondsInArray;
+            CGFloat duration = end - playerPos;
+//            duration = end - actionDo.SecondsInArray;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
@@ -419,7 +424,11 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
-    NSLog(@"---- player seconds:%f rate:%.2f",cmTime,[playerSimple currentPlayer].rate);
+    if(showTimeChanged_)
+    {
+        NSLog(@"---- player seconds:%f rate:%.2f",cmTime,[playerSimple currentPlayer].rate);
+        showTimeChanged_ = NO;
+    }
     if(playerSimple == rPlayer_)
     {
         
@@ -463,6 +472,7 @@
     fast_.selected = NO;
     rate1x_.selected = NO;
     rate2x_.selected = NO;
+    showTimeChanged_ = YES;
 }
 #pragma mark - delegate
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
@@ -478,10 +488,12 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
+    showTimeChanged_ = YES;
     if(!mediaToPlay)
     {
         [player_ pause];
         [rPlayer_ pause];
+        NSLog(@"mediaToPlay:nil");
         return ;
     }
     NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
@@ -539,6 +551,7 @@
     NSLog(@"action do changed:%@",action.ActionTitle);
     [rPlayer_ pause];
     [player_ pause];
+    showTimeChanged_ = YES;
 }
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {

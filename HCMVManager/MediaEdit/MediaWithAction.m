@@ -14,6 +14,7 @@
 //@synthesize durationInFinalArray;
 //@synthesize secondsInFinalArray;
 @synthesize durationInPlaying;
+@synthesize secondsInArrayNotConfirm;
 -(id)init
 {
     self = [super init];

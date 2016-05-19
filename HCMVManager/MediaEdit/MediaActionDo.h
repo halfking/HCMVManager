@@ -33,5 +33,9 @@
 - (CGFloat) getDurationInFinalArray:(MediaWithAction *)media;
 
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources;
+- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
+                                   atSeconds:(CGFloat)seconds
+                                    duration:(CGFloat)duration
+                                     overlap:(BOOL)isOverlap;
 @end
 

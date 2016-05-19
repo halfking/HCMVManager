@@ -111,6 +111,11 @@
     {
         return sources;
     }
+    if(overlapList.count==0)
+    {
+        NSLog(@"cannot find overlap items.");
+        return sources;
+    }
     //检查插入的起点对像
     MediaWithAction * mediaToSplit = [overlapList firstObject];
     NSAssert(mediaToSplit, @"无法找到需要分割或移动的素材，数据有问题1");
@@ -120,8 +125,7 @@
                                                          duration:self.DurationInArray
                                                           overlap:self.IsOverlap];
     
-   
-    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
+//    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
     
     //将数据插入到原队列中，并且将队列中对像的时间重新计算
     NSMutableArray * headList = [NSMutableArray new];
@@ -132,7 +136,8 @@
     CGFloat secondsInArray = 0;
     
     for (MediaWithAction * item in sources) {
-        if(item==mediaToSplit && item.secondsDurationInArray>0)
+        if([materialList containsObject:item]) continue;
+        if(item==mediaToSplit && (item.secondsDurationInArray>0||item.secondsInArrayNotConfirm))
         {
             //如果起点刚好与新加的动作相同，在非覆盖模式下，此对像后移，但对像地址并没有发生变化，就会出现这种情况。
             if(mediaToSplit == mediaToTail)
@@ -165,10 +170,14 @@
             [headList addObject:item];
             secondsInArray += item.secondsDurationInArray;
         }
-        else if(isTail && item!=mediaToSplit && item.secondsDurationInArray>0)
+        else if(isTail && item!=mediaToSplit)
         {
             //如果是覆盖，则不能将这些包含在其中的素材放到结果队列中
             if(self.IsOverlap && [overlapList containsObject:item])
+            {
+                
+            }
+            else if(item.secondsInArrayNotConfirm ==NO && item.secondsDurationInArray<=0)
             {
                 
             }
@@ -182,7 +191,7 @@
     {
         [tailList insertObject:mediaToTail atIndex:0];
     }
-//    CGFloat lastMediaSeconds = 0;
+    //    CGFloat lastMediaSeconds = 0;
     //插入新对像
     for (MediaWithAction * item in materialList) {
         item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
@@ -190,8 +199,8 @@
         [headList addObject:item];
         
         secondsInArray += item.secondsDurationInArray;
-//        if(self.IsOverlap)
-//            lastMediaSeconds = item.secondsEnd;
+        //        if(self.IsOverlap)
+        //            lastMediaSeconds = item.secondsEnd;
     }
     
     
@@ -221,9 +230,9 @@
     NSMutableArray * result = [NSMutableArray new];
     
     [result addObjectsFromArray:headList];
-   
+    
     [result addObjectsFromArray:tailList];
-   
+    
     
     headList = nil;
     tailList = nil;
@@ -294,10 +303,24 @@
     }
     else //如果是全部覆盖
     {
-        if(isOverlap) //没有从中间截断，则需要全部弃用
+        if(isOverlap)
         {
-            media.end = media.begin;
-            media.durationInPlaying = 0;
+            if(media.secondsInArray >=seconds) //  根本没有覆盖，这在没有立即完成的Action，即开始Duration为-1的时候会出现
+            {
+                if(duration>=0)
+                {
+                    media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+                }
+                else
+                {
+                    media.timeInArray = CMTimeMakeWithSeconds(seconds+1,timeScale);
+                }
+            }
+            else //没有从中间截断，则需要全部弃用
+            {
+                media.end = media.begin;
+                media.durationInPlaying = 0;
+            }
             return media;
         }
         else
@@ -311,6 +334,7 @@
                 media.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
                 media.secondsInArrayNotConfirm = YES;
             }
+            return media;
         }
     }
     return nil;
@@ -378,6 +402,10 @@
             }
             //有一部分在范围内，但尾部超过边界的
             else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
+            {
+                matchItem = item;
+            }
+            else if (item.secondsInArray > seconds +duration && overlapList.count==0 && item.secondsInArrayNotConfirm)
             {
                 matchItem = item;
             }
