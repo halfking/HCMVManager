@@ -26,7 +26,9 @@
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
 - (CGFloat) getDurationInFinal:(NSArray *)sources;
-- (CGFloat) getDurationFinal:(MediaWithAction *)media;
+- (CGFloat) getDurationInPlaying:(MediaWithAction *)media;
+- (CGFloat) getDurationInFinalArray:(MediaWithAction *)media;
+
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources;
 @end
 

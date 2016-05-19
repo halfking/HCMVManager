@@ -20,4 +20,5 @@
 
 - (MediaWithAction *)copyItem;
 - (NSString *) toString;
+- (BOOL)isSampleAsset:(MediaWithAction *)item;
 @end

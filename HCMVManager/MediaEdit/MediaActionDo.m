@@ -56,7 +56,7 @@
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");
     return -1;
 }
-- (CGFloat) getDurationFinal:(MediaWithAction *)media
+- (CGFloat) getDurationInPlaying:(MediaWithAction *)media
 {
     if(!media||!media.fileName || media.fileName.length<2) return 0;
     
@@ -71,6 +71,43 @@
     materialList_ = tempArray;
     durationForFinal_ = orgDuration;
     return duration;
+}
+- (CGFloat) getDurationInFinalArray:(MediaWithAction *)media
+{
+    if(!media||!media.fileName || media.fileName.length<2) return -1;
+    
+    return media.secondsDurationInArray;
+//    
+//    if(!materialList_)
+//    {
+//        if(sources)
+//        {
+//            [self buildMaterialProcess:sources];
+//        }
+//        else if(self.Media)
+//        {
+//            MediaWithAction * item = [self toMediaWithAction:sources];
+//            materialList_ = [NSMutableArray arrayWithObject:item];
+//        }
+//    }
+//    if(!isnan(durationForFinal_) && durationForFinal_>0) return durationForFinal_;
+//    
+//    durationForFinal_ = 0;
+//    for (MediaWithAction * media in materialList_) {
+//        
+//        CGFloat duration = 0;
+//        if(media.secondsDurationInArray>0)
+//        {
+//            duration = media.secondsDurationInArray;
+//        }
+//        else if(media.Action)
+//        {
+//            duration = media.Action.DurationInSeconds;
+//            
+//        }
+//        durationForFinal_ += duration;
+//    }
+//    return durationForFinal_;
 }
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources
 {

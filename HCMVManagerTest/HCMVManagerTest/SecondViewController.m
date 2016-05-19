@@ -72,6 +72,7 @@
     BOOL viewShowed_;
     
     MediaActionDo * currentAction_;
+    MediaWithAction * currentMedia_;
     
     UIActivityIndicatorView * indicatorView_;
 }
@@ -92,6 +93,7 @@
 {
     //[self layout];
     [self layoutNew];
+    [ActionManager shareObject].delegate = self;
 }
 -(void)layoutNew
 {
@@ -391,13 +393,15 @@
     {
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
+        [rPlayer_ pause];
     }
     else if(playerSimple == player_)
     {
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([player_ durationWhen]);
-        [player_ seek:0 accurate:YES];
-        [player_ play];
+//        [player_ seek:0 accurate:YES];
+//        [player_ play];
+        [player_ pause];
     }
     //自动结束没有结束的动作
     if(currentAction_ && currentAction_.isOPCompleted==NO)
@@ -429,73 +433,69 @@
         [self buildReversePlayer];
     }
 }
-- (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
+//当播放器的内容需要发生改变时
+- (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
-    NSLog(@"action changed");
-    
-    player_.rate = action.Rate;
-    
-    currentAction_ = action;
-    //repeater
-    if(action.ActionType == SRepeat)
+    if(!mediaToPlay)
     {
-        [player_ seek:action.DurationInSeconds + action.ReverseSeconds accurate:YES];
-        //        [player_ seekToTime:CMTimeMake(action.DurationInSeconds + action.ReverseSeconds  , repeatTime_.timescale)
-        //           toleranceBefore:kCMTimeZero
-        //            toleranceAfter:kCMTimeZero
-        //         completionHandler:^(BOOL finished) {
-        //             if (finished) {
-        [player_ play];
-        CMTime afterseek = player_.playerItem.currentTime;
-        CGFloat diff = CMTimeGetSeconds(repeatTime_) - CMTimeGetSeconds(afterseek);
-        NSLog(@"diff = %.3f afterseek time = %.3f", diff, CMTimeGetSeconds(afterseek));
-        
-        //                 //repeater three times
-        //                 repeatTimer_ = [NSTimer scheduledTimerWithTimeInterval:diff target:self selector:@selector(repeat:) userInfo:nil repeats:YES];
-        //                 repeatCnt_ ++ ;
-        //             }
-        //         }];
-        
+        [player_ pause];
+        [rPlayer_ pause];
+        return ;
     }
-    else if(action.ActionType == SSlow)
+    if(currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
     {
-        //        player.rate = 1.0/3;
-    }
-    else if(action.ActionType ==SFast)
-    {
-        
-    }
-    else if(action.ActionType ==SReverse)
-    {
-        if(action.isOPCompleted==NO)
+        if(mediaToPlay.Action.ActionType!=SReverse)
         {
-            [player_ pause];
-            if (rPlayer_) {
-                CGFloat diff = CMTimeGetSeconds([player_ duration]) - CMTimeGetSeconds([player_ durationWhen]);
-                NSLog(@"player reverse at time %.3f", diff);
-                [rPlayer_ seek:diff accurate:YES];
-                [rPlayer_ play];
-                [rPlayer_ currentLayer].opacity = 1;
-            }
+            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [player_ setRate:mediaToPlay.playRate];
+            [player_ play];
         }
         else
         {
-            [rPlayer_ pause];
-            NSLog(@"normal play");
-            CGFloat diff = CMTimeGetSeconds([rPlayer_ duration]) - CMTimeGetSeconds([rPlayer_ durationWhen]);
-            [player_ seek:diff accurate:YES];
-            [player_ play];
-            [rPlayer_ currentLayer].opacity = 0;
+            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [rPlayer_ setRate:mediaToPlay.playRate];
+            [rPlayer_ play];
         }
     }
     else
     {
-        
+        if(mediaToPlay.Action.ActionType!=SReverse)
+        {
+            [rPlayer_ pause];
+            [rPlayer_ currentLayer].opacity = 0;
+            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [player_ setRate:mediaToPlay.playRate];
+            [player_ play];
+        }
+        else
+        {
+            [player_ pause];
+            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+            [rPlayer_ setRate:mediaToPlay.playRate];
+            [rPlayer_ play];
+            [rPlayer_ currentLayer].opacity = 1;
+        }
     }
+}
+- (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
+{
+    NSLog(@"action do changed:%@",action.ActionTitle);
+    [rPlayer_ pause];
+    [player_ pause];
 }
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {
-    NSLog(@"action doProcessOK");
+    NSLog(@"-------------**----**--------------------");
+    NSLog(@"duration:%.2f",duration);
+    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+    int index = 0;
+    for (MediaWithAction * item in mediaList) {
+        NSLog(@"--%d--",index);
+        NSLog(@"%@",[item toString]);
+        index ++;
+    }
+    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
 }
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration
 {
@@ -515,6 +515,8 @@
     vg.waterMarkFile = CT_WATERMARKFILE;
     vg.mergeRate = 1;
     vg.volRampSeconds = 0.5;
+    
+    [vg setRenderSize:baseVideo_.renderSize orientation:UIDeviceOrientationPortrait withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
     [vg setTimeForAudioMerge:0 end:-1];

@@ -36,6 +36,7 @@
     NSTimer * timerForExport_;
     
     UDManager * udManager_;
+    BOOL isGenerating_;
 }
 @synthesize previewAVPlayItem;
 @synthesize previewAVassetIsReady;
@@ -824,9 +825,19 @@
 -(void) generatePlayerItem:(NSArray *)mediaList size:(CGSize)size
 {
     //    return [self generatePlayItemNew];
-    
+    if(isGenerating_)
+    {
+        NSLog(@"正在生成过程中，不能重入....");
+        return;
+    }
+    isGenerating_ = YES;
+    BOOL isOverlap = YES; //在背景视频上添加视频
     CMTime totalDuration = bgmUrl?[self getTotalDuration:bgmUrl]:[self getTotalDuration:bgvUrl];
-    
+    if(totalDuration.value ==0)
+    {
+        isOverlap = NO; //多个视频分段相加
+        totalDuration = [self getTotalDurationByList:mediaList];
+    }
     PP_RELEASE(_mixComposition);
     PP_RELEASE(_videoComposition);
     PP_RELEASE(_audioMixOnce);
@@ -865,8 +876,9 @@
         CMTimeValue lastTimeValue = 0;
         
         for (int i = 0 ; i < mediaList.count ; i ++ ) {
-            
             MediaItem * curItem = [mediaList objectAtIndex:i];
+            CGFloat mediaRate = curItem.playRate>0?curItem.playRate:rate;
+            
             
             CMTime modalOffEtInQueue = [self compsiteOneItem:curItem
                                                        index:i
@@ -875,7 +887,7 @@
                                                   imageTrack:imageTrack
                                                  imagelayers:imageLayerInstruction
                                                   videoTrack:videoTrack
-                                                 videoLayers:videoLayerInstruction rate:rate];
+                                                 videoLayers:videoLayerInstruction rate:mediaRate];
             
             if(CMTimeCompare(modalOffEtInQueue, kCMTimeZero)==0) continue;
             
@@ -902,7 +914,9 @@
     {
         curTimeCnt = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalDuration), (totalDuration.timescale>curTimeCnt.timescale?totalDuration.timescale:curTimeCnt.timescale));
     }
-    curTimeCnt = [self compositeBGVideo:mixComposition layers:layers maxTime:curTimeCnt size:size rate:rate];
+    
+    if(isOverlap)
+        curTimeCnt = [self compositeBGVideo:mixComposition layers:layers maxTime:curTimeCnt size:size rate:rate];
     
     //音频混入
     NSMutableArray * audioMixParams = [self compositeAudioArray:mixComposition maxTime:curTimeCnt rate:rate];
@@ -940,6 +954,7 @@
     previewAVassetIsReady = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(sendPlayerItemToFront:) userInfo:nil repeats:NO];
+        isGenerating_ = NO;
     });
 }
 - (void) generatePlayItemNew
@@ -1185,6 +1200,16 @@
 }
 
 #pragma mark  - composite Audio and video of background
+- (CMTime) getTotalDurationByList:(NSArray *)mediaList
+{
+    CGFloat seconds = 0;
+    CMTimeScale timescale = DEFAULT_TIMESCALE;
+    for (MediaItem * item in mediaList) {
+        seconds += roundf(item.secondsDurationInArray/item.playRate * 100)/100;
+        timescale = item.begin.timescale;
+    }
+    return CMTimeMakeWithSeconds(seconds, timescale);
+}
 - (CMTime) getTotalDuration:(NSURL *)accompanyUrl
 {
     CMTime totalDuration = kCMTimeZero;
@@ -1246,7 +1271,7 @@
     //比较是否在可以处理的范围内
     //    CMTime  duration = [self getVideoItemDurationInJoin:&selfSt end:&selfEt timeInArray:curItem.stInQueue];
     
-    if(CMTimeGetSeconds(duration)<0.2)
+    if(CMTimeGetSeconds(duration)<0.04)
     {
         NSLog(@"join video: duration:%f error.",CMTimeGetSeconds(duration));
         //        duration = curItem.duration;
@@ -2086,6 +2111,7 @@
 }
 - (void)cancelExporter
 {
+    isGenerating_ = NO;
     if(timerForExport_)
     {
         [timerForExport_ invalidate];
@@ -2280,6 +2306,7 @@
 }
 - (void)clear
 {
+    isGenerating_ = NO;
     progressBlock_ = nil;
     itemReadyBlock_ = nil;
     completedBlock_ = nil;

@@ -140,6 +140,7 @@
             videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
         }
         videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
+      
         PP_RELEASE(videoBgAction_);
     }
     {
@@ -261,7 +262,7 @@
                         duration:(CGFloat)durationInSeconds;
 {
     MediaActionDo * item = [self getMediaActionDo:action];
-    if(filePath && filePath.length>0)
+    if(filePath && filePath.length>0 && [filePath isEqualToString:videoBg_.filePath]==NO)
     {
         MediaItem * tempItem = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
         if(tempItem)
@@ -272,27 +273,33 @@
     }
     else
     {
-        item.Media = [videoBg_ copyAsCore];
-        //重新设置开始与结束时间
-        item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
-        //如果外部没有设定时长，则以Action的时长为主
-        //        if(durationInSeconds <=0)
-        //        {
-        //            durationInSeconds = item.DurationInSeconds;
-        //        }
-        //DurationInSecons为小于0时，表示长度未定，一般在长按按钮时发生
-        if(durationInSeconds>0)
+        //倒放对应的东东不太一样
+        if(item.ActionType == SReverse)
         {
-            item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+            item.Media = [reverseBG_ copyAsCore];
+            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsDuration - posSeconds, item.Media.begin.timescale);
+            if(durationInSeconds>0)
+            {
+                item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+            }
         }
-        //        [item parseCore:[videoBg_ copyAsCore]];
+        else
+        {
+            item.Media = [videoBg_ copyAsCore];
+            //重新设置开始与结束时间
+            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
+            if(durationInSeconds>0)
+            {
+                item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+            }
+        }
     }
     if(!item.Media || !item.Media.fileName || item.Media.fileName.length<2)
     {
         PP_RELEASE(item);
         return nil;
     }
-    item.SecondsInArray = posSeconds + action.ReverseSeconds;
+    item.SecondsInArray = posSeconds;// + action.ReverseSeconds;
     item.DurationInArray = durationInSeconds;
     if(durationInSeconds<=0)
     {
@@ -311,9 +318,14 @@
         [self.delegate ActionManager:self actionChanged:item type:0];
     }
     
-    if(item.isOPCompleted)
+    //    if(item.isOPCompleted)
+    //    {
+    [self reindexAllActions];
+    //    }
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
     {
-        [self reindexAllActions];
+        MediaWithAction * media = [self findMediaItemAt:item.SecondsInArray];
+        [self.delegate ActionManager:self play:media];
     }
     return item;
 }
@@ -333,6 +345,13 @@
     }
     
     [self reindexAllActions];
+    
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
+    {
+        MediaWithAction * item = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray];
+        [self.delegate ActionManager:self play:item];
+    }
     
     return YES;
 }

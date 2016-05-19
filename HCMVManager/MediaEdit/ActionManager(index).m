@@ -23,6 +23,10 @@
         [mediaList_ removeAllObjects];
         NSAssert(videoBgAction_, @"必须先设置了源背景视频才能进行处理!");
         MediaWithAction * bgMedia = [videoBgAction_ copyItem];
+        
+        bgMedia.durationInFinalArray = bgMedia.secondsDurationInArray;
+        bgMedia.secondsInFinalArray = bgMedia.secondsInArray;
+        
         [mediaList_ addObject:bgMedia];
         ActionProcess * process = [ActionProcess new];
         mediaList_ = [process processActions:actionList_ sources:mediaList_];

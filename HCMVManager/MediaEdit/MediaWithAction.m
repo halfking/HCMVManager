@@ -34,6 +34,7 @@
     item.durationInPlaying = self.durationInPlaying;
     return item;
 }
+
 - (NSString *) toString
 {
     return [NSString stringWithFormat:@"%d(%.2f--%.2f-->final:%.2f-->%.2f) total:%.2f\n\t\t%@(%.2f--%.2f) rate:%.2f",
@@ -45,6 +46,19 @@
             self.durationInPlaying,
             [self.fileName lastPathComponent] ,
             self.secondsBegin,self.secondsEnd,self.playRate];
+}
+//是否同一个Asset
+- (BOOL) isSampleAsset:(MediaWithAction *)item
+{
+    //反向的，使用不同的文件，因此只要文件名相同就行
+    if([self.fileName isEqualToString:item.fileName])
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
 }
 - (void)dealloc
 {

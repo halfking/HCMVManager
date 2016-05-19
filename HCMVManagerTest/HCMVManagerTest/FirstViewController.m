@@ -60,6 +60,11 @@
         [self.view addSubview:btn];
     }
 }
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [ActionManager shareObject].delegate = self;
+}
 - (void)buildBaseData
 {
     

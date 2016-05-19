@@ -18,13 +18,35 @@
 {
     if(!actions || !sources || actions.count==0 || sources.count==0) return sources;
     NSMutableArray * result = sources;
+//    CGFloat secondsInArray = 0;
+//    CGFloat secondsInFinalArray = 0;
     for (MediaActionDo * action in actions) {
-        if(action.isOPCompleted)
-            result = [self processAction:action sources:result];
+        //        if(action.isOPCompleted)
+        //        {
+        result = [self processAction:action sources:result];
+//                      secondsInArray:secondsInArray
+//                 secondsInFinalArray:secondsInFinalArray];
+        
+        MediaWithAction * item = [result lastObject];
+        
+        //当没有结束的动作加入时，则其Duration未知，导致计算终止，因为后面的所有动作都可能被覆盖
+        if(item && item.durationInFinalArray >=0)
+        {
+//            secondsInFinalArray += item.durationInFinalArray;
+//            secondsInArray += item.secondsDurationInArray;
+        }
+        else
+        {
+            break;
+        }
+        
     }
     return result;
 }
-- (NSMutableArray *)processAction:(MediaActionDo *)actionDo sources:(NSMutableArray *)sources
+- (NSMutableArray *)processAction:(MediaActionDo *)actionDo
+                          sources:(NSMutableArray *)sources
+//                   secondsInArray:(CGFloat)secondsInArray
+//              secondsInFinalArray:(CGFloat)secondsInFinalArray
 {
     
     NSMutableArray * overlapList = [actionDo buildMaterialOverlaped:sources];
@@ -51,7 +73,7 @@
     BOOL isTail = NO;
     
     CGFloat secondsInArray = 0;
-    
+    CGFloat secondsInFinalArray = 0;
     for (MediaWithAction * item in sources) {
         if(item==mediaToSplit && item.secondsDurationInArray>0)
         {
@@ -65,6 +87,7 @@
                 [headList addObject:mediaToSplit];
                 //这里不能用变速后的时长
                 secondsInArray += mediaToSplit.secondsDurationInArray;// [self getDurationForAction:mediaToSplit];
+                secondsInFinalArray += mediaToSplit.durationInFinalArray;
             }
             isHead = NO;
             
@@ -87,6 +110,7 @@
         {
             [headList addObject:item];
             secondsInArray += item.secondsDurationInArray;// [self getDurationForAction:item];
+            secondsInFinalArray += item.durationInFinalArray;
         }
         else if(isTail && item!=mediaToSplit && item.secondsDurationInArray>0)
         {
@@ -109,15 +133,22 @@
     //插入新对像
     for (MediaWithAction * item in materialList) {
         item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+        item.secondsInFinalArray = secondsInFinalArray;
+        
         [headList addObject:item];
+        
         secondsInArray += item.secondsDurationInArray;// [self getDurationForAction:item];
+        secondsInFinalArray += item.durationInFinalArray;
     }
     
     //插入尾部的对像
     //    secondsInArray += durationChanged;
     for (MediaWithAction * item in tailList) {
         item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+        item.secondsInFinalArray = secondsInFinalArray;
+
         secondsInArray += item.secondsDurationInArray;// [self getDurationForAction:item];
+        secondsInFinalArray += item.durationInFinalArray;
     }
     currentDuration_ = secondsInArray;
     
@@ -178,11 +209,14 @@
             CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
             media.end = endTime;
             media.durationInPlaying = [self getFinalDurationForMedia:media];
-            
+            media.durationInFinalArray = media.secondsDurationInArray;
+            media.secondsInFinalArray = media.secondsInArray;
             
             actionSecond.begin = CMTimeMakeWithSeconds(actionSecond.secondsBegin + beginChanged, timeScale);;
             actionSecond.timeInArray = CMTimeMakeWithSeconds(secondsActionEnd,timeScale);
             actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
+            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
             return actionSecond;
         }
         else
@@ -203,6 +237,7 @@
             if(beginChanged>0)
             {
                 media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+                media.secondsInFinalArray = media.secondsInArray;
             }
             media.durationInPlaying = [self getFinalDurationForMedia:media];
             return media;
@@ -218,12 +253,15 @@
             CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray;
             CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
             media.end = endTime;
+            media.durationInFinalArray = media.secondsDurationInArray;
             
             media.durationInPlaying = [self getFinalDurationForMedia:media];
             
             actionSecond.begin = endTime;
             actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
             actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+            actionSecond.durationInFinalArray = actionSecond.secondsDurationInArray;
+            actionSecond.secondsInFinalArray = actionSecond.secondsInArray;
             return actionSecond;
         }
     }
@@ -313,6 +351,6 @@
 - (CGFloat)getFinalDurationForMedia:(MediaWithAction *)media
 {
     MediaActionDo * action = [[ActionManager shareObject]getMediaActionDo:media.Action];
-    return [action getDurationFinal:media];
+    return [action getDurationInPlaying:media];
 }
 @end

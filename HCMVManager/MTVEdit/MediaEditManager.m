@@ -333,6 +333,7 @@
             item.degree = [self degressFromVideoFileWithTrack:vTrack];
             item.orientation = [self orientationFromVideo:vTrack];
             item.isOnlyAudio = NO;
+            item.originType = MediaItemTypeVIDEO;
             needCreateBGVideo_ = NO;
         }
         else
@@ -360,6 +361,7 @@
                     item.renderSize =   CGSizeMake(720, 1280);
                 }
                 item.isOnlyAudio = YES;
+                item.originType = MediaItemTypeAUDIO;
             }
             else
             {

@@ -33,8 +33,8 @@
     
     int pauseCount_;//即检测到播放速率为0的次数
     
-//    CATransform3D transform_;
-//    CGPoint position_;
+    //    CATransform3D transform_;
+    //    CGPoint position_;
 }
 @synthesize player = player_;
 @synthesize playerItem = playerItem_;
@@ -80,8 +80,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
         
         [self clearPlayerContents];
         
-//        transform_ = CATransform3DIdentity;
-//        position_ = self.center;
+        //        transform_ = CATransform3DIdentity;
+        //        position_ = self.center;
         //
         //        {
         //            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(didTapped:)];
@@ -341,11 +341,11 @@ static HCPlayerSimple *sharedPlayerView = nil;
     
     [self.layer addSublayer:_playerLayer];
     
-//    if(!CATransform3DIsIdentity(transform_))
-//    {
-//        _playerLayer.transform = transform_;
-//        _playerLayer.position = position_;
-//    }
+    //    if(!CATransform3DIsIdentity(transform_))
+    //    {
+    //        _playerLayer.transform = transform_;
+    //        _playerLayer.position = position_;
+    //    }
     if(self.playerItem.status == AVPlayerItemStatusFailed)
     {
         NSLog(@"playeritem error:%@",[self.playerItem.error localizedDescription]);
@@ -517,8 +517,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 - (BOOL) isCurrentPath:(NSString *)path
 {
     if(!path || path.length==0) return NO;
-//    if(self.playerItemKey && [self.playerItemKey isEqual:path])
-//        return YES;
+    //    if(self.playerItemKey && [self.playerItemKey isEqual:path])
+    //        return YES;
     if(orgPath_ && [orgPath_ isEqualToString:path])
         return YES;
     //如果敀展名相同也可以的
@@ -644,9 +644,13 @@ static HCPlayerSimple *sharedPlayerView = nil;
                                                                      
                                                                      //                                                                     结束
                                                                      if(secondsEnd_ > 0 && seconds >=secondsEnd_){
-//                                                                         NSLog(@"endtime:%.2f,seconds:%.2f",secondsEnd_,seconds);
+                                                                         //防止发送两次结束，因此，需要检查与最终结束的时长是否很近或相等
+                                                                         if(secondsEnd_ + 0.1 < CMTimeGetSeconds([strongSelf.playerItem duration]))
+                                                                         {
+                                                                             //                                                                         NSLog(@"endtime:%.2f,seconds:%.2f",secondsEnd_,seconds);
                                                                              [strongSelf pause];
                                                                              [strongSelf videoPlayerDidReachEnd:weakSelf];
+                                                                         }
                                                                      }
                                                                      timerDoing_ = NO;
                                                                  }
@@ -1069,8 +1073,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
 #pragma mark - init dealloc
 - (void)readyToRelease
 {
-     [self clearObserver];
-//    [self resetPlayer];
+    [self clearObserver];
+    //    [self resetPlayer];
     PP_RELEASE(_delegate);
     sharedPlayerView = nil;
 }
