@@ -99,6 +99,11 @@
     [self layoutNew];
     [ActionManager shareObject].delegate = self;
 }
+- (void) viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [player_ pause];
+}
 -(void)layoutNew
 {
     if(!viewShowed_)
@@ -217,7 +222,7 @@
 }
 - (void) showIndicatorView
 {
-    if(![NSThread isMainThread])
+    if([NSThread isMainThread])
     {
         if(!indicatorView_)
         {
@@ -241,7 +246,7 @@
 }
 - (void) hideIndicatorView
 {
-    if(![NSThread isMainThread])
+    if([NSThread isMainThread])
     {
         if(indicatorView_)
         {
@@ -260,31 +265,31 @@
 #pragma mark - button events
 -(void)repeat:(UIButton *)sender
 {
-//    [repeatTimer_ invalidate];
-//    repeatTimer_ = nil;
-//    if (repeatCnt_ > 2) {
-//        repeatCnt_ = 0;
-//        repeatTime_ = kCMTimeZero;
-//        return;
-//    }
+    //    [repeatTimer_ invalidate];
+    //    repeatTimer_ = nil;
+    //    if (repeatCnt_ > 2) {
+    //        repeatCnt_ = 0;
+    //        repeatTime_ = kCMTimeZero;
+    //        return;
+    //    }
     
-//    if (CMTimeGetSeconds(repeatTime_) == 0) {
-        repeatTime_ = player_.playerItem.currentTime;
-        NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
-        //记录这个repeat的时间点(repeat片段的终点)
-        CGFloat secondsPlaying = CMTimeGetSeconds(repeatTime_);
-        MediaAction * action = [MediaAction new];
-        action.ActionType = SRepeat;
-        action.ReverseSeconds = 0 - RepeatTime;
-        action.DurationInSeconds = RepeatTime;
-        action.IsOverlap = NO;
-        action.IsMutex = NO;
-        action.isOPCompleted = YES;
-        action.Rate = 1;
+    //    if (CMTimeGetSeconds(repeatTime_) == 0) {
+    repeatTime_ = player_.playerItem.currentTime;
+    NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
+    //记录这个repeat的时间点(repeat片段的终点)
+    CGFloat secondsPlaying = CMTimeGetSeconds(repeatTime_);
+    MediaAction * action = [MediaAction new];
+    action.ActionType = SRepeat;
+    action.ReverseSeconds = 0 - RepeatTime;
+    action.DurationInSeconds = RepeatTime;
+    action.IsOverlap = NO;
+    action.IsMutex = NO;
+    action.isOPCompleted = YES;
+    action.Rate = 1;
     
-        [manager_ addActionItem:action filePath:nil at:secondsPlaying duration:1];
-        
-//    }
+    [manager_ addActionItem:action filePath:nil at:secondsPlaying duration:1];
+    
+    //    }
     
     
 }
@@ -318,10 +323,10 @@
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
             CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-//            seconds =  seconds - duration;
+            //            seconds =  seconds - duration;
             CGFloat end = [manager_ getSecondsWithoutAction:seconds];
             CGFloat duration = end - playerPos;
-//            duration = end - actionDo.SecondsInArray;
+            //            duration = end - actionDo.SecondsInArray;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
@@ -330,34 +335,34 @@
 }
 - (void)subtractMV
 {
-        VideoGenerater * vg = [VideoGenerater new];
-        [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-            NSLog(@"progress %f",progress);
-        } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-            NSLog(@"playerItem Ready");
-    
-        } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-            NSLog(@"generate completed.  %@",[mvUrl path]);
-            NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
-            NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-            [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-    
-            [self hideIndicatorView];
-    
-        } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-            NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-            [self hideIndicatorView];
-        }];
-        if([vg generateMVSegments:oPath_ begin:2 end:10])
-        {
-            [vg generateMVFile:nil retryCount:0];
-        }
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+        NSLog(@"progress %f",progress);
+    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+        NSLog(@"playerItem Ready");
+        
+    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+        NSLog(@"generate completed.  %@",[mvUrl path]);
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+        
+        [self hideIndicatorView];
+        
+    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+        [self hideIndicatorView];
+    }];
+    if([vg generateMVSegments:oPath_ begin:2 end:10])
+    {
+        [vg generateMVFile:nil retryCount:0];
+    }
 }
 -(void)slow:(UIButton *)sender
 {
     [player_ pause];
     
-
+    
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     if (sender.selected) {
@@ -437,10 +442,10 @@
     {
         
     }
-//    if(currentMedia_ && currentMedia_.secondsInArray + currentMedia_.secondsDurationInArray - 0.02 < cmTime)
-//    {
-//        [[ActionManager shareObject]checkActionForPlayViaTime:cmTime];
-//    }
+    //    if(currentMedia_ && currentMedia_.secondsInArray + currentMedia_.secondsDurationInArray - 0.02 < cmTime)
+    //    {
+    //        [[ActionManager shareObject]checkActionForPlayViaTime:cmTime];
+    //    }
 }
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
@@ -497,53 +502,53 @@
         return ;
     }
     NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-//    if((currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
-//       ||
-//       ([mediaToPlay isSampleAsset:baseVideo_])
-//       ||
-//       ([mediaToPlay isSampleAsset:reverseVideo_])
-//       )
-//    {
-        if(mediaToPlay.Action.ActionType!=SReverse)
-        {
-            [rPlayer_ pause];
-            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-            [player_ currentLayer].opacity = 1;
-            [rPlayer_ currentLayer].opacity = 0;
-            [player_ setRate:mediaToPlay.playRate];
-            [player_ play];
-        }
-        else
-        {
-            [player_ pause];
-            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-            [rPlayer_ currentLayer].opacity = 1;
-            [player_ currentLayer].opacity = 0;
-            [rPlayer_ setRate:mediaToPlay.playRate];
-            [rPlayer_ play];
-        }
-//    }
-//    else
-//    {
-//        if(mediaToPlay.Action.ActionType!=SReverse)
-//        {
-//            [rPlayer_ pause];
-//            [rPlayer_ currentLayer].opacity = 0;
-//            [player_ currentLayer].opacity = 1;
-//            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-//            [player_ setRate:mediaToPlay.playRate];
-//            [player_ play];
-//        }
-//        else
-//        {
-//            [player_ pause];
-//            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-//            [rPlayer_ setRate:mediaToPlay.playRate];
-//            [rPlayer_ play];
-//            [player_ currentLayer].opacity = 0;
-//            [rPlayer_ currentLayer].opacity = 1;
-//        }
-//    }
+    //    if((currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
+    //       ||
+    //       ([mediaToPlay isSampleAsset:baseVideo_])
+    //       ||
+    //       ([mediaToPlay isSampleAsset:reverseVideo_])
+    //       )
+    //    {
+    if(mediaToPlay.Action.ActionType!=SReverse)
+    {
+        [rPlayer_ pause];
+        [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+        [player_ currentLayer].opacity = 1;
+        [rPlayer_ currentLayer].opacity = 0;
+        [player_ setRate:mediaToPlay.playRate];
+        [player_ play];
+    }
+    else
+    {
+        [player_ pause];
+        [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+        [rPlayer_ currentLayer].opacity = 1;
+        [player_ currentLayer].opacity = 0;
+        [rPlayer_ setRate:mediaToPlay.playRate];
+        [rPlayer_ play];
+    }
+    //    }
+    //    else
+    //    {
+    //        if(mediaToPlay.Action.ActionType!=SReverse)
+    //        {
+    //            [rPlayer_ pause];
+    //            [rPlayer_ currentLayer].opacity = 0;
+    //            [player_ currentLayer].opacity = 1;
+    //            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+    //            [player_ setRate:mediaToPlay.playRate];
+    //            [player_ play];
+    //        }
+    //        else
+    //        {
+    //            [player_ pause];
+    //            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+    //            [rPlayer_ setRate:mediaToPlay.playRate];
+    //            [rPlayer_ play];
+    //            [player_ currentLayer].opacity = 0;
+    //            [rPlayer_ currentLayer].opacity = 1;
+    //        }
+    //    }
     currentMedia_ = mediaToPlay;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
@@ -606,6 +611,7 @@
     {
         [player_ seek:0 accurate:YES];
         [player_ play];
+        [self hideIndicatorView];
         return;
     }
     
