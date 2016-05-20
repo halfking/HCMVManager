@@ -101,6 +101,10 @@
 {
     return mediaList_;
 }
+- (NSArray *) getActionList
+{
+    return actionList_;
+}
 - (MediaItem *) getBaseVideo
 {
     return videoBg_;
@@ -125,7 +129,7 @@
     {
         complted(resultList);
     }
-    return NO;
+    return YES;
 }
 #pragma mark - action list manager
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds

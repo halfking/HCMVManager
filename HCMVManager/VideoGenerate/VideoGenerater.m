@@ -1003,9 +1003,11 @@
     //    NSArray * chooseQueue = [[MediaListModel shareObject]getMediaList];
     if (mediaList && mediaList.count>0) {
         //选择的素材>1
-        AVMutableCompositionTrack * imageTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+        AVMutableCompositionTrack * imageTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                             preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        AVMutableCompositionTrack * videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+        AVMutableCompositionTrack * videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                             preferredTrackID:kCMPersistentTrackID_Invalid];
         
         AVMutableVideoCompositionLayerInstruction *imageLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:imageTrack];
         AVMutableVideoCompositionLayerInstruction *videoLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
@@ -1016,6 +1018,9 @@
         
         for (int i = 0 ; i < mediaList.count ; i ++ ) {
             MediaItem * curItem = [mediaList objectAtIndex:i];
+            
+            if(curItem.secondsDurationInArray <=0) continue;
+            
             if(!isOverlap)
             {
                 curItem.timeInArray = CMTimeMake(lastTimeValue, totalDuration.timescale);
@@ -1042,6 +1047,7 @@
                   CMTimeGetSeconds(modalOffEtInQueue),
                   curItem.secondsDurationInArray,
                   curItem.playRate);
+            
             if (CMTimeGetSeconds(modalOffEtInQueue) > CMTimeGetSeconds(curTimeCnt) ) {
                 curTimeCnt = modalOffEtInQueue;
             }
@@ -1421,11 +1427,13 @@
     
     CMTime modalOffEtInQueue = CMTimeAdd(modalInStInQueue, duration); //最后消失时间
     
+    //全轨处理
     if(rate>0 && rate!=1.0)
     {
         modalInStInQueue.value = round(modalInStInQueue.value/rate +0.5);
         modalOffEtInQueue.value = round(modalOffEtInQueue.value/rate + 0.5);
     }
+    //单个对像处理
     if(curItem.playRate!=1 && curItem.playRate>0)
     {
         CMTime diff = CMTimeSubtract(modalOffEtInQueue, modalInStInQueue);
@@ -1580,7 +1588,7 @@
                             toDuration:durationScaled];
         }
         
-        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
+        if((self.orientation>=0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
         {
             [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO]
                                          atTime:curItem.timeInArray];

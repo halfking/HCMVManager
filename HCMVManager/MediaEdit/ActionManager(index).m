@@ -110,7 +110,10 @@
     vg.volRampSeconds = 0;
     vg.compositeLyric = NO;
     vg.delegate = self;
-    [vg setRenderSize:videoBg_.renderSize orientation:0 withFontCamera:NO];
+    
+    UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
+    
+    [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
     [vg setTimeForAudioMerge:0 end:-1];

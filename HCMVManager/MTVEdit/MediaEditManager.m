@@ -387,7 +387,7 @@
 }
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack
 {
-    int degress = 0;
+    int degress = -1;
     if(videoTrack)
     {
         //    AVAsset *asset = [AVAsset assetWithURL:url];
@@ -413,9 +413,9 @@
     
     return degress;
 }
--(UIDeviceOrientation)orientationFromVideo:(AVAssetTrack *)videoTrack
+-(UIDeviceOrientation)orientationFromDegree:(int)degrees
 {
-    int degrees = [self degressFromVideoFileWithTrack:videoTrack];
+//    int degrees = [self degressFromVideoFileWithTrack:videoTrack];
     if(degrees ==0)
         return UIDeviceOrientationLandscapeLeft;
     else if(degrees==90)
@@ -426,6 +426,21 @@
         return UIDeviceOrientationPortraitUpsideDown;
     else
         return UIDeviceOrientationPortrait;
+}
+-(UIDeviceOrientation)orientationFromVideo:(AVAssetTrack *)videoTrack
+{
+    int degrees = [self degressFromVideoFileWithTrack:videoTrack];
+    return [self orientationFromDegree:degrees];
+//    if(degrees ==0)
+//        return UIDeviceOrientationLandscapeLeft;
+//    else if(degrees==90)
+//        return UIDeviceOrientationPortrait;
+//    else if(degrees==180)
+//        return UIDeviceOrientationLandscapeRight;
+//    else if(degrees==270)
+//        return UIDeviceOrientationPortraitUpsideDown;
+//    else
+//        return UIDeviceOrientationPortrait;
 }
 - (BOOL)isBgVideoLandsccape
 {

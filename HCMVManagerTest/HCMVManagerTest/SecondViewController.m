@@ -20,6 +20,7 @@
 #import "WTPlayerResource.h"
 #import <hccoren/base.h>
 #import "HCPlayerSimple.h"
+#import "ActionManagerPannel.h"
 @interface SecondViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,HCPlayerSimpleDelegate>
 @property (nonatomic, strong) AVAssetReverseSession *reverseSession;
 @end
@@ -78,6 +79,8 @@
     UIActivityIndicatorView * indicatorView_;
     
     BOOL showTimeChanged_;
+    
+    ActionManagerPannel * pannel_;
 }
 
 - (void)viewDidLoad {
@@ -88,6 +91,7 @@
     
     oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
     viewShowed_ = NO;
+    [self showIndicatorView];
     [manager_ setBackMV:oPath_ begin:0 end:-1];
     
     showTimeChanged_ = YES;
@@ -108,8 +112,9 @@
 {
     if(!viewShowed_)
     {
+        CGFloat top = self.view.frame.size.height - 120;
         slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [slow_ setFrame:CGRectMake(20, 450, 60, 30)];
+        [slow_ setFrame:CGRectMake(20, top, 60, 30)];
         [slow_ setTitle:@"slow" forState:UIControlStateNormal];
         [slow_ setTitle:@"normal" forState:UIControlStateSelected];
         slow_.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -117,7 +122,7 @@
         [self.view addSubview:slow_];
         
         fast_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [fast_ setFrame:CGRectMake(100, 450, 60, 30)];
+        [fast_ setFrame:CGRectMake(100, top, 60, 30)];
         [fast_ setTitle:@"fast" forState:UIControlStateNormal];
         [fast_ setTitle:@"normal" forState:UIControlStateSelected];
         fast_.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -125,7 +130,7 @@
         [self.view addSubview:fast_];
         
         joinBtn_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [joinBtn_ setFrame:CGRectMake(180, 450, 60, 30)];
+        [joinBtn_ setFrame:CGRectMake(180, top, 60, 30)];
         [joinBtn_ setTitle:@"reset" forState:UIControlStateNormal];
         joinBtn_.titleLabel.font = [UIFont systemFontOfSize:14];
         [joinBtn_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -136,13 +141,13 @@
         [joinBtn_ addTarget:self action:@selector(reset:) forControlEvents:UIControlEventTouchUpInside];
         
         rate1x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rate1x_ setFrame:CGRectMake(20, 400, 60, 30)];
+        [rate1x_ setFrame:CGRectMake(20, top + 40, 60, 30)];
         [rate1x_ setTitle:@"repeat" forState:UIControlStateNormal];
         rate1x_.titleLabel.font = [UIFont systemFontOfSize:14];
         [rate1x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self.view addSubview:rate1x_];
         rate2x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rate2x_ setFrame:CGRectMake(100, 400, 60, 30)];
+        [rate2x_ setFrame:CGRectMake(100, top + 40, 60, 30)];
         [rate2x_ setTitle:@"reverse" forState:UIControlStateNormal];
         [rate2x_ setTitle:@"origin" forState:UIControlStateSelected];
         rate2x_.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -152,6 +157,12 @@
         [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
         
         repeatTime_ = kCMTimeZero;
+        
+        CGFloat playerBottom = 20 + self.view.frame.size.width/16 * 9;
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 10 + playerBottom, self.view.frame.size.width -20, top - 20 - playerBottom)];
+        pannel_.backgroundColor = [UIColor grayColor];
+        [self.view addSubview:pannel_];
+        
         
         if(!viewShowed_)
         {
@@ -185,7 +196,7 @@
     }
     else
     {
-        player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
+        player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.width /16 * 9)];
         [player_ changeCurrentPlayerItem:item];
         player_.delegate = self;
         [self.view.layer addSublayer:[player_ currentLayer]];
@@ -211,7 +222,7 @@
     }
     else
     {
-        rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, 414, 414.0 /16 * 9)];
+        rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.width /16 * 9)];
         [rPlayer_ changeCurrentPlayerItem:item];
         rPlayer_.delegate = self;
         AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
@@ -353,7 +364,7 @@
         NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
         [self hideIndicatorView];
     }];
-    if([vg generateMVSegments:oPath_ begin:2 end:10])
+    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10])
     {
         [vg generateMVFile:nil retryCount:0];
     }
@@ -482,18 +493,25 @@
 #pragma mark - delegate
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
 {
+    NSLog(@"*************** generate ok *****************");
     baseVideo_ = [manager getBaseVideo];
     reverseVideo_ = reverseVideo;
     if(viewShowed_)
     {
+        [pannel_ setActionManager:manager];
+        
         [self buildPlayer];
         [self buildReversePlayer];
     }
+    [self hideIndicatorView];
 }
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
     showTimeChanged_ = YES;
+    
+    [pannel_ refresh];
+    
     if(!mediaToPlay)
     {
         [player_ pause];
@@ -582,7 +600,7 @@
     
     [manager_ removeActions];
     
-    [self hideIndicatorView];
+//    [self hideIndicatorView];
 }
 - (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error
 {
@@ -591,6 +609,7 @@
 
 - (void)reset:(UIButton *)sender
 {
+    [self showIndicatorView];
     [self resetAllButtons];
     [player_ pause];
     [rPlayer_ pause];
@@ -607,6 +626,10 @@
     [player_ pause];
     [rPlayer_ pause];
     
+    //暂时暂停，用于检查
+//    if([manager_ needGenerateForOP]) return;
+    
+    NSLog(@"************ begin generate **************");
     if(![manager_ generateMV])
     {
         [player_ seek:0 accurate:YES];

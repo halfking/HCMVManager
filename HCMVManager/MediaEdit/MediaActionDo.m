@@ -199,6 +199,7 @@
         [headList addObject:item];
         
         secondsInArray += item.secondsDurationInArray;
+        item.durationInPlaying = item.secondsDurationInArray /item.playRate;
         //        if(self.IsOverlap)
         //            lastMediaSeconds = item.secondsEnd;
     }
@@ -223,6 +224,7 @@
         else
         {
             item.secondsInArrayNotConfirm = NO;
+            item.durationInPlaying = item.secondsDurationInArray /item.playRate;
         }
     }
     
@@ -310,6 +312,10 @@
                 if(duration>=0)
                 {
                     media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+                    if(media.secondsInArrayNotConfirm)
+                    {
+                        media.begin = CMTimeMakeWithSeconds(media.secondsBegin+duration,timeScale);
+                    }
                 }
                 else
                 {

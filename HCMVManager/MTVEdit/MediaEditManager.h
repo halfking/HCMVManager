@@ -311,6 +311,7 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 //  preferedSampleRate:(float)sampleRate;
 - (int) degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack;
 - (UIDeviceOrientation) orientationFromVideo:(AVAssetTrack *)videoTrack;
+-(UIDeviceOrientation)orientationFromDegree:(int)degrees;
 - (BOOL)isBgVideoLandsccape;
 - (BOOL)checkMTVItemOrientation:(MTV*)item;
 - (short)isLandscapeBySize:(CGSize )avSize;
