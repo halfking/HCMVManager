@@ -548,7 +548,7 @@
     
     UInt32 bgScale = totalDuration.timescale;
     
-    CMTime startTime = CMTimeMake(MAX(begin,0), bgScale);
+    CMTime startTime = CMTimeMakeWithSeconds(MAX(begin,0), bgScale);
     
     CGFloat sourceDurationSeconds = CMTimeGetSeconds(totalDuration);
     
