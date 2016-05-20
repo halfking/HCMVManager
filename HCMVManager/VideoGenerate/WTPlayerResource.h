@@ -63,7 +63,7 @@ typedef void (^generateFailure)(CMTime requestTime,NSError *error,NSString *file
 //获取一个视频的截图
 //targetThumnateFileName 目标文件的名字，不含路径
 - (BOOL) getVideoThumbs:(NSURL *)url
-                alAsset:(ALAsset *)alAsset
+//                alAsset:(ALAsset *)alAsset
  targetThumnateFileName:(NSString *)fileName
                   begin:(float) start
                  andEnd:(float) end

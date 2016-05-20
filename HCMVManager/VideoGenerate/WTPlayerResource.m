@@ -788,7 +788,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     [generator generateCGImagesAsynchronouslyForTimes:thumbnailTimes completionHandler:handler];
 }
 - (BOOL) getVideoThumbs:(NSURL *)url
-                alAsset:(ALAsset *)alAsset
+//                alAsset:(ALAsset *)alAsset
  targetThumnateFileName:(NSString *)fileName
                   begin:(float) start
                  andEnd:(float) end
@@ -864,9 +864,10 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     size.height = round(size.height * 10)/10.0f;
     size.width = round(size.width * 10)/10.0f;
     
+    //已经存在不需要再生成的
     for (NSDictionary * timeItem in timeItems) {
         CGFloat time = round( [[timeItem objectForKey:@"stime"]floatValue] *10)/10.0f;
-        NSString *path = [self getThumnatePath:fileName minsecond:(int)(time * 1000) size:size];
+        NSString *path = [self getThumnatePath:fileName minsecond:(int)(time * 1000+0.4) size:size];
         if( [[HCFileManager manager] existFileAtPath:path])
         {
             completedCount ++;
@@ -893,22 +894,36 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
         [self generateImages:asset times:thumbnailTimes prevTotal:prevSeconds path:fileName size:size
                     callback:^(CMTime time,NSString * path,NSInteger index)
          {
-//             completedCount ++;
-             NSLog(@"--generate:%d has completed",completedCount);
+             NSLog(@"-- generate thumnate:%d(%@) has completed",(int)(completedCount+index),[path lastPathComponent]);
+             if(completedCount +index+ 1 >=count)
+             {
+                 NSLog(@"-- generate thumnate:all done.");
+             }
              if(onegenerated)
              {
-                 onegenerated(time,path,completedCount);
+                 onegenerated(time,path,completedCount + index);
              }
              if(completed && completedCount +index >=count)
+             {
                  completed(time,path,completedCount + index);
+             }
          }
                      failure:^(CMTime requestTime,NSError *error,NSString *filePath)
          {
+              NSLog(@"--generate thumnate failure:%@",[error localizedDescription]);
              if(failure)
-             {
+             {  
                  failure(requestTime,error,filePath);
              }
          }];
+    }
+    else
+    {
+        NSLog(@"--generate thumnate failure:nothing to thumnate");
+        if(completed)
+        {
+            completed(kCMTimeZero,nil,-1);
+        }
     }
     return YES;
 }
@@ -925,19 +940,18 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
     //解决 时间不准确问题
     generator.requestedTimeToleranceBefore = kCMTimeZero;
     generator.requestedTimeToleranceAfter = kCMTimeZero;
+    CGFloat scale = [UIScreen mainScreen].scale;
+    
     __block BOOL isWarning = NO;
     __block NSInteger completedCount = 0;
     AVAssetImageGeneratorCompletionHandler handler =
     ^(CMTime requestedTime, CGImageRef image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error){
-        
-        completedCount ++;
-        
         NSNumber *time = [NSNumber numberWithFloat: prevTotal + CMTimeGetSeconds(requestedTime)];
         
         if (result == AVAssetImageGeneratorSucceeded) {
             
-            UIImage* thumbImg = [UIImage imageWithCGImage: image];
-            NSString *path = [self getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000) size:size];
+            UIImage* thumbImg = [UIImage imageWithCGImage: image scale:scale orientation:0];
+            NSString *path = [self getThumnatePath:fileName minsecond:(int)([time floatValue] * 1000 +0.4) size:size];
             
             [UIImageJPEGRepresentation(thumbImg, 1.0) writeToFile:path atomically:YES];
             
@@ -946,7 +960,6 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
                 onegenerated(CMTimeMake([time floatValue]*30, 30),path,completedCount);
             }
         }
-        
         if (result == AVAssetImageGeneratorFailed) {
             NSLog(@"Failed with error: %@ --%@", [error localizedDescription],[error localizedFailureReason]);
             if(!isWarning)
@@ -960,16 +973,17 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
                 }
             }
         }
-        
         if (result == AVAssetImageGeneratorCancelled) {
             if(failure)
             {
                 failure(CMTimeMake([time floatValue]*30, 30),nil,@"用户取消");
             }
         }
-        
+        completedCount ++;
     };
     
+    size.width = size.width * scale;
+    size.height = size.height * scale;
     generator.maximumSize = size;
     [generator generateCGImagesAsynchronouslyForTimes:thumbnailTimes completionHandler:handler];
 }

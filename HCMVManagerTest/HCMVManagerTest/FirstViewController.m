@@ -20,6 +20,8 @@
 @implementation FirstViewController
 {
     MediaActionDo * testAction_;
+    UIScrollView * imagesContainer_;
+    int kThumbImageTag_;
 }
 
 - (void)viewDidLoad {
@@ -59,6 +61,22 @@
         [btn addTarget:self action:@selector(playItem:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
+    
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(104, 80, 100, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"thumnates" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(thumnates:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+    }
+    
+    {
+        imagesContainer_ = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 150, self.view.frame.size.width, 100)];
+        imagesContainer_.backgroundColor = [UIColor grayColor];
+        [self.view addSubview:imagesContainer_];
+        kThumbImageTag_ = 20000;
+    }
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -85,11 +103,11 @@
         
         [manager addActionItem:action filePath:nil at:4 duration:action.DurationInSeconds];
     }
-  
+    
 }
 - (void)addItem:(id)sender
 {
-     ActionManager * manager = [ActionManager shareObject];
+    ActionManager * manager = [ActionManager shareObject];
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = 3;
@@ -102,7 +120,7 @@
         
         [manager addActionItem:action filePath:nil at:7 duration:action.DurationInSeconds];
     }
-
+    
 }
 - (void)beginLongTouch:(id)sender
 {
@@ -135,6 +153,75 @@
 - (void)playItem:(id)sender
 {
     
+}
+- (void)thumnates:(id)sender
+{
+    ActionManager * manager = [ActionManager shareObject];
+    MediaItem * item = [manager getBaseVideo];
+    if(!item)
+    {
+        NSLog(@"not item .");
+        return ;
+    }
+    CGFloat width_ = self.view.frame.size.width - 20;
+    CGFloat maxValue_ = 0.9; //最多可以滑到哪里，最多点屏幕的90%
+    int step = 3;//共15秒，5张图，3秒一个
+    int imageCountInView = 5;
+    float temp = round(item.secondsDuration / 3.0 * 10) / 10.0f;
+    int count = item.secondsDuration / 3.0;
+    if (temp > count + 0.1) {
+        count++;
+    }
+//    CGFloat scale = [DeviceConfig config].Scale;
+//    width_ *= scale;
+    CGSize size = CGSizeMake((width_ * maxValue_ / imageCountInView), (width_ * maxValue_ / imageCountInView));
+    
+    size.width = (int)(size.width * 10 + 0.5)/10;
+    size.height = (int)(size.height * 10+0.5)/10;
+    
+    CGSize displaySize = size;
+//    CGSize displaySize = CGSizeMake(size.width/scale, size.height/scale);
+
+    //        __block int tempIndex = 0;
+    [[WTPlayerResource sharedWTPlayerResource] getVideoThumbs:item.url
+//                                                      alAsset:nil
+                                       targetThumnateFileName:@"videoThumb"
+                                                        begin:0 andEnd:-1
+                                                      andStep:step
+                                                     andCount:count
+                                                      andSize:size
+                                                     callback:^(CMTime requestTime, NSString *path, NSInteger index) {
+                                                         [self changeImageViewContent:path index:index size:displaySize];
+                                                         
+                                                     } completed:^(CMTime requestTime, NSString *path, NSInteger index) {
+
+                                                     } failure:^(CMTime requestTime, NSError *error, NSString *filePath) {
+                                                     }];
+    
+}
+- (void) changeImageViewContent:(NSString *)path index:(NSInteger)index size:(CGSize)size
+{
+    if([NSThread isMainThread])
+    {
+        UIImageView * imageView = [imagesContainer_ viewWithTag:(kThumbImageTag_ + index)];
+        if (!imageView) {
+            imageView = [[UIImageView alloc]initWithFrame:CGRectMake(size.width * index, 0, size.width, size.height)];
+            [imagesContainer_ addSubview:imageView];
+        }
+        [imageView setImage:[UIImage imageWithContentsOfFile:path]];
+        index ++;
+        if(imagesContainer_.contentSize.width < index* size.width)
+        {
+            imagesContainer_.contentSize = CGSizeMake(index * size.width, size.height);
+        }
+//        NSLog(@"video thumb path %@ index %d",path,(int)index);
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self changeImageViewContent:path index:index size:size];
+        });
+    }
 }
 #pragma mark - action manager delgates
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration

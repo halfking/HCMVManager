@@ -296,7 +296,8 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 - (void) copyUploadedMTV2Album:(NSString *)filePath mtvID:(long)mtvID item:(MTV*)mtvItem  showMsg:(NSString *)msg;
 - (void) saveVideo2Album:(NSURL *)url handler:(ALAssetsLibraryWriteVideoCompletionBlock)completionBlock;
 - (void) setTimeForMerge:(CGFloat)secondsBegin end:(CGFloat)secondsEnd;
-- (void) copyMTVFromAlbum:(NSURL *)assetUrl withFilePath:(NSString *)filePath completed:(void(^)(BOOL finished,NSString * coverFile))completed;
+- (void) copyMTVFromAlbum:(NSURL *)assetUrl withFilePath:(NSString *)filePath
+                completed:(void(^)(BOOL finished,NSString * coverFile))completed;
 - (void) copyPhotoFromAlbum:(NSURL *)assetUrl withFilePath:(NSString *)filePath completed:(void(^)(BOOL finished))completed;
 - (void)copyMTVFromAlbum:(NSURL *)assetUrl extInfo:(NSString *)extInfo completed:(void(^)(BOOL finished,NSString * localFile,NSString * coverPath))completed
 ;

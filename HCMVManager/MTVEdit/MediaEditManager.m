@@ -1495,7 +1495,9 @@
     CGFloat begin = CMTimeGetSeconds(item.begin);
     CGFloat end = CMTimeGetSeconds(item.end);
     CGFloat scale = [DeviceConfig config].Scale;
-    BOOL ret = [wtp getVideoThumbs:item.url alAsset:item.alAsset targetThumnateFileName:item.key
+    BOOL ret = [wtp getVideoThumbs:item.url
+//                           alAsset:item.alAsset
+            targetThumnateFileName:item.key
                              begin:begin andEnd:end andStep:step andCount:count
                            andSize:CGSizeMake(itemWidth_* scale, itemHeight_*scale)
                           callback:^(CMTime requestTime,NSString* path,NSInteger index)

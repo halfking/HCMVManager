@@ -505,20 +505,35 @@
     }
     return NO;
 }
-- (BOOL) generateMVSegments:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end
+- (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end
 {
-    if(isGenerating_)
-    {
-        NSLog(@"正在生成过程中，不能重入....");
-        return NO;
-    }
-    isGenerating_ = YES;
     AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
     if(!asset||asset.tracks.count==0)
     {
         NSLog(@"not media file content");
         return NO;
     }
+    return [self generateMVSegments:asset begin:begin end:end];
+}
+- (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end
+{
+    return NO;
+}
+- (BOOL) generateMVSegments:(AVAsset *)asset begin:(CGFloat) begin end:(CGFloat)end
+{
+    if(!asset||asset.tracks.count==0)
+    {
+        NSLog(@"not media file content");
+        return NO;
+    }
+    
+    if(isGenerating_)
+    {
+        NSLog(@"正在生成过程中，不能重入....");
+        return NO;
+    }
+    isGenerating_ = YES;
+    
     CMTime totalDuration = asset.duration;
     
     PP_RELEASE(_mixComposition);
@@ -579,18 +594,18 @@
         
         [bgvLayerInstruction setOpacity:0.0 atTime:targetDuration];
         
-//        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
-//        {
-//            CGAffineTransform trans = [self layerTrans:asset withTargetSize:size orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO];
-//            [bgvLayerInstruction setTransform:trans
-//                                       atTime:kCMTimeZero];
-//        }
-//        else
-//        {
-//            [bgvLayerInstruction setTransform:[self layerTrans:asset withTargetSize:size] atTime:kCMTimeZero];
-//        }
+        //        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
+        //        {
+        //            CGAffineTransform trans = [self layerTrans:asset withTargetSize:size orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO];
+        //            [bgvLayerInstruction setTransform:trans
+        //                                       atTime:kCMTimeZero];
+        //        }
+        //        else
+        //        {
+        //            [bgvLayerInstruction setTransform:[self layerTrans:asset withTargetSize:size] atTime:kCMTimeZero];
+        //        }
         
-//        CGAffineTransform transform = asset.preferredTransform;
+        //        CGAffineTransform transform = asset.preferredTransform;
         
         [layers addObject:bgvLayerInstruction];
     }

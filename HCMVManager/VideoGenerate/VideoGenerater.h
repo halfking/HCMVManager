@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "SDAVAssetExportSession.h"
 #import <hccoren/base.h>
-
+#import <Photos/Photos.h>
 
 @class MediaItem;
 
@@ -100,7 +100,10 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 - (BOOL) generateMVFile:(NSArray *)mediaList
              retryCount:(int)retryCount;// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume;
 
-- (BOOL) generateMVSegments:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end;
+- (BOOL) generateMVSegments:(AVAsset *)asset begin:(CGFloat) begin end:(CGFloat)end;
+- (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end;
+- (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end;
+
 /*
  中止合成进程
  */
