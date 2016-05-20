@@ -60,6 +60,7 @@
 		118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8DE1CE1B00D00290641 /* WTPlayerResource.m */; };
 		11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE971CEEE84000E94CD9 /* test3.MOV */; };
 		11ABAE9B1CEEEC6300E94CD9 /* ActionManagerPannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */; };
+		11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */; };
 		11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */; };
 		11DE4A601CE2E94200A0BE8D /* ActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */; };
 		11DE4A631CE323A500A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A621CE323A500A0BE8D /* ActionManager(index).m */; };
@@ -182,6 +183,7 @@
 		11ABAE971CEEE84000E94CD9 /* test3.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = test3.MOV; sourceTree = "<group>"; };
 		11ABAE991CEEEC6300E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
 		11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
+		11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.mp4; sourceTree = "<group>"; };
 		11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaAction.h; sourceTree = "<group>"; };
 		11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaAction.m; sourceTree = "<group>"; };
 		11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */,
 				11ABAE971CEEE84000E94CD9 /* test3.MOV */,
 				118CE8691CE1AF8D00290641 /* main.m */,
 			);
@@ -541,6 +544,7 @@
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
+				11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */,
 				11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
 				118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */,
