@@ -74,7 +74,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
         self.backgroundColor = [UIColor blackColor];
         self.mainBounds = frame;
         
-        self.cachingWhenPlaying = YES;
+//        self.cachingWhenPlaying = YES;
         
         playRate_ = 1;
         
@@ -959,6 +959,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
 }
 - (void)showActivityView
 {
+    if(self.isNeverShowWaiting) return ;
     if([NSThread isMainThread])
     {
         if(self.delegate && [self.delegate respondsToSelector:@selector(playerSimple:showWaiting:)])
@@ -1000,6 +1001,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
 }
 - (void)hideActivityView
 {
+    if(self.isNeverShowWaiting) return ;
     if([NSThread isMainThread])
     {
         if(self.delegate && [self.delegate respondsToSelector:@selector(playerSimple:showWaiting:)])

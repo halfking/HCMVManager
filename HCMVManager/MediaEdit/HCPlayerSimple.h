@@ -35,9 +35,9 @@
 @property (assign,nonatomic) BOOL playing;
 @property (assign,nonatomic,readonly) CGFloat secondsPlaying;
 //@property (nonatomic,strong) NSString * playerItemKey;
-@property (nonatomic, assign) BOOL isEcoCancellationMode;
-
-@property (nonatomic,assign) BOOL cachingWhenPlaying;   //在播放时是否缓存文件
+//@property (nonatomic, assign) BOOL isEcoCancellationMode; //回音
+@property (nonatomic,assign) BOOL isNeverShowWaiting;   //永远不要显示等待窗
+//@property (nonatomic,assign) BOOL cachingWhenPlaying;   //在播放时是否缓存文件
 
 //用于全局一个播放器时，可以在列表中显示时，找到当前的Player，并且自由处理
 + (instancetype)sharedHCPlayerSimple;
