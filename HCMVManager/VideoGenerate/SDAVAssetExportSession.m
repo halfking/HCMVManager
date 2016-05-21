@@ -48,7 +48,7 @@
         _asset = asset;
         _timeRange = CMTimeRangeMake(kCMTimeZero, kCMTimePositiveInfinity);
     }
-
+    
     return self;
 }
 
@@ -57,17 +57,17 @@
     NSParameterAssert(handler != nil);
     [self cancelExport];
     self.completionHandler = handler;
-
+    
     if (!self.outputURL)
     {
         _error = [NSError errorWithDomain:AVFoundationErrorDomain code:AVErrorExportFailed userInfo:@
-        {
-            NSLocalizedDescriptionKey: @"Output URL not set"
-        }];
+                  {
+                  NSLocalizedDescriptionKey: @"Output URL not set"
+                  }];
         handler();
         return;
     }
-
+    
     NSError *readerError;
     self.reader = [AVAssetReader.alloc initWithAsset:self.asset error:&readerError];
     if (readerError)
@@ -76,7 +76,7 @@
         handler();
         return;
     }
-
+    
     NSError *writerError;
     self.writer = [AVAssetWriter assetWriterWithURL:self.outputURL fileType:self.outputFileType error:&writerError];
     if (writerError)
@@ -85,7 +85,7 @@
         handler();
         return;
     }
-
+    
     //写入源视频的Meta
     {
         NSMutableArray *assetMetadata = [NSMutableArray array];
@@ -100,7 +100,7 @@
     self.reader.timeRange = self.timeRange;
     self.writer.shouldOptimizeForNetworkUse = self.shouldOptimizeForNetworkUse;
     self.writer.metadata = self.metadata;
-
+    
     NSArray *videoTracks = [self.asset tracksWithMediaType:AVMediaTypeVideo];
     CGSize renderSize;
     if (self.videoComposition)
@@ -111,7 +111,7 @@
     {
         renderSize = ((AVAssetTrack *)videoTracks[0]).naturalSize;
     }
-
+    
     if (CMTIME_IS_VALID(self.timeRange.duration) && !CMTIME_IS_POSITIVE_INFINITY(self.timeRange.duration))
     {
         duration = CMTimeGetSeconds(self.timeRange.duration);
@@ -139,20 +139,34 @@
         {
             [self.reader addOutput:self.videoOutput];
         }
-
+        
         // Carry over language code
-//        input.languageCode = track.languageCode;
-//        input.extendedLanguageTag = track.extendedLanguageTag;
+        //        input.languageCode = track.languageCode;
+        //        input.extendedLanguageTag = track.extendedLanguageTag;
         //
         // Video input
         //
         self.videoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:self.videoSettings];
         self.videoInput.expectsMediaDataInRealTime = NO;
-//        self.videoInput.languageCode =
+        //        self.videoInput.languageCode =
+//        for (AVAssetTrack * track in videoTracks) {
+//            CGAffineTransform trans = track.preferredTransform;
+//            NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",trans.a,trans.b,trans.c,trans.d,trans.tx,trans.ty);
+//        }
+        
+        //最后一个才是正确的方向:第一个是图片，第二个是插入的视频 第三个是背景视频（有可能为空）
+        [self.videoInput setTransform:((AVAssetTrack *)[videoTracks lastObject]).preferredTransform];
+        
+        {
+            CGAffineTransform trans = self.videoInput.transform;
+            NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",trans.a,trans.b,trans.c,trans.d,trans.tx,trans.ty);
+        }
+        
         if ([self.writer canAddInput:self.videoInput])
         {
             [self.writer addInput:self.videoInput];
         }
+        
         NSDictionary *pixelBufferAttributes = @
         {
             (id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
@@ -163,24 +177,24 @@
         };
         self.videoPixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:self.videoInput sourcePixelBufferAttributes:pixelBufferAttributes];
     }
-
+    
     //
     //Audio output
     //
     NSArray *audioTracks = [self.asset tracksWithMediaType:AVMediaTypeAudio];
     if (audioTracks.count > 0) {
-      self.audioOutput = [AVAssetReaderAudioMixOutput assetReaderAudioMixOutputWithAudioTracks:audioTracks audioSettings:nil];
-      self.audioOutput.alwaysCopiesSampleData = NO;
-      self.audioOutput.audioMix = self.audioMix;
-      if ([self.reader canAddOutput:self.audioOutput])
-      {
-          [self.reader addOutput:self.audioOutput];
-      }
+        self.audioOutput = [AVAssetReaderAudioMixOutput assetReaderAudioMixOutputWithAudioTracks:audioTracks audioSettings:nil];
+        self.audioOutput.alwaysCopiesSampleData = NO;
+        self.audioOutput.audioMix = self.audioMix;
+        if ([self.reader canAddOutput:self.audioOutput])
+        {
+            [self.reader addOutput:self.audioOutput];
+        }
     } else {
         // Just in case this gets reused
         self.audioOutput = nil;
     }
-
+    
     //
     // Audio input
     //
@@ -197,29 +211,29 @@
     [self.reader startReading];
     
     if (videoTracks.count > 0)
-        [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)videoTracks[0]).naturalTimeScale)];
+        [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)[videoTracks lastObject]).naturalTimeScale)];
     else
-        [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)audioTracks[0]).naturalTimeScale)];        
-
+        [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)[audioTracks lastObject]).naturalTimeScale)];
+    
     __block BOOL videoCompleted = NO;
     __block BOOL audioCompleted = NO;
     __weak SDAVAssetExportSession * wself = self;
     self.inputQueue = dispatch_queue_create("VideoEncoderInputQueue", DISPATCH_QUEUE_SERIAL);
     if (videoTracks.count > 0) {
         [self.videoInput requestMediaDataWhenReadyOnQueue:self.inputQueue usingBlock:^
-        {
-            if (![wself encodeReadySamplesFromOutput:wself.videoOutput toInput:wself.videoInput])
-            {
-                @synchronized(wself)
-                {
-                    videoCompleted = YES;
-                    if (audioCompleted)
-                    {
-                        [wself finish];
-                    }
-                }
-            }
-        }];
+         {
+             if (![wself encodeReadySamplesFromOutput:wself.videoOutput toInput:wself.videoInput])
+             {
+                 @synchronized(wself)
+                 {
+                     videoCompleted = YES;
+                     if (audioCompleted)
+                     {
+                         [wself finish];
+                     }
+                 }
+             }
+         }];
     }
     else {
         videoCompleted = YES;
@@ -254,7 +268,7 @@
         {
             BOOL handled = NO;
             BOOL error = NO;
-
+            
             if (self.reader.status != AVAssetReaderStatusReading || self.writer.status != AVAssetWriterStatusWriting)
             {
                 handled = YES;
@@ -266,7 +280,7 @@
                 // update the video progress
                 lastSamplePresentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
                 self.progress = duration == 0 ? 1 : CMTimeGetSeconds(lastSamplePresentationTime) / duration;
-
+                
                 if ([self.delegate respondsToSelector:@selector(exportSession:renderFrame:withPresentationTime:toBuffer:)])
                 {
                     CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -286,7 +300,7 @@
                 error = YES;
             }
             CFRelease(sampleBuffer);
-
+            
             if (error)
             {
                 return NO;
@@ -298,7 +312,7 @@
             return NO;
         }
     }
-
+    
     return YES;
 }
 
@@ -306,7 +320,7 @@
 {
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
     AVAssetTrack *videoTrack = [[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-
+    
     // get the frame rate from videoSettings, if not set then try to get it from the video track,
     // if not set (mainly when asset is AVComposition) then use the default frame rate of 30
     float trackFrameRate = 0;
@@ -326,51 +340,51 @@
     {
         trackFrameRate = [videoTrack nominalFrameRate];
     }
-
+    
     if (trackFrameRate == 0)
     {
         trackFrameRate = 30;
     }
-
-	videoComposition.frameDuration = CMTimeMake(1, trackFrameRate);
-	CGSize targetSize = CGSizeMake([self.videoSettings[AVVideoWidthKey] floatValue], [self.videoSettings[AVVideoHeightKey] floatValue]);
-	CGSize naturalSize = [videoTrack naturalSize];
-	CGAffineTransform transform = videoTrack.preferredTransform;
-	CGFloat videoAngleInDegree  = atan2(transform.b, transform.a) * 180 / M_PI;
-	if (videoAngleInDegree == 90 || videoAngleInDegree == -90) {
-		CGFloat width = naturalSize.width;
-		naturalSize.width = naturalSize.height;
-		naturalSize.height = width;
-	}
-	videoComposition.renderSize = naturalSize;
-	// center inside
-	{
-		float ratio;
-		float xratio = targetSize.width / naturalSize.width;
-		float yratio = targetSize.height / naturalSize.height;
-		ratio = MIN(xratio, yratio);
-
-		float postWidth = naturalSize.width * ratio;
-		float postHeight = naturalSize.height * ratio;
-		float transx = (targetSize.width - postWidth) / 2;
-		float transy = (targetSize.height - postHeight) / 2;
-
-		CGAffineTransform matrix = CGAffineTransformMakeTranslation(transx / xratio, transy / yratio);
-		matrix = CGAffineTransformScale(matrix, ratio / xratio, ratio / yratio);
-		transform = CGAffineTransformConcat(transform, matrix);
-	}
-
-	// Make a "pass through video track" video composition.
-	AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-	passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, self.asset.duration);
-
-	AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-
+    
+    videoComposition.frameDuration = CMTimeMake(1, trackFrameRate);
+    CGSize targetSize = CGSizeMake([self.videoSettings[AVVideoWidthKey] floatValue], [self.videoSettings[AVVideoHeightKey] floatValue]);
+    CGSize naturalSize = [videoTrack naturalSize];
+    CGAffineTransform transform = videoTrack.preferredTransform;
+    CGFloat videoAngleInDegree  = atan2(transform.b, transform.a) * 180 / M_PI;
+    if (videoAngleInDegree == 90 || videoAngleInDegree == -90) {
+        CGFloat width = naturalSize.width;
+        naturalSize.width = naturalSize.height;
+        naturalSize.height = width;
+    }
+    videoComposition.renderSize = naturalSize;
+    // center inside
+    {
+        float ratio;
+        float xratio = targetSize.width / naturalSize.width;
+        float yratio = targetSize.height / naturalSize.height;
+        ratio = MIN(xratio, yratio);
+        
+        float postWidth = naturalSize.width * ratio;
+        float postHeight = naturalSize.height * ratio;
+        float transx = (targetSize.width - postWidth) / 2;
+        float transy = (targetSize.height - postHeight) / 2;
+        
+        CGAffineTransform matrix = CGAffineTransformMakeTranslation(transx / xratio, transy / yratio);
+        matrix = CGAffineTransformScale(matrix, ratio / xratio, ratio / yratio);
+        transform = CGAffineTransformConcat(transform, matrix);
+    }
+    
+    // Make a "pass through video track" video composition.
+    AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, self.asset.duration);
+    
+    AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+    
     [passThroughLayer setTransform:transform atTime:kCMTimeZero];
-
-	passThroughInstruction.layerInstructions = @[passThroughLayer];
-	videoComposition.instructions = @[passThroughInstruction];
-
+    
+    passThroughInstruction.layerInstructions = @[passThroughLayer];
+    videoComposition.instructions = @[passThroughInstruction];
+    
     return videoComposition;
 }
 
@@ -381,7 +395,7 @@
     {
         return;
     }
-
+    
     if (self.writer.status == AVAssetWriterStatusFailed)
     {
         [self complete];
@@ -395,9 +409,9 @@
         }
         [self.writer endSessionAtSourceTime:lastSamplePresentationTime];
         [self.writer finishWritingWithCompletionHandler:^
-        {
-            [self complete];
-        }];
+         {
+             [self complete];
+         }];
     }
 }
 
@@ -407,7 +421,7 @@
     {
         [NSFileManager.defaultManager removeItemAtURL:self.outputURL error:nil];
     }
-
+    
     if (self.completionHandler)
     {
         self.completionHandler();
@@ -450,12 +464,12 @@
     if (self.inputQueue)
     {
         dispatch_async(self.inputQueue, ^
-        {
-            [self.writer cancelWriting];
-            [self.reader cancelReading];
-            [self complete];
-            [self reset];
-        });
+                       {
+                           [self.writer cancelWriting];
+                           [self.reader cancelReading];
+                           [self complete];
+                           [self reset];
+                       });
     }
 }
 

@@ -31,6 +31,7 @@ typedef NS_ENUM(int, SType)
 @property (nonatomic,assign)    CGFloat Rate;           //对播放速度的影响
 @property (nonatomic,assign)    CGFloat ReverseSeconds;  //从当前播放位置的何处开始。如-1，表示从当前位置前一秒开始生效
 @property (nonatomic,assign)    CGFloat DurationInSeconds;  //效果延续时间，-1表示不限，此值与Rate无关
+@property (nonatomic,assign)    CGFloat secondsBeginAdjust;//用户点击时可能有延迟，此处时间用于校正。一般为负值，表示在点击之前的一点时间
 @property (nonatomic,assign)    BOOL IsMutex;       //是否互斥，不能与其它Action重叠
 @property (nonatomic,assign)    BOOL IsFilter;      //是否滤镜
 @property (nonatomic,assign)    BOOL IsOverlap;     //对于源视频是否进行覆盖

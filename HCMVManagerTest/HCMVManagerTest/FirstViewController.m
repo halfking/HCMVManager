@@ -102,7 +102,7 @@
         action.IsMutex = NO;
         action.IsFilter = NO;
         
-        [manager addActionItem:action filePath:nil at:4 duration:action.DurationInSeconds];
+        [manager addActionItem:action filePath:nil at:4 from:4 duration:action.DurationInSeconds];
     }
     
 }
@@ -119,7 +119,7 @@
         action.IsMutex = NO;
         action.IsFilter = NO;
         
-        [manager addActionItem:action filePath:nil at:7 duration:action.DurationInSeconds];
+        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
     }
     
 }
@@ -137,7 +137,7 @@
         action.IsMutex = NO;
         action.IsFilter = NO;
         
-        testAction_ = [manager addActionItem:action filePath:nil at:7 duration:-1];
+        testAction_ = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
     }
     
 }

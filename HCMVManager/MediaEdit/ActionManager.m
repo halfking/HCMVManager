@@ -32,6 +32,7 @@
     
     BOOL isReverseGenerating_;
     BOOL isReverseHasGenerated_;
+    
 }
 +(id)shareObject
 {
@@ -116,14 +117,26 @@
     for (MediaWithAction * action in mediaWithActions) {
         MediaItem * item = [[MediaItem alloc]init];
         [item fetchAsCore:(MediaItemCore*)action];
-        if(item.fileNameGenerated && item.fileNameGenerated.length>0)
+        
+        //        //如果是已经生成的文件，如另选择的文件
+        //        if(item.fileNameGenerated && item.fileNameGenerated.length>0)
+        //        {
+        //            //需要修改此处的开始与结束时间，以便于处理
+        //            item.begin = CMTimeMakeWithSeconds(0,item.begin.timescale);
+        //            item.end = item.duration;
+        //            item.fileName = item.fileNameGenerated;
+        //        }
+        
+        if(item.secondsDurationInArray>0)
         {
-#warning 需要修改此处的开始与结束时间，以便于处理
-            item.begin = CMTimeMakeWithSeconds(0,item.begin.timescale);
-            item.end = item.duration;
-            item.fileName = item.fileNameGenerated;
+            [resultList addObject:item];
+            NSLog(@"%d(%.2f len:%.2f) file:(%.2f--%.2f) rate:%.2f",
+                    (int)action.Action.ActionType,
+                    item.secondsInArray,
+                    item.secondsDurationInArray,
+                    item.secondsBegin,item.secondsEnd,
+                    item.playRate);
         }
-        [resultList addObject:item];
     }
     if(complted)
     {
@@ -195,7 +208,6 @@
                          isReverseGenerating_ = NO;
                      }];
     }
-    
     
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
@@ -285,16 +297,23 @@
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                               at:(CGFloat)posSeconds
+                            from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
     MediaActionDo * item = [self getMediaActionDo:action];
+    
+    //对用户在用手操作时的延时进行校正
+    if(item.secondsBeginAdjust!=0)
+    {
+        posSeconds += item.secondsBeginAdjust;
+    }
+    
     if(filePath && filePath.length>0 && [filePath isEqualToString:videoBg_.filePath]==NO)
     {
         MediaItem * tempItem = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
         if(tempItem)
         {
             item.Media = [tempItem copyAsCore];
-            //            [item parseCore:[tempItem copyAsCore]];
         }
     }
     else
@@ -303,7 +322,7 @@
         if(item.ActionType == SReverse)
         {
             item.Media = [reverseBG_ copyAsCore];
-            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsDuration - posSeconds, item.Media.begin.timescale);
+            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsDuration - mediaBeginSeconds, item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
                 item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
@@ -313,7 +332,7 @@
         {
             item.Media = [videoBg_ copyAsCore];
             //重新设置开始与结束时间
-            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + posSeconds + action.ReverseSeconds, item.Media.begin.timescale);
+            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds, item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
                 item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
@@ -325,8 +344,10 @@
         PP_RELEASE(item);
         return nil;
     }
-    item.SecondsInArray = posSeconds;// + action.ReverseSeconds;
+    
+    item.SecondsInArray = posSeconds;
     item.DurationInArray = durationInSeconds;
+    
     if(durationInSeconds<=0)
     {
         item.isOPCompleted = NO;
@@ -334,10 +355,16 @@
     else
     {
         item.isOPCompleted = YES;
+        
+        secondsEffectPlayer_ += [item secondsEffectPlayer];
+        NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     }
     item.Index = (int)actionList_.count;
     
     [actionList_ addObject:item];
+    
+    
+    NSLog(@"####### action in array:%.4f",item.SecondsInArray);
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {
@@ -351,7 +378,7 @@
     //    }
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
     {
-        MediaWithAction * media = [self findMediaItemAt:item.SecondsInArray];
+        MediaWithAction * media = [self findMediaItemAt:item.SecondsInArray -  item.secondsBeginAdjust];
         [self.delegate ActionManager:self play:media];
     }
     return item;
@@ -367,18 +394,21 @@
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     action.isOPCompleted = YES;
     
+    mediaList_ = [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
+    
+    secondsEffectPlayer_ += [action secondsEffectPlayer];
+    NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {
         [self.delegate ActionManager:self actionChanged:action type:1];
     }
     
-    mediaList_ = [action processAction:mediaList_];
     //    [self reindexAllActions];
     
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
     {
-        MediaWithAction * item = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray];
+        MediaWithAction * item = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray - action.secondsBeginAdjust];
         [self.delegate ActionManager:self play:item];
     }
     
@@ -388,17 +418,18 @@
 - (BOOL) ensureActions:(CGFloat)currentSeconds
 {
     MediaActionDo * action = [actionList_ lastObject];
-    if(action.isOPCompleted==NO)
+    if(action && action.isOPCompleted==NO)
     {
         if(action.ActionType==SReverse)
         {
             currentSeconds = reverseBG_.secondsDuration - currentSeconds;
-            CGFloat duration = MAX(action.SecondsInArray - currentSeconds,0);
+            CGFloat duration = MAX(action.SecondsInArray - currentSeconds - secondsEffectPlayer_,0);
             [self setActionItemDuration:action duration:duration];
         }
         else
         {
             CGFloat duration = [self getSecondsWithoutAction:currentSeconds];
+            duration += secondsEffectPlayer_;
             duration -= action.SecondsInArray;
             [self setActionItemDuration:action duration:duration];
         }
@@ -419,12 +450,14 @@
     }
     else if(seconds>=0)
     {
-        
         for (int i = (int)actionList_.count -1; i>=0; i--) {
             MediaActionDo * item = actionList_[i];
-            if(item.SecondsInArray - seconds < 0.04)
+            
+            NSLog(@"find item: %.4f  targetSeconds:%.4f",item.SecondsInArray,seconds);
+            //起hhko在当前时间前
+            if(item.SecondsInArray - seconds < 0 - item.secondsBeginAdjust + 0.04 )
             {
-                if(item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - seconds > 0.04)
+                if(item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - seconds > 0.04 - item.secondsBeginAdjust)
                 {
                     retItem = item;
                     break;
@@ -435,6 +468,7 @@
                     break;
                 }
             }
+            NSLog(@"find item:%@",retItem?@"OK":@"NO");
         }
         
     }
@@ -445,14 +479,16 @@
     MediaWithAction * retItem = nil;
     for (int i = (int)mediaList_.count -1; i>=0; i--) {
         MediaWithAction * item = mediaList_[i];
+        NSLog(@"find media: %.4f  targetSeconds:%.4f",item.secondsInArray,seconds);
         if(!item.secondsInArrayNotConfirm   //只有开始时间已经确定了的才能参与选择
-           && item.secondsInArray <=seconds
-           && item.secondsDurationInArray + item.secondsInArray >seconds)
+           && item.secondsInArray - item.Action.secondsBeginAdjust <=seconds+0.04
+           && item.secondsDurationInArray + item.secondsInArray - item.Action.secondsBeginAdjust >seconds -0.04)
         {
             retItem = item;
             break;
         }
     }
+     NSLog(@"find media:%@",retItem?@"OK":@"NO");
     return retItem;
 }
 - (BOOL)removeActionItem:(MediaAction *)action
@@ -478,7 +514,7 @@
                 item.Index --;
             }
         }
-        
+        secondsEffectPlayer_ -= [actionDo secondsEffectPlayer];
         [actionList_ removeObject:actionDo];
         
         if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
@@ -536,6 +572,14 @@
 - (BOOL) needGenerateForOP
 {
     return actionList_.count>0;
+}
+- (CGFloat) secondsEffectedByActionsForPlayer
+{
+    return secondsEffectPlayer_;
+}
+- (CGFloat) secondsForTrack:(CGFloat)seconds
+{
+    return seconds + secondsEffectPlayer_;
 }
 #pragma mark - delegate
 - (void)VideoGenerater:(VideoGenerater*)queue didPlayerItemReady:(AVPlayerItem *)playerItem

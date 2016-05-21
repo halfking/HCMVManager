@@ -81,4 +81,16 @@
     result.playRate = self.Rate;
     return result;
 }
+- (CGFloat)secondsEffectPlayer
+{
+    //Rap可能导致播放器时长加
+    if(self.DurationInArray>0)
+    {
+        return self.DurationInArray;
+    }
+    else
+    {
+        return 0;
+    }
+}
 @end

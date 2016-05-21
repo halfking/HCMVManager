@@ -38,6 +38,8 @@
     self.DurationInSeconds = action.DurationInSeconds;
     self.IsMutex = action.IsMutex;
     self.IsFilter = action.IsFilter;
+    self.isOPCompleted = action.isOPCompleted;
+    self.secondsBeginAdjust = action.secondsBeginAdjust;
 }
 - (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
 {
@@ -103,8 +105,12 @@
     return nil;
 }
 #pragma mark - do process
-- (NSMutableArray *) processAction:(NSMutableArray *)sources
+- (NSMutableArray *) processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected
 {
+    if(self.ActionType==SFast)
+    {
+        NSLog(@"fast...");
+    }
     NSMutableArray * overlapList = [self buildMaterialOverlaped:sources];
     NSMutableArray * materialList = [self buildMaterialProcess:sources];
     if(!materialList || materialList.count==0)
@@ -122,10 +128,11 @@
     
     MediaWithAction * mediaToTail = [self splitMediaItemAtSeconds:overlapList
                                                         atSeconds:self.SecondsInArray
+                                                             from:self.SecondsInArray - secondsEffected
                                                          duration:self.DurationInArray
                                                           overlap:self.IsOverlap];
     
-//    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
+    //    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
     
     //将数据插入到原队列中，并且将队列中对像的时间重新计算
     NSMutableArray * headList = [NSMutableArray new];
@@ -244,6 +251,7 @@
 #pragma mark - split op
 - (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
                                    atSeconds:(CGFloat)seconds
+                                from:(CGFloat)mediaBeginSeconds
                                     duration:(CGFloat)duration
                                      overlap:(BOOL)isOverlap
 {
@@ -362,24 +370,36 @@
     NSMutableArray * overlapList = [NSMutableArray new];
     
     for (MediaWithAction * item in sources) {
-        //左相交
-        if(item.secondsInArray  <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+        if(duration<0)
         {
-            MediaWithAction * newItem = [item copyItem];
-            newItem.begin = CMTimeMakeWithSeconds(newItem.secondsBegin + seconds - item.secondsInArray, newItem.begin.timescale);
-            [overlapList addObject:newItem];
+            if(item.secondsDurationInArray + item.secondsInArray > seconds)
+            {
+                MediaWithAction * newItem = [item copyItem];
+                [overlapList addObject:newItem];
+            }
         }
-        //包含
-        else if(item.secondsInArray > seconds && item.secondsInArray + item.secondsDurationInArray <= seconds + duration)
+        else
         {
-            [overlapList addObject:item];
-        }
-        //右相交
-        else if(item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >seconds +duration)
-        {
-            MediaWithAction * newItem = [item copyItem];
-            newItem.end = CMTimeMakeWithSeconds(newItem.secondsEnd - (item.secondsInArray + item.secondsDurationInArray - seconds - duration), newItem.end.timescale);
-            [overlapList addObject:newItem];
+            //左相交
+            if(item.secondsInArray  <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+            {
+                MediaWithAction * newItem = [item copyItem];
+                newItem.begin = CMTimeMakeWithSeconds(newItem.secondsBegin + seconds - item.secondsInArray, newItem.begin.timescale);
+                [overlapList addObject:newItem];
+            }
+            //包含
+            else if(item.secondsInArray > seconds && item.secondsInArray + item.secondsDurationInArray <= seconds + duration)
+            {
+                MediaWithAction * newItem = [item copyItem];
+                [overlapList addObject:newItem];
+            }
+            //右相交
+            else if(item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >seconds +duration)
+            {
+                MediaWithAction * newItem = [item copyItem];
+                newItem.end = CMTimeMakeWithSeconds(newItem.secondsEnd - (item.secondsInArray + item.secondsDurationInArray - seconds - duration), newItem.end.timescale);
+                [overlapList addObject:newItem];
+            }
         }
     }
     return overlapList;
@@ -416,6 +436,10 @@
                 matchItem = item;
             }
         }
+        else
+        {
+            
+        }
         if(matchItem )
         {
             if(fabs(matchItem.secondsInArray - self.SecondsInArray)<0.01 && matchItem.Action.ActionType == self.ActionType)
@@ -432,6 +456,10 @@
     return overlapList;
 }
 
+- (CGFloat) secondsEffectPlayer
+{
+    return 0;
+}
 #pragma mark - dealloc
 - (void)dealloc
 {

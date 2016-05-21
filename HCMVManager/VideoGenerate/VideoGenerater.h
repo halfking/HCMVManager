@@ -143,4 +143,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
             ready:(MEPlayerItemReady)itemReady
         completed:(MECompleted)complted
           failure:(MEFailure)failure;
+
+
+- (void) showMediaInfo:(NSString *)filePath;
 @end

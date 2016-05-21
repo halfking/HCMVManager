@@ -977,6 +977,7 @@
     PP_RELEASE(_videoComposition);
     PP_RELEASE(_audioMixOnce);
     
+    size = CGSizeZero;
     if(totalDuration.value ==0)
     {
         isOverlap = NO; //多个视频分段相加
@@ -988,14 +989,14 @@
     {
         totalDuration.value /= rate;
     }
-    if(!isOverlap)
-    {
-        size = CGSizeZero; //准备从素材中获取
-    }
-    else
-    {
-        size = [self getSizeByOrientation:size];
-    }
+//    if(!isOverlap)
+//    {
+//        size = CGSizeZero; //准备从素材中获取
+//    }
+//    else
+//    {
+//        size = [self getSizeByOrientation:size];
+//    }
     
     lastGenerateKey_ = [self getKeyForMediaList:mediaList];
     
@@ -1083,7 +1084,7 @@
     
     if(isOverlap)
     {
-        curTimeCnt = [self compositeBGVideo:mixComposition layers:layers maxTime:curTimeCnt size:size rate:rate];
+        curTimeCnt = [self compositeBGVideo:mixComposition layers:layers maxTime:curTimeCnt size:&size rate:rate];
         range = CMTimeRangeMake(kCMTimeZero,curTimeCnt);
     }
     NSLog(@"track range :%.2f",CMTimeGetSeconds(range.duration));
@@ -1104,6 +1105,7 @@
     
     mixComposition.naturalSize = size;//[self getSizeByOrientation:size];
     
+  
     if(self.compositeLyric)
     {
         CMTime lyricDuration = curTimeCnt;
@@ -1513,6 +1515,7 @@
         
         CMTime realDuration = curAsset.duration;
         
+        [videoTrack setPreferredTransform:curTrack.preferredTransform];
         NSError * error = nil;
         
         [imageTrack insertTimeRange:CMTimeRangeMake(curItem.begin, realDuration)
@@ -1531,7 +1534,7 @@
         CGSize  curItemSize = curTrack.naturalSize;
         if(size && ((*size).width ==0 || (*size).height ==0 ))
         {
-            *size = curItemSize;
+            *size = [self getSizeByOrientation:curItemSize];
         }
         
         CMTimeRange drange = CMTimeRangeMake(modalInStInQueue, duration);
@@ -1594,9 +1597,12 @@
         }
         if(size && ((*size).width ==0 || (*size).height ==0 ))
         {
-            *size = curTrack.naturalSize;
+            *size = videoTrack.naturalSize;
+//            *size = [self getSizeByOrientation:videoTrack.naturalSize];
         }
-        //        NSLog(@"track range1 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
+                [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                 NSLog(@"videoTrack\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",videoTrack.preferredTransform.a,videoTrack.preferredTransform.b,videoTrack.preferredTransform.c,videoTrack.preferredTransform.d,videoTrack.preferredTransform.tx,videoTrack.preferredTransform.ty);
+        
         if((rate>0 && rate!=1.0)||(curItem.playRate!=1 && curItem.playRate>0))
         {
             CMTime durationScaled = CMTimeMake(duration.value/(rate * curItem.playRate), duration.timescale);
@@ -1605,15 +1611,17 @@
                             toDuration:durationScaled];
         }
         //        NSLog(@"track range2 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
-        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
-        {
-            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO]
-                                         atTime:curItem.timeInArray];
-        }
-        else
-        {
-            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize] atTime:curItem.timeInArray];
-        }
+//        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
+//        {
+//            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO]
+//                                         atTime:curItem.timeInArray];
+//        }
+//        else
+//        {
+//            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize] atTime:curItem.timeInArray];
+//        }
+
+//        [videoLayerInstruction setTransform:curTrack.preferredTransform  atTime:curItem.timeInArray];
         
         [videoLayerInstruction setOpacity:1.0 atTime:modalInStInQueue];
         [videoLayerInstruction setOpacity:0.0 atTime:modalOffEtInQueue];
@@ -1621,7 +1629,7 @@
     
     return modalOffEtInQueue;
 }
-- (CMTime )compositeBGVideo:(AVMutableComposition *)mixComposition layers:(NSMutableArray *)layers maxTime:(CMTime)curTimeCnt size:(CGSize)size rate:(CGFloat)rate
+- (CMTime )compositeBGVideo:(AVMutableComposition *)mixComposition layers:(NSMutableArray *)layers maxTime:(CMTime)curTimeCnt size:(CGSize *)size rate:(CGFloat)rate
 {
     //将背景视频和背景音乐合成进去
     //因为如果背景视频长度一定要大于当前的长度。即整体视频长度不能大于背景长度
@@ -1679,7 +1687,11 @@
             {
                 NSLog(@"join video:(mix bgvideo) %@",[error localizedDescription]);
             }
-            
+            if(size && ((*size).width ==0 || (*size).height ==0 ))
+            {
+                *size = ((AVAssetTrack *)[tracklist objectAtIndex:0]).naturalSize;
+//                *size = [self getSizeByOrientation:((AVAssetTrack *)[tracklist objectAtIndex:0]).naturalSize];
+            }
             if((rate >0 && rate!=1.0))
             {
                 [bgvTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, targetDuration)
@@ -1697,7 +1709,7 @@
             
             if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
             {
-                CGAffineTransform trans = [self layerTrans:bgvAsset withTargetSize:size orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:isGenerateByCover];
+                CGAffineTransform trans = [self layerTrans:bgvAsset withTargetSize: *size orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:isGenerateByCover];
                 //                if(!CGAffineTransformEqualToTransform(trans, bgvAsset.preferredTransform))
                 //                {
                 [bgvLayerInstruction setTransform:trans
@@ -1714,7 +1726,7 @@
             }
             else
             {
-                [bgvLayerInstruction setTransform:[self layerTrans:bgvAsset withTargetSize:size] atTime:kCMTimeZero];
+                [bgvLayerInstruction setTransform:[self layerTrans:bgvAsset withTargetSize: *size] atTime:kCMTimeZero];
             }
             
             [layers addObject:bgvLayerInstruction];
@@ -2499,6 +2511,26 @@
                                                          forKey:NSLocalizedDescriptionKey];
     NSError *aError = [NSError errorWithDomain:@"com.seenvoice.maiba" code:-1000 userInfo:userInfo];
     return aError;
+}
+- (void) showMediaInfo:(NSString *)filePath
+{
+    if(!filePath || ![[HCFileManager manager]existFileAtPath:filePath])
+    {
+        NSLog(@" not find file:%@",filePath);
+        return ;
+    }
+    AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
+    CGAffineTransform transAsset = asset.preferredTransform;
+    AVAssetTrack * track = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+    CGSize size = track.naturalSize;
+    CGAffineTransform transTrack = track.preferredTransform;
+    NSLog(@"asset\t\t:%@",filePath);
+    NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",transAsset.a,transAsset.b,transAsset.c,transAsset.d,transAsset.tx,transAsset.ty);
+    NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",transTrack.a,transTrack.b,transTrack.c,transTrack.d,transTrack.tx,transTrack.ty);
+    NSLog(@"asset\t\t:size:%@",NSStringFromCGSize(size));
+    NSLog(@"asset\t\t-------- end -------------");
+    
+    asset = nil;
 }
 #pragma mark - dealloc
 - (void)dealloc

@@ -113,7 +113,7 @@
 {
     if(!viewShowed_)
     {
-        CGFloat top = self.view.frame.size.height - 120;
+        CGFloat top = self.view.frame.size.height - 140;
         slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
         [slow_ setFrame:CGRectMake(20, top, 60, 30)];
         [slow_ setTitle:@"slow" forState:UIControlStateNormal];
@@ -159,7 +159,7 @@
         
         repeatTime_ = kCMTimeZero;
         
-        CGFloat playerBottom = 20 + self.view.frame.size.width/16 * 9;
+        CGFloat playerBottom =  self.view.frame.size.width/16 * 9;
         pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 10 + playerBottom, self.view.frame.size.width -20, top - 20 - playerBottom)];
         pannel_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:pannel_];
@@ -299,7 +299,9 @@
     action.isOPCompleted = YES;
     action.Rate = 1;
     
-    [manager_ addActionItem:action filePath:nil at:secondsPlaying duration:1];
+    CGFloat secondsInTrack = [manager_ secondsForTrack:secondsPlaying];
+    
+    [manager_ addActionItem:action filePath:nil at:secondsInTrack from:secondsPlaying duration:1];
     
     //    }
     
@@ -313,6 +315,9 @@
     CMTime reverSeconds = [rPlayer_.playerItem currentTime];
     CMTime reverDuration = [rPlayer_.playerItem duration];
     
+    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+    
+    NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
     
     if (!sender.selected) {
         MediaAction * action = [MediaAction new];
@@ -322,23 +327,24 @@
         action.IsMutex = NO;
         action.isOPCompleted = NO;
         action.Rate = 1;
-        if([manager_ addActionItem:action filePath:nil at:seconds duration:-1])
+        
+        
+        if([manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1])
         {
             sender.selected = YES;
         }
+
         
     } else {
         sender.selected = NO;
-        MediaActionDo * actionDo = [manager_ findActionAt:seconds index:-1];
+        MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
         if(actionDo)
         {
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
             CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-            //            seconds =  seconds - duration;
             CGFloat end = [manager_ getSecondsWithoutAction:seconds];
             CGFloat duration = end - playerPos;
-            //            duration = end - actionDo.SecondsInArray;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
@@ -377,10 +383,13 @@
     
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
+    
+    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+    
     if (sender.selected) {
         sender.selected = NO;
         NSLog(@"player action seconds:%f",seconds);
-        MediaWithAction * media = [manager_ findMediaItemAt:seconds];
+        MediaWithAction * media = [manager_ findMediaItemAt:secondsInTrack];
         
         MediaActionDo * actionDo = nil;
         if([media.Action isKindOfClass:[MediaActionDo class]])
@@ -393,7 +402,7 @@
         }
         if(actionDo)
         {
-            CGFloat duration = [manager_ getSecondsWithoutAction:seconds];
+            CGFloat duration = secondsInTrack;// seconds;//[manager_ getSecondsWithoutAction:seconds];
             duration -= actionDo.SecondsInArray;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
@@ -408,19 +417,22 @@
         action.IsMutex = NO;
         action.Rate = 0.33333;
         action.isOPCompleted = NO;
-        [manager_ addActionItem:action filePath:nil at:seconds duration:-1];
+        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
     }
 }
 -(void)fast:(UIButton *)sender
 {
     CMTime playerTime =  [player_ durationWhen];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
+    
+    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+    
     if (sender.selected) {
         sender.selected = NO;
-        MediaActionDo * actionDo = [manager_ findActionAt:seconds - 0.1 index:-1];
+        MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack - 0.1 index:-1];
         if(actionDo)
         {
-            CGFloat duration = [manager_ getSecondsWithoutAction:seconds];
+            CGFloat duration = secondsInTrack;// [manager_ getSecondsWithoutAction:seconds];
             duration -= actionDo.SecondsInArray;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
@@ -435,7 +447,7 @@
         action.IsOverlap = YES;
         action.IsMutex = NO;
         action.isOPCompleted = NO;
-        [manager_ addActionItem:action filePath:nil at:seconds duration:-1];
+        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
     }
 }
 #pragma mark - player delegate
@@ -467,6 +479,12 @@
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
         [rPlayer_ pause];
+        
+        [manager_ ensureActions:endSeconds];
+        
+        //再继续播放
+        [self resetAllButtons];
+        return ;
     }
     else if(playerSimple == player_)
     {
@@ -496,6 +514,9 @@
 {
     NSLog(@"*************** generate ok *****************");
     baseVideo_ = [manager getBaseVideo];
+
+    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
+    
     reverseVideo_ = reverseVideo;
     if(viewShowed_)
     {
@@ -512,6 +533,19 @@
     showTimeChanged_ = YES;
     
     [pannel_ refresh];
+    
+    
+    NSLog(@"-------------** before do **--------------------");
+    //    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+    //    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+    int index = 0;
+    NSArray * mediaList = [manager_ getMediaList];
+    for (MediaWithAction * item in mediaList) {
+        NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
+        NSLog(@"%@",[item toString]);
+        index ++;
+    }
+    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
     
     if(!mediaToPlay)
     {
@@ -579,10 +613,10 @@
 }
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {
-    NSLog(@"-------------**----**--------------------");
+    NSLog(@"-------------**--process ok--**--------------------");
     NSLog(@"duration:%.2f",duration);
-    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
-    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+//    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+//    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
     int index = 0;
     for (MediaWithAction * item in mediaList) {
         NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
@@ -627,10 +661,13 @@
     [player_ pause];
     [rPlayer_ pause];
     
+    
     //暂时暂停，用于检查
 //    if([manager_ needGenerateForOP]) return;
     
     NSLog(@"************ begin generate **************");
+    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
+    
     if(![manager_ generateMV])
     {
         [player_ seek:0 accurate:YES];

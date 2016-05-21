@@ -106,7 +106,7 @@
 //right media: secondsInArray = seconds - duration duration = orgDuration + duration
 //left media: no change.
 
-- (NSMutableArray *) processAction:(NSMutableArray *)sources
+- (NSMutableArray *) processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected
 {
     
     NSMutableArray * overlapList = [self buildMaterialOverlaped:sources];
@@ -126,6 +126,7 @@
     
     MediaWithAction * mediaToTail = [self splitMediaItemAtSeconds:overlapList
                                                         atSeconds:self.SecondsInArray
+                                                             from:self.SecondsInArray - secondsEffected
                                                          duration:self.DurationInArray
                                                           overlap:self.IsOverlap];
     
@@ -202,6 +203,8 @@
         
         [headList addObject:item];
         
+        item.durationInPlaying = item.secondsDurationInArray;
+        
         secondsInArray += item.secondsDurationInArray;
         //        if(self.IsOverlap)
         //            lastMediaSeconds = item.secondsEnd;
@@ -223,11 +226,11 @@
         if(!self.isOPCompleted)
         {
             item.secondsInArrayNotConfirm = YES;
-            item.begin = CMTimeMakeWithSeconds(MAX(item.secondsInArray - self.DurationInArray,0),item.begin.timescale);
         }
         else
         {
             item.secondsInArrayNotConfirm = NO;
+//            item.begin = CMTimeMakeWithSeconds(MAX(item.secondsBegin - self.DurationInArray,0),item.begin.timescale);
         }
     }
     
@@ -276,5 +279,88 @@
     result.Action = [(MediaAction *)self copyItem];
     result.playRate = self.Rate;
     return result;
+}
+#pragma mark - split op
+- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
+                                   atSeconds:(CGFloat)seconds
+                                        from:(CGFloat)mediaBeginSeconds
+                                    duration:(CGFloat)duration
+                                     overlap:(BOOL)isOverlap
+{
+    MediaWithAction * media = nil;
+    
+    
+    if(!overlaps ||overlaps.count==0 || seconds <0)
+    {
+        NSAssert(media, @"传入了不正确的参数 nil");
+        return nil;
+    }
+    media = [overlaps firstObject];
+    
+    UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
+    
+    //从中间截断时
+    //一般在动作刚开始时
+    if(seconds>=media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+    {
+        //创建后半部
+        MediaWithAction * actionSecond = [media copyItem];
+        actionSecond.durationInPlaying = -1;
+        
+        //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+        CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+        CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
+        media.end = endTime;
+        media.durationInPlaying = [self getFinalDurationForMedia:media];
+        
+        
+        if(duration>=0) //当插入的素材有确定时长时
+        {
+            NSLog(@" 2reverver item: %.4f  reverse duration:%.4f",media.secondsBegin,self.DurationInArray);
+            //反转
+            actionSecond.begin = CMTimeMakeWithSeconds(media.secondsEnd - duration, timeScale);
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds + duration,timeScale);
+            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+        }
+        else //无确定时长时
+        {
+            actionSecond.begin = media.end;
+            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds,timeScale);
+            actionSecond.durationInPlaying = 0;
+            actionSecond.secondsInArrayNotConfirm = YES;
+        }
+        return actionSecond;
+    }
+    else //如果是全部覆盖
+    {
+            if(duration>=0)
+            {
+                media.timeInArray = CMTimeMakeWithSeconds(MAX(seconds+ duration,0),timeScale);
+                NSLog(@" reverver item: %.4f  reverse duration:%.4f",media.secondsBegin,self.DurationInArray);
+                //反转
+                media.begin = CMTimeMakeWithSeconds(mediaBeginSeconds - duration, timeScale);
+                media.durationInPlaying = [self getFinalDurationForMedia:media];
+
+            }
+            else
+            {
+                media.timeInArray = CMTimeMakeWithSeconds(seconds+0.1,timeScale);
+                media.secondsInArrayNotConfirm = YES;
+            }
+            return media;
+    }
+    return nil;
+}
+- (CGFloat)secondsEffectPlayer
+{
+    //Rap可能导致播放器时长加两份
+    if(self.DurationInArray>0)
+    {
+        return self.DurationInArray * 2;
+    }
+    else
+    {
+        return 0;
+    }
 }
 @end

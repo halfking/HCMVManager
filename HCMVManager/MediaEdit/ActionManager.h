@@ -58,6 +58,7 @@
     CGFloat durationForAudio_;          //音频时长
     
     MediaEditManager * manager_;        //原有的编辑管理组件
+    CGFloat secondsEffectPlayer_; //播放器时长的影响
 }
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
 @property (nonatomic,assign) BOOL needPlayerItem;
@@ -73,17 +74,25 @@
 - (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
 
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
+//posSeconds 为队列中时间 与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
+//mediaBeginSeconds 为素材中的起始位置
 - (MediaActionDo *) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                    at:(CGFloat)posSeconds
+                             from:(CGFloat)mediaBeginSeconds
              duration:(CGFloat)durationInSeconds;
 
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
 - (BOOL) ensureActions:(CGFloat)currentSeconds; //将未完成的Action完成，一般用于播放完成
 
+//注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (MediaActionDo *)findActionAt:(CGFloat)seconds
                           index:(int)index;
+
+//注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (MediaWithAction *)findMediaItemAt:(CGFloat)seconds;
+
+//注意此时的posSeconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (BOOL) removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds;
 
@@ -100,5 +109,6 @@
 - (BOOL) saveDraft;
 - (BOOL) loadLastDraft;
 - (BOOL) needGenerateForOP;
-
+- (CGFloat) secondsEffectedByActionsForPlayer;
+- (CGFloat) secondsForTrack:(CGFloat)seconds;
 @end

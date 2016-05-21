@@ -18,6 +18,7 @@
 @synthesize SubActions;
 @synthesize Rate,ReverseSeconds,DurationInSeconds,IsMutex,IsFilter,IsOverlap;
 @synthesize isOPCompleted;
+@synthesize secondsBeginAdjust;
 -(id)init
 {
     self = [super init];
@@ -32,6 +33,7 @@
         self.IsFilter = NO;
         self.IsOverlap = YES;
         self.isOPCompleted = YES;
+        self.secondsBeginAdjust = 0;//- 0.15;
     }
     return self;
 }
@@ -90,6 +92,7 @@
     item.IsFilter = self.IsFilter;
     item.IsOverlap = self.IsOverlap;
     item.isOPCompleted = self.isOPCompleted;
+    item.secondsBeginAdjust = self.secondsBeginAdjust;
     return item;
 }
 - (void)dealloc

@@ -331,7 +331,8 @@
             item.begin = CMTimeMakeWithSeconds(0, item.duration.timescale);
             item.end = item.duration;
             item.degree = [self degressFromVideoFileWithTrack:vTrack];
-            item.orientation = [self orientationFromVideo:vTrack];
+//            item.degree = [self degressFromVideoFileWithAsset:asset];
+            item.orientation = [self orientationFromDegree:item.degree];
             item.isOnlyAudio = NO;
             item.originType = MediaItemTypeVIDEO;
             needCreateBGVideo_ = NO;
@@ -384,6 +385,34 @@
     {
         return nil;
     }
+}
+- (int)degressFromVideoFileWithAsset:(AVAsset *)videoTrack
+{
+    int degress = -1;
+    if(videoTrack)
+    {
+        //    AVAsset *asset = [AVAsset assetWithURL:url];
+        //    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+        //    if([tracks count] > 0) {
+        //        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        CGAffineTransform t = videoTrack.preferredTransform;
+        
+        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+            // Portrait
+            degress = 90;
+        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+            // PortraitUpsideDown
+            degress = 270;
+        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+            // LandscapeRight
+            degress = 0;
+        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+            // LandscapeLeft
+            degress = 180;
+        }
+    }
+    
+    return degress;
 }
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack
 {

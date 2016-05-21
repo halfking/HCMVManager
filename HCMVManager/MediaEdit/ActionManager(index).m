@@ -21,6 +21,8 @@
 {
     @synchronized (self) {
         [mediaList_ removeAllObjects];
+        secondsEffectPlayer_ = 0;
+        
         NSAssert(videoBgAction_, @"必须先设置了源背景视频才能进行处理!");
         MediaWithAction * bgMedia = [videoBgAction_ copyItem];
         
@@ -43,7 +45,7 @@
     if(!actions || !sources || actions.count==0 || sources.count==0) return sources;
     NSMutableArray * result = sources;
     for (MediaActionDo * action in actions) {
-        result = [action processAction:result];
+        result = [action processAction:result secondsEffected:secondsEffectPlayer_];
         
         MediaWithAction * item = [result lastObject];
         
@@ -68,7 +70,7 @@
 {
     MediaActionDo * action = [actionList_ lastObject];
     
-    mediaList_ = [action processAction:mediaList_];
+    mediaList_ = [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
     
     durationForTarget_ = 0;
     for (MediaWithAction * action in mediaList_) {
