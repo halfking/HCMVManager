@@ -115,26 +115,29 @@
     {
         CGFloat top = self.view.frame.size.height - 140;
         slow_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [slow_ setFrame:CGRectMake(20, top, 60, 30)];
+        [slow_ setFrame:CGRectMake(10, top, 60, 44)];
         [slow_ setTitle:@"slow" forState:UIControlStateNormal];
         [slow_ setTitle:@"normal" forState:UIControlStateSelected];
         slow_.titleLabel.font = [UIFont systemFontOfSize:14];
         [slow_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        slow_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:slow_];
         
         fast_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [fast_ setFrame:CGRectMake(100, top, 60, 30)];
+        [fast_ setFrame:CGRectMake(85, top, 60, 44)];
         [fast_ setTitle:@"fast" forState:UIControlStateNormal];
         [fast_ setTitle:@"normal" forState:UIControlStateSelected];
         fast_.titleLabel.font = [UIFont systemFontOfSize:14];
         [fast_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        fast_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:fast_];
         
         joinBtn_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [joinBtn_ setFrame:CGRectMake(180, top, 60, 30)];
+        [joinBtn_ setFrame:CGRectMake(150, top, 60, 44)];
         [joinBtn_ setTitle:@"reset" forState:UIControlStateNormal];
         joinBtn_.titleLabel.font = [UIFont systemFontOfSize:14];
         [joinBtn_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        joinBtn_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:joinBtn_];
         
         [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
@@ -142,25 +145,43 @@
         [joinBtn_ addTarget:self action:@selector(reset:) forControlEvents:UIControlEventTouchUpInside];
         
         rate1x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rate1x_ setFrame:CGRectMake(20, top + 40, 60, 30)];
+        [rate1x_ setFrame:CGRectMake(215, top, 60, 44)];
         [rate1x_ setTitle:@"repeat" forState:UIControlStateNormal];
         rate1x_.titleLabel.font = [UIFont systemFontOfSize:14];
         [rate1x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+         rate1x_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:rate1x_];
         rate2x_ = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rate2x_ setFrame:CGRectMake(100, top + 40, 60, 30)];
+        [rate2x_ setFrame:CGRectMake(280, top, 60, 44)];
         [rate2x_ setTitle:@"reverse" forState:UIControlStateNormal];
         [rate2x_ setTitle:@"origin" forState:UIControlStateSelected];
         rate2x_.titleLabel.font = [UIFont systemFontOfSize:14];
         [rate2x_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        rate2x_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:rate2x_];
         [rate1x_ addTarget:self action:@selector(repeat:) forControlEvents:UIControlEventTouchUpInside];
         [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
         
+        top += 46;
+        for (int i = 0; i < 7; i++) {
+            UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+            [btn setFrame:CGRectMake(10 + i * 48, top, 44, 44)];
+            [btn setTitle:[NSString stringWithFormat:@"%d",i] forState:UIControlStateNormal];
+            btn.titleLabel.font = [UIFont systemFontOfSize:14];
+            [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            btn.backgroundColor = [UIColor grayColor];
+            btn.tag = 10000 + i;
+            [btn addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
+            [self.view addSubview:btn];
+        }
+       
+        
         repeatTime_ = kCMTimeZero;
         
         CGFloat playerBottom =  self.view.frame.size.width/16 * 9;
-        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 10 + playerBottom, self.view.frame.size.width -20, top - 20 - playerBottom)];
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 10 + playerBottom,
+                                                                       self.view.frame.size.width -20,
+                                                                       top - 60 - playerBottom)];
         pannel_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:pannel_];
         
@@ -275,6 +296,10 @@
     
 }
 #pragma mark - button events
+- (void) changeFilter:(UIButton *)sender
+{
+    int index = sender.tag - 10000;
+}
 -(void)repeat:(UIButton *)sender
 {
     //    [repeatTimer_ invalidate];
@@ -349,31 +374,6 @@
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
         
-    }
-}
-- (void)subtractMV
-{
-    VideoGenerater * vg = [VideoGenerater new];
-    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-        NSLog(@"progress %f",progress);
-    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-        NSLog(@"playerItem Ready");
-        
-    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-        NSLog(@"generate completed.  %@",[mvUrl path]);
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
-        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-        
-        [self hideIndicatorView];
-        
-    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-        [self hideIndicatorView];
-    }];
-    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10])
-    {
-        [vg generateMVFile:nil retryCount:0];
     }
 }
 -(void)slow:(UIButton *)sender
@@ -676,6 +676,31 @@
         return;
     }
     
+}
+- (void)subtractMV
+{
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+        NSLog(@"progress %f",progress);
+    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+        NSLog(@"playerItem Ready");
+        
+    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+        NSLog(@"generate completed.  %@",[mvUrl path]);
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+        
+        [self hideIndicatorView];
+        
+    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+        [self hideIndicatorView];
+    }];
+    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10])
+    {
+        [vg generateMVFile:nil retryCount:0];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
