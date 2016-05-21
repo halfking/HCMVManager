@@ -89,6 +89,7 @@
     manager_.delegate = self;
     [manager_ removeActions];
     
+//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
     oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
     viewShowed_ = NO;
     [self showIndicatorView];
