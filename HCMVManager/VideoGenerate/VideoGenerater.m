@@ -442,12 +442,12 @@
     joinVideoExporter.shouldOptimizeForNetworkUse = YES;
     joinVideoExporter.videoComposition = _videoComposition;
     joinVideoExporter.audioMix = _audioMixOnce;
-
-//    CGSize renderSize = _videoComposition.renderSize;// [self getRenderSize];
-//    if(renderSize.width==0||renderSize.height==0)
-//    {
-      CGSize  renderSize = [self getRenderSize];
-//    }
+    
+    CGSize renderSize = _videoComposition.renderSize;// [self getRenderSize];
+    if(renderSize.width==0||renderSize.height==0)
+    {
+        renderSize = [self getRenderSize];
+    }
     NSNumber *width =  [NSNumber numberWithFloat:renderSize.width];
     NSNumber *height=  [NSNumber numberWithFloat:renderSize.height];
     
@@ -964,7 +964,6 @@
 
 -(void) generatePlayerItem:(NSArray *)mediaList size:(CGSize)size
 {
-    //    return [self generatePlayItemNew];
     if(isGenerating_)
     {
         NSLog(@"正在生成过程中，不能重入....");
@@ -989,22 +988,27 @@
     {
         totalDuration.value /= rate;
     }
-
-//    size = [self getSizeByOrientation:size];
-    renderSize_ = size;
+    if(!isOverlap)
+    {
+        size = CGSizeZero; //准备从素材中获取
+    }
+    else
+    {
+        size = [self getSizeByOrientation:size];
+    }
     
     lastGenerateKey_ = [self getKeyForMediaList:mediaList];
     
     
     AVMutableVideoComposition *mainComposition;
     AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
-
+    
     NSMutableArray *layers  = [[NSMutableArray alloc] init];
     
     AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
     CMTimeRange range = kCMTimeRangeZero;
     CMTime curTimeCnt = kCMTimeZero;
-      //    NSArray * chooseQueue = [[MediaListModel shareObject]getMediaList];
+    
     if (mediaList && mediaList.count>0) {
         //选择的素材>1
         AVMutableCompositionTrack * imageTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
@@ -1029,6 +1033,7 @@
             {
                 curItem.timeInArray = CMTimeMake(lastTimeValue, totalDuration.timescale);
             }
+            
             CMTime modalOffEtInQueue = [self compsiteOneItem:curItem
                                                        index:i
                                                lastTimeValue:lastTimeValue
@@ -1036,7 +1041,9 @@
                                                   imageTrack:imageTrack
                                                  imagelayers:imageLayerInstruction
                                                   videoTrack:videoTrack
-                                                 videoLayers:videoLayerInstruction rate:rate];
+                                                 videoLayers:videoLayerInstruction
+                                                        rate:rate
+                                                        size:&size];
             
             if(CMTimeCompare(modalOffEtInQueue, kCMTimeZero)==0) continue;
             
@@ -1095,7 +1102,7 @@
     mainComposition.frameDuration = CMTimeMake(1, 30); //30 f/s
     mainComposition.renderSize =  size;//CGSizeMake(640, 480);//
     
-    mixComposition.naturalSize = [self getSizeByOrientation:size];
+    mixComposition.naturalSize = size;//[self getSizeByOrientation:size];
     
     if(self.compositeLyric)
     {
@@ -1408,6 +1415,7 @@
                 videoTrack:(AVMutableCompositionTrack*)videoTrack
                videoLayers:(AVMutableVideoCompositionLayerInstruction*)videoLayerInstruction
                       rate:(CGFloat)rate
+                      size:(CGSize *)size
 {
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
     if(!curAsset || CMTimeGetSeconds(curAsset.duration)<0.01)
@@ -1443,7 +1451,7 @@
         modalInStInQueue.value = round(modalInStInQueue.value/rate +0.5);
         modalOffEtInQueue.value = round(modalOffEtInQueue.value/rate + 0.5);
     }
-
+    
     //单个对像处理
     if(curItem.playRate!=1 && curItem.playRate>0)
     {
@@ -1464,11 +1472,11 @@
     }
     
     //不能超过最后的长度
-//    if(CMTimeGetSeconds(modalOffEtInQueue) > CMTimeGetSeconds(totalDuration))
-//    {
-//        modalOffEtInQueue = totalDuration;// CMTimeMake(totalDuration.value - totalDuration.timescale/10,totalDuration.timescale);
-//        duration = CMTimeSubtract(modalOffEtInQueue, modalInStInQueue);
-//    }
+    //    if(CMTimeGetSeconds(modalOffEtInQueue) > CMTimeGetSeconds(totalDuration))
+    //    {
+    //        modalOffEtInQueue = totalDuration;// CMTimeMake(totalDuration.value - totalDuration.timescale/10,totalDuration.timescale);
+    //        duration = CMTimeSubtract(modalOffEtInQueue, modalInStInQueue);
+    //    }
     
     if(lastTimeValue >= modalOffEtInQueue.value)
     {
@@ -1521,6 +1529,10 @@
                         toDuration: CMTimeMake(duration.value/rate,duration.timescale)];
         
         CGSize  curItemSize = curTrack.naturalSize;
+        if(size && ((*size).width ==0 || (*size).height ==0 ))
+        {
+            *size = curItemSize;
+        }
         
         CMTimeRange drange = CMTimeRangeMake(modalInStInQueue, duration);
         
@@ -1580,7 +1592,11 @@
             NSLog(@"join video:(insert video) %@",[error localizedDescription]);
             return kCMTimeZero;
         }
-//        NSLog(@"track range1 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
+        if(size && ((*size).width ==0 || (*size).height ==0 ))
+        {
+            *size = curTrack.naturalSize;
+        }
+        //        NSLog(@"track range1 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
         if((rate>0 && rate!=1.0)||(curItem.playRate!=1 && curItem.playRate>0))
         {
             CMTime durationScaled = CMTimeMake(duration.value/(rate * curItem.playRate), duration.timescale);
@@ -1588,7 +1604,7 @@
             [videoTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
                             toDuration:durationScaled];
         }
-//        NSLog(@"track range2 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
+        //        NSLog(@"track range2 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
         if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
         {
             [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO]
