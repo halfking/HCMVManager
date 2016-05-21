@@ -22,6 +22,8 @@
 		11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */ = {isa = PBXBuildFile; fileRef = 11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
+		11ABAEA01CF0E63F00E94CD9 /* ActionManagerPannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11ABAEA11CF0E63F00E94CD9 /* ActionManagerPannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */; };
 		11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A681CE384A700A0BE8D /* ActionManager(index).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A691CE384A700A0BE8D /* ActionManager(index).m */; };
 		11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6A1CE384A700A0BE8D /* ActionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -165,6 +167,8 @@
 		11754E531CD7507B00F4DA09 /* HCMVManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HCMVManager.podspec; sourceTree = "<group>"; };
 		11754F8A1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMD_GetUserMTVBySample.h; sourceTree = "<group>"; };
 		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
+		11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
+		11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
 		11DE4A681CE384A700A0BE8D /* ActionManager(index).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(index).h"; sourceTree = "<group>"; };
 		11DE4A691CE384A700A0BE8D /* ActionManager(index).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(index).m"; sourceTree = "<group>"; };
 		11DE4A6A1CE384A700A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
@@ -344,6 +348,8 @@
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
+				11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */,
+				11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */,
 				1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */,
 				1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */,
 				11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */,
@@ -649,6 +655,7 @@
 				1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */,
 				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
+				11ABAEA01CF0E63F00E94CD9 /* ActionManagerPannel.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11DE4AAC1CE4EC2500A0BE8D /* mediaedit_full.h in Headers */,
 				11ED42DE1CC8DF4D00561E33 /* CMD_DeleteMBMTV.h in Headers */,
@@ -845,6 +852,7 @@
 				1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
+				11ABAEA11CF0E63F00E94CD9 /* ActionManagerPannel.m in Sources */,
 				11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */,
 				11ED43781CC9051400561E33 /* WTAVAssetExportSession.m in Sources */,
 				11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */,
