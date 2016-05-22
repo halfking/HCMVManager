@@ -14,7 +14,7 @@
 //#import <hccoren/HCFileManager.h>
 //#import <hcbasesystem/UDManager(Helper).h>
 #import "MediaEditManager.h"
-
+#import "MediaItem.h"
 
 @implementation AudioGenerater
 - (id)init
@@ -300,6 +300,7 @@
     
     return YES;
 }
+
 - (NSString *) scaleAudio:(AVAsset *)asset withRate:(CGFloat)rate beginSeconds:(CGFloat)beginSeconds
                endSeconds:(CGFloat)endSeconds
 {
@@ -385,7 +386,7 @@
         }
         else
         {
-            NSLog(@"join video:(audio) %ld/%ld (%ld)",asset.duration.value,bgScale,(long)asset.duration.timescale);
+            NSLog(@"join video:(audio) %ld/%ld (%ld)",(long)asset.duration.value,(long)bgScale,(long)asset.duration.timescale);
         }
         if(rate >0 && rate!=1.0)
         {

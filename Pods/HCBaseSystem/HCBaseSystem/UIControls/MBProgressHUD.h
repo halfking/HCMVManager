@@ -28,25 +28,25 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol MBProgressHUDDelegate;
+@protocol MBProgressHUDDelegateA;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef enum {
     /** Progress is shown using an UIActivityIndicatorView. This is the default. */
-    MBProgressHUDModeIndeterminate,
+    MBProgressHUDModeIndeterminateA,
     /** Progress is shown using a MBRoundProgressView. */
-	MBProgressHUDModeDeterminate,
+	MBProgressHUDModeDeterminateA,
 	/** Shows a custom view */
-	MBProgressHUDModeCustomView
-} MBProgressHUDMode;
+	MBProgressHUDModeCustomViewA
+} MBProgressHUDModeA;
 
 typedef enum {
     /** Opacity animation */
-    MBProgressHUDAnimationFade,
+    MBProgressHUDAnimationFadeA,
     /** Opacity + scale animation */
-    MBProgressHUDAnimationZoom
-} MBProgressHUDAnimation;
+    MBProgressHUDAnimationZoomA
+} MBProgressHUDAnimationA;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -68,10 +68,10 @@ typedef enum {
  *   indicator view.
  * - If also the detailsLabelText property is set then another label is placed below the first label.
  */
-@interface MBProgressHUD : UIView {
+@interface MBProgressHUDA : UIView {
 	
-	MBProgressHUDMode mode;
-    MBProgressHUDAnimation animationType;
+	MBProgressHUDModeA mode;
+    MBProgressHUDAnimationA animationType;
 	
 	SEL methodForExecution;
 	id targetForExecution;
@@ -105,11 +105,11 @@ typedef enum {
 	float progress;
 	
 #if __has_feature(objc_arc_weak)
-	id<MBProgressHUDDelegate> __weak delegate;
+	id<MBProgressHUDDelegateA> __weak delegate;
 #elif __has_feature(objc_arc)
-	id<MBProgressHUDDelegate> __unsafe_unretained delegate;
+	id<MBProgressHUDDelegateA> __unsafe_unretained delegate;
 #else
-	id<MBProgressHUDDelegate> delegate;
+	id<MBProgressHUDDelegateA> delegate;
 #endif
     NSString *labelText;
 	NSString *detailsLabelText;
@@ -135,7 +135,7 @@ typedef enum {
  *
  * @see hideHUDForView:animated:
  */
-+ (MBProgressHUD *)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;
++ (MBProgressHUDA *)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;
 
 /**
  * Finds a HUD subview and hides it. The counterpart to this method is showHUDAddedTo:animated:.
@@ -183,14 +183,14 @@ typedef enum {
  *
  * @see MBProgressHUDMode
  */
-@property (assign) MBProgressHUDMode mode;
+@property (assign) MBProgressHUDModeA mode;
 
 /**
  * The animation type that should be used when the HUD is shown and hidden. 
  *
  * @see MBProgressHUDAnimation
  */
-@property (assign) MBProgressHUDAnimation animationType;
+@property (assign) MBProgressHUDAnimationA animationType;
 
 /** 
  * The HUD delegate object. If set the delegate will receive hudWasHidden callbacks when the HUD was hidden. The
@@ -198,11 +198,11 @@ typedef enum {
  * object will not be retained.
  */
 #if __has_feature(objc_arc_weak)
-@property (weak) id<MBProgressHUDDelegate> delegate;
+@property (weak) id<MBProgressHUDDelegateA> delegate;
 #elif __has_feature(objc_arc)
-@property (unsafe_unretained) id<MBProgressHUDDelegate> delegate;
+@property (unsafe_unretained) id<MBProgressHUDDelegateA> delegate;
 #else
-@property (assign) id<MBProgressHUDDelegate> delegate;
+@property (assign) id<MBProgressHUDDelegateA> delegate;
 #endif
 
 /** 
@@ -365,14 +365,14 @@ typedef enum {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-@protocol MBProgressHUDDelegate <NSObject>
+@protocol MBProgressHUDDelegateA <NSObject>
 
 @optional
 
 /** 
  * Called after the HUD was fully hidden from the screen. 
  */
-- (void)hudWasHidden:(MBProgressHUD *)hud;
+- (void)hudWasHidden:(MBProgressHUDA *)hud;
 
 /**
  * @deprecated use hudWasHidden: instead
@@ -387,7 +387,7 @@ typedef enum {
 /**
  * A progress view for showing definite progress by filling up a circle (pie chart).
  */
-@interface MBRoundProgressView : UIView {
+@interface MBRoundProgressViewA : UIView {
 @private
     float _progress;
 }

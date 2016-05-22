@@ -6,7 +6,7 @@
 
 #import "MBProgressHUD.h"
 
-@interface MBProgressHUD ()
+@interface MBProgressHUDA ()
 
 - (void)hideUsingAnimation:(BOOL)animated;
 - (void)showUsingAnimation:(BOOL)animated;
@@ -41,7 +41,7 @@
 @end
 
 
-@implementation MBProgressHUD
+@implementation MBProgressHUDA
 
 #pragma mark -
 #pragma mark Accessors
@@ -75,7 +75,7 @@
 
 @synthesize showStarted;
 
-- (void)setMode:(MBProgressHUDMode)newMode {
+- (void)setMode:(MBProgressHUDModeA)newMode {
     // Dont change mode if it wasn't actually changed to prevent flickering
     if (mode && (mode == newMode)) {
         return;
@@ -94,7 +94,7 @@
 	}
 }
 
-- (MBProgressHUDMode)mode {
+- (MBProgressHUDModeA)mode {
 	return mode;
 }
 
@@ -134,7 +134,7 @@
     progress = newProgress;
 	
     // Update display ony if showing the determinate progress view
-    if (mode == MBProgressHUDModeDeterminate) {
+    if (mode == MBProgressHUDModeDeterminateA) {
 		if ([NSThread isMainThread]) {
 			[self updateProgress];
 			[self setNeedsDisplay];
@@ -171,7 +171,7 @@
 }
 
 - (void)updateProgress {
-    [(MBRoundProgressView *)indicator setProgress:progress];
+    [(MBRoundProgressViewA *)indicator setProgress:progress];
 }
 
 - (void)updateIndicators {
@@ -179,14 +179,14 @@
         [indicator removeFromSuperview];
     }
 	
-    if (mode == MBProgressHUDModeDeterminate) {
+    if (mode == MBProgressHUDModeDeterminateA) {
 #if __has_feature(objc_arc)
-        self.indicator = [[MBRoundProgressView alloc] init];
+        self.indicator = [[MBRoundProgressViewA alloc] init];
 #else
-        self.indicator = [[[MBRoundProgressView alloc] init] autorelease];
+        self.indicator = [[[MBRoundProgressViewA alloc] init] autorelease];
 #endif
 }
-    else if (mode == MBProgressHUDModeCustomView && self.customView != nil){
+    else if (mode == MBProgressHUDModeCustomViewA && self.customView != nil){
         self.indicator = self.customView;
     } else {
 #if __has_feature(objc_arc)
@@ -214,8 +214,8 @@
 #pragma mark -
 #pragma mark Class methods
 
-+ (MBProgressHUD *)showHUDAddedTo:(UIView *)view animated:(BOOL)animated {
-	MBProgressHUD *hud = [[MBProgressHUD alloc] initWithView:view];
++ (MBProgressHUDA *)showHUDAddedTo:(UIView *)view animated:(BOOL)animated {
+	MBProgressHUDA *hud = [[MBProgressHUDA alloc] initWithView:view];
 	[view addSubview:hud];
 	[hud show:animated];
 #if __has_feature(objc_arc)
@@ -228,12 +228,12 @@
 + (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated {
 	UIView *viewToRemove = nil;
 	for (UIView *v in [view subviews]) {
-		if ([v isKindOfClass:[MBProgressHUD class]]) {
+		if ([v isKindOfClass:[MBProgressHUDA class]]) {
 			viewToRemove = v;
 		}
 	}
 	if (viewToRemove != nil) {
-		MBProgressHUD *HUD = (MBProgressHUD *)viewToRemove;
+		MBProgressHUDA *HUD = (MBProgressHUDA *)viewToRemove;
 		HUD.removeFromSuperViewOnHide = YES;
 		[HUD hide:animated];
 		return YES;
@@ -280,8 +280,8 @@
     self = [super initWithFrame:frame];
 	if (self) {
         // Set default values for properties
-        self.animationType = MBProgressHUDAnimationFade;
-        self.mode = MBProgressHUDModeIndeterminate;
+        self.animationType = MBProgressHUDAnimationFadeA;
+        self.mode = MBProgressHUDModeIndeterminateA;
         self.labelText = nil;
         self.detailsLabelText = nil;
         self.opacity = 0.8f;
@@ -595,7 +595,7 @@
 
 - (void)showUsingAnimation:(BOOL)animated {
     self.alpha = 0.0f;
-    if (animated && animationType == MBProgressHUDAnimationZoom) {
+    if (animated && animationType == MBProgressHUDAnimationZoomA) {
         self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(1.5f, 1.5f));
     }
     
@@ -605,7 +605,7 @@
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:0.30];
         self.alpha = 1.0f;
-        if (animationType == MBProgressHUDAnimationZoom) {
+        if (animationType == MBProgressHUDAnimationZoomA) {
             self.transform = rotationTransform;
         }
         [UIView commitAnimations];
@@ -624,7 +624,7 @@
         [UIView setAnimationDidStopSelector:@selector(animationFinished: finished: context:)];
         // 0.02 prevents the hud from passing through touches during the animation the hud will get completely hidden
         // in the done method
-        if (animationType == MBProgressHUDAnimationZoom) {
+        if (animationType == MBProgressHUDAnimationZoomA) {
             self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(0.5f, 0.5f));
         }
         self.alpha = 0.02f;
@@ -734,7 +734,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation MBRoundProgressView
+@implementation MBRoundProgressViewA
 
 #pragma mark -
 #pragma mark Accessors

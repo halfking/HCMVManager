@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>GPUImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>HCBaseSystem.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -72,17 +77,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>6610362E50A6DE8BACCA1F2885CD9157</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>957B184B211622EA1154923D1748CED5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BC684A44940D72F53BFED836B9979198</key>
+		<key>A9BEE8BBFAD17C53A66C98EB44C0B787</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E0A565A887CE0A934CCA1F60CD9C1813</key>
+		<key>BC684A44940D72F53BFED836B9979198</key>
 		<dict>
 			<key>primary</key>
 			<true/>
