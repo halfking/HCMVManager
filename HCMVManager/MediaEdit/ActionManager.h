@@ -47,6 +47,9 @@
     MediaItem * videoBg_;    //源视频
     MediaWithAction * videoBgAction_; //暂存的源视频Action
     
+    CGFloat audioVol_;      //背景音乐音量
+    CGFloat videoVol_;      //视频音乐音量
+    
     NSMutableArray * actionList_;   //效果的列表
 //    NSMutableArray * mediaListBG_;  //背景文件列表
     NSMutableArray * mediaList_;    //素材文件列表
@@ -76,6 +79,9 @@
     int currentFilterIndex_;//本次选择的过滤器序号
 }
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
+@property (nonatomic,assign,readonly) CGFloat audioVolume;
+@property (nonatomic,assign,readonly) CGFloat videoVolume;
+
 @property (nonatomic,assign) BOOL needPlayerItem;
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
@@ -130,4 +136,7 @@
 - (BOOL) needGenerateForFilter; //因为滤镜变化需要重新生成的
 - (CGFloat) secondsEffectedByActionsForPlayer;
 - (CGFloat) secondsForTrack:(CGFloat)seconds;
+
+- (void) setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol;
+
 @end

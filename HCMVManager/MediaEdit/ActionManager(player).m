@@ -58,6 +58,10 @@
 {
     player_ = player;
     reversePlayer_ = reversePlayer;
+    
+    [player_ setVideoVolume:videoVol_];
+    [reversePlayer_ setVideoVolume:videoVol_];
+    
     return YES;
 }
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player in:(UIView *)container

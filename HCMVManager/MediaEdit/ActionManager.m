@@ -36,6 +36,8 @@
     BOOL isReverseHasGenerated_;
     
 }
+@synthesize videoVolume = videoVol_;
+@synthesize audioVolume = audioVol_;
 +(id)shareObject
 {
     static dispatch_once_t pred = 0;
@@ -64,6 +66,9 @@
         manager_.delegate = self;
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
+        
+        videoVol_ = 1;
+        audioVol_ = 1;
     }
     return self;
 }
@@ -99,6 +104,12 @@
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
+}
+- (void)setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol
+{
+    audioVol_ = audioVol;
+    videoVol_ = videoVol;
+    NSLog(@"set vol:%.2f videovol:%.2f",audioVol,videoVol);
 }
 - (NSArray *) getMediaList
 {

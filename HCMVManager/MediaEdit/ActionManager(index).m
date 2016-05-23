@@ -76,7 +76,7 @@
     for (MediaWithAction * action in mediaList_) {
         durationForTarget_ += action.durationInPlaying;
     }
-
+    
     return durationForTarget_;
 }
 
@@ -92,12 +92,12 @@
     {
         return NO;
     }
-//    //滤镜处理
-//    if(actionList_.count==0)
-//    {
-//        [self generateMVByFilter:currentFilterIndex_];
-//        return YES;
-//    }
+    //    //滤镜处理
+    //    if(actionList_.count==0)
+    //    {
+    //        [self generateMVByFilter:currentFilterIndex_];
+    //        return YES;
+    //    }
     //动作 处理
     [self saveDraft];
     
@@ -125,37 +125,43 @@
     [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
-    [vg setTimeForAudioMerge:0 end:-1];
+    if(audioBg_)
+    {
+        [vg setTimeForAudioMerge:audioBg_.secondsBegin end:audioBg_.secondsEnd];
+    }
+    else
+    {
+        [vg setTimeForAudioMerge:0 end:-1];
+    }
     
     
-    
-//    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-//        NSLog(@"progress %f",progress);
-//    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-//        NSLog(@"playerItem Ready");
-//        
-//    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-//        NSLog(@"generate completed.  %@",[mvUrl path]);
-//        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
-//        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-//        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-//        
-//        [manager_ setBackMV:filePath begin:0 end:-1];
-//        
-//        [manager_ removeActions];
-//        
-//        [self hideIndicatorView];
-//        
-//    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-//        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-////        [self hideIndicatorView];
-//    }];
+    //    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+    //        NSLog(@"progress %f",progress);
+    //    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+    //        NSLog(@"playerItem Ready");
+    //
+    //    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+    //        NSLog(@"generate completed.  %@",[mvUrl path]);
+    //        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
+    //        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+    //        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+    //
+    //        [manager_ setBackMV:filePath begin:0 end:-1];
+    //
+    //        [manager_ removeActions];
+    //
+    //        [self hideIndicatorView];
+    //
+    //    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+    //        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+    ////        [self hideIndicatorView];
+    //    }];
     
     BOOL ret = [self generateMediaListWithActions:actionMediaList complted:^(NSArray * mediaList)
                 {
                     [vg generatePreviewAsset:mediaList
-                                    bgVolume:1
-                                  singVolume:1
+                                    bgVolume:audioVol_
+                                  singVolume:videoVol_
                                   completion:^(BOOL finished)
                      {
                          [vg generateMVFile:mediaList retryCount:0];
