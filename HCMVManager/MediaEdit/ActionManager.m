@@ -144,11 +144,11 @@
         {
             [resultList addObject:item];
             NSLog(@"%d(%.2f len:%.2f) file:(%.2f--%.2f) rate:%.2f",
-                    (int)action.Action.ActionType,
-                    item.secondsInArray,
-                    item.secondsDurationInArray,
-                    item.secondsBegin,item.secondsEnd,
-                    item.playRate);
+                  (int)action.Action.ActionType,
+                  item.secondsInArray,
+                  item.secondsDurationInArray,
+                  item.secondsBegin,item.secondsEnd,
+                  item.playRate);
         }
     }
     if(complted)
@@ -360,11 +360,11 @@
             item = [MediaActionForNormal new];
             break;
     }
-    [item fetchAsAction:action];
     if(action.MediaActionID<=0)
     {
         action.MediaActionID = [[NSDate date]timeIntervalSince1970];
     }
+    [item fetchAsAction:action];
     return item;
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
@@ -468,11 +468,11 @@
     NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     
     [self ActionManager:self actionChanged:action type:1];
-
+    
     //    [self reindexAllActions];
     
     [self ActionManager:self play:action];
-   
+    
     
     return YES;
 }
@@ -550,19 +550,24 @@
             break;
         }
     }
-     NSLog(@"find media:%@",retItem?@"OK":@"NO");
+    NSLog(@"find media:%@",retItem?@"OK":@"NO");
     return retItem;
 }
-- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action
+- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index
 {
     MediaWithAction * retItem = nil;
+    int pos = 0;
     for (int i = (int)mediaList_.count -1; i>=0; i--) {
         MediaWithAction * item = mediaList_[i];
         if(item.Action.MediaActionID>0 &&
            item.Action.MediaActionID == action.MediaActionID)
         {
-            retItem = item;
-            break;
+            if(pos==index)
+            {
+                retItem = item;
+                break;
+            }
+            pos ++;
         }
     }
     NSLog(@"find media:%@",retItem?@"OK":@"NO");

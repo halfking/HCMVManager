@@ -274,7 +274,7 @@
     MediaWithAction * mediaToPlay = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray - action.secondsBeginAdjust];
     if(!mediaToPlay)
     {
-        mediaToPlay = [self findMediaWithAction:action];
+        mediaToPlay = [self findMediaWithAction:action index:0];
     }
     if(!mediaToPlay)
     {
