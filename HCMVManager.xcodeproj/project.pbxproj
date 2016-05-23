@@ -7,6 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11200A321CF2FC7C007E8B20 /* ActionManager(player).h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A301CF2FC7C007E8B20 /* ActionManager(player).h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A331CF2FC7C007E8B20 /* ActionManager(player).m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A311CF2FC7C007E8B20 /* ActionManager(player).m */; };
+		11200A4F1CF2FCAA007E8B20 /* CLFiltersClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A361CF2FCAA007E8B20 /* CLFiltersClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A501CF2FCAA007E8B20 /* CLFiltersClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A371CF2FCAA007E8B20 /* CLFiltersClass.m */; };
+		11200A511CF2FCAA007E8B20 /* CLVideoAddFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A381CF2FCAA007E8B20 /* CLVideoAddFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A521CF2FCAA007E8B20 /* CLVideoAddFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A391CF2FCAA007E8B20 /* CLVideoAddFilter.m */; };
+		11200A531CF2FCAA007E8B20 /* filterImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3A1CF2FCAA007E8B20 /* filterImage.png */; };
+		11200A541CF2FCAA007E8B20 /* lookup-Effect-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3C1CF2FCAA007E8B20 /* lookup-Effect-1.png */; };
+		11200A551CF2FCAA007E8B20 /* lookup_amatorka.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3D1CF2FCAA007E8B20 /* lookup_amatorka.png */; };
+		11200A561CF2FCAA007E8B20 /* lookup_LOMO.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3E1CF2FCAA007E8B20 /* lookup_LOMO.png */; };
+		11200A571CF2FCAA007E8B20 /* lookup_miss_etikate.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3F1CF2FCAA007E8B20 /* lookup_miss_etikate.png */; };
+		11200A581CF2FCAA007E8B20 /* lookup_soft_elegance_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A401CF2FCAA007E8B20 /* lookup_soft_elegance_2.png */; };
+		11200A591CF2FCAA007E8B20 /* lookup_黑白.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A411CF2FCAA007E8B20 /* lookup_黑白.png */; };
+		11200A5A1CF2FCAA007E8B20 /* TBAmatorkaFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A421CF2FCAA007E8B20 /* TBAmatorkaFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A5B1CF2FCAA007E8B20 /* TBAmatorkaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A431CF2FCAA007E8B20 /* TBAmatorkaFilter.m */; };
+		11200A5C1CF2FCAA007E8B20 /* TBBlackWhiteFiter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A441CF2FCAA007E8B20 /* TBBlackWhiteFiter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A5D1CF2FCAA007E8B20 /* TBBlackWhiteFiter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A451CF2FCAA007E8B20 /* TBBlackWhiteFiter.m */; };
+		11200A5E1CF2FCAA007E8B20 /* TBFreeFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A461CF2FCAA007E8B20 /* TBFreeFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A5F1CF2FCAA007E8B20 /* TBFreeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A471CF2FCAA007E8B20 /* TBFreeFilter.m */; };
+		11200A601CF2FCAA007E8B20 /* TBLOMOFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A481CF2FCAA007E8B20 /* TBLOMOFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A611CF2FCAA007E8B20 /* TBLOMOFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A491CF2FCAA007E8B20 /* TBLOMOFilter.m */; };
+		11200A621CF2FCAA007E8B20 /* TBSexyFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A4A1CF2FCAA007E8B20 /* TBSexyFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A631CF2FCAA007E8B20 /* TBSexyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A4B1CF2FCAA007E8B20 /* TBSexyFilter.m */; };
+		11200A641CF2FCAA007E8B20 /* TBSoftEleganceFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 11200A4C1CF2FCAA007E8B20 /* TBSoftEleganceFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11200A651CF2FCAA007E8B20 /* TBSoftEleganceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A4D1CF2FCAA007E8B20 /* TBSoftEleganceFilter.m */; };
+		11200A661CF2FCAA007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */; };
 		1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */; };
 		114DE5F31CC9C87E004BE152 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F21CC9C87E004BE152 /* QuartzCore.framework */; };
@@ -153,6 +179,32 @@
 
 /* Begin PBXFileReference section */
 		101D20BEA4571239EE8AC114 /* Pods-HCMVManagerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTests/Pods-HCMVManagerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		11200A301CF2FC7C007E8B20 /* ActionManager(player).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(player).h"; sourceTree = "<group>"; };
+		11200A311CF2FC7C007E8B20 /* ActionManager(player).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(player).m"; sourceTree = "<group>"; };
+		11200A361CF2FCAA007E8B20 /* CLFiltersClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLFiltersClass.h; sourceTree = "<group>"; };
+		11200A371CF2FCAA007E8B20 /* CLFiltersClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLFiltersClass.m; sourceTree = "<group>"; };
+		11200A381CF2FCAA007E8B20 /* CLVideoAddFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLVideoAddFilter.h; sourceTree = "<group>"; };
+		11200A391CF2FCAA007E8B20 /* CLVideoAddFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLVideoAddFilter.m; sourceTree = "<group>"; };
+		11200A3A1CF2FCAA007E8B20 /* filterImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filterImage.png; sourceTree = "<group>"; };
+		11200A3C1CF2FCAA007E8B20 /* lookup-Effect-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lookup-Effect-1.png"; sourceTree = "<group>"; };
+		11200A3D1CF2FCAA007E8B20 /* lookup_amatorka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_amatorka.png; sourceTree = "<group>"; };
+		11200A3E1CF2FCAA007E8B20 /* lookup_LOMO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_LOMO.png; sourceTree = "<group>"; };
+		11200A3F1CF2FCAA007E8B20 /* lookup_miss_etikate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_miss_etikate.png; sourceTree = "<group>"; };
+		11200A401CF2FCAA007E8B20 /* lookup_soft_elegance_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_soft_elegance_2.png; sourceTree = "<group>"; };
+		11200A411CF2FCAA007E8B20 /* lookup_黑白.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lookup_黑白.png"; sourceTree = "<group>"; };
+		11200A421CF2FCAA007E8B20 /* TBAmatorkaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBAmatorkaFilter.h; sourceTree = "<group>"; };
+		11200A431CF2FCAA007E8B20 /* TBAmatorkaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBAmatorkaFilter.m; sourceTree = "<group>"; };
+		11200A441CF2FCAA007E8B20 /* TBBlackWhiteFiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBBlackWhiteFiter.h; sourceTree = "<group>"; };
+		11200A451CF2FCAA007E8B20 /* TBBlackWhiteFiter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBBlackWhiteFiter.m; sourceTree = "<group>"; };
+		11200A461CF2FCAA007E8B20 /* TBFreeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBFreeFilter.h; sourceTree = "<group>"; };
+		11200A471CF2FCAA007E8B20 /* TBFreeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBFreeFilter.m; sourceTree = "<group>"; };
+		11200A481CF2FCAA007E8B20 /* TBLOMOFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBLOMOFilter.h; sourceTree = "<group>"; };
+		11200A491CF2FCAA007E8B20 /* TBLOMOFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBLOMOFilter.m; sourceTree = "<group>"; };
+		11200A4A1CF2FCAA007E8B20 /* TBSexyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBSexyFilter.h; sourceTree = "<group>"; };
+		11200A4B1CF2FCAA007E8B20 /* TBSexyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBSexyFilter.m; sourceTree = "<group>"; };
+		11200A4C1CF2FCAA007E8B20 /* TBSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBSoftEleganceFilter.h; sourceTree = "<group>"; };
+		11200A4D1CF2FCAA007E8B20 /* TBSoftEleganceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBSoftEleganceFilter.m; sourceTree = "<group>"; };
+		11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter_0@2x.png"; sourceTree = "<group>"; };
 		1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
 		1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
 		114DE5F21CC9C87E004BE152 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -333,6 +385,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11200A341CF2FCAA007E8B20 /* GPUFilter */ = {
+			isa = PBXGroup;
+			children = (
+				11200A351CF2FCAA007E8B20 /* CLDeal */,
+				11200A3B1CF2FCAA007E8B20 /* CLFiters */,
+				11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */,
+			);
+			path = GPUFilter;
+			sourceTree = "<group>";
+		};
+		11200A351CF2FCAA007E8B20 /* CLDeal */ = {
+			isa = PBXGroup;
+			children = (
+				11200A361CF2FCAA007E8B20 /* CLFiltersClass.h */,
+				11200A371CF2FCAA007E8B20 /* CLFiltersClass.m */,
+				11200A381CF2FCAA007E8B20 /* CLVideoAddFilter.h */,
+				11200A391CF2FCAA007E8B20 /* CLVideoAddFilter.m */,
+				11200A3A1CF2FCAA007E8B20 /* filterImage.png */,
+			);
+			path = CLDeal;
+			sourceTree = "<group>";
+		};
+		11200A3B1CF2FCAA007E8B20 /* CLFiters */ = {
+			isa = PBXGroup;
+			children = (
+				11200A3C1CF2FCAA007E8B20 /* lookup-Effect-1.png */,
+				11200A3D1CF2FCAA007E8B20 /* lookup_amatorka.png */,
+				11200A3E1CF2FCAA007E8B20 /* lookup_LOMO.png */,
+				11200A3F1CF2FCAA007E8B20 /* lookup_miss_etikate.png */,
+				11200A401CF2FCAA007E8B20 /* lookup_soft_elegance_2.png */,
+				11200A411CF2FCAA007E8B20 /* lookup_黑白.png */,
+				11200A421CF2FCAA007E8B20 /* TBAmatorkaFilter.h */,
+				11200A431CF2FCAA007E8B20 /* TBAmatorkaFilter.m */,
+				11200A441CF2FCAA007E8B20 /* TBBlackWhiteFiter.h */,
+				11200A451CF2FCAA007E8B20 /* TBBlackWhiteFiter.m */,
+				11200A461CF2FCAA007E8B20 /* TBFreeFilter.h */,
+				11200A471CF2FCAA007E8B20 /* TBFreeFilter.m */,
+				11200A481CF2FCAA007E8B20 /* TBLOMOFilter.h */,
+				11200A491CF2FCAA007E8B20 /* TBLOMOFilter.m */,
+				11200A4A1CF2FCAA007E8B20 /* TBSexyFilter.h */,
+				11200A4B1CF2FCAA007E8B20 /* TBSexyFilter.m */,
+				11200A4C1CF2FCAA007E8B20 /* TBSoftEleganceFilter.h */,
+				11200A4D1CF2FCAA007E8B20 /* TBSoftEleganceFilter.m */,
+			);
+			path = CLFiters;
+			sourceTree = "<group>";
+		};
 		115EE2611CEB2CA300768602 /* AVReverse */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,12 +447,22 @@
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
-				11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */,
-				11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */,
 				1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */,
 				1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */,
 				11DE4A8D1CE4852500A0BE8D /* MediaActionDo.h */,
 				11DE4A8E1CE4852500A0BE8D /* MediaActionDo.m */,
+				11DE4A6E1CE384A700A0BE8D /* MediaAction.h */,
+				11DE4A6F1CE384A700A0BE8D /* MediaAction.m */,
+				11DE4A6A1CE384A700A0BE8D /* ActionManager.h */,
+				11DE4A6B1CE384A700A0BE8D /* ActionManager.m */,
+				11200A301CF2FC7C007E8B20 /* ActionManager(player).h */,
+				11200A311CF2FC7C007E8B20 /* ActionManager(player).m */,
+				11DE4A681CE384A700A0BE8D /* ActionManager(index).h */,
+				11DE4A691CE384A700A0BE8D /* ActionManager(index).m */,
+				11DE4A6C1CE384A700A0BE8D /* ActionProcess.h */,
+				11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */,
+				11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */,
+				11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */,
 				11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */,
 				11DE4A901CE4852500A0BE8D /* MediaActionForFast.m */,
 				11DE4A911CE4852500A0BE8D /* MediaActionForNormal.h */,
@@ -366,14 +475,6 @@
 				11DE4A981CE4852500A0BE8D /* MediaActionForSlow.m */,
 				11DE4A991CE4852500A0BE8D /* MediaWithAction.h */,
 				11DE4A9A1CE4852500A0BE8D /* MediaWithAction.m */,
-				11DE4A681CE384A700A0BE8D /* ActionManager(index).h */,
-				11DE4A691CE384A700A0BE8D /* ActionManager(index).m */,
-				11DE4A6A1CE384A700A0BE8D /* ActionManager.h */,
-				11DE4A6B1CE384A700A0BE8D /* ActionManager.m */,
-				11DE4A6C1CE384A700A0BE8D /* ActionProcess.h */,
-				11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */,
-				11DE4A6E1CE384A700A0BE8D /* MediaAction.h */,
-				11DE4A6F1CE384A700A0BE8D /* MediaAction.m */,
 			);
 			path = MediaEdit;
 			sourceTree = "<group>";
@@ -403,6 +504,7 @@
 		11ED40531CC6952B00561E33 /* HCMVManager */ = {
 			isa = PBXGroup;
 			children = (
+				11200A341CF2FCAA007E8B20 /* GPUFilter */,
 				11DE4A671CE384A700A0BE8D /* MediaEdit */,
 				11ED43151CC8E2D200561E33 /* Utils */,
 				11ED430C1CC8E2C800561E33 /* MTVDB */,
@@ -650,6 +752,15 @@
 				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
 				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
 				11ED42EE1CC8DF4D00561E33 /* MTVFile.h in Headers */,
+				11200A5E1CF2FCAA007E8B20 /* TBFreeFilter.h in Headers */,
+				11200A321CF2FC7C007E8B20 /* ActionManager(player).h in Headers */,
+				11200A601CF2FCAA007E8B20 /* TBLOMOFilter.h in Headers */,
+				11200A4F1CF2FCAA007E8B20 /* CLFiltersClass.h in Headers */,
+				11200A621CF2FCAA007E8B20 /* TBSexyFilter.h in Headers */,
+				11200A5C1CF2FCAA007E8B20 /* TBBlackWhiteFiter.h in Headers */,
+				11200A511CF2FCAA007E8B20 /* CLVideoAddFilter.h in Headers */,
+				11200A641CF2FCAA007E8B20 /* TBSoftEleganceFilter.h in Headers */,
+				11200A5A1CF2FCAA007E8B20 /* TBAmatorkaFilter.h in Headers */,
 				115EE2671CEB2CA300768602 /* AVAssetReverseSession.h in Headers */,
 				115EE2691CEB2CA300768602 /* AVAssetToolsConstants.h in Headers */,
 				1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */,
@@ -746,8 +857,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11200A561CF2FCAA007E8B20 /* lookup_LOMO.png in Resources */,
+				11200A551CF2FCAA007E8B20 /* lookup_amatorka.png in Resources */,
+				11200A541CF2FCAA007E8B20 /* lookup-Effect-1.png in Resources */,
+				11200A531CF2FCAA007E8B20 /* filterImage.png in Resources */,
 				11754E541CD7507B00F4DA09 /* HCMVManager.podspec in Resources */,
+				11200A661CF2FCAA007E8B20 /* filter_0@2x.png in Resources */,
 				11FDE7AE1CD539CE00090925 /* Podfile in Resources */,
+				11200A591CF2FCAA007E8B20 /* lookup_黑白.png in Resources */,
+				11200A581CF2FCAA007E8B20 /* lookup_soft_elegance_2.png in Resources */,
+				11200A571CF2FCAA007E8B20 /* lookup_miss_etikate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -847,17 +966,21 @@
 				11DE4AA01CE4852500A0BE8D /* MediaActionForNormal.m in Sources */,
 				11ED42EB1CC8DF4D00561E33 /* MBMTV.m in Sources */,
 				11ED42E31CC8DF4D00561E33 /* CMD_DeleteSingleUserMaterial.m in Sources */,
+				11200A631CF2FCAA007E8B20 /* TBSexyFilter.m in Sources */,
 				11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */,
 				11ED42FD1CC8DF4D00561E33 /* PlayRecord.m in Sources */,
 				1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
+				11200A5D1CF2FCAA007E8B20 /* TBBlackWhiteFiter.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
 				11ABAEA11CF0E63F00E94CD9 /* ActionManagerPannel.m in Sources */,
 				11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */,
 				11ED43781CC9051400561E33 /* WTAVAssetExportSession.m in Sources */,
 				11754F8D1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */,
 				11ED42DF1CC8DF4D00561E33 /* CMD_DeleteMBMTV.m in Sources */,
+				11200A5F1CF2FCAA007E8B20 /* TBFreeFilter.m in Sources */,
 				11ED42DD1CC8DF4D00561E33 /* CMD_CreateMTV.m in Sources */,
+				11200A651CF2FCAA007E8B20 /* TBSoftEleganceFilter.m in Sources */,
 				11ED431D1CC8E2D200561E33 /* VDCManager(MTV).m in Sources */,
 				11ED42E91CC8DF4D00561E33 /* Material.m in Sources */,
 				115EE26A1CEB2CA300768602 /* AVAssetToolsConstants.m in Sources */,
@@ -865,13 +988,16 @@
 				11DE4AA21CE4852500A0BE8D /* MediaActionForRAP.m in Sources */,
 				11ED42E71CC8DF4D00561E33 /* CMD_UploadMTV.m in Sources */,
 				11ED43701CC903EB00561E33 /* LyricLayerAnimation.m in Sources */,
+				11200A521CF2FCAA007E8B20 /* CLVideoAddFilter.m in Sources */,
 				11ED435C1CC9002700561E33 /* MediaItem.m in Sources */,
 				115EE2681CEB2CA300768602 /* AVAssetReverseSession.m in Sources */,
 				11DE4AA41CE4852500A0BE8D /* MediaActionForReverse.m in Sources */,
 				11ED43471CC9001C00561E33 /* MediaListModel.m in Sources */,
 				11ED42F71CC8DF4D00561E33 /* Musician.m in Sources */,
 				11DE4A9C1CE4852500A0BE8D /* MediaActionDo.m in Sources */,
+				11200A5B1CF2FCAA007E8B20 /* TBAmatorkaFilter.m in Sources */,
 				11ED43631CC9003300561E33 /* ReportInfo.m in Sources */,
+				11200A331CF2FC7C007E8B20 /* ActionManager(player).m in Sources */,
 				11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */,
 				11ED42F51CC8DF4D00561E33 /* Music.m in Sources */,
 				11ED42ED1CC8DF4D00561E33 /* MTV.m in Sources */,
@@ -883,6 +1009,7 @@
 				11ED436E1CC903EB00561E33 /* LyricItem.m in Sources */,
 				11ED42E51CC8DF4D00561E33 /* CMD_UploadMBMTV.m in Sources */,
 				11ED43451CC9001C00561E33 /* ImageToVideo.m in Sources */,
+				11200A501CF2FCAA007E8B20 /* CLFiltersClass.m in Sources */,
 				11DE4A9E1CE4852500A0BE8D /* MediaActionForFast.m in Sources */,
 				11ED42FB1CC8DF4D00561E33 /* PageTag.m in Sources */,
 				11DE4A751CE384A700A0BE8D /* ActionProcess.m in Sources */,
@@ -892,6 +1019,7 @@
 				11ED42FF1CC8DF4D00561E33 /* UploadRecord.m in Sources */,
 				11ED42EF1CC8DF4D00561E33 /* MTVFile.m in Sources */,
 				11ED43491CC9001C00561E33 /* VideoGenerater.m in Sources */,
+				11200A611CF2FCAA007E8B20 /* TBLOMOFilter.m in Sources */,
 				11ED431B1CC8E2D200561E33 /* UDManager(MTV).m in Sources */,
 				11ED43141CC8E2C800561E33 /* MaibaTables.m in Sources */,
 				11ED42F11CC8DF4D00561E33 /* MTVLocal.m in Sources */,

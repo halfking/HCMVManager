@@ -50,6 +50,10 @@
             @{@"title":@"老派",@"index":@(7)},
             nil];
 }
+- (int) getCurrentFilterIndex
+{
+    return currentFilterIndex_;
+}
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer
 {
     player_ = player;
@@ -67,6 +71,7 @@
        NSLog(@"not found player.. initPlayer pls.");
        return NO;
    }
+    currentFilterIndex_ = 0;
     if(!container)
     {
         container = player_.superview;
