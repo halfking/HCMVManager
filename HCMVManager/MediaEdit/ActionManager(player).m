@@ -272,8 +272,10 @@
     }
 
     MediaWithAction * mediaToPlay = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray - action.secondsBeginAdjust];
-
-    
+    if(!mediaToPlay)
+    {
+        mediaToPlay = [self findMediaWithAction:action];
+    }
     if(!mediaToPlay)
     {
         [self.delegate ActionManager:self play:nil];

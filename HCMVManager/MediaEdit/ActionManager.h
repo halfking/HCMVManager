@@ -116,6 +116,7 @@
 //注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (MediaWithAction *)findMediaItemAt:(CGFloat)seconds;
 
+- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action;
 //注意此时的posSeconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (BOOL) removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds;

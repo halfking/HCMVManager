@@ -361,6 +361,10 @@
             break;
     }
     [item fetchAsAction:action];
+    if(action.MediaActionID<=0)
+    {
+        action.MediaActionID = [[NSDate date]timeIntervalSince1970];
+    }
     return item;
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
@@ -547,6 +551,21 @@
         }
     }
      NSLog(@"find media:%@",retItem?@"OK":@"NO");
+    return retItem;
+}
+- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action
+{
+    MediaWithAction * retItem = nil;
+    for (int i = (int)mediaList_.count -1; i>=0; i--) {
+        MediaWithAction * item = mediaList_[i];
+        if(item.Action.MediaActionID>0 &&
+           item.Action.MediaActionID == action.MediaActionID)
+        {
+            retItem = item;
+            break;
+        }
+    }
+    NSLog(@"find media:%@",retItem?@"OK":@"NO");
     return retItem;
 }
 - (BOOL)removeActionItem:(MediaAction *)action
