@@ -23,12 +23,6 @@
 		11200A1D1CF2B14C007E8B20 /* TBSexyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A0D1CF2B14C007E8B20 /* TBSexyFilter.m */; };
 		11200A1E1CF2B14C007E8B20 /* TBSoftEleganceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A0F1CF2B14C007E8B20 /* TBSoftEleganceFilter.m */; };
 		11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */; };
-		11200A251CF2E266007E8B20 /* lanleft.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A211CF2E266007E8B20 /* lanleft.MOV */; };
-		11200A261CF2E266007E8B20 /* lanright.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A221CF2E266007E8B20 /* lanright.MOV */; };
-		11200A271CF2E266007E8B20 /* up.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A231CF2E266007E8B20 /* up.MOV */; };
-		11200A281CF2E266007E8B20 /* upset.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A241CF2E266007E8B20 /* upset.MOV */; };
-		11200A2B1CF2E5E9007E8B20 /* front_lanright.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A291CF2E5E8007E8B20 /* front_lanright.MOV */; };
-		11200A2C1CF2E5E9007E8B20 /* front_up.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A2A1CF2E5E9007E8B20 /* front_up.MOV */; };
 		11200A2F1CF2E829007E8B20 /* ActionManager(player).m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A2E1CF2E829007E8B20 /* ActionManager(player).m */; };
 		1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2111CEB8549006BB441 /* HCPlayerSimple.m */; };
 		115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */; };
@@ -124,12 +118,6 @@
 		11200A0E1CF2B14C007E8B20 /* TBSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBSoftEleganceFilter.h; sourceTree = "<group>"; };
 		11200A0F1CF2B14C007E8B20 /* TBSoftEleganceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBSoftEleganceFilter.m; sourceTree = "<group>"; };
 		11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter_0@2x.png"; sourceTree = "<group>"; };
-		11200A211CF2E266007E8B20 /* lanleft.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = lanleft.MOV; sourceTree = "<group>"; };
-		11200A221CF2E266007E8B20 /* lanright.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = lanright.MOV; sourceTree = "<group>"; };
-		11200A231CF2E266007E8B20 /* up.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = up.MOV; sourceTree = "<group>"; };
-		11200A241CF2E266007E8B20 /* upset.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = upset.MOV; sourceTree = "<group>"; };
-		11200A291CF2E5E8007E8B20 /* front_lanright.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = front_lanright.MOV; sourceTree = "<group>"; };
-		11200A2A1CF2E5E9007E8B20 /* front_up.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = front_up.MOV; sourceTree = "<group>"; };
 		11200A2D1CF2E829007E8B20 /* ActionManager(player).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(player).h"; sourceTree = "<group>"; };
 		11200A2E1CF2E829007E8B20 /* ActionManager(player).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(player).m"; sourceTree = "<group>"; };
 		1122A2101CEB8549006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
@@ -377,12 +365,6 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				11200A291CF2E5E8007E8B20 /* front_lanright.MOV */,
-				11200A2A1CF2E5E9007E8B20 /* front_up.MOV */,
-				11200A211CF2E266007E8B20 /* lanleft.MOV */,
-				11200A221CF2E266007E8B20 /* lanright.MOV */,
-				11200A231CF2E266007E8B20 /* up.MOV */,
-				11200A241CF2E266007E8B20 /* upset.MOV */,
 				11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */,
 				11ABAE971CEEE84000E94CD9 /* test3.MOV */,
 				118CE8691CE1AF8D00290641 /* main.m */,
@@ -652,22 +634,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11200A281CF2E266007E8B20 /* upset.MOV in Resources */,
 				11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */,
-				11200A251CF2E266007E8B20 /* lanleft.MOV in Resources */,
-				11200A2B1CF2E5E9007E8B20 /* front_lanright.MOV in Resources */,
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
-				11200A261CF2E266007E8B20 /* lanright.MOV in Resources */,
 				11200A151CF2B14C007E8B20 /* lookup_LOMO.png in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
 				11200A121CF2B14C007E8B20 /* filterImage.png in Resources */,
 				11200A161CF2B14C007E8B20 /* lookup_miss_etikate.png in Resources */,
-				11200A271CF2E266007E8B20 /* up.MOV in Resources */,
 				11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */,
 				11200A171CF2B14C007E8B20 /* lookup_soft_elegance_2.png in Resources */,
 				11200A141CF2B14C007E8B20 /* lookup_amatorka.png in Resources */,
-				11200A2C1CF2E5E9007E8B20 /* front_up.MOV in Resources */,
 				11200A181CF2B14C007E8B20 /* lookup_黑白.png in Resources */,
 				11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,

@@ -105,14 +105,14 @@
     [manager_ removeActions];
     
 //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
 //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
 //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
 //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
 //        oPath_ = [[NSBundle mainBundle]pathForResource:@"lanright" ofType:@"MOV"];
     
 //   oPath_ = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
-        oPath_ = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
+//        oPath_ = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
     
     viewShowed_ = NO;
     [self showIndicatorView];
