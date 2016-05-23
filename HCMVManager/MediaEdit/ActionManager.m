@@ -147,7 +147,7 @@
     return YES;
 }
 #pragma mark - action list manager
-- (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
+- (BOOL) checkIsNeedChangeBG:(NSString *)filePath
 {
     if(isReverseHasGenerated_ && videoBg_ )
     {
@@ -158,29 +158,15 @@
             {
                 [self.delegate ActionManager:self reverseGenerated:reverseBG_];
             }
-            return YES;
+            return NO;
         }
         isReverseHasGenerated_ = NO;
     }
-    if(isReverseGenerating_) return NO;
-    isReverseGenerating_ = YES;
-    
-    //设置正向视频
-    {
-        PP_RELEASE(videoBg_);
-        videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
-        if(beginSeconds>0 && beginSeconds < videoBg_.secondsDuration)
-        {
-            videoBg_.begin = CMTimeMakeWithSeconds(beginSeconds,DEFAULT_TIMESCALE);
-        }
-        if(endSeconds >0 && endSeconds < videoBg_.secondsDuration)
-        {
-            videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
-        }
-        videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
-        
-        PP_RELEASE(videoBgAction_);
-    }
+    return YES;
+}
+- (BOOL)generateReverseMV:(NSString*)filePath
+{
+    if(!filePath) return NO;
     //生成反向的视频
     {
         if(reverseBG_)
@@ -210,6 +196,33 @@
                          isReverseGenerating_ = NO;
                      }];
     }
+    return YES;
+}
+- (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
+{
+    if(![self checkIsNeedChangeBG:filePath]) return NO;
+    
+    if(isReverseGenerating_) return NO;
+    isReverseGenerating_ = YES;
+    
+    //设置正向视频
+    {
+        PP_RELEASE(videoBg_);
+        videoBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
+        if(beginSeconds>0 && beginSeconds < videoBg_.secondsDuration)
+        {
+            videoBg_.begin = CMTimeMakeWithSeconds(beginSeconds,DEFAULT_TIMESCALE);
+        }
+        if(endSeconds >0 && endSeconds < videoBg_.secondsDuration)
+        {
+            videoBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
+        }
+        videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
+        
+        PP_RELEASE(videoBgAction_);
+    }
+    //生成反向的视频
+    [self generateReverseMV:filePath];
     
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
@@ -226,6 +239,41 @@
     [self reindexAllActions];
     return YES;
 }
+- (BOOL)setBackMV:(MediaItem *)bgMedia
+{
+    if(!bgMedia) return NO;
+    if(![self checkIsNeedChangeBG:bgMedia.filePath]) return NO;
+    
+    if(isReverseGenerating_) return NO;
+    isReverseGenerating_ = YES;
+    
+    //设置正向视频
+    {
+        PP_RELEASE(videoBg_);
+        videoBg_ = [bgMedia copyItem];
+        videoBg_.timeInArray = CMTimeMakeWithSeconds(0, DEFAULT_TIMESCALE);
+        
+        PP_RELEASE(videoBgAction_);
+    }
+    //生成反向的视频
+    [self generateReverseMV:videoBg_.filePath];
+    
+    MediaActionForNormal * action =[MediaActionForNormal new];
+    action.ActionType = 0;
+    action.MediaActionID = 0;
+    action.Rate = 1;
+    action.ReverseSeconds = 0;
+    action.DurationInSeconds = -1;
+    action.IsFilter = NO;
+    action.IsMutex = NO;
+    action.Media = videoBg_;
+    
+    videoBgAction_ = [action toMediaWithAction:nil];
+    
+    [self reindexAllActions];
+    return YES;
+}
+
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
     PP_RELEASE(audioBg_);
@@ -238,6 +286,13 @@
     {
         audioBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
     }
+    return YES;
+}
+- (BOOL)setBackAudio:(MediaItem *)audioItem
+{
+    PP_RELEASE(audioBg_);
+    audioBg_ = [audioItem copyItem];
+    audioBg_.timeInArray = videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
     return YES;
 }
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)seconds

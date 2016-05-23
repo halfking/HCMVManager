@@ -101,4 +101,5 @@
 
 #pragma mark - some functions
 - (MediaItemCore *)copyAsCore;
+- (MediaItem *) copyItem;
 @end

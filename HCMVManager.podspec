@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "0.3.3"
+  s.version      = "0.3.5"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
@@ -54,6 +54,8 @@ s.xcconfig = { "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES" => "YES",
 s.dependency "HCMinizip"
 s.dependency "hccoren"
 s.dependency "HCBaseSystem"
+s.dependency "GPUImage"
+
 #s.subspec 'lame' do |spec|
 #    spec.source_files = ['Lib/*.h']
 #    spec.public_header_files = ['Lib/*.h']

@@ -81,8 +81,11 @@
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+- (BOOL) setBackMV:(MediaItem *)bgMedia;
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+- (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
+- (BOOL)generateReverseMV:(NSString*)filePath;
 - (BOOL) canAddAction:(MediaAction *)action seconds:(CGFloat)seconds;
 
 //将播放器的时间转成素材轨的时间

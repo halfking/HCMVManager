@@ -204,5 +204,46 @@
     coreItem.fileNameGenerated = self.fileNameGenerated;
     return PP_AUTORELEASE(coreItem);
 }
-
+- (MediaItem *)copyItem
+{
+    MediaItem * item = [[MediaItem alloc]init];
+    item.fileName = self.fileName;
+    item.title = self.title;
+    item.cover = self.cover;
+    item.url = self.url;
+    item.key = self.key;
+    item.duration = self.duration;
+    item.begin = self.begin;
+    item.end = self.end;
+    item.originType = self.originType;
+    item.cutInMode = self.cutInMode;
+    item.cutOutMode = self.cutOutMode;
+    item.cutInTime = self.cutInTime;
+    item.cutOutTime = self.cutOutTime;
+    item.playRate = self.playRate;
+    item.timeInArray = self.timeInArray;
+    item.renderSize = self.renderSize;
+    item.fileNameGenerated = self.fileNameGenerated;
+    
+    item.rect = self.rect;
+    item.contentView = self.contentView;
+    item.snapView = self.snapView;
+    item.lastFrame = self.lastFrame;
+    item.targetFrame = self.targetFrame;
+    item.widthForCollapse = self.widthForCollapse;
+    item.pointForRoot = self.pointForRoot;
+    item.changeType = self.changeType;
+    item.tagID = self.tagID;
+    item.videoThumnateFilePaths = self.videoThumnateFilePaths;
+    item.isGenerating = self.isGenerating;
+    item.videoThumnateFilesCount = self.videoThumnateFilesCount;
+   
+    item.orientation = self.orientation;
+    item.alAsset = self.alAsset;
+    item.status = self.status;
+    item.lastGenerateInterval = self.lastGenerateInterval;
+    item.generateProgress = self.generateProgress;
+    
+    return PP_AUTORELEASE(item);
+}
 @end

@@ -90,12 +90,12 @@
     
     ActionManagerPannel * pannel_;
     
-    NSArray * titleArray_;
-    NSMutableArray * filterArray_;
-    GPUImageView *filterView_;
-    GPUImageMovie *movieFile_;
-    GPUImageOutput<GPUImageInput> *filters_;
-    GPUImageMovieWriter *videoWriter_;
+//    NSArray * titleArray_;
+//    NSMutableArray * filterArray_;
+//    GPUImageView *filterView_;
+//    GPUImageMovie *movieFile_;
+//    GPUImageOutput<GPUImageInput> *filters_;
+//    GPUImageMovieWriter *videoWriter_;
 }
 
 - (void)viewDidLoad {
@@ -120,20 +120,6 @@
     
     showTimeChanged_ = YES;
     // Do any additional setup after loading the view, typically from a nib.
-    
-    
-    titleArray_ = @[@"", @"日韩", @"现代", @"放克",@"东部", @"黑白", @"西部", @"老派",];
-    UIImage *image1 = [UIImage imageNamed:@"filterImage"];
-    filterArray_ = [NSMutableArray array];
-    for (int i = 0; i < 8; i++) {
-        if (i == 0) {
-            NSString *imageName = [NSString stringWithFormat:@"filter_%d", i];
-            [filterArray_ addObject:[UIImage imageNamed:imageName]];
-        }else{
-            [filterArray_ addObject:[CLFiltersClass imageAddFilter:image1 index:i]];
-        }
-    }
-    
 }
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -351,7 +337,7 @@
     int index = (int)sender.tag - 10000;
     sender.selected = YES;
     
-    for (int i = 10000 ;i < 10000+titleArray_.count;i ++) {
+    for (int i = 10000 ;i < 10000+20;i ++) {
         if(i!=index)
         {
             UIButton * btn = (UIButton*)[self.view viewWithTag:i];
