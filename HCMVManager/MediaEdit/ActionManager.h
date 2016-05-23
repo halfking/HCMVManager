@@ -10,6 +10,10 @@
 #import <UIKit/UIKit.h>
 #import "WTPlayerResource.h"
 #import "VideoGenerater.h"
+#import "GPUImage.h"
+
+#import "HCPlayerSimple.h"
+
 #define SECONDS_NOTVALID 999999
 
 @class MediaAction;
@@ -27,9 +31,9 @@
 //当播放器的内容需要发生改变时，将当前要处理的内容传给播放器
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay;
 
-- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover;
-- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error;
-- (void)ActionManager:(ActionManager *)manager generateProgress:(CGFloat)progress;
+- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover isFilter:(BOOL)isFilter;
+- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error isFilter:(BOOL)isFilter;
+- (void)ActionManager:(ActionManager *)manager generateProgress:(CGFloat)progress isFilter:(BOOL)isFilter;
 //-(void) didGetThumbImage:(float)requestTime andPath:(NSString*)path index:(int)index size:(CGSize)size; //index = 0表示只截了当前一张 ，否则表示是一批图中的一张
 //- (void) didGetThumbFailure:(float)requestTime error:(NSString*)error index:(int)index size:(CGSize)size;
 //-(void) didAllThumbsGenerated:(NSArray*) thumbs;
@@ -59,6 +63,17 @@
     
     MediaEditManager * manager_;        //原有的编辑管理组件
     CGFloat secondsEffectPlayer_; //播放器时长的影响
+    
+    //内部关于播放器的控制
+    HCPlayerSimple * player_;
+    HCPlayerSimple * reversePlayer_;
+    
+    //关于滤镜
+    GPUImageView *filterView_;
+    GPUImageMovie *movieFile_;
+    GPUImageOutput<GPUImageInput> *filters_;
+    int lastFilterIndex_;//上次合成时使用的过滤器
+    int currentFilterIndex_;//本次选择的过滤器序号
 }
 @property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
 @property (nonatomic,assign) BOOL needPlayerItem;
@@ -108,7 +123,8 @@
 - (BOOL) generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
 - (BOOL) saveDraft;
 - (BOOL) loadLastDraft;
-- (BOOL) needGenerateForOP;
+- (BOOL) needGenerateForOP; //因为动作而需要重新生成的
+- (BOOL) needGenerateForFilter; //因为滤镜变化需要重新生成的
 - (CGFloat) secondsEffectedByActionsForPlayer;
 - (CGFloat) secondsForTrack:(CGFloat)seconds;
 @end

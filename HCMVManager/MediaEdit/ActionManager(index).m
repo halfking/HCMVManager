@@ -12,6 +12,8 @@
 #import "MediaEditManager.h"
 #import "MediaWithAction.h"
 
+#import "ActionManager(player).h"
+
 #import "ActionProcess.h"
 #import "WTPlayerResource.h"
 
@@ -29,10 +31,8 @@
         [mediaList_ addObject:bgMedia];
         mediaList_ = [self processActions:actionList_ sources:mediaList_];
         
-        if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:doProcessOK:duration:)])
-        {
-            [self.delegate ActionManager:self doProcessOK:mediaList_ duration:durationForTarget_];
-        }
+        [self ActionManager:self doProcessOK:mediaList_ duration:durationForTarget_];
+        
         if(self.needPlayerItem)
         {
             [self generatePlayerItem:mediaList_];
@@ -92,11 +92,18 @@
     {
         return NO;
     }
+//    //滤镜处理
+//    if(actionList_.count==0)
+//    {
+//        [self generateMVByFilter:currentFilterIndex_];
+//        return YES;
+//    }
+    //动作 处理
     [self saveDraft];
     
     NSArray * actionMediaList = [self getMediaList];
     
-    NSLog(@"-------------** before generate **--------------------");
+    NSLog(@"-------------** generate begin **--------------------");
     NSLog(@"duration:%.2f",durationForTarget_);
     int index = 0;
     for (MediaWithAction * item in actionMediaList) {

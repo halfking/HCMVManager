@@ -7,6 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11200A101CF2B14C007E8B20 /* CLFiltersClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 112009F91CF2B14C007E8B20 /* CLFiltersClass.m */; };
+		11200A111CF2B14C007E8B20 /* CLVideoAddFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 112009FB1CF2B14C007E8B20 /* CLVideoAddFilter.m */; };
+		11200A121CF2B14C007E8B20 /* filterImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 112009FC1CF2B14C007E8B20 /* filterImage.png */; };
+		11200A131CF2B14C007E8B20 /* lookup-Effect-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 112009FE1CF2B14C007E8B20 /* lookup-Effect-1.png */; };
+		11200A141CF2B14C007E8B20 /* lookup_amatorka.png in Resources */ = {isa = PBXBuildFile; fileRef = 112009FF1CF2B14C007E8B20 /* lookup_amatorka.png */; };
+		11200A151CF2B14C007E8B20 /* lookup_LOMO.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A001CF2B14C007E8B20 /* lookup_LOMO.png */; };
+		11200A161CF2B14C007E8B20 /* lookup_miss_etikate.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A011CF2B14C007E8B20 /* lookup_miss_etikate.png */; };
+		11200A171CF2B14C007E8B20 /* lookup_soft_elegance_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A021CF2B14C007E8B20 /* lookup_soft_elegance_2.png */; };
+		11200A181CF2B14C007E8B20 /* lookup_黑白.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A031CF2B14C007E8B20 /* lookup_黑白.png */; };
+		11200A191CF2B14C007E8B20 /* TBAmatorkaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A051CF2B14C007E8B20 /* TBAmatorkaFilter.m */; };
+		11200A1A1CF2B14C007E8B20 /* TBBlackWhiteFiter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A071CF2B14C007E8B20 /* TBBlackWhiteFiter.m */; };
+		11200A1B1CF2B14C007E8B20 /* TBFreeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A091CF2B14C007E8B20 /* TBFreeFilter.m */; };
+		11200A1C1CF2B14C007E8B20 /* TBLOMOFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A0B1CF2B14C007E8B20 /* TBLOMOFilter.m */; };
+		11200A1D1CF2B14C007E8B20 /* TBSexyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A0D1CF2B14C007E8B20 /* TBSexyFilter.m */; };
+		11200A1E1CF2B14C007E8B20 /* TBSoftEleganceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A0F1CF2B14C007E8B20 /* TBSoftEleganceFilter.m */; };
+		11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */; };
+		11200A251CF2E266007E8B20 /* lanleft.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A211CF2E266007E8B20 /* lanleft.MOV */; };
+		11200A261CF2E266007E8B20 /* lanright.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A221CF2E266007E8B20 /* lanright.MOV */; };
+		11200A271CF2E266007E8B20 /* up.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A231CF2E266007E8B20 /* up.MOV */; };
+		11200A281CF2E266007E8B20 /* upset.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A241CF2E266007E8B20 /* upset.MOV */; };
+		11200A2B1CF2E5E9007E8B20 /* front_lanright.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A291CF2E5E8007E8B20 /* front_lanright.MOV */; };
+		11200A2C1CF2E5E9007E8B20 /* front_up.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11200A2A1CF2E5E9007E8B20 /* front_up.MOV */; };
+		11200A2F1CF2E829007E8B20 /* ActionManager(player).m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A2E1CF2E829007E8B20 /* ActionManager(player).m */; };
 		1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2111CEB8549006BB441 /* HCPlayerSimple.m */; };
 		115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */; };
 		115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */; };
@@ -77,6 +100,38 @@
 
 /* Begin PBXFileReference section */
 		053C5F553E65CE03342CF9FB /* Pods-HCMVManagerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.debug.xcconfig"; sourceTree = "<group>"; };
+		112009F81CF2B14C007E8B20 /* CLFiltersClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLFiltersClass.h; sourceTree = "<group>"; };
+		112009F91CF2B14C007E8B20 /* CLFiltersClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLFiltersClass.m; sourceTree = "<group>"; };
+		112009FA1CF2B14C007E8B20 /* CLVideoAddFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLVideoAddFilter.h; sourceTree = "<group>"; };
+		112009FB1CF2B14C007E8B20 /* CLVideoAddFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLVideoAddFilter.m; sourceTree = "<group>"; };
+		112009FC1CF2B14C007E8B20 /* filterImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filterImage.png; sourceTree = "<group>"; };
+		112009FE1CF2B14C007E8B20 /* lookup-Effect-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lookup-Effect-1.png"; sourceTree = "<group>"; };
+		112009FF1CF2B14C007E8B20 /* lookup_amatorka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_amatorka.png; sourceTree = "<group>"; };
+		11200A001CF2B14C007E8B20 /* lookup_LOMO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_LOMO.png; sourceTree = "<group>"; };
+		11200A011CF2B14C007E8B20 /* lookup_miss_etikate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_miss_etikate.png; sourceTree = "<group>"; };
+		11200A021CF2B14C007E8B20 /* lookup_soft_elegance_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_soft_elegance_2.png; sourceTree = "<group>"; };
+		11200A031CF2B14C007E8B20 /* lookup_黑白.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lookup_黑白.png"; sourceTree = "<group>"; };
+		11200A041CF2B14C007E8B20 /* TBAmatorkaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBAmatorkaFilter.h; sourceTree = "<group>"; };
+		11200A051CF2B14C007E8B20 /* TBAmatorkaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBAmatorkaFilter.m; sourceTree = "<group>"; };
+		11200A061CF2B14C007E8B20 /* TBBlackWhiteFiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBBlackWhiteFiter.h; sourceTree = "<group>"; };
+		11200A071CF2B14C007E8B20 /* TBBlackWhiteFiter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBBlackWhiteFiter.m; sourceTree = "<group>"; };
+		11200A081CF2B14C007E8B20 /* TBFreeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBFreeFilter.h; sourceTree = "<group>"; };
+		11200A091CF2B14C007E8B20 /* TBFreeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBFreeFilter.m; sourceTree = "<group>"; };
+		11200A0A1CF2B14C007E8B20 /* TBLOMOFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBLOMOFilter.h; sourceTree = "<group>"; };
+		11200A0B1CF2B14C007E8B20 /* TBLOMOFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBLOMOFilter.m; sourceTree = "<group>"; };
+		11200A0C1CF2B14C007E8B20 /* TBSexyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBSexyFilter.h; sourceTree = "<group>"; };
+		11200A0D1CF2B14C007E8B20 /* TBSexyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBSexyFilter.m; sourceTree = "<group>"; };
+		11200A0E1CF2B14C007E8B20 /* TBSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBSoftEleganceFilter.h; sourceTree = "<group>"; };
+		11200A0F1CF2B14C007E8B20 /* TBSoftEleganceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBSoftEleganceFilter.m; sourceTree = "<group>"; };
+		11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter_0@2x.png"; sourceTree = "<group>"; };
+		11200A211CF2E266007E8B20 /* lanleft.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = lanleft.MOV; sourceTree = "<group>"; };
+		11200A221CF2E266007E8B20 /* lanright.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = lanright.MOV; sourceTree = "<group>"; };
+		11200A231CF2E266007E8B20 /* up.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = up.MOV; sourceTree = "<group>"; };
+		11200A241CF2E266007E8B20 /* upset.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = upset.MOV; sourceTree = "<group>"; };
+		11200A291CF2E5E8007E8B20 /* front_lanright.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = front_lanright.MOV; sourceTree = "<group>"; };
+		11200A2A1CF2E5E9007E8B20 /* front_up.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = front_up.MOV; sourceTree = "<group>"; };
+		11200A2D1CF2E829007E8B20 /* ActionManager(player).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(player).h"; sourceTree = "<group>"; };
+		11200A2E1CF2E829007E8B20 /* ActionManager(player).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(player).m"; sourceTree = "<group>"; };
 		1122A2101CEB8549006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
 		1122A2111CEB8549006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
 		115EE2571CEAFC1A00768602 /* AVAssetReverseSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetReverseSession.h; sourceTree = "<group>"; };
@@ -222,6 +277,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		112009F61CF2B14C007E8B20 /* GPUFilter */ = {
+			isa = PBXGroup;
+			children = (
+				11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */,
+				112009F71CF2B14C007E8B20 /* CLDeal */,
+				112009FD1CF2B14C007E8B20 /* CLFiters */,
+			);
+			path = GPUFilter;
+			sourceTree = "<group>";
+		};
+		112009F71CF2B14C007E8B20 /* CLDeal */ = {
+			isa = PBXGroup;
+			children = (
+				112009F81CF2B14C007E8B20 /* CLFiltersClass.h */,
+				112009F91CF2B14C007E8B20 /* CLFiltersClass.m */,
+				112009FA1CF2B14C007E8B20 /* CLVideoAddFilter.h */,
+				112009FB1CF2B14C007E8B20 /* CLVideoAddFilter.m */,
+				112009FC1CF2B14C007E8B20 /* filterImage.png */,
+			);
+			path = CLDeal;
+			sourceTree = "<group>";
+		};
+		112009FD1CF2B14C007E8B20 /* CLFiters */ = {
+			isa = PBXGroup;
+			children = (
+				112009FE1CF2B14C007E8B20 /* lookup-Effect-1.png */,
+				112009FF1CF2B14C007E8B20 /* lookup_amatorka.png */,
+				11200A001CF2B14C007E8B20 /* lookup_LOMO.png */,
+				11200A011CF2B14C007E8B20 /* lookup_miss_etikate.png */,
+				11200A021CF2B14C007E8B20 /* lookup_soft_elegance_2.png */,
+				11200A031CF2B14C007E8B20 /* lookup_黑白.png */,
+				11200A041CF2B14C007E8B20 /* TBAmatorkaFilter.h */,
+				11200A051CF2B14C007E8B20 /* TBAmatorkaFilter.m */,
+				11200A061CF2B14C007E8B20 /* TBBlackWhiteFiter.h */,
+				11200A071CF2B14C007E8B20 /* TBBlackWhiteFiter.m */,
+				11200A081CF2B14C007E8B20 /* TBFreeFilter.h */,
+				11200A091CF2B14C007E8B20 /* TBFreeFilter.m */,
+				11200A0A1CF2B14C007E8B20 /* TBLOMOFilter.h */,
+				11200A0B1CF2B14C007E8B20 /* TBLOMOFilter.m */,
+				11200A0C1CF2B14C007E8B20 /* TBSexyFilter.h */,
+				11200A0D1CF2B14C007E8B20 /* TBSexyFilter.m */,
+				11200A0E1CF2B14C007E8B20 /* TBSoftEleganceFilter.h */,
+				11200A0F1CF2B14C007E8B20 /* TBSoftEleganceFilter.m */,
+			);
+			path = CLFiters;
+			sourceTree = "<group>";
+		};
 		115EE2561CEAFC1A00768602 /* AVReverse */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +377,12 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11200A291CF2E5E8007E8B20 /* front_lanright.MOV */,
+				11200A2A1CF2E5E9007E8B20 /* front_up.MOV */,
+				11200A211CF2E266007E8B20 /* lanleft.MOV */,
+				11200A221CF2E266007E8B20 /* lanright.MOV */,
+				11200A231CF2E266007E8B20 /* up.MOV */,
+				11200A241CF2E266007E8B20 /* upset.MOV */,
 				11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */,
 				11ABAE971CEEE84000E94CD9 /* test3.MOV */,
 				118CE8691CE1AF8D00290641 /* main.m */,
@@ -285,19 +393,20 @@
 		118CE8841CE1B00D00290641 /* HCMVManager */ = {
 			isa = PBXGroup;
 			children = (
-				118CE8851CE1B00D00290641 /* HCMVManager.h */,
-				118CE8861CE1B00D00290641 /* Info.plist */,
+				118CE8D01CE1B00D00290641 /* VideoGenerate */,
 				118CE8871CE1B00D00290641 /* Lyric */,
 				118CE88E1CE1B00D00290641 /* MTVDB */,
 				118CE8931CE1B00D00290641 /* MTVEdit */,
 				11DE4A5A1CE2DD8E00A0BE8D /* MediaEdit */,
 				118CE89E1CE1B00D00290641 /* MTVUpload */,
-				118CE8C51CE1B00D00290641 /* mvconfig.h */,
 				118CE8C61CE1B00D00290641 /* Report */,
-				118CE8C91CE1B00D00290641 /* udmanager_full.h */,
+				112009F61CF2B14C007E8B20 /* GPUFilter */,
 				118CE8CA1CE1B00D00290641 /* Utils */,
 				118CE8CF1CE1B00D00290641 /* vdcManager_full.h */,
-				118CE8D01CE1B00D00290641 /* VideoGenerate */,
+				118CE8851CE1B00D00290641 /* HCMVManager.h */,
+				118CE8861CE1B00D00290641 /* Info.plist */,
+				118CE8C51CE1B00D00290641 /* mvconfig.h */,
+				118CE8C91CE1B00D00290641 /* udmanager_full.h */,
 			);
 			name = HCMVManager;
 			path = ../HCMVManager;
@@ -444,6 +553,8 @@
 				11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */,
 				11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */,
 				11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */,
+				11200A2D1CF2E829007E8B20 /* ActionManager(player).h */,
+				11200A2E1CF2E829007E8B20 /* ActionManager(player).m */,
 				11DE4A611CE323A500A0BE8D /* ActionManager(index).h */,
 				11DE4A621CE323A500A0BE8D /* ActionManager(index).m */,
 				11ABAE991CEEEC6300E94CD9 /* ActionManagerPannel.h */,
@@ -541,12 +652,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11200A281CF2E266007E8B20 /* upset.MOV in Resources */,
+				11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */,
+				11200A251CF2E266007E8B20 /* lanleft.MOV in Resources */,
+				11200A2B1CF2E5E9007E8B20 /* front_lanright.MOV in Resources */,
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
+				11200A261CF2E266007E8B20 /* lanright.MOV in Resources */,
+				11200A151CF2B14C007E8B20 /* lookup_LOMO.png in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
+				11200A121CF2B14C007E8B20 /* filterImage.png in Resources */,
+				11200A161CF2B14C007E8B20 /* lookup_miss_etikate.png in Resources */,
+				11200A271CF2E266007E8B20 /* up.MOV in Resources */,
 				11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */,
+				11200A171CF2B14C007E8B20 /* lookup_soft_elegance_2.png in Resources */,
+				11200A141CF2B14C007E8B20 /* lookup_amatorka.png in Resources */,
+				11200A2C1CF2E5E9007E8B20 /* front_up.MOV in Resources */,
+				11200A181CF2B14C007E8B20 /* lookup_黑白.png in Resources */,
 				11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
+				11200A131CF2B14C007E8B20 /* lookup-Effect-1.png in Resources */,
 				118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,14 +733,18 @@
 			files = (
 				118CE8FA1CE1B00D00290641 /* PageTag.m in Sources */,
 				118CE9061CE1B00D00290641 /* WTPlayerResource.m in Sources */,
+				11200A1A1CF2B14C007E8B20 /* TBBlackWhiteFiter.m in Sources */,
 				1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */,
 				118CE8E61CE1B00D00290641 /* MediaEditManager(Draft).m in Sources */,
 				118CE8731CE1AF8D00290641 /* SecondViewController.m in Sources */,
 				118CE8F91CE1B00D00290641 /* MusicTag.m in Sources */,
+				11200A191CF2B14C007E8B20 /* TBAmatorkaFilter.m in Sources */,
 				118CE9001CE1B00D00290641 /* AudioGenerater.m in Sources */,
+				11200A1E1CF2B14C007E8B20 /* TBSoftEleganceFilter.m in Sources */,
 				118CE8FF1CE1B00D00290641 /* VDCManager(MTV).m in Sources */,
 				115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */,
 				118CE9011CE1B00D00290641 /* ImageToVideo.m in Sources */,
+				11200A111CF2B14C007E8B20 /* CLVideoAddFilter.m in Sources */,
 				118CE8E71CE1B00D00290641 /* MediaEditManager.m in Sources */,
 				118CE8E91CE1B00D00290641 /* Samples.m in Sources */,
 				118CE8F01CE1B00D00290641 /* CMD_UploadMTV.m in Sources */,
@@ -624,12 +753,15 @@
 				11DE4A601CE2E94200A0BE8D /* ActionManager.m in Sources */,
 				11DE4A801CE4660F00A0BE8D /* MediaActionForRAP.m in Sources */,
 				118CE9041CE1B00D00290641 /* VideoGenerater.m in Sources */,
+				11200A2F1CF2E829007E8B20 /* ActionManager(player).m in Sources */,
 				11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */,
 				118CE8F71CE1B00D00290641 /* Music.m in Sources */,
 				11DE4A891CE4837A00A0BE8D /* MediaActionDo.m in Sources */,
+				11200A101CF2B14C007E8B20 /* CLFiltersClass.m in Sources */,
 				118CE8F11CE1B00D00290641 /* Material.m in Sources */,
 				118CE8ED1CE1B00D00290641 /* CMD_DeleteSingleUserMaterial.m in Sources */,
 				118CE9031CE1B00D00290641 /* SDAVAssetExportSession.m in Sources */,
+				11200A1C1CF2B14C007E8B20 /* TBLOMOFilter.m in Sources */,
 				118CE9021CE1B00D00290641 /* MediaListModel.m in Sources */,
 				11DE4A831CE4662500A0BE8D /* MediaActionForReverse.m in Sources */,
 				118CE8E41CE1B00D00290641 /* MaibaTables.m in Sources */,
@@ -638,6 +770,7 @@
 				118CE8EE1CE1B00D00290641 /* CMD_GetUserMTVBySample.m in Sources */,
 				118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */,
 				11ABAE9B1CEEEC6300E94CD9 /* ActionManagerPannel.m in Sources */,
+				11200A1B1CF2B14C007E8B20 /* TBFreeFilter.m in Sources */,
 				11DE4A7D1CE465F100A0BE8D /* MediaActionForFast.m in Sources */,
 				11DE4A7A1CE465CE00A0BE8D /* MediaActionForSlow.m in Sources */,
 				118CE8F21CE1B00D00290641 /* MBMTV.m in Sources */,
@@ -655,6 +788,7 @@
 				118CE8E11CE1B00D00290641 /* LyricItem.m in Sources */,
 				118CE8FC1CE1B00D00290641 /* UploadRecord.m in Sources */,
 				118CE8F61CE1B00D00290641 /* MTVUploader.m in Sources */,
+				11200A1D1CF2B14C007E8B20 /* TBSexyFilter.m in Sources */,
 				118CE8E01CE1B00D00290641 /* LyricHelper.m in Sources */,
 				11DE4A8C1CE483F300A0BE8D /* MediaWithAction.m in Sources */,
 				118CE8701CE1AF8D00290641 /* FirstViewController.m in Sources */,

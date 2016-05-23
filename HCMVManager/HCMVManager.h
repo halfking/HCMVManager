@@ -75,6 +75,7 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/MediaWithAction.h>
 #import <HCMVManager/ActionManager.h>
 #import <HCMVManager/ActionManager(index).h>
+#import <HCMVManager/ActionManager(player).h>
 #import <HCMVManager/ActionProcess.h>
 #import <HCMVManager/MediaActionForSlow.h>
 #import <HCMVManager/MediaActionForFast.h>

@@ -15,12 +15,20 @@
 #import "VideoGenerater.h"
 #import "ActionManager.h"
 #import "ActionManager(index).h"
+#import "MediaEditManager.h"
 #import "MediaAction.h"
 #import "MediaWithAction.h"
 #import "WTPlayerResource.h"
 #import <hccoren/base.h>
 #import "HCPlayerSimple.h"
 #import "ActionManagerPannel.h"
+#import "ActionManager(player).h"
+
+#import "CLFiltersClass.h"
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define kNavgationHeight 64.0
+
 @interface SecondViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,HCPlayerSimpleDelegate>
 @property (nonatomic, strong) AVAssetReverseSession *reverseSession;
 @end
@@ -81,6 +89,13 @@
     BOOL showTimeChanged_;
     
     ActionManagerPannel * pannel_;
+    
+    NSArray * titleArray_;
+    NSMutableArray * filterArray_;
+    GPUImageView *filterView_;
+    GPUImageMovie *movieFile_;
+    GPUImageOutput<GPUImageInput> *filters_;
+    GPUImageMovieWriter *videoWriter_;
 }
 
 - (void)viewDidLoad {
@@ -90,13 +105,35 @@
     [manager_ removeActions];
     
 //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
+//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
+//    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
+//        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
+//       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
+//        oPath_ = [[NSBundle mainBundle]pathForResource:@"lanright" ofType:@"MOV"];
+    
+//   oPath_ = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
+        oPath_ = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
+    
     viewShowed_ = NO;
     [self showIndicatorView];
     [manager_ setBackMV:oPath_ begin:0 end:-1];
     
     showTimeChanged_ = YES;
     // Do any additional setup after loading the view, typically from a nib.
+    
+    
+    titleArray_ = @[@"", @"日韩", @"现代", @"放克",@"东部", @"黑白", @"西部", @"老派",];
+    UIImage *image1 = [UIImage imageNamed:@"filterImage"];
+    filterArray_ = [NSMutableArray array];
+    for (int i = 0; i < 8; i++) {
+        if (i == 0) {
+            NSString *imageName = [NSString stringWithFormat:@"filter_%d", i];
+            [filterArray_ addObject:[UIImage imageNamed:imageName]];
+        }else{
+            [filterArray_ addObject:[CLFiltersClass imageAddFilter:image1 index:i]];
+        }
+    }
+    
 }
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -163,14 +200,18 @@
         [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
         
         top += 46;
-        for (int i = 0; i < 7; i++) {
+        
+        NSArray * filters = [manager_ getGPUFilters];
+        
+        for (NSDictionary * filter in filters) {
             UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-            [btn setFrame:CGRectMake(10 + i * 48, top, 44, 44)];
-            [btn setTitle:[NSString stringWithFormat:@"%d",i] forState:UIControlStateNormal];
+            int index = [[filter objectForKey:@"index"]intValue];
+            [btn setFrame:CGRectMake(10 + index * 48, top, 44, 44)];
+            [btn setTitle:[NSString stringWithFormat:@"%@",[filter objectForKey:@"title"]] forState:UIControlStateNormal];
             btn.titleLabel.font = [UIFont systemFontOfSize:14];
             [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             btn.backgroundColor = [UIColor grayColor];
-            btn.tag = 10000 + i;
+            btn.tag = 10000 + index;
             [btn addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
             [self.view addSubview:btn];
         }
@@ -188,14 +229,7 @@
         
         if(!viewShowed_)
         {
-            if(baseVideo_)
-            {
-                [self buildPlayer];
-            }
-            if(reverseVideo_)
-            {
-                [self buildReversePlayer];
-            }
+            [self buildControls];
         }
         
         viewShowed_ = YES;
@@ -224,7 +258,7 @@
         [self.view.layer addSublayer:[player_ currentLayer]];
     }
     [NSThread sleepForTimeInterval:0.1];
-    [player_ play];
+//    [player_ play];
 }
 - (void) buildReversePlayer
 {
@@ -240,18 +274,34 @@
         [rPlayer_ changeCurrentPlayerItem:item];
         AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
         playerLayer.opacity = 0;
-        [self.view.layer addSublayer:playerLayer];
+        [self.view.layer addSublayer:playerLayer]; //此处可能导至x，y坐标有问题，因为在Player中都是0，实际上可能不为0
     }
     else
     {
         rPlayer_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.width /16 * 9)];
         [rPlayer_ changeCurrentPlayerItem:item];
         rPlayer_.delegate = self;
-        AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];
+        AVPlayerLayer * playerLayer = [rPlayer_ currentLayer];//此处可能导至x，y坐标有问题，因为在Player中都是0，实际上可能不为0
         
         playerLayer.opacity = 0;
         [self.view.layer addSublayer:playerLayer];
     }
+}
+- (void) buildControls
+{
+    if(baseVideo_)
+    {
+        [self buildPlayer];
+    }
+    if(reverseVideo_)
+    {
+        [self buildReversePlayer];
+    }
+    [pannel_ setActionManager:manager_];
+    [manager_ initPlayer:player_ reversePlayer:rPlayer_];
+    [manager_ initGPUFilter:player_ in:self.view];
+    
+    [player_ play];
 }
 - (void) showIndicatorView
 {
@@ -295,11 +345,25 @@
     }
     
 }
-#pragma mark - button events
+#pragma mark - filter
 - (void) changeFilter:(UIButton *)sender
 {
-    int index = sender.tag - 10000;
+    int index = (int)sender.tag - 10000;
+    sender.selected = YES;
+    
+    for (int i = 10000 ;i < 10000+titleArray_.count;i ++) {
+        if(i!=index)
+        {
+            UIButton * btn = (UIButton*)[self.view viewWithTag:i];
+            if(btn) btn.selected = NO;
+        }
+    }
+    
+    // 实时切换滤镜
+    [manager_ setGPUFilter:index];
 }
+
+#pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
     //    [repeatTimer_ invalidate];
@@ -520,24 +584,14 @@
     reverseVideo_ = reverseVideo;
     if(viewShowed_)
     {
-        [pannel_ setActionManager:manager];
-        
-        [self buildPlayer];
-        [self buildReversePlayer];
+        [self buildControls];
     }
     [self hideIndicatorView];
+    
 }
-//当播放器的内容需要发生改变时
-- (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
+- (void) showCurrentMediaes:(CGFloat)seconds
 {
-    showTimeChanged_ = YES;
-    
-    [pannel_ refresh];
-    
-    
-    NSLog(@"-------------** before do **--------------------");
-    //    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
-    //    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+    NSLog(@"-------------** media at player:%.4f rplayer:%.4f**---------------",[player_ secondsPlaying],[rPlayer_ secondsPlaying]);
     int index = 0;
     NSArray * mediaList = [manager_ getMediaList];
     for (MediaWithAction * item in mediaList) {
@@ -546,102 +600,45 @@
         index ++;
     }
     NSLog(@"**--**--**--**--**--**--**--**--**--**--");
+}
+//当播放器的内容需要发生改变时
+- (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
+{
+    showTimeChanged_ = YES;
+    
+    [pannel_ refresh];
     
     if(!mediaToPlay)
     {
-        [player_ pause];
-        [rPlayer_ pause];
+        [self showCurrentMediaes:-1];
+        
         NSLog(@"mediaToPlay:nil");
         return ;
     }
-    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-    //    if((currentMedia_ && [mediaToPlay isSampleAsset:currentMedia_])
-    //       ||
-    //       ([mediaToPlay isSampleAsset:baseVideo_])
-    //       ||
-    //       ([mediaToPlay isSampleAsset:reverseVideo_])
-    //       )
-    //    {
-    if(mediaToPlay.Action.ActionType!=SReverse)
-    {
-        [rPlayer_ pause];
-        [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-        [player_ currentLayer].opacity = 1;
-        [rPlayer_ currentLayer].opacity = 0;
-        [player_ setRate:mediaToPlay.playRate];
-        [player_ play];
-    }
-    else
-    {
-        [player_ pause];
-        [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-        [rPlayer_ currentLayer].opacity = 1;
-        [player_ currentLayer].opacity = 0;
-        [rPlayer_ setRate:mediaToPlay.playRate];
-        [rPlayer_ play];
-    }
-    //    }
-    //    else
-    //    {
-    //        if(mediaToPlay.Action.ActionType!=SReverse)
-    //        {
-    //            [rPlayer_ pause];
-    //            [rPlayer_ currentLayer].opacity = 0;
-    //            [player_ currentLayer].opacity = 1;
-    //            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-    //            [player_ setRate:mediaToPlay.playRate];
-    //            [player_ play];
-    //        }
-    //        else
-    //        {
-    //            [player_ pause];
-    //            [rPlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-    //            [rPlayer_ setRate:mediaToPlay.playRate];
-    //            [rPlayer_ play];
-    //            [player_ currentLayer].opacity = 0;
-    //            [rPlayer_ currentLayer].opacity = 1;
-    //        }
-    //    }
     currentMedia_ = mediaToPlay;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
-    NSLog(@"action do changed:%@",action.ActionTitle);
-    [rPlayer_ pause];
-    [player_ pause];
     showTimeChanged_ = YES;
 }
-- (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
+
+- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover isFilter:(BOOL)isFilter
 {
-    NSLog(@"-------------**--process ok--**--------------------");
-    NSLog(@"duration:%.2f",duration);
-//    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
-//    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
-    int index = 0;
-    for (MediaWithAction * item in mediaList) {
-        NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
-        NSLog(@"%@",[item toString]);
-        index ++;
-    }
-    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
-}
-- (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration
-{
-    NSLog(@"action playerItem ready");
-}
-- (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover
-{
+    if(!isFilter)
+    {
     [manager_ setBackMV:filePath begin:0 end:-1];
     
     [manager_ removeActions];
-    
-//    [self hideIndicatorView];
+    }
 }
-- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error
+- (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error isFilter:(BOOL)isFilter
 {
     [self hideIndicatorView];
 }
-
+- (void)ActionManager:(ActionManager *)manager generateProgress:(CGFloat)progress isFilter:(BOOL)isFilter
+{
+    
+}
 - (void)reset:(UIButton *)sender
 {
     [self showIndicatorView];
@@ -665,8 +662,8 @@
     //暂时暂停，用于检查
 //    if([manager_ needGenerateForOP]) return;
     
-    NSLog(@"************ begin generate **************");
-    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
+    
+//    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
     
     if(![manager_ generateMV])
     {

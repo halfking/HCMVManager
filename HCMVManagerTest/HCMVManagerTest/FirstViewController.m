@@ -89,7 +89,14 @@
     ActionManager * manager = [ActionManager shareObject];
     manager.delegate = self;
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
-    NSString * path = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanright" ofType:@"MOV"];
+//        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
+        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
+    
     [manager setBackMV:path begin:0 end:-1];
     
     {

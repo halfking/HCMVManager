@@ -22,6 +22,8 @@
 #import "MediaActionForNormal.h"
 #import "MediaActionForReverse.h"
 
+#import "ActionManager(player).h"
+
 #import "WTPlayerResource.h"
 
 @interface ActionManager()
@@ -366,21 +368,17 @@
     
     NSLog(@"####### action in array:%.4f",item.SecondsInArray);
     
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
-    {
-        [self.delegate ActionManager:self actionChanged:item type:0];
-    }
+    [self ActionManager:self actionChanged:item type:0];
+    
     
     //    if(item.isOPCompleted)
     //    {
     [self processNewActions];
     //    [self reindexAllActions];
     //    }
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
-    {
-        MediaWithAction * media = [self findMediaItemAt:item.SecondsInArray -  item.secondsBeginAdjust];
-        [self.delegate ActionManager:self play:media];
-    }
+    
+    [self ActionManager:self play:item];
+    
     return item;
 }
 //针对长按等操作，延后设置Action时长
@@ -398,19 +396,13 @@
     
     secondsEffectPlayer_ += [action secondsEffectPlayer];
     NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
-    {
-        [self.delegate ActionManager:self actionChanged:action type:1];
-    }
     
+    [self ActionManager:self actionChanged:action type:1];
+
     //    [self reindexAllActions];
     
-    
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
-    {
-        MediaWithAction * item = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray - action.secondsBeginAdjust];
-        [self.delegate ActionManager:self play:item];
-    }
+    [self ActionManager:self play:action];
+   
     
     return YES;
 }
@@ -517,10 +509,7 @@
         secondsEffectPlayer_ -= [actionDo secondsEffectPlayer];
         [actionList_ removeObject:actionDo];
         
-        if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
-        {
-            [self.delegate ActionManager:self actionChanged:actionDo type:2];
-        }
+        [self ActionManager:self actionChanged:actionDo type:2];
         
         [self reindexAllActions];
         return YES;
@@ -571,7 +560,11 @@
 }
 - (BOOL) needGenerateForOP
 {
-    return actionList_.count>0;
+    return actionList_.count>0 ;//|| (lastFilterIndex_ != currentFilterIndex_);
+}
+- (BOOL) needGenerateForFilter
+{
+    return (lastFilterIndex_ != currentFilterIndex_);
 }
 - (CGFloat) secondsEffectedByActionsForPlayer
 {
@@ -593,18 +586,18 @@
 - (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress
 {
     NSLog(@"progress:%f",progress);
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:)])
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:isFilter:)])
     {
-        [self.delegate ActionManager:self generateProgress:progress];
+        [self.delegate ActionManager:self generateProgress:progress isFilter:NO];
     }
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error
 {
     NSLog(@"generate failure:%@",msg);
     NSLog(@"error:%@",[error localizedDescription]);
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:)])
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
-        [self.delegate ActionManager:self genreateFailure:error];
+        [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
     }
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
@@ -614,9 +607,9 @@
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];
     NSLog(@"generate completed:%@",filePath);
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:)])
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
     {
-        [self.delegate ActionManager:self generateOK:filePath cover:cover];
+        [self.delegate ActionManager:self generateOK:filePath cover:cover isFilter:NO];
     }
 }
 @end

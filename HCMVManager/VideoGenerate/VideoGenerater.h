@@ -145,5 +145,6 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
           failure:(MEFailure)failure;
 
 
+-(CGAffineTransform)layerTrans:(AVAsset *)testAsset withTargetSize:(CGSize)tsize orientation:(UIDeviceOrientation)orientation withFontCamera:(BOOL) useFontCamera isCreateByCover:(BOOL)isCreateByCover;
 - (void) showMediaInfo:(NSString *)filePath;
 @end
