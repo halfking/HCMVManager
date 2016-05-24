@@ -507,19 +507,23 @@
 }
 - (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end
 {
+    return [self generateMVSegmentsViaFile:filePath begin:begin end:end targetSize:CGSizeZero];
+}
+- (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize
+{
     AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
     if(!asset||asset.tracks.count==0)
     {
         NSLog(@"not media file content");
         return NO;
     }
-    return [self generateMVSegments:asset begin:begin end:end];
+    return [self generateMVSegments:asset begin:begin end:end targetSize:targetSize];
 }
-- (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end
+- (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize
 {
     return NO;
 }
-- (BOOL) generateMVSegments:(AVAsset *)asset begin:(CGFloat) begin end:(CGFloat)end
+- (BOOL) generateMVSegments:(AVAsset *)asset begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize
 {
     if(!asset||asset.tracks.count==0)
     {
@@ -540,18 +544,27 @@
     PP_RELEASE(_videoComposition);
     PP_RELEASE(_audioMixOnce);
     
-    CGSize size = renderSize_;
+    CGSize size = targetSize;
+    CGFloat scale = 1;
     
     NSArray * tracklist = [asset tracksWithMediaType:AVMediaTypeVideo];
     if(tracklist.count<=0)
     {
         return NO;
     }
+    
     AVAssetTrack * track = [tracklist firstObject];
-    size = track.naturalSize;
-    
-    renderSize_ = size;
-    
+    CGSize natureSize = track.naturalSize;
+    if(size.width<=0||size.height<=0)
+    {
+        size = natureSize;
+    }
+    else
+    {
+        size = [self getSizeByTransform:size transform:track.preferredTransform];
+        scale = MIN(size.width/natureSize.width,size.height/natureSize.height);
+        size = CGSizeMake(roundf(natureSize.width * scale), roundf(natureSize.height *scale));
+    }
     AVMutableVideoComposition * mainComposition =  [AVMutableVideoComposition videoComposition];
     AVMutableComposition * mixComposition = [[AVMutableComposition alloc] init];
     AVMutableAudioMix * bgmMix = [AVMutableAudioMix audioMix];
@@ -587,13 +600,23 @@
         {
             NSLog(@"join video:(mix bgvideo) %@",[error localizedDescription]);
         }
-        [bgvTrack setPreferredTransform:track.preferredTransform];
+        
+        CGAffineTransform  transfer = track.preferredTransform;
+       
+        [bgvTrack setPreferredTransform:transfer];
         
         AVMutableVideoCompositionLayerInstruction *bgvLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:bgvTrack];
         
         [bgvLayerInstruction setOpacity:1.0f atTime:kCMTimeZero];
         
         [bgvLayerInstruction setOpacity:0.0 atTime:targetDuration];
+        
+        CGAffineTransform  transfer2 = CGAffineTransformIdentity;
+        if(scale!=1)
+        {
+            transfer2 = CGAffineTransformScale(transfer2, scale, scale);
+        }
+        [bgvLayerInstruction setTransform:transfer2 atTime:kCMTimeZero];
         
         [layers addObject:bgvLayerInstruction];
     }

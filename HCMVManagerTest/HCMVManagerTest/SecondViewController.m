@@ -402,7 +402,7 @@
         
     }];
     
-    if([vg generateMVSegmentsViaFile:baseVideo_.filePath begin:0 end:5])
+    if([vg generateMVSegmentsViaFile:baseVideo_.filePath begin:0 end:5 targetSize:CGSizeMake(100, 100)])
     {
         [vg generateMVFile:nil retryCount:0];
     }
@@ -671,6 +671,9 @@
 {
     if(!isFilter)
     {
+        VideoGenerater * vg = [VideoGenerater new];
+        [vg showMediaInfo:filePath];
+        
         [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
         
         [manager_ removeActions];
@@ -739,7 +742,7 @@
         NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
         [self hideIndicatorView];
     }];
-    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10])
+    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10 targetSize:CGSizeMake(100, 100)])
     {
         [vg generateMVFile:nil retryCount:0];
     }
