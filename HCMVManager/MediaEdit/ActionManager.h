@@ -15,7 +15,7 @@
 #import "HCPlayerSimple.h"
 
 #define SECONDS_NOTVALID 999999
-
+#define SECONDS_ERRORRANGE  0.1
 @class MediaAction;
 @class MediaActionDo;
 @class MediaItem;
@@ -70,7 +70,7 @@
     //内部关于播放器的控制
     HCPlayerSimple * player_;
     HCPlayerSimple * reversePlayer_;
-    
+    AVAudioPlayer * audioPlayer_;
     //关于滤镜
     GPUImageView *filterView_;
     GPUImageMovie *movieFile_;

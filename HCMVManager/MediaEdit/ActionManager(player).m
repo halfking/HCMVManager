@@ -42,9 +42,9 @@
     return [NSArray arrayWithObjects:
             @{@"title":@"",@"index":@(0)},
             @{@"title":@"现代",@"index":@(1)},
-             @{@"title":@"日韩",@"index":@(2)},
-             @{@"title":@"放克",@"index":@(3)},
-             @{@"title":@"东部",@"index":@(4)},
+            @{@"title":@"日韩",@"index":@(2)},
+            @{@"title":@"放克",@"index":@(3)},
+            @{@"title":@"东部",@"index":@(4)},
             @{@"title":@"黑白",@"index":@(5)},
             @{@"title":@"西部",@"index":@(6)},
             @{@"title":@"老派",@"index":@(7)},
@@ -54,14 +54,32 @@
 {
     return currentFilterIndex_;
 }
-- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer
+- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer
 {
     player_ = player;
     reversePlayer_ = reversePlayer;
+    audioPlayer_ = audioPlayer;
     
     [player_ setVideoVolume:videoVol_];
     [reversePlayer_ setVideoVolume:videoVol_];
-    
+    if(audioPlayer_)
+    {
+        [audioPlayer_ setVolume:audioVol_];
+    }
+    return YES;
+}
+- (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer
+{
+    if(audioPlayer_)
+    {
+        [audioPlayer_ pause];
+        audioPlayer_ = nil;
+    }
+    audioPlayer_ = audioPlayer;
+    if(audioPlayer_)
+    {
+        [audioPlayer_ setVolume:audioVol_];
+    }
     return YES;
 }
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player in:(UIView *)container
@@ -70,11 +88,11 @@
     {
         player_ = player;
     }
-   if(!player_)
-   {
-       NSLog(@"not found player.. initPlayer pls.");
-       return NO;
-   }
+    if(!player_)
+    {
+        NSLog(@"not found player.. initPlayer pls.");
+        return NO;
+    }
     currentFilterIndex_ = 0;
     if(!container)
     {
@@ -85,7 +103,11 @@
         [filterView_ removeFromSuperview];
         filterView_ =nil;
     }
-    movieFile_ = nil;
+    if(movieFile_)
+    {
+        [movieFile_ endProcessing];
+        movieFile_ = nil;
+    }
     filters_ = nil;
     
     AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
@@ -186,8 +208,30 @@
     [filters_ addTarget:filterView_];
     [movieFile_ startProcessing];
     
-//    [player_ play];
+    //    [player_ play];
     return YES;
+}
+- (void) removeGPUFilter
+{
+    if(movieFile_ || filterView_)
+    {
+        [movieFile_ endProcessing];
+        movieFile_ = nil;
+        
+        if(filterView_)
+        {
+            [filterView_ removeFromSuperview];
+            filterView_ =nil;
+        }
+            filters_ = nil;
+            currentFilterIndex_ = 0;
+            
+            //restore player
+            CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
+            [player_ changeCurrentItemUrl:videoBg_.url];
+            [player_ seek:seconds accurate:YES];
+        
+    }
 }
 - (BOOL) setGPUFilter:(int)index
 {
@@ -270,11 +314,13 @@
     {
         return ;
     }
-
-    MediaWithAction * mediaToPlay = [self findMediaItemAt:action.DurationInArray+action.SecondsInArray - action.secondsBeginAdjust];
+    
+    
+    MediaWithAction *  mediaToPlay = [self findMediaWithAction:action index:0];
+    
     if(!mediaToPlay)
     {
-        mediaToPlay = [self findMediaWithAction:action index:0];
+        mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
     }
     if(!mediaToPlay)
     {
@@ -283,13 +329,16 @@
         NSLog(@"mediaToPlay:nil");
         return ;
     }
-    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
+    
+    //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
     if(mediaToPlay.Action.ActionType!=SReverse)
     {
         [reversePlayer_ pause];
         [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-        [player_ currentLayer].opacity = 1;
-        [reversePlayer_ currentLayer].opacity = 0;
+        player_.hidden = NO;
+        reversePlayer_.hidden = YES;
+        //        [player_ currentLayer].opacity = 1;
+        //        [reversePlayer_ currentLayer].opacity = 0;
         [player_ setRate:mediaToPlay.playRate];
         [player_ play];
     }
@@ -297,8 +346,10 @@
     {
         [player_ pause];
         [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-        [reversePlayer_ currentLayer].opacity = 1;
-        [player_ currentLayer].opacity = 0;
+        reversePlayer_.hidden = NO;
+        player_.hidden = YES;
+        //        [reversePlayer_ currentLayer].opacity = 1;
+        //        [player_ currentLayer].opacity = 0;
         [reversePlayer_ setRate:mediaToPlay.playRate];
         [reversePlayer_ play];
     }

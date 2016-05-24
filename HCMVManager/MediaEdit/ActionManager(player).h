@@ -21,11 +21,13 @@
 - (NSArray *) getGPUFilters;
 - (UIImage*) getFilteredIcon:(UIImage *)image index:(int)index;
 - (int) getCurrentFilterIndex;
-- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer;
+- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;
+- (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer;
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player  in:(UIView *)contaner;
 - (BOOL) setGPUFilter:(int)index;
 
 - (BOOL) generateMVByFilter:(int)filterIndex;
+- (void) removeGPUFilter;
 
 #pragma mark - player control
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action;

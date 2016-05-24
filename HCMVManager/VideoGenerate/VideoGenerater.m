@@ -587,25 +587,13 @@
         {
             NSLog(@"join video:(mix bgvideo) %@",[error localizedDescription]);
         }
+        [bgvTrack setPreferredTransform:track.preferredTransform];
         
         AVMutableVideoCompositionLayerInstruction *bgvLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:bgvTrack];
         
         [bgvLayerInstruction setOpacity:1.0f atTime:kCMTimeZero];
         
         [bgvLayerInstruction setOpacity:0.0 atTime:targetDuration];
-        
-        //        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
-        //        {
-        //            CGAffineTransform trans = [self layerTrans:asset withTargetSize:size orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO];
-        //            [bgvLayerInstruction setTransform:trans
-        //                                       atTime:kCMTimeZero];
-        //        }
-        //        else
-        //        {
-        //            [bgvLayerInstruction setTransform:[self layerTrans:asset withTargetSize:size] atTime:kCMTimeZero];
-        //        }
-        
-        //        CGAffineTransform transform = asset.preferredTransform;
         
         [layers addObject:bgvLayerInstruction];
     }

@@ -109,6 +109,18 @@
 {
     audioVol_ = audioVol;
     videoVol_ = videoVol;
+    if(audioPlayer_)
+    {
+        [audioPlayer_ setVolume:audioVol_];
+    }
+    if(player_)
+    {
+        [player_ setVideoVolume:videoVol_];
+    }
+    if(reversePlayer_)
+    {
+        [reversePlayer_ setVideoVolume:videoVol_];
+    }
     NSLog(@"set vol:%.2f videovol:%.2f",audioVol,videoVol);
 }
 - (NSArray *) getMediaList
@@ -517,9 +529,10 @@
             
             NSLog(@"find item: %.4f  targetSeconds:%.4f",item.SecondsInArray,seconds);
             //起hhko在当前时间前
-            if(item.SecondsInArray - seconds < 0 - item.secondsBeginAdjust + 0.04 )
+            if(item.SecondsInArray - seconds < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
             {
-                if(item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - seconds > 0.04 - item.secondsBeginAdjust)
+                if(item.DurationInArray <0 ||
+                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - seconds > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
                 {
                     retItem = item;
                     break;
@@ -543,8 +556,10 @@
         MediaWithAction * item = mediaList_[i];
         NSLog(@"find media: %.4f  targetSeconds:%.4f",item.secondsInArray,seconds);
         if(!item.secondsInArrayNotConfirm   //只有开始时间已经确定了的才能参与选择
-           && item.secondsInArray - item.Action.secondsBeginAdjust <=seconds+0.04
-           && item.secondsDurationInArray + item.secondsInArray - item.Action.secondsBeginAdjust >seconds -0.04)
+           && item.secondsInArray - item.Action.secondsBeginAdjust <=seconds+SECONDS_ERRORRANGE
+           && (item.secondsDurationInArray <0
+               || item.secondsDurationInArray + item.secondsInArray - item.Action.secondsBeginAdjust >seconds -SECONDS_ERRORRANGE)
+           )
         {
             retItem = item;
             break;
