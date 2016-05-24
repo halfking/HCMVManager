@@ -61,6 +61,7 @@
     UIButton * fast_;
     UIButton * slow_;
     UIButton * joinBtn_;
+    UIButton * subtract_;
     
     CGFloat seekTime_;
     NSTimer * continueSeekTimeTimer_;
@@ -192,6 +193,17 @@
         left += 60;
         [rate1x_ addTarget:self action:@selector(repeat:) forControlEvents:UIControlEventTouchUpInside];
         [rate2x_ addTarget:self action:@selector(reverseStart:) forControlEvents:UIControlEventTouchUpInside];
+        
+        
+        subtract_ = [UIButton buttonWithType:UIButtonTypeCustom];
+        [subtract_ setFrame:CGRectMake(left, top, 60, 44)];
+        [subtract_ setTitle:@"subt" forState:UIControlStateNormal];
+        subtract_.titleLabel.font = [UIFont systemFontOfSize:14];
+        [subtract_ setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        subtract_.backgroundColor = [UIColor grayColor];
+        [self.view addSubview:subtract_];
+        
+        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
         
         top += 46;
         
@@ -366,7 +378,35 @@
     // 实时切换滤镜
     [manager_ setGPUFilter:index];
 }
-
+- (void) subtractMV:(id)sender
+{
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+        NSLog(@"video generater progress %.1f",progress);
+        
+    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+        NSLog(@"playerItem Ready");
+        
+    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+        NSLog(@"generate completed.  %@",[mvUrl path]);
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+        
+        [player_ changeCurrentItemPath:filePath];
+        [NSThread sleepForTimeInterval:0.2];
+        [player_ play];
+        
+    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+        
+    }];
+    
+    if([vg generateMVSegmentsViaFile:baseVideo_.filePath begin:0 end:5])
+    {
+        [vg generateMVFile:nil retryCount:0];
+    }
+}
 #pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
