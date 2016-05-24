@@ -434,8 +434,9 @@
     
     joinVideoExporter = [SDAVAssetExportSession exportSessionWithAsset:_mixComposition];
     joinVideoExporter.outputURL = pathForFinalVideo;
-    AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions firstObject];
-    joinVideoExporter.timeRange = instructs.timeRange;
+    
+//    AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions firstObject];
+//    joinVideoExporter.timeRange = instructs.timeRange;
     
     [[HCFileManager manager]removeFileAtPath:[pathForFinalVideo path]];
     
