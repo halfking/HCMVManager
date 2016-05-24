@@ -120,6 +120,11 @@
     vg.compositeLyric = NO;
     vg.delegate = self;
     
+    if(audioBg_ && audioBg_.fileName)
+    {
+        [vg setBgmUrl:audioBg_.url];
+    }
+    
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
     
     [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
