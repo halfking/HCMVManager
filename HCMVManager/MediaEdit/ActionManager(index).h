@@ -16,7 +16,7 @@
 - (BOOL) generateMV;
 - (void) generatePlayerItem:(NSArray *)mediaList;
 
-- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;
+//- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;
 
 
 @end

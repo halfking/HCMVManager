@@ -178,9 +178,9 @@
     
 }
 
-- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize
-{
-    
-    return NO;
-}
+//- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize
+//{
+//    
+//    return NO;
+//}
 @end

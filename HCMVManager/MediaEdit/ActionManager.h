@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "WTPlayerResource.h"
+//#import "WTPlayerResource.h"
 #import "VideoGenerater.h"
 #import "GPUImage.h"
 
@@ -79,7 +79,7 @@
     int lastFilterIndex_;//上次合成时使用的过滤器
     int currentFilterIndex_;//本次选择的过滤器序号
 }
-@property (nonatomic,PP_WEAK)NSObject<WTPlayerResourceDelegate,ActionManagerDelegate> * delegate;
+@property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;
 @property (nonatomic,assign,readonly) CGFloat videoVolume;
 
