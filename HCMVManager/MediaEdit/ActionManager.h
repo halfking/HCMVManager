@@ -28,6 +28,7 @@
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration;
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration;
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo;
+//- (void)ActionManager:(ActionManager *)manager mediaReady:(MediaItem *)baseMedia;
 //当播放器的内容需要发生改变时，将当前要处理的内容传给播放器
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay;
 

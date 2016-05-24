@@ -294,6 +294,7 @@
     videoBgAction_ = [action toMediaWithAction:nil];
     
     [self reindexAllActions];
+    
     return YES;
 }
 
@@ -315,11 +316,17 @@
 {
     PP_RELEASE(audioBg_);
     audioBg_ = [audioItem copyItem];
-    audioBg_.timeInArray = videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+    audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+//    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
     return YES;
 }
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)seconds
 {
+    if(action.ActionType==SReverse && !reverseBG_)
+    {
+        return NO;
+    }
+    
     if([self findActionAt:seconds index:-1])
     {
         return NO;
