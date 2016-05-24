@@ -341,6 +341,11 @@
         //        [reversePlayer_ currentLayer].opacity = 0;
         [player_ setRate:mediaToPlay.playRate];
         [player_ play];
+        if(audioPlayer_)
+        {
+            audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+            [audioPlayer_ play];
+        }
     }
     else
     {
@@ -352,6 +357,11 @@
         //        [player_ currentLayer].opacity = 0;
         [reversePlayer_ setRate:mediaToPlay.playRate];
         [reversePlayer_ play];
+        if(audioPlayer_)
+        {
+            audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+            [audioPlayer_ play];
+        }
     }
     [self.delegate ActionManager:self play:mediaToPlay];
 }
@@ -360,7 +370,7 @@
     NSLog(@"action do changed:%@",action.ActionTitle);
     [reversePlayer_ pause];
     [player_ pause];
-    
+    [audioPlayer_ pause];
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {
         [self.delegate ActionManager:self actionChanged:action type:opType];
