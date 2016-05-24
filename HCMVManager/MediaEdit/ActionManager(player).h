@@ -30,8 +30,10 @@
 - (BOOL) generateMVByFilter:(int)filterIndex;
 - (void) removeGPUFilter;
 
+- (void) setPlaySeconds:(CGFloat)seconds;
+
 #pragma mark - player control
-- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action;
+- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action seconds:(CGFloat)seconds;
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType;//0 add 1 update 2 remove;
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration;
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration;

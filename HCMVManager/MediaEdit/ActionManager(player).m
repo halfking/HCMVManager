@@ -40,7 +40,7 @@
 - (NSArray *) getGPUFilters
 {
     return [NSArray arrayWithObjects:
-            @{@"title":@"",@"index":@(0)},
+            @{@"title":@"原片",@"index":@(0)},
             @{@"title":@"现代",@"index":@(1)},
             @{@"title":@"日韩",@"index":@(2)},
             @{@"title":@"放克",@"index":@(3)},
@@ -275,6 +275,8 @@
     
     return YES;
 }
+
+
 #pragma mark - clvideo delegate
 // 视频完成处理
 - (void)didFinishVideoDeal:(NSURL *)videoUrl
@@ -308,28 +310,56 @@
 }
 #pragma mark - delegates
 //当播放器的内容需要发生改变时
-- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action
+- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action seconds:(CGFloat)seconds
 {
     if(!(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)]))
     {
         return ;
     }
-    
-    
-    MediaWithAction *  mediaToPlay = [self findMediaWithAction:action index:0];
-    
-    if(!mediaToPlay)
+    MediaWithAction *  mediaToPlay = nil;
+    //Repeat 是将前面1秒的记录为Repeat，然后，将后面的整体切为一段，所以这时候要指向下一个对像
+    //时间无效，也应该指向下一个
+    if(seconds == SECONDS_NOTVALID || (seconds == SECONDS_NOEND && action.ActionType ==SRepeat))
+    {
+        mediaToPlay = [self findMediaWithAction:action index:-1];
+    }
+    else if(seconds==SECONDS_NOEND)   //当前对像未结束
+    {
+        mediaToPlay = [self findMediaWithAction:action index:0];
+    }
+    else
     {
         mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
     }
+    
+//    MediaWithAction *  mediaToPlay = [self findMediaWithAction:action index:0];
+//    
+//    if(!mediaToPlay)
+//    {
+//        mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
+//    }
     if(!mediaToPlay)
     {
+#ifndef __OPTIMIZE__
+        if(seconds == SECONDS_NOTVALID || (seconds == SECONDS_NOEND && action.ActionType ==SRepeat))
+        {
+            mediaToPlay = [self findMediaWithAction:action index:-1];
+        }
+        else if(seconds==SECONDS_NOEND)   //当前对像未结束
+        {
+            mediaToPlay = [self findMediaWithAction:action index:0];
+        }
+        else
+        {
+            mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
+        }
+#endif
         [self.delegate ActionManager:self play:nil];
         [player_ setRate:1];
         NSLog(@"mediaToPlay:nil");
         return ;
     }
-    
+    currentMediaWithAction_ = mediaToPlay;
     //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
     if(mediaToPlay.Action.ActionType!=SReverse)
     {
@@ -364,6 +394,25 @@
         }
     }
     [self.delegate ActionManager:self play:mediaToPlay];
+}
+- (void)setPlaySeconds:(CGFloat)seconds
+{
+    if(!currentMediaWithAction_)
+    {
+        currentMediaWithAction_ = [self findMediaItemAt:seconds];
+        return ;
+    }
+    //如果在有效范围内，不处理
+    if(currentMediaWithAction_.secondsDurationInArray<0 || (seconds + secondsEffectPlayer_ < currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray))
+    {
+        
+    }
+    //切换对像
+    else
+    {
+        MediaActionDo * itemDo = [self findActionAt:seconds index:-1];
+        [self ActionManager:self play:itemDo seconds:SECONDS_NOEND];
+    }
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {

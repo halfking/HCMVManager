@@ -254,7 +254,7 @@
     if(player_)
     {
         [player_ changeCurrentPlayerItem:item];
-        [self.view.layer addSublayer:[player_ currentLayer]];
+//        [self.view.layer addSublayer:[player_ currentLayer]];
     }
     else
     {
@@ -497,6 +497,17 @@
     
     CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
     
+    MediaAction * action = [MediaAction new];
+    action.ActionType = SSlow;
+    action.ReverseSeconds = 0 ;
+    action.IsOverlap = YES;
+    action.IsMutex = NO;
+    action.Rate = 0.33333;
+    action.isOPCompleted = YES;
+    [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:0.5];
+    
+    return;
+    
     if (sender.selected) {
         sender.selected = NO;
         NSLog(@"player action seconds:%f",seconds);
@@ -565,19 +576,15 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
-//    if(showTimeChanged_)
-//    {
-//        NSLog(@"---- player seconds:%f rate:%.2f",cmTime,[playerSimple currentPlayer].rate);
-//        showTimeChanged_ = NO;
-//    }
-//    if(playerSimple == rPlayer_)
-//    {
-//        
-//    }
-//    else if(playerSimple == player_)
-//    {
-//        
-//    }
+    if(playerSimple == rPlayer_)
+    {
+        
+    }
+    else if(playerSimple == player_)
+    {
+        [manager_ setPlaySeconds:cmTime];
+    }
+    
     
 }
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
@@ -660,6 +667,7 @@
         NSLog(@"mediaToPlay:nil");
         return ;
     }
+    [self showCurrentMediaes:-1];
     currentMedia_ = mediaToPlay;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove

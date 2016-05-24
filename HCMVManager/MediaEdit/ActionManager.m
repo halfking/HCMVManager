@@ -251,7 +251,7 @@
     }
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
-    action.MediaActionID = 0;
+    action.MediaActionID = [self getMediaActionID];
     action.Rate = 1;
     action.ReverseSeconds = 0;
     action.DurationInSeconds = -1;
@@ -321,7 +321,7 @@
     PP_RELEASE(audioBg_);
     audioBg_ = [audioItem copyItem];
     audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
-//    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+    //    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
     return YES;
 }
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)seconds
@@ -385,10 +385,14 @@
     }
     if(action.MediaActionID<=0)
     {
-        action.MediaActionID = [[NSDate date]timeIntervalSince1970];
+        action.MediaActionID = [self getMediaActionID];
     }
     [item fetchAsAction:action];
     return item;
+}
+- (double) getMediaActionID
+{
+     return [[NSDate date]timeIntervalSince1970];
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                               at:(CGFloat)posSeconds
@@ -439,8 +443,15 @@
         PP_RELEASE(item);
         return nil;
     }
-    
-    item.SecondsInArray = posSeconds;
+    //Repeat，需要将定位放到前面
+    if(item.ActionType==SRepeat)
+    {
+        item.SecondsInArray = posSeconds - durationInSeconds;
+    }
+    else
+    {
+        item.SecondsInArray = posSeconds;
+    }
     item.DurationInArray = durationInSeconds;
     
     if(durationInSeconds<=0)
@@ -469,10 +480,57 @@
     [self processNewActions];
     //    [self reindexAllActions];
     //    }
+    if(item.isOPCompleted)
+    {
+        if(item.ActionType ==SRepeat) //重复，则需要从下一个开始才行
+        {
+            [self ActionManager:self play:item seconds:SECONDS_NOEND];
+        }
+        else //直接点击的，则直接执行当前Action
+        {
+            [self ActionManager:self play:item seconds:SECONDS_NOEND];
+        }
+    }
+    else
+        [self ActionManager:self play:item seconds:SECONDS_NOEND];
+    return item;
+}
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                                 at:(CGFloat)posSeconds
+{
+    if(actionDo.isOPCompleted==NO) return nil;
+    MediaActionDo * item = [actionDo copyItemDo];
+    //Repeat，需要将定位放到前面
+    if(item.ActionType==SRepeat)
+    {
+        item.SecondsInArray = posSeconds - item.DurationInSeconds;
+    }
+    else
+    {
+        item.SecondsInArray = posSeconds;
+    }
+    secondsEffectPlayer_ += [item secondsEffectPlayer];
     
-    [self ActionManager:self play:item];
+    item.Index = (int)actionList_.count;
+    item.MediaActionID = [self getMediaActionID];
+    
+    [actionList_ addObject:item];
+    
+    
+    NSLog(@"####### action in array:%.4f",item.SecondsInArray);
+    
+    [self ActionManager:self actionChanged:item type:0];
+    
+    
+    //    if(item.isOPCompleted)
+    //    {
+    [self processNewActions];
+    
+    [self ActionManager:self play:item seconds:SECONDS_NOEND];
     
     return item;
+    
+    
 }
 //针对长按等操作，延后设置Action时长
 - (BOOL)setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds
@@ -494,7 +552,7 @@
     
     //    [self reindexAllActions];
     
-    [self ActionManager:self play:action];
+    [self ActionManager:self play:action seconds:SECONDS_NOTVALID];
     
     
     return YES;
@@ -583,21 +641,31 @@
 {
     MediaWithAction * retItem = nil;
     int pos = 0;
+    MediaWithAction * nextItem = nil;
     for (int i = (int)mediaList_.count -1; i>=0; i--) {
         MediaWithAction * item = mediaList_[i];
-        if(item.Action.MediaActionID>0 &&
-           item.Action.MediaActionID == action.MediaActionID)
+        if((action && item.Action.MediaActionID>0 &&
+            item.Action.MediaActionID == action.MediaActionID)
+           ||
+           (!action && item.Action.ActionType==SNormal))
         {
-            if(pos==index)
+            if(pos==index || (index <0 && pos == 0 - index - 1))
             {
                 retItem = item;
                 break;
             }
             pos ++;
         }
+        else
+        {
+            nextItem = item;
+        }
     }
     NSLog(@"find media:%@",retItem?@"OK":@"NO");
-    return retItem;
+    if(index<0)
+        return nextItem;
+    else
+        return retItem;
 }
 - (BOOL)removeActionItem:(MediaAction *)action
                       at:(CGFloat)posSeconds

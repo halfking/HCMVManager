@@ -22,6 +22,7 @@
 @property (nonatomic,PP_STRONG,readonly,getter=get_MaterialList) NSMutableArray * MaterialList;
 
 - (void)fetchAsAction:(MediaAction *)action;
+- (MediaActionDo *)copyItemDo;
 
 - (NSMutableArray *)processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected;
 - (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;

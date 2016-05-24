@@ -15,6 +15,7 @@
 #import "HCPlayerSimple.h"
 
 #define SECONDS_NOTVALID 999999
+#define SECONDS_NOEND 999998
 #define SECONDS_ERRORRANGE  0.1
 @class MediaAction;
 @class MediaActionDo;
@@ -47,6 +48,9 @@
     MediaItem * reverseBG_;  //倒序的视频
     MediaItem * videoBg_;    //源视频
     MediaWithAction * videoBgAction_; //暂存的源视频Action
+    
+    MediaWithAction * currentMediaWithAction_; //当前执行的Action
+//    NSTimer * mediaCheckTimer_;                 //用于检查当前对像是否已经执行完成
     
     CGFloat audioVol_;      //背景音乐音量
     CGFloat videoVol_;      //视频音乐音量
@@ -97,7 +101,7 @@
 
 //将播放器的时间转成素材轨的时间
 - (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
-
+- (double) getMediaActionID;
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
 //posSeconds 为队列中时间 与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 //mediaBeginSeconds 为素材中的起始位置
@@ -105,6 +109,10 @@
                    at:(CGFloat)posSeconds
                              from:(CGFloat)mediaBeginSeconds
              duration:(CGFloat)durationInSeconds;
+
+//重复添加对像
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                                 at:(CGFloat)posSeconds;
 
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
