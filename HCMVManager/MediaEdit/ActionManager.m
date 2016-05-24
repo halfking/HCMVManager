@@ -742,6 +742,19 @@
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
 }
+- (BOOL) loadFirstDraft
+{
+    if(videoBGHistroy_.count<=0) return NO;
+    
+    videoBg_ = [videoBGHistroy_ firstObject];
+    reverseBG_ = [reverseBgHistory_ firstObject];
+    [actionList_ removeAllObjects];
+    [actionList_ addObjectsFromArray:[actionsHistory_ firstObject]];
+    [self reindexAllActions];
+    NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
+    return YES;
+}
+
 - (BOOL) needGenerateForOP
 {
     return actionList_.count>0 ;//|| (lastFilterIndex_ != currentFilterIndex_);

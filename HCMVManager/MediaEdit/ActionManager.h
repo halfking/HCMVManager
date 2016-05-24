@@ -142,6 +142,7 @@
 - (BOOL) generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
 - (BOOL) saveDraft;
 - (BOOL) loadLastDraft;
+- (BOOL) loadFirstDraft;
 - (BOOL) needGenerateForOP; //因为动作而需要重新生成的
 - (BOOL) needGenerateForFilter; //因为滤镜变化需要重新生成的
 - (CGFloat) secondsEffectedByActionsForPlayer;
