@@ -221,7 +221,7 @@
     }
     return YES;
 }
-- (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
+- (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse
 {
     if(![self checkIsNeedChangeBG:filePath]) return NO;
     
@@ -245,8 +245,10 @@
         PP_RELEASE(videoBgAction_);
     }
     //生成反向的视频
-    [self generateReverseMV:filePath];
-    
+    if(buildReverse)
+    {
+        [self generateReverseMV:filePath];
+    }
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
     action.MediaActionID = 0;
@@ -262,7 +264,7 @@
     [self reindexAllActions];
     return YES;
 }
-- (BOOL)setBackMV:(MediaItem *)bgMedia
+- (BOOL)setBackMV:(MediaItem *)bgMedia  buildReverse:(BOOL)buildReverse
 {
     if(!bgMedia) return NO;
     if(![self checkIsNeedChangeBG:bgMedia.filePath]) return NO;
@@ -279,8 +281,10 @@
         PP_RELEASE(videoBgAction_);
     }
     //生成反向的视频
-    [self generateReverseMV:videoBg_.filePath];
-    
+    if(buildReverse)
+    {
+        [self generateReverseMV:videoBg_.filePath];
+    }
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
     action.MediaActionID = 0;

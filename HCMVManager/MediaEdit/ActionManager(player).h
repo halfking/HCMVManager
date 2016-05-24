@@ -20,6 +20,7 @@
 - (GPUImageView *) getFilterView;
 - (NSArray *) getGPUFilters;
 - (UIImage*) getFilteredIcon:(UIImage *)image index:(int)index;
+
 - (int) getCurrentFilterIndex;
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;
 - (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer;

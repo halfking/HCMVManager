@@ -97,7 +97,7 @@
 //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
 //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
     
-    [manager setBackMV:path begin:0 end:-1];
+    [manager setBackMV:path begin:0 end:-1 buildReverse:YES];
     
     {
         MediaAction * action = [MediaAction new];

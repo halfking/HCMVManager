@@ -117,7 +117,7 @@
     
     viewShowed_ = NO;
     [self showIndicatorView];
-    [manager_ setBackMV:oPath_ begin:0 end:-1];
+    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
     
     showTimeChanged_ = YES;
     // Do any additional setup after loading the view, typically from a nib.
@@ -671,7 +671,7 @@
 {
     if(!isFilter)
     {
-        [manager_ setBackMV:filePath begin:0 end:-1];
+        [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
         
         [manager_ removeActions];
     }
@@ -692,7 +692,7 @@
     [rPlayer_ pause];
     [player_ setRate:1];
     [[ActionManager shareObject]clear];
-    [manager_ setBackMV:oPath_ begin:0 end:-1];
+    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
 }
 -(void)join:(UIButton *)sender
 {

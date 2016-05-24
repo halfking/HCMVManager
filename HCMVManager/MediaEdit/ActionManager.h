@@ -87,8 +87,8 @@
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
 #pragma mark - action list manager
-- (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
-- (BOOL) setBackMV:(MediaItem *)bgMedia;
+- (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse;
+- (BOOL) setBackMV:(MediaItem *)bgMedia buildReverse:(BOOL)buildReverse;
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
