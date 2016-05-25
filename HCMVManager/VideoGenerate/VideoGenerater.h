@@ -12,6 +12,7 @@
 #import "SDAVAssetExportSession.h"
 #import <hccoren/base.h>
 #import <Photos/Photos.h>
+#import <AssetsLibrary/ALAssetsLibrary.h>
 
 @class MediaItem;
 
@@ -100,7 +101,13 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 - (BOOL) generateMVFile:(NSArray *)mediaList
              retryCount:(int)retryCount;// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume;
 
+//  ALAsset可以转成asset再处理
+//  NSURL * url = nil;
+//  // url = [NSURL fileURLWithPath:_filePath];
+//  url = [_asset valueForProperty:ALAssetPropertyAssetURL];
+//  AVAsset *asset = [AVAsset assetWithURL:url];
 - (BOOL) generateMVSegments:(AVAsset *)asset begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize;
+
 - (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end;
 - (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end targetSize:(CGSize)targetSize;
 - (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize;
