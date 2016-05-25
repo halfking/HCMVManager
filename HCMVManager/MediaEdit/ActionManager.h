@@ -82,6 +82,7 @@
     GPUImageOutput<GPUImageInput> *filters_;
     int lastFilterIndex_;//上次合成时使用的过滤器
     int currentFilterIndex_;//本次选择的过滤器序号
+    BOOL isGeneratingByFilter_;//是否正在生成中
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;
@@ -96,6 +97,10 @@
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
+- (MediaItem *) getReverseVideo;
+- (int) getLastFilterID;
+- (int) getCurrentFilterID;
+
 - (BOOL)generateReverseMV:(NSString*)filePath;
 - (BOOL) canAddAction:(MediaAction *)action seconds:(CGFloat)seconds;
 

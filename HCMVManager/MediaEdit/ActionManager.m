@@ -66,7 +66,7 @@
         manager_.delegate = self;
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
-        
+        isGeneratingByFilter_ = NO;
         videoVol_ = 1;
         audioVol_ = 1;
     }
@@ -74,7 +74,8 @@
 }
 - (void)clear
 {
-    
+    isGeneratingByFilter_ = NO;
+    isReverseGenerating_ = NO;
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
@@ -134,6 +135,18 @@
 - (MediaItem *) getBaseVideo
 {
     return videoBg_;
+}
+- (int) getLastFilterID
+{
+    return lastFilterIndex_;
+}
+- (int) getCurrentFilterID
+{
+    return currentFilterIndex_;
+}
+- (MediaItem *)getReverseVideo
+{
+    return reverseBG_;
 }
 //将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
 - (BOOL)generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^)(NSArray *))complted
@@ -738,6 +751,10 @@
     reverseBG_ = [reverseBgHistory_ lastObject];
     [actionList_ removeAllObjects];
     [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
+    
+    [actionsHistory_ removeObjectAtIndex:actionsHistory_.count-1];
+    [videoBGHistroy_ removeObjectAtIndex:videoBGHistroy_.count-1];
+    [reverseBgHistory_ removeObjectAtIndex:reverseBgHistory_.count-1];
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
@@ -750,6 +767,14 @@
     reverseBG_ = [reverseBgHistory_ firstObject];
     [actionList_ removeAllObjects];
     [actionList_ addObjectsFromArray:[actionsHistory_ firstObject]];
+    [actionsHistory_ removeAllObjects];
+    [reverseBgHistory_ removeAllObjects];
+    [videoBGHistroy_ removeAllObjects];
+    
+    [actionsHistory_ addObject:actionList_];
+    [reverseBgHistory_ addObject:reverseBG_];
+    [videoBGHistroy_ addObject:videoBg_];
+    
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;

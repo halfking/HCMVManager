@@ -264,6 +264,12 @@
         NSLog(@"filter:%d not support.",filterIndex);
         return NO;
     }
+    if(isGeneratingByFilter_)
+    {
+        NSLog(@"正在生成中，请稍后进入...");
+        return NO;
+    }
+    isGeneratingByFilter_ = YES;
     
     CLVideoAddFilter *addFilter = [[CLVideoAddFilter alloc]init];
     addFilter.delegate = self;
@@ -281,6 +287,7 @@
 // 视频完成处理
 - (void)didFinishVideoDeal:(NSURL *)videoUrl
 {
+    isGeneratingByFilter_ = NO;
     NSLog(@"filter generate ok....%@",[videoUrl path]);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
     {
@@ -301,6 +308,7 @@
 // 操作中断
 - (void)operationFailure:(NSString *)failure
 {
+    isGeneratingByFilter_ = NO;
     NSLog(@"filter generate failure:%@",failure);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {

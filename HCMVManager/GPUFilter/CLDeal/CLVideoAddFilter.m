@@ -67,6 +67,7 @@
     {
         [_movieFile addTarget:_movieWriter];
     }
+    _movieWriter.transform = asetTrack.preferredTransform;
     
     // 4. Configure this for video from the movie file, where we want to preserve all video frames and audio samples
     _movieWriter.shouldPassthroughAudio = YES;

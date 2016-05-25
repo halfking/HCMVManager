@@ -203,7 +203,8 @@
         subtract_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:subtract_];
         
-        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
+//        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
+        [subtract_ addTarget:self action:@selector(generateFilterItem) forControlEvents:UIControlEventTouchUpInside];
         
         top += 46;
         
@@ -407,6 +408,10 @@
         [vg generateMVFile:nil retryCount:0];
     }
 }
+- (void)generateFilterItem
+{
+    [manager_ generateMVByFilter:5];
+}
 #pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
@@ -508,39 +513,39 @@
     
     return;
     
-    if (sender.selected) {
-        sender.selected = NO;
-        NSLog(@"player action seconds:%f",seconds);
-        MediaWithAction * media = [manager_ findMediaItemAt:secondsInTrack];
-        
-        MediaActionDo * actionDo = nil;
-        if([media.Action isKindOfClass:[MediaActionDo class]])
-        {
-            actionDo = (MediaActionDo *)media.Action;
-        }
-        else
-        {
-            actionDo = [manager_ findActionAt:media.secondsInArray index:-1];
-        }
-        if(actionDo)
-        {
-            CGFloat duration = secondsInTrack;// seconds;//[manager_ getSecondsWithoutAction:seconds];
-            duration -= actionDo.SecondsInArray;
-            
-            [manager_ setActionItemDuration:actionDo duration:duration];
-        }
-    } else {
-        sender.selected = YES;
-        
-        MediaAction * action = [MediaAction new];
-        action.ActionType = SSlow;
-        action.ReverseSeconds = 0 ;
-        action.IsOverlap = YES;
-        action.IsMutex = NO;
-        action.Rate = 0.33333;
-        action.isOPCompleted = NO;
-        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
-    }
+//    if (sender.selected) {
+//        sender.selected = NO;
+//        NSLog(@"player action seconds:%f",seconds);
+//        MediaWithAction * media = [manager_ findMediaItemAt:secondsInTrack];
+//        
+//        MediaActionDo * actionDo = nil;
+//        if([media.Action isKindOfClass:[MediaActionDo class]])
+//        {
+//            actionDo = (MediaActionDo *)media.Action;
+//        }
+//        else
+//        {
+//            actionDo = [manager_ findActionAt:media.secondsInArray index:-1];
+//        }
+//        if(actionDo)
+//        {
+//            CGFloat duration = secondsInTrack;// seconds;//[manager_ getSecondsWithoutAction:seconds];
+//            duration -= actionDo.SecondsInArray;
+//            
+//            [manager_ setActionItemDuration:actionDo duration:duration];
+//        }
+//    } else {
+//        sender.selected = YES;
+//        
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = SSlow;
+//        action.ReverseSeconds = 0 ;
+//        action.IsOverlap = YES;
+//        action.IsMutex = NO;
+//        action.Rate = 0.33333;
+//        action.isOPCompleted = NO;
+//        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
+//    }
 }
 -(void)fast:(UIButton *)sender
 {
@@ -677,15 +682,18 @@
 
 - (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover isFilter:(BOOL)isFilter
 {
-    if(!isFilter)
-    {
+//    if(!isFilter)
+//    {
         VideoGenerater * vg = [VideoGenerater new];
         [vg showMediaInfo:filePath];
         
         [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
         
         [manager_ removeActions];
-    }
+    
+    [player_ play];
+//    }
+    
 }
 - (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error isFilter:(BOOL)isFilter
 {
