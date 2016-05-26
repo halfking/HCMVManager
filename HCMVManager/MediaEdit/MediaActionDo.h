@@ -44,5 +44,6 @@
 //因为我们处理的采样时间来自于播放器，因此，Rap，Reverse这种类型会影响播放器的时刻对应在合成视频上的位置变化
 // 如Reverse 1秒后，播放器位置在4秒，这时，在合成视频上的位置应该是4+2 = 6秒 timeinarray
 - (CGFloat) secondsEffectPlayer;
+- (CGFloat) secondsEffectPlayer:(CGFloat)durationInArray;
 @end
 

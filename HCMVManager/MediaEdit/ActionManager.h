@@ -108,6 +108,7 @@
 //将播放器的时间转成素材轨的时间
 - (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
 - (double) getMediaActionID;
+- (MediaActionDo *) findMediaActionDoByType:(int)actionType;
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
 //posSeconds 为队列中时间 与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 //mediaBeginSeconds 为素材中的起始位置
@@ -162,6 +163,7 @@
 - (BOOL) needGenerateForOP; //因为动作而需要重新生成的
 - (BOOL) needGenerateForFilter; //因为滤镜变化需要重新生成的
 - (CGFloat) secondsEffectedByActionsForPlayer;
+- (CGFloat) secondsEffectedByActionsForPlayerBeforeMedia:(MediaWithAction *)media;
 - (CGFloat) secondsForTrack:(CGFloat)seconds;
 
 - (void) setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol;

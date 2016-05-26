@@ -76,6 +76,9 @@
     
     result.playRate = self.Rate;
     
+    result.Action.DurationInSeconds = result.secondsDurationInArray;
+    
+    
     return result;
 }
 @end

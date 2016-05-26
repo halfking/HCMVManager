@@ -412,6 +412,18 @@
 {
     return [[NSDate date]timeIntervalSince1970];
 }
+- (MediaActionDo *) findMediaActionDoByType:(int)actionType
+{
+    MediaActionDo * result = nil;
+    for (MediaActionDo * item in actionList_) {
+        if(item.ActionType == actionType)
+        {
+            result = item;
+            break;
+        }
+    }
+    return result;
+}
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                               at:(CGFloat)posSeconds
                             from:(CGFloat)mediaBeginSeconds
@@ -840,6 +852,16 @@
 - (CGFloat) secondsEffectedByActionsForPlayer
 {
     return secondsEffectPlayer_;
+}
+- (CGFloat) secondsEffectedByActionsForPlayerBeforeMedia:(MediaWithAction *)media
+{
+    CGFloat totalSeconds = 0;
+    for (MediaWithAction * item in mediaList_) {
+        if(item==media)
+            break;
+        totalSeconds += item.secondsChangedWithActionForPlayer;
+    }
+    return totalSeconds;
 }
 - (CGFloat) secondsForTrack:(CGFloat)seconds
 {

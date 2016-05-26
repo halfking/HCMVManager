@@ -162,7 +162,30 @@
                                                           overlap:self.IsOverlap];
     
     //    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
-    
+    //需要校正前一个的数据结尾是否正常
+    if(mediaToSplit && mediaToSplit!=mediaToTail && self.IsOverlap)
+    {
+        //获取之前所有的对像的播放器时间影响
+        CGFloat secondsChangedBefore = 0;
+        for (MediaWithAction * ma in sources) {
+            if(ma == mediaToSplit)
+                break;
+            secondsChangedBefore += ma.secondsChangedWithActionForPlayer;
+        }
+        //这里，当前对像的SeconsInArray 还没有处理
+        if(mediaToSplit.secondsInArray + mediaToSplit.secondsDurationInArray > self.SecondsInArray + secondsChangedBefore)
+        {
+            CGFloat orgSecondsInDuration = mediaToSplit.secondsDurationInArray;
+            
+            mediaToSplit.end =
+            CMTimeMakeWithSeconds(
+                                  mediaToSplit.secondsEnd - (mediaToSplit.secondsInArray + mediaToSplit.secondsDurationInArray - self.SecondsInArray - secondsChangedBefore), mediaToSplit.end.timescale);
+            
+            CGFloat rate = mediaToSplit.secondsDurationInArray / orgSecondsInDuration;
+            mediaToSplit.secondsChangedWithActionForPlayer *= rate;
+            mediaToSplit.durationInPlaying *= rate;
+        }
+    }
     //将数据插入到原队列中，并且将队列中对像的时间重新计算
     NSMutableArray * headList = [NSMutableArray new];
     NSMutableArray * tailList = [NSMutableArray new];
@@ -236,8 +259,9 @@
         
         secondsInArray += item.secondsDurationInArray;
         item.durationInPlaying = item.secondsDurationInArray /item.playRate;
-        //        if(self.IsOverlap)
-        //            lastMediaSeconds = item.secondsEnd;
+        
+        item.secondsChangedWithActionForPlayer = [self secondsEffectPlayer:item.secondsDurationInArray];
+        
     }
     
     
@@ -304,6 +328,8 @@
     
     UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
     
+     CGFloat orgDuration = media.secondsDurationInArray;
+    
     //从中间截断时
     if(seconds>=media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
     {
@@ -317,7 +343,18 @@
         media.end = endTime;
         media.durationInPlaying = [self getFinalDurationForMedia:media];
         
-        
+        if(orgDuration>0)
+        {
+            CGFloat rate = media.secondsDurationInArray/orgDuration;;
+            media.secondsChangedWithActionForPlayer *=  rate;
+            media.durationInPlaying *= rate;
+            
+        }
+        else
+        {
+            media.secondsChangedWithActionForPlayer = 0;
+            media.durationInPlaying = 0;
+        }
         if(duration>=0) //当插入的素材有确定时长时
         {
             if(isOverlap)
@@ -330,6 +367,18 @@
             }
             actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds + duration,timeScale);
             actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+            
+            if(orgDuration>0)
+            {
+                CGFloat rate = actionSecond.secondsDurationInArray/orgDuration;;
+                actionSecond.secondsChangedWithActionForPlayer *=  rate;
+                actionSecond.durationInPlaying *= rate;
+            }
+            else
+            {
+                actionSecond.secondsChangedWithActionForPlayer = 0;
+                actionSecond.durationInPlaying = 0;
+            }
         }
         else //无确定时长时
         {
@@ -337,6 +386,8 @@
             actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
             actionSecond.durationInPlaying = 0;
             actionSecond.secondsInArrayNotConfirm = YES;
+            actionSecond.secondsChangedWithActionForPlayer = 0;
+            actionSecond.durationInPlaying = 0;
         }
         return actionSecond;
     }
@@ -353,6 +404,18 @@
                     {
                         media.begin = CMTimeMakeWithSeconds(media.secondsBegin+duration,timeScale);
                     }
+                    if(orgDuration>0)
+                    {
+                        CGFloat rate = media.secondsDurationInArray/orgDuration;;
+                        media.secondsChangedWithActionForPlayer *=  rate;
+                        media.durationInPlaying *= rate;
+                        
+                    }
+                    else
+                    {
+                        media.secondsChangedWithActionForPlayer = 0;
+                        media.durationInPlaying = 0;
+                    }
                 }
                 else
                 {
@@ -362,6 +425,8 @@
             else //没有从中间截断，则需要全部弃用
             {
                 media.end = media.begin;
+                media.durationInPlaying = 0;
+                media.secondsChangedWithActionForPlayer = 0;
                 media.durationInPlaying = 0;
             }
             return media;
@@ -438,7 +503,7 @@
     NSMutableArray * overlapList = [NSMutableArray new];
     
     CGFloat seconds = self.SecondsInArray;
-    CGFloat duration = self.DurationInSeconds;
+    CGFloat duration = self.DurationInArray;
     for (MediaWithAction * item in sources) {
         MediaWithAction * matchItem = nil;
         //第一个或跨界的
@@ -465,9 +530,9 @@
                 matchItem = item;
             }
         }
-        else
+        else if(item.secondsInArray >= seconds)
         {
-            
+            matchItem = item;
         }
         if(matchItem )
         {
@@ -486,6 +551,10 @@
 }
 
 - (CGFloat) secondsEffectPlayer
+{
+    return [self secondsEffectPlayer:self.DurationInArray];
+}
+- (CGFloat) secondsEffectPlayer:(CGFloat)durationInArray
 {
     return 0;
 }

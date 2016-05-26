@@ -13,6 +13,10 @@
 #import "ActionManager.h"
 #import "MediaWithAction.h"
 #import "WTPlayerResource.h"
+#import "ActionManager(player).h"
+#import "ActionManager(index).h"
+#import "ActionManagerPannel.h"
+
 @interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate>
 
 @end
@@ -22,12 +26,13 @@
     MediaActionDo * testAction_;
     UIScrollView * imagesContainer_;
     int kThumbImageTag_;
+    ActionManagerPannel * pannel_;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    [self buildBaseData];
+    
     
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -77,6 +82,15 @@
         [self.view addSubview:imagesContainer_];
         kThumbImageTag_ = 20000;
     }
+    {
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 200,
+                                                                       self.view.frame.size.width -20,
+                                                                       300)];
+        pannel_.backgroundColor = [UIColor grayColor];
+        [self.view addSubview:pannel_];
+    }
+    
+    [self buildBaseData];
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -98,37 +112,57 @@
 //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
     
     [manager setBackMV:path begin:0 end:-1 buildReverse:YES];
-    
+    [pannel_ setActionManager:manager];
+    [pannel_ refresh];
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = 1;
+//        action.ActionTitle = @"slow";
+//        action.ReverseSeconds = 0;
+//        action.DurationInSeconds = 1;
+//        action.Rate = 0.25;
+//        action.IsMutex = NO;
+//        action.IsFilter = NO;
+//        
+//        [manager addActionItem:action filePath:nil at:4 from:4 duration:action.DurationInSeconds];
+//    }
     {
         MediaAction * action = [MediaAction new];
-        action.ActionType = 1;
-        action.ActionTitle = @"slow";
-        action.ReverseSeconds = 0;
-        action.DurationInSeconds = 1;
-        action.Rate = 0.25;
+        action.ActionType = SSlow;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = YES;
         action.IsMutex = NO;
-        action.IsFilter = NO;
-        
-        [manager addActionItem:action filePath:nil at:4 from:4 duration:action.DurationInSeconds];
+        action.Rate = 0.33333;
+        action.isOPCompleted = YES;
+        [manager addActionItem:action filePath:nil at:2 from:2 duration:0.5];
     }
     
 }
 - (void)addItem:(id)sender
 {
     ActionManager * manager = [ActionManager shareObject];
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = 3;
+//        action.ActionTitle = @"Rap";
+//        action.ReverseSeconds = -1;
+//        action.DurationInSeconds = 1;
+//        action.Rate = 1;
+//        action.IsMutex = NO;
+//        action.IsFilter = NO;
+//        
+//        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
+//    }
     {
         MediaAction * action = [MediaAction new];
-        action.ActionType = 3;
-        action.ActionTitle = @"Rap";
-        action.ReverseSeconds = -1;
-        action.DurationInSeconds = 1;
-        action.Rate = 1;
+        action.ActionType = SSlow;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = YES;
         action.IsMutex = NO;
-        action.IsFilter = NO;
-        
-        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
+        action.Rate = 0.33333;
+        action.isOPCompleted = YES;
+        [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:0.5];
     }
-    
 }
 - (void)beginLongTouch:(id)sender
 {
@@ -232,12 +266,16 @@
     }
 }
 #pragma mark - action manager delgates
+- (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
+{
+    [pannel_ refresh];
+}
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {
     NSLog(@"-------------**----**--------------------");
     NSLog(@"duration:%.2f",duration);
-    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
-    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+//    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+//    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
     int index = 0;
     for (MediaWithAction * item in mediaList) {
         NSLog(@"--%d--",index);

@@ -42,7 +42,7 @@
     }
     else //没有指定，则需要从当前队列中获取
     {
-        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInSeconds sources:sources];
+        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInArray sources:sources];
     }
     
     return materialList_;
@@ -79,14 +79,15 @@
     [result fetchAsCore:self.Media];
     result.Action = [(MediaAction *)self copyItem];
     result.playRate = self.Rate;
+    result.Action.DurationInSeconds = result.secondsDurationInArray;
     return result;
 }
-- (CGFloat)secondsEffectPlayer
+- (CGFloat)secondsEffectPlayer:(CGFloat)durationInArray
 {
     //Rap可能导致播放器时长加
-    if(self.DurationInArray>0)
+    if(durationInArray>0)
     {
-        return self.DurationInArray;
+        return durationInArray;
     }
     else
     {

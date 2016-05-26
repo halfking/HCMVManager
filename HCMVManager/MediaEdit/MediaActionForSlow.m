@@ -41,7 +41,7 @@
     }
     else //没有指定，则需要从当前队列中获取
     {
-        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInSeconds sources:sources];
+        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInArray sources:sources];
     }
     
     return materialList_;
@@ -85,6 +85,7 @@
     [result fetchAsCore:self.Media];
     result.Action = [(MediaAction *)self copyItem];
     result.playRate = self.Rate;
+    result.Action.DurationInSeconds = result.secondsDurationInArray;
     return result;
 }
 @end
