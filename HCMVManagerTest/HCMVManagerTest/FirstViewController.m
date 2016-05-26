@@ -206,7 +206,7 @@
         action.isOPCompleted = YES;
         [manager addActionItem:action filePath:nil at:5 from:4 duration:1];
     }
-    
+    MediaActionDo * acdo = nil;
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
@@ -214,10 +214,13 @@
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.Rate = 1;
-        action.isOPCompleted = YES;
-        [manager addActionItem:action filePath:nil at:5.5 from:4 duration:1];
+        action.isOPCompleted = NO;
+        acdo = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
     }
+//    [manager ensureActions:[manager getBaseVideo].secondsDuration];
     
+    [manager setActionItemDuration:acdo duration:2];
+//    [manager setActionItemDuration:acdo duration:2];
 //    {
 //        MediaAction * action = [MediaAction new];
 //        action.ActionType = SRepeat;
