@@ -305,16 +305,20 @@
                endSeconds:(CGFloat)endSeconds
 {
     NSString * filePath =  nil;
+    if(!asset) return nil;
     @synchronized (self) {
         __block BOOL scaleAudio = YES;
         filePath = [NSString stringWithFormat:@"%ld.m4a",[CommonUtil getDateTicks:[NSDate date]]];
         filePath = [[HCFileManager manager] tempFileFullPath:filePath];
         
-        [self scaleAudio:asset withRate:rate writeFile:filePath
+        if(![self scaleAudio:asset withRate:rate writeFile:filePath
          beginSeconds:beginSeconds endSeconds:endSeconds
                completed:^(NSURL *audioUrl, NSError *error) {
             scaleAudio = NO;
-        }];
+        }])
+        {
+            scaleAudio = NO;
+        }
         while (scaleAudio) {
             [NSThread sleepForTimeInterval:0.1];
             NSLog(@"waiting for scale....");

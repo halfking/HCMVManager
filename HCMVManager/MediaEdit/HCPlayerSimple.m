@@ -650,8 +650,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
                                                                      [strongSelf videoPlayer:strongSelf
                                                                                timeDidChange:seconds];
                                                                      
-                                                                     //                                                                     结束
-                                                                     if(secondsEnd_ > 0 && seconds >=secondsEnd_){
+                                                                     //                                                                     结束，有可能有小数误差，因此给0.01的值
+                                                                     if(secondsEnd_ > 0 && seconds >=secondsEnd_-0.01){
                                                                          //防止发送两次结束，因此，需要检查与最终结束的时长是否很近或相等
                                                                          if(secondsEnd_ + 0.1 < CMTimeGetSeconds([strongSelf.playerItem duration]))
                                                                          {

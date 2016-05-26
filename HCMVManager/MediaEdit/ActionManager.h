@@ -64,6 +64,7 @@
     NSMutableArray * videoBGHistroy_;
     NSMutableArray * reverseBgHistory_;
     NSMutableArray * actionsHistory_;
+    NSMutableArray * filterHistory_;
     
     CGFloat durationForSource_;         //源时长
     CGFloat durationForTarget_;         //最终目标时长
@@ -145,9 +146,19 @@
 - (NSArray *) getMediaList;
 //将MediaWithAction转成普通的MediaItem，其实只需要检查其对应的文件片段是否需要生成
 - (BOOL) generateMediaListWithActions:(NSArray *)mediaWithActions complted:(void (^) (NSArray *))mediaList;
+//在生成之前，将当前操作信息保存
 - (BOOL) saveDraft;
+//获取最初的文件信息，并且清空后期的操作
+- (BOOL) loadOrigin;
+//获取最后一次保存的草稿，并清空后期操作。
 - (BOOL) loadLastDraft;
+//获取第一次操作的草稿，即Origin之后的一次
 - (BOOL) loadFirstDraft;
+//保存的草稿的数量
+- (int)  getHistoryCount;
+//读取草稿的信息，不对当前队列进行任何操作
+- (BOOL) getDraft:(int)index base:(MediaItem **)baseVideo reverse:(MediaItem **)reverseVideo actionList:(NSArray **)actionList filterID:(int *)filterID;
+
 - (BOOL) needGenerateForOP; //因为动作而需要重新生成的
 - (BOOL) needGenerateForFilter; //因为滤镜变化需要重新生成的
 - (CGFloat) secondsEffectedByActionsForPlayer;

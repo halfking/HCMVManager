@@ -28,6 +28,7 @@
                          endSeconds:(CGFloat)endSeconds
                           overwrite:(BOOL) overwrite
                          completed:(void(^)(NSURL *audioUrl, NSError *error))completeHandler;
+//拉伸或压缩声音
 - (BOOL)scaleAudio:(AVAsset *)asset withRate:(CGFloat)rate writeFile:(NSString *)targetFile
       beginSeconds:(CGFloat)beginSeconds
         endSeconds:(CGFloat)endSeconds

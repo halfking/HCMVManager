@@ -132,10 +132,10 @@
 #pragma mark - do process
 - (NSMutableArray *) processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected
 {
-    if(self.ActionType==SFast)
-    {
-        NSLog(@"fast...");
-    }
+//    if(self.ActionType==SFast)
+//    {
+//        NSLog(@"fast...");
+//    }
     NSMutableArray * overlapList = [self buildMaterialOverlaped:sources];
     NSMutableArray * materialList = [self buildMaterialProcess:sources];
     if(!materialList || materialList.count==0)
@@ -146,6 +146,10 @@
     {
         NSLog(@"cannot find overlap items.");
         return sources;
+    }
+    else if(overlapList.count>1)
+    {
+        NSLog(@"overlaps:%d",(int)overlapList.count);
     }
     //检查插入的起点对像
     MediaWithAction * mediaToSplit = [overlapList firstObject];

@@ -67,6 +67,8 @@
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
         isGeneratingByFilter_ = NO;
+        lastFilterIndex_ = 0;
+        currentFilterIndex_ = 0;
         videoVol_ = 1;
         audioVol_ = 1;
     }
@@ -76,6 +78,9 @@
 {
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
+    currentFilterIndex_ = 0;
+    lastFilterIndex_ = 0;
+    
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
     [mediaListFilter_ removeAllObjects];
@@ -405,7 +410,7 @@
 }
 - (double) getMediaActionID
 {
-     return [[NSDate date]timeIntervalSince1970];
+    return [[NSDate date]timeIntervalSince1970];
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                               at:(CGFloat)posSeconds
@@ -733,6 +738,7 @@
         [videoBGHistroy_ addObject:videoBg_];
         [reverseBgHistory_ addObject:reverseBG_];
         [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+        [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
         
         NSLog(@"items saved.");
     }
@@ -743,18 +749,39 @@
     
     return YES;
 }
+- (BOOL) loadOrigin
+{
+    if(videoBGHistroy_.count<=0) return NO;
+    
+    videoBg_ = [videoBGHistroy_ lastObject];
+    reverseBG_ = [reverseBgHistory_ lastObject];
+    currentFilterIndex_ = 0;
+    [actionList_ removeAllObjects];
+    
+    [actionsHistory_ removeAllObjects];
+    [reverseBgHistory_ removeAllObjects];
+    [videoBGHistroy_ removeAllObjects];
+    [filterHistory_ removeAllObjects];
+    
+    [self reindexAllActions];
+    
+    return YES;
+}
 - (BOOL) loadLastDraft
 {
     if(videoBGHistroy_.count<=0) return NO;
     
     videoBg_ = [videoBGHistroy_ lastObject];
     reverseBG_ = [reverseBgHistory_ lastObject];
+    currentFilterIndex_ = [[filterHistory_ lastObject]intValue];
     [actionList_ removeAllObjects];
-    [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
+    //    [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
     
     [actionsHistory_ removeObjectAtIndex:actionsHistory_.count-1];
     [videoBGHistroy_ removeObjectAtIndex:videoBGHistroy_.count-1];
     [reverseBgHistory_ removeObjectAtIndex:reverseBgHistory_.count-1];
+    [filterHistory_ removeObjectAtIndex:filterHistory_.count-1];
+    
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
@@ -765,21 +792,43 @@
     
     videoBg_ = [videoBGHistroy_ firstObject];
     reverseBG_ = [reverseBgHistory_ firstObject];
+    currentFilterIndex_ = [[filterHistory_ firstObject]intValue];
     [actionList_ removeAllObjects];
-    [actionList_ addObjectsFromArray:[actionsHistory_ firstObject]];
+    //不要赋值
+    //    [actionList_ addObjectsFromArray:[actionsHistory_ firstObject]];
     [actionsHistory_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
+    [filterHistory_ removeAllObjects];
     
     [actionsHistory_ addObject:actionList_];
     [reverseBgHistory_ addObject:reverseBG_];
     [videoBGHistroy_ addObject:videoBg_];
+    [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
 }
-
+- (int) getHistoryCount
+{
+    return (int)videoBGHistroy_.count;
+}
+- (BOOL) getDraft:(int)index base:(MediaItem *__autoreleasing *)baseVideo reverse:(MediaItem *__autoreleasing *)reverseVideo actionList:(NSArray *__autoreleasing *)actionList filterID:(int *)filterID
+{
+    if(videoBGHistroy_.count <= index)
+        return NO;
+    if(baseVideo)
+        *baseVideo = [videoBGHistroy_ objectAtIndex:index];
+    if(reverseVideo)
+        *reverseVideo = [reverseBgHistory_ objectAtIndex:index];
+    if(*actionList)
+        *actionList = [actionsHistory_ objectAtIndex:index];
+    if(*filterID)
+        *filterID = [[filterHistory_ objectAtIndex:index]intValue];
+    
+    return YES;
+}
 - (BOOL) needGenerateForOP
 {
     return actionList_.count>0 ;//|| (lastFilterIndex_ != currentFilterIndex_);
