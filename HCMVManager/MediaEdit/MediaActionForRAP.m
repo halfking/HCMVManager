@@ -16,6 +16,7 @@
     if(self =[super init])
     {
         self.IsOverlap = NO;
+        self.IsReverse = NO;
     }
     return self;
 }

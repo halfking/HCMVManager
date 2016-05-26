@@ -467,6 +467,7 @@
         action.IsMutex = NO;
         action.isOPCompleted = NO;
         action.Rate = 1;
+        action.IsReverse = YES;
         
         
         if([manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1])
@@ -483,7 +484,7 @@
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
             CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-            CGFloat end = [manager_ getSecondsWithoutAction:seconds];
+            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
             CGFloat duration = end - playerPos;
             
             [manager_ setActionItemDuration:actionDo duration:duration];

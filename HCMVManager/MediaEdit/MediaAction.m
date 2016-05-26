@@ -19,6 +19,7 @@
 @synthesize Rate,ReverseSeconds,DurationInSeconds,IsMutex,IsFilter,IsOverlap;
 @synthesize isOPCompleted;
 @synthesize secondsBeginAdjust;
+@synthesize IsReverse;
 -(id)init
 {
     self = [super init];
@@ -33,6 +34,7 @@
         self.IsFilter = NO;
         self.IsOverlap = YES;
         self.isOPCompleted = YES;
+        self.IsReverse = NO;
         self.secondsBeginAdjust = 0;//- 0.15;
     }
     return self;
@@ -93,6 +95,7 @@
     item.IsOverlap = self.IsOverlap;
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
+    item.IsReverse = self.IsReverse;
     return item;
 }
 - (void)dealloc

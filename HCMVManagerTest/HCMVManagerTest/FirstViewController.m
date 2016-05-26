@@ -153,16 +153,39 @@
 //        
 //        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
 //    }
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = SSlow;
+//        action.ReverseSeconds = 0 ;
+//        action.IsOverlap = YES;
+//        action.IsMutex = NO;
+//        action.Rate = 0.33333;
+//        action.isOPCompleted = YES;
+//        [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:0.5];
+//    }
+    
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = SSlow;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = YES;
         action.IsMutex = NO;
-        action.Rate = 0.33333;
+        action.Rate = 0.33;
         action.isOPCompleted = YES;
-        [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:0.5];
+        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
     }
+    
+    
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = SRepeat;
+//        action.ReverseSeconds = -1 ;
+//        action.IsOverlap = NO;
+//        action.IsMutex = NO;
+//        action.Rate = 1;
+//        action.isOPCompleted = YES;
+//        [manager addActionItem:action filePath:nil at:5.5 from:4.5 duration:1];
+//    }
 }
 - (void)beginLongTouch:(id)sender
 {

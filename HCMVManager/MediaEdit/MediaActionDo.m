@@ -40,6 +40,8 @@
     self.IsFilter = action.IsFilter;
     self.isOPCompleted = action.isOPCompleted;
     self.secondsBeginAdjust = action.secondsBeginAdjust;
+    self.IsReverse = action.IsReverse;
+    
 }
 - (MediaActionDo *) copyItemDo
 {
@@ -57,6 +59,7 @@
     item.IsOverlap = self.IsOverlap;
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
+    item.IsReverse = self.IsReverse;
     
     item.Index = self.Index;
     item.SecondsInArray = self.SecondsInArray;
@@ -347,7 +350,6 @@
         {
             CGFloat rate = media.secondsDurationInArray/orgDuration;;
             media.secondsChangedWithActionForPlayer *=  rate;
-            media.durationInPlaying *= rate;
             
         }
         else
@@ -372,7 +374,6 @@
             {
                 CGFloat rate = actionSecond.secondsDurationInArray/orgDuration;;
                 actionSecond.secondsChangedWithActionForPlayer *=  rate;
-                actionSecond.durationInPlaying *= rate;
             }
             else
             {

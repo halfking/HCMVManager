@@ -105,39 +105,44 @@
 - (int) getCurrentFilterID;
 
 - (BOOL)generateReverseMV:(NSString*)filePath;
-- (BOOL) canAddAction:(MediaAction *)action seconds:(CGFloat)seconds;
+// 是否能在指定位置增加一个动作
+// action:当前动作，需要加入的
+// seconds:当前播放器时间，有可能为反向播放器的时间
+- (BOOL) canAddAction:(MediaAction *)action seconds:(CGFloat)playerSeconds;
 
 //将播放器的时间转成素材轨的时间
-- (CGFloat) getSecondsWithoutAction:(CGFloat)playerSeconds;
+//取最后的一个时间作为标准
+//isrevers 标志当前这个时间是属于倒放的时间，如果是正放，则不需要标记
+- (CGFloat) getSecondsInArrayFromPlayer:(CGFloat)playerSeconds isReversePlayer:(BOOL)isReversePlayer;
 - (double) getMediaActionID;
 - (MediaActionDo *) findMediaActionDoByType:(int)actionType;
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
 //posSeconds 为队列中时间 与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 //mediaBeginSeconds 为素材中的起始位置
 - (MediaActionDo *) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
-                   at:(CGFloat)posSeconds
+                   at:(CGFloat)playerSeconds
                              from:(CGFloat)mediaBeginSeconds
              duration:(CGFloat)durationInSeconds;
 
 //重复添加对像
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
-                                 at:(CGFloat)posSeconds;
+                                 at:(CGFloat)playerSeconds;
 
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
-- (BOOL) ensureActions:(CGFloat)currentSeconds; //将未完成的Action完成，一般用于播放完成
+- (BOOL) ensureActions:(CGFloat)playerSeconds; //将未完成的Action完成，一般用于播放完成
 
 //注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
-- (MediaActionDo *)findActionAt:(CGFloat)seconds
+- (MediaActionDo *)findActionAt:(CGFloat)secondsInArray
                           index:(int)index;
 
 //注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
-- (MediaWithAction *)findMediaItemAt:(CGFloat)seconds;
+- (MediaWithAction *)findMediaItemAt:(CGFloat)secondsInArray;
 
 - (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index;
 //注意此时的posSeconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (BOOL) removeActionItem:(MediaAction *)action
-                      at:(CGFloat)posSeconds;
+                      at:(CGFloat)seccondsInArray;
 
 - (BOOL) removeActionItem:(MediaActionDo *)actionDo;
 - (BOOL) removeActions;

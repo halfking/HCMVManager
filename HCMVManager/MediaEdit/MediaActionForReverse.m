@@ -16,6 +16,7 @@
     if(self =[super init])
     {
         self.IsOverlap = NO;
+        self.IsReverse = YES;
     }
     return self;
 }
@@ -342,7 +343,7 @@
         {
             CGFloat rate = media.secondsDurationInArray/orgDuration;;
             media.secondsChangedWithActionForPlayer *=  rate;
-            media.durationInPlaying *= rate;
+//            media.durationInPlaying *= rate;
             
         }
         else
@@ -364,7 +365,7 @@
             {
                 CGFloat rate = actionSecond.secondsDurationInArray/orgDuration;;
                 actionSecond.secondsChangedWithActionForPlayer *=  rate;
-                actionSecond.durationInPlaying *= rate;
+//                actionSecond.durationInPlaying *= rate;
                 
             }
             else
@@ -397,7 +398,7 @@
                 {
                     CGFloat rate = media.secondsDurationInArray/orgDuration;;
                     media.secondsChangedWithActionForPlayer *=  rate;
-                    media.durationInPlaying *= rate;
+//                    media.durationInPlaying *= rate;
                     
                 }
                 else

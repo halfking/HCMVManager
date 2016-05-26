@@ -98,7 +98,7 @@
                                          end:[NSString stringWithFormat:@"%.2f",item.secondsDurationInArray + item.secondsInArray]
                                  sourceBegin:[NSString stringWithFormat:@"%.2f",item.secondsBegin]
                                    sourceEnd:[NSString stringWithFormat:@"%.2f",item.secondsEnd]
-                     rightText:[NSString stringWithFormat:@"(%.2f)",item.durationInPlaying]
+                     rightText:[NSString stringWithFormat:@"(%.2f/%.2f)",item.durationInPlaying,item.secondsDurationInArray]
                      ];
     [self addSubview:line];
 }
@@ -161,7 +161,7 @@
         
         if(rightText && rightText.length>0)
         {
-            UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(frame.size.width + 20, frame.size.height - 10, 50, 10)];
+            UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(frame.size.width + 20, frame.size.height - 10, 100, 10)];
             titleLabel.font = font;
             titleLabel.text = rightText;
             titleLabel.textColor = [UIColor redColor];

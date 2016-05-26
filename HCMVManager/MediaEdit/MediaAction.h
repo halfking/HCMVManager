@@ -36,6 +36,7 @@ typedef NS_ENUM(int, SType)
 @property (nonatomic,assign)    BOOL IsFilter;      //是否滤镜
 @property (nonatomic,assign)    BOOL IsOverlap;     //对于源视频是否进行覆盖
 @property (nonatomic,assign)    BOOL isOPCompleted; //是否操作完成？当Action长按操作时，有可能操作没有完成，需要另外的函数来处理完成
+@property (nonatomic,assign)    BOOL IsReverse;     //是否需要倒放的
 //@property (nonatomic,assign)
 
 - (NSArray *) getSubActionList;
