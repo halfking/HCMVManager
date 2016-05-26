@@ -165,7 +165,7 @@
                                                           overlap:self.IsOverlap];
     
     //    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
-    //需要校正前一个的数据结尾是否正常
+    //需要校正前一个的数据结尾是否正常，非IsOverLap的在分割时已经处理过了。
     if(mediaToSplit && mediaToSplit!=mediaToTail && self.IsOverlap)
     {
         //获取之前所有的对像的播放器时间影响
@@ -215,7 +215,7 @@
             isHead = NO;
             
             //如果后一段就是从前而切出来的，则直接将其后的加入到队列中
-            if(!mediaToTail || mediaToTail==mediaToSplit)
+            if(!mediaToTail || mediaToTail==mediaToSplit || !self.IsOverlap)
             {
                 isTail = YES;
             }
@@ -506,6 +506,7 @@
     CGFloat seconds = self.SecondsInArray;
     CGFloat duration = self.DurationInArray;
     for (MediaWithAction * item in sources) {
+        
         MediaWithAction * matchItem = nil;
         //第一个或跨界的
         if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
@@ -537,7 +538,7 @@
         }
         if(matchItem )
         {
-            if(fabs(matchItem.secondsInArray - self.SecondsInArray)<0.01 && matchItem.Action.ActionType == self.ActionType)
+            if(matchItem.Action.MediaActionID == self.MediaActionID)
             {
                 NSLog(@"matched..same....");
             }

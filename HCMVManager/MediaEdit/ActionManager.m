@@ -498,8 +498,7 @@
         return nil;
     }
     //Repeat，需要将定位放到前面
-    
-    if(item.ActionType==SRepeat)
+    if(item.ActionType==SRepeat && item.ReverseSeconds<0)
     {
         item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
     }
