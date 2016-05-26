@@ -67,6 +67,7 @@
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
         isGeneratingByFilter_ = NO;
+        isGenerating_ = NO;
         lastFilterIndex_ = 0;
         currentFilterIndex_ = 0;
         videoVol_ = 1;
@@ -78,6 +79,7 @@
 {
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
+    isGenerating_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
     
@@ -218,6 +220,7 @@
         NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
         
         VideoGenerater * vg = [VideoGenerater new];
+        vg.TagID = 2;
         __weak ActionManager * weakSelf = self;
         [vg generateMVReverse:filePath target:outputPath
                      complted:^(NSString * filePathNew){
@@ -344,24 +347,26 @@
 }
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)seconds
 {
+    if(isGenerating_) return NO;
+    
     if(action.ActionType==SReverse && !reverseBG_)
     {
         return NO;
     }
     
-    if([self findActionAt:seconds index:-1])
-    {
-        return NO;
-    }
-    else
-    {
+//    if([self findActionAt:seconds index:-1])
+//    {
+//        return NO;
+//    }
+//    else
+//    {
         if(seconds<0||seconds>= videoBg_.secondsDuration)
             return NO;
         else
         {
             return YES;
         }
-    }
+//    }
 }
 //将播放器时间转为原轨时间
 //当Rate发生变化时，播放器的时间并不发生变化，即播放到同一片段时，播放器返回的时钟值在不同速率时是相同的
@@ -879,6 +884,7 @@
 - (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress
 {
     NSLog(@"progress:%f",progress);
+    
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:isFilter:)])
     {
         [self.delegate ActionManager:self generateProgress:progress isFilter:NO];
@@ -888,6 +894,7 @@
 {
     NSLog(@"generate failure:%@",msg);
     NSLog(@"error:%@",[error localizedDescription]);
+    isGenerating_ = NO;
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
@@ -895,7 +902,7 @@
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
-    
+    isGenerating_ = NO;
     NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];

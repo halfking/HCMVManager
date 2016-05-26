@@ -78,7 +78,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 @property(readwrite,nonatomic) AVPlayerItem *previewAVPlayItem;
 @property(readonly,nonatomic) BOOL previewAVassetIsReady;
 @property(nonatomic,assign,readonly) CGSize renderSize;
-
+@property (nonatomic,assign) int TagID; //增加Tag标志
 
 - (void) setJoinAudioUrlWithDraft:(NSURL *)mixedAudioUrl;   //设置合成的音频文件路径，有可能是音频已经生成，直接设置即可
 - (void) setRenderSize:(CGSize)size

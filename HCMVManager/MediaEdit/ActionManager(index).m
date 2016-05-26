@@ -92,6 +92,8 @@
     {
         return NO;
     }
+    if(isGenerating_) return NO;
+    isGenerating_ = YES;
     //    //滤镜处理
     //    if(actionList_.count==0)
     //    {
@@ -119,7 +121,7 @@
     vg.volRampSeconds = 0;
     vg.compositeLyric = NO;
     vg.delegate = self;
-    
+    vg.TagID = 1;
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgmUrl:audioBg_.url];
@@ -174,6 +176,7 @@
                 }];
     if(!ret)
     {
+        isGenerating_ = NO;
         NSLog(@"generate failure.");
     }
     return ret;
