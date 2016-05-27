@@ -135,7 +135,8 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 @property (nonatomic,PP_STRONG) NSString * Tags; //当前的相关信息
 @property (nonatomic,PP_STRONG) NSString * Memo; //当前描述
 //@property (nonatomic,PP_STRONG) CALayer * WaterMarkLayer;
-
+@property (nonatomic,assign) BOOL addWaterMark;
+@property (nonatomic,assign) BOOL addLyricLayer;
 @property (nonatomic, PP_STRONG) NSObject * UserData;
 
 + (id)Instance;
@@ -254,7 +255,7 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 - (void)    joinMedias:(int)retryCount;
 - (void)    cancelExporter;
 - (void)    regenerateItems;
-- (void)    recheckGenerateQueue;
+- (BOOL)    recheckGenerateQueue;
 - (BOOL)    generateAudio:(CMTime)begin end:(CMTime)end completed:(audioGenerateCompleted)completed;
 - (BOOL)    generateAudio:(audioGenerateCompleted)completed;
 - (BOOL)    needRegenerate;

@@ -345,6 +345,7 @@
 }
 - (void) resetGenerateInfo
 {
+    PP_RELEASE(_waterMarkFile);
     previewAVassetIsReady = NO;
     PP_RELEASE(_mixComposition);
     PP_RELEASE(_videoComposition);

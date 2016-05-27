@@ -39,7 +39,7 @@
 @synthesize player = player_;
 @synthesize playerItem = playerItem_;
 @synthesize secondsPlaying = secondsPlaying_;
-
+@synthesize key = key_;
 + (instancetype)sharedHCPlayerSimple
 {
     return sharedPlayerView;

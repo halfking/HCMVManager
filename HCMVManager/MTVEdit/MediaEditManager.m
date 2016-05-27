@@ -117,6 +117,9 @@
         
         needRegenerate_ = NO;
         
+        self.addLyricLayer = YES;
+        self.addWaterMark = YES;
+        
         orgBgVolume_ = playVolumeWhenRecord_;
         orgSingVolumne_ = singVolume_;
         
@@ -3798,15 +3801,15 @@ static BOOL isGenerateAudioing_ = NO;
     }
     return ret;
 }
-- (void)recheckGenerateQueue
+- (BOOL)recheckGenerateQueue
 {
-    if(isGenerating_) return;
+    if(isGenerating_) return NO;
     if(needCreateBGVideo_)
     {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self recheckGenerateQueue];
         });
-        return;
+        return YES;
     }
     NSLog(@"generating.....or:%d size:%@",self.DeviceOrietation,NSStringFromCGSize(renderSize));
     
@@ -3819,13 +3822,41 @@ static BOOL isGenerateAudioing_ = NO;
             {
                 [self VideoGenerater:videoGenerater_ didPlayerItemReady:item];
                 isGenerating_ = NO;
-                return ;
+                return NO;
             }
         }
         else
         {
             [videoGenerater_ resetGenerateInfo];
         }
+        
+        if(self.addLyricLayer)
+        {
+            [self checkLyricInfo:lyricList_ begin:lyricBegin_ duration:lyricDuration_];
+        }
+        if(self.addWaterMark)
+        {
+            videoGenerater_.waterMarkFile = waterMarkFile_;
+        }
+        else
+        {
+            videoGenerater_.waterMarkFile = nil;
+        }
+        videoGenerater_.mergeRate = mergeRate_;
+        videoGenerater_.volRampSeconds = volRampSeconds_;
+        
+        [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
+        [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
+        
+        if(self.mergeMTVItem.MTVID>0 || !self.addLyricLayer)
+        {
+            videoGenerater_.compositeLyric = NO;
+        }
+        else
+        {
+            videoGenerater_.compositeLyric = YES;
+        }
+        
         
         NSArray * exportItemList = [[MediaListModel shareObject]checkMediaTimeLine:videoGenerater_.totalBeginTime endTime:videoGenerater_.totalEndTime resetBegin:YES];
         [[MediaListModel shareObject]checkTempAVStatus];
@@ -3846,26 +3877,10 @@ static BOOL isGenerateAudioing_ = NO;
                 }
             }
         }
-        [self checkLyricInfo:lyricList_ begin:lyricBegin_ duration:lyricDuration_];
-        
-        videoGenerater_.waterMarkFile = waterMarkFile_;
-        videoGenerater_.mergeRate = mergeRate_;
-        videoGenerater_.volRampSeconds = volRampSeconds_;
-        
-        [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
-        [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
-        
-        if(self.mergeMTVItem.MTVID>0)
-        {
-            videoGenerater_.compositeLyric = NO;
-        }
-        else
-        {
-            videoGenerater_.compositeLyric = YES;
-        }
-        
+       
         if (!audioMixUrl_ || !audioExists) {
-            BOOL ret = [self generateAudio:videoGenerater_.totalBeginTime end:videoGenerater_.totalEndTime
+            BOOL ret = [self generateAudio:videoGenerater_.totalBeginTime
+                                       end:videoGenerater_.totalEndTime
                                  completed:^(NSURL * audioUrl,NSError * error)
                         {
                             [videoGenerater_ generatePreviewAsset:exportItemList bgVolume:playVolumeWhenRecord_ singVolume:singVolume_ completion:^(BOOL finished) {
@@ -3896,6 +3911,7 @@ static BOOL isGenerateAudioing_ = NO;
         isGenerateAudioing_ = NO;
         isGenerating_ = NO;
     }
+    return YES;
 }
 - (void)checkLyricInfo:(NSArray*)lyricList begin:(CGFloat)lyricBegin duration:(CGFloat)lyricDuration
 {
@@ -3925,7 +3941,9 @@ static BOOL isGenerateAudioing_ = NO;
     
     
     
-    NSArray * exportItemList = [[MediaListModel shareObject]checkMediaTimeLine:videoGenerater_.totalBeginTime endTime:videoGenerater_.totalEndTime resetBegin:YES];
+    NSArray * exportItemList = [[MediaListModel shareObject]checkMediaTimeLine:videoGenerater_.totalBeginTime
+                                                                       endTime:videoGenerater_.totalEndTime
+                                                                    resetBegin:YES];
     
     if([videoGenerater_ needRebuildPreviewMV:exportItemList bgVol:playVolumeWhenRecord_ singVol:singVolume_])
     {
