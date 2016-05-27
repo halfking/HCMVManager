@@ -1054,7 +1054,7 @@
         NSInteger imageCnt = 0;
         NSInteger videoCnt = 0;
         CMTimeValue lastTimeValue = 0;
-        
+        BOOL hasAudioTrack = NO;
         for (int i = 0 ; i < mediaList.count ; i ++ ) {
             MediaItem * curItem = [mediaList objectAtIndex:i];
             
@@ -1075,7 +1075,8 @@
                                                  videoLayers:videoLayerInstruction
                                                   audioTrack:audioTrack
                                                         rate:rate
-                                                        size:&size];
+                                                        size:&size
+                                        hasAudioTrack:&hasAudioTrack];
             
             if(CMTimeCompare(modalOffEtInQueue, kCMTimeZero)==0) continue;
             
@@ -1107,7 +1108,7 @@
         }
         range = videoTrack.timeRange;
         
-        if(audioTrack)
+        if(audioTrack && hasAudioTrack)
         {
             AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:audioTrack];
             [trackMix setVolume:singVolume_ atTime:kCMTimeZero];
@@ -1464,8 +1465,11 @@
                 audioTrack:(AVMutableCompositionTrack *)audioTrack
                       rate:(CGFloat)rate
                       size:(CGSize *)size
+             hasAudioTrack:(BOOL *) hasAudioTrack
 {
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
+    if(hasAudioTrack)
+    *hasAudioTrack = NO;
     if(!curAsset || CMTimeGetSeconds(curAsset.duration)<0.01)
     {
         NSLog(@"join video: %@ duration:%.1f skipped",curItem.fileName,CMTimeGetSeconds(curAsset.duration));
@@ -1665,6 +1669,8 @@
                 NSLog(@"join video:(insert audio) error: %@",[error localizedDescription]);
                 //                return kCMTimeZero;
             }
+            if(hasAudioTrack)
+                *hasAudioTrack = YES;
         }
         
         if((rate>0 && rate!=1.0)||(curItem.playRate!=1 && curItem.playRate>0))

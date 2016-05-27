@@ -88,10 +88,10 @@
 #pragma mark - export
 - (BOOL) generateMV
 {
-    if(![self needGenerateForOP])
-    {
-        return NO;
-    }
+//    if(![self needGenerateForOP])
+//    {
+//        return NO;
+//    }
     if(isGenerating_) return NO;
     isGenerating_ = YES;
     //    //滤镜处理
@@ -122,6 +122,7 @@
     vg.compositeLyric = NO;
     vg.delegate = self;
     vg.TagID = 1;
+    
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgmUrl:audioBg_.url];
