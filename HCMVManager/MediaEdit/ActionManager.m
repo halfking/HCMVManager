@@ -340,9 +340,12 @@
 - (BOOL)setBackAudio:(MediaItem *)audioItem
 {
     PP_RELEASE(audioBg_);
-    audioBg_ = [audioItem copyItem];
-    audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
-    //    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+    if(audioItem)
+    {
+        audioBg_ = [audioItem copyItem];
+        audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+        //    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+    }
     return YES;
 }
 // 是否能在指定位置增加一个动作
@@ -357,19 +360,19 @@
         return NO;
     }
     
-//    if([self findActionAt:seconds index:-1])
-//    {
-//        return NO;
-//    }
-//    else
-//    {
-        if(playerSeconds<0||playerSeconds>= videoBg_.secondsDuration)
-            return NO;
-        else
-        {
-            return YES;
-        }
-//    }
+    //    if([self findActionAt:seconds index:-1])
+    //    {
+    //        return NO;
+    //    }
+    //    else
+    //    {
+    if(playerSeconds<0||playerSeconds>= videoBg_.secondsDuration)
+        return NO;
+    else
+    {
+        return YES;
+    }
+    //    }
 }
 //将播放器时间转为原轨时间
 //当Rate发生变化时，播放器的时间并不发生变化，即播放到同一片段时，播放器返回的时钟值在不同速率时是相同的
@@ -392,18 +395,18 @@
     }
     return secondsInFinal;
     
-//    for (MediaWithAction * item in mediaList_) {
-//        if(item.secondsDurationInArray <=0) continue;
-//        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.secondsDurationInArray && item.secondsInArrayNotConfirm == NO)
-//        {
-//            return item.secondsInArray + (playerSeconds - secondsInFinal);// * item.secondsDurationInArray /item.durationInFinalArray;
-//        }
-//        else
-//        {
-//            secondsInFinal += item.secondsDurationInArray;
-//        }
-//    }
-//    return playerSeconds;
+    //    for (MediaWithAction * item in mediaList_) {
+    //        if(item.secondsDurationInArray <=0) continue;
+    //        if(playerSeconds >=secondsInFinal && playerSeconds < secondsInFinal + item.secondsDurationInArray && item.secondsInArrayNotConfirm == NO)
+    //        {
+    //            return item.secondsInArray + (playerSeconds - secondsInFinal);// * item.secondsDurationInArray /item.durationInFinalArray;
+    //        }
+    //        else
+    //        {
+    //            secondsInFinal += item.secondsDurationInArray;
+    //        }
+    //    }
+    //    return playerSeconds;
 }
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action
 {
@@ -621,8 +624,8 @@
         {
             CGFloat duration = playerSeconds - action.Media.secondsBegin;
             
-//            currentSeconds = reverseBG_.secondsDuration - currentSeconds;
-//            CGFloat duration = MAX(action.SecondsInArray - currentSeconds - secondsEffectPlayer_,0);
+            //            currentSeconds = reverseBG_.secondsDuration - currentSeconds;
+            //            CGFloat duration = MAX(action.SecondsInArray - currentSeconds - secondsEffectPlayer_,0);
             [self setActionItemDuration:action duration:duration];
         }
         else

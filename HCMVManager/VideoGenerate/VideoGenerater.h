@@ -53,6 +53,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 @property (nonatomic,PP_WEAK) id<VideoGeneraterDelegate> delegate;
 @property (nonatomic,assign) int orientation;
 @property (nonatomic, assign) BOOL useFontCamera;
+@property (nonatomic,assign) BOOL bgAudioCanScale;
 @property (nonatomic, assign,readonly) CMTime totalBeginTime; //合成结果位于整个伴奏的起始时间
 @property (nonatomic, assign,readonly) CMTime totalEndTime;   //合成结果位于整个伴奏的终止时间
 

@@ -319,9 +319,16 @@
         {
             scaleAudio = NO;
         }
+        int i = 0;
         while (scaleAudio) {
             [NSThread sleepForTimeInterval:0.1];
             NSLog(@"waiting for scale....");
+            i ++;
+            if(i>100)
+            {
+                NSLog(@"scale audio:(%@) with rate:%.2f failure.",[filePath lastPathComponent],rate);
+                break;
+            }
         }
     }
     if(filePath && [HCFileManager isExistsFile:filePath])

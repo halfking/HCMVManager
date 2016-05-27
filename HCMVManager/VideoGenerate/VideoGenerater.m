@@ -436,8 +436,8 @@
     joinVideoExporter = [SDAVAssetExportSession exportSessionWithAsset:_mixComposition];
     joinVideoExporter.outputURL = pathForFinalVideo;
     
-//    AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions firstObject];
-//    joinVideoExporter.timeRange = instructs.timeRange;
+    //    AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions firstObject];
+    //    joinVideoExporter.timeRange = instructs.timeRange;
     
     [[HCFileManager manager]removeFileAtPath:[pathForFinalVideo path]];
     
@@ -609,7 +609,7 @@
         }
         
         CGAffineTransform  transfer = track.preferredTransform;
-       
+        
         [bgvTrack setPreferredTransform:transfer];
         
         AVMutableVideoCompositionLayerInstruction *bgvLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:bgvTrack];
@@ -1076,7 +1076,7 @@
                                                   audioTrack:audioTrack
                                                         rate:rate
                                                         size:&size
-                                        hasAudioTrack:&hasAudioTrack];
+                                               hasAudioTrack:&hasAudioTrack];
             
             if(CMTimeCompare(modalOffEtInQueue, kCMTimeZero)==0) continue;
             
@@ -1469,7 +1469,7 @@
 {
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
     if(hasAudioTrack)
-    *hasAudioTrack = NO;
+        *hasAudioTrack = NO;
     if(!curAsset || CMTimeGetSeconds(curAsset.duration)<0.01)
     {
         NSLog(@"join video: %@ duration:%.1f skipped",curItem.fileName,CMTimeGetSeconds(curAsset.duration));
@@ -1894,18 +1894,33 @@
     //需要判断是否已经将人声与背景合成了
     int justUseBgAudio =!hasAudioJoined || ( bgmAsset && hasAudioJoined && [[bgmAsset.URL path]isEqualToString:[joinAudioUrl path]])?1:0;
     //是否已经合成的，然后下载过来的。根据文件所在的目录可以判断
-    BOOL isCapture =  [[[HCFileManager manager] getFileName:[bgvUrl path]] hasPrefix:[udManager_ localFileDir]]?NO:YES;
+    BOOL isCapture =  !bgvUrl
+    || [[[HCFileManager manager] getFileName:[bgvUrl path]] hasPrefix:[udManager_ localFileDir]]
+    ?NO:YES;
     
+    //混合背景音乐
     if((bgmAsset && justUseBgAudio==1) || isCapture)
     {
-        AVMutableAudioMixInputParameters * trackMix = [self addAudioTrackWithUrl:bgmAsset.URL composite:mixComposition maxTime:curTimeCnt rate:rate needScaleIfRateNotZero:!useAudioInVideo vol:(hasAudioJoined?bgAudioVolume_:1)];
+        AVMutableAudioMixInputParameters * trackMix =
+        [self addAudioTrackWithUrl:bgmAsset.URL
+                         composite:mixComposition
+                           maxTime:curTimeCnt
+                              rate:rate
+            needScaleIfRateNotZero:!useAudioInVideo && self.bgAudioCanScale
+                               vol:(hasAudioJoined?bgAudioVolume_:1)];
         if(trackMix)
             [audioMixParams addObject:trackMix];
     }
     
     if(justUseBgAudio==0 && hasAudioJoined)
     {
-        AVMutableAudioMixInputParameters * trackMix = [self addAudioTrackWithUrl:joinAudioUrl composite:mixComposition maxTime:curTimeCnt rate:rate needScaleIfRateNotZero:YES vol:(!bgmAsset)?1:singVolume_];
+        AVMutableAudioMixInputParameters * trackMix =
+        [self addAudioTrackWithUrl:joinAudioUrl
+                         composite:mixComposition
+                           maxTime:curTimeCnt
+                              rate:rate
+            needScaleIfRateNotZero:YES && self.bgAudioCanScale
+                               vol:(!bgmAsset)?1:singVolume_];
         if(trackMix)
             [audioMixParams addObject:trackMix];
     }
@@ -1950,7 +1965,10 @@
     //使用视频中的原因，因此不需要处理
     if(!needScale)
     {
-        
+        if(CMTimeGetSeconds(duration)>CMTimeGetSeconds(curTimeCnt))
+        {
+            duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(curTimeCnt), duration.timescale);
+        }
     }
     else
     {
@@ -1964,7 +1982,7 @@
         else
         {
             rate = CMTimeGetSeconds(bgAudioTime)/CMTimeGetSeconds(curTimeCnt);
-            if(rate >=1.01 || rate <=0.99)
+            if((rate >=1.01 && rate <= 10) || (rate >=0.1 && rate <=0.99))//限制范围
             {
                 NSString * filePath = [[AudioGenerater new]scaleAudio:asset withRate:rate beginSeconds:0 endSeconds:-1];
                 
