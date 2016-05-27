@@ -447,6 +447,9 @@
     joinVideoExporter.videoComposition = _videoComposition;
     joinVideoExporter.audioMix = _audioMixOnce;
     
+    if(joinTimeRange_.duration.value>0)
+        joinVideoExporter.timeRange = joinTimeRange_;
+    
     CGSize renderSize = _videoComposition.renderSize;// [self getRenderSize];
     if(renderSize.width==0||renderSize.height==0)
     {
@@ -1132,6 +1135,7 @@
         [audioMixParams addObjectsFromArray:audioParamters];
     }
     
+    joinTimeRange_ = range;
     //set values
     {
         bgmMix.inputParameters = audioMixParams;

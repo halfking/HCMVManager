@@ -46,7 +46,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
     
     SDAVAssetExportSession *joinVideoExporter;
     
-    
+    CMTimeRange joinTimeRange_;
     CGFloat bgAudioVolume_;//伴奏音乐音量,0-1
     CGFloat singVolume_;//人声 0-1
 }
