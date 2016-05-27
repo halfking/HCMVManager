@@ -83,6 +83,7 @@
 }
 - (MediaActionDo *) copyItemDo
 {
+    NSLog(@"action normal copy item");
     MediaActionForNormal * item = [MediaActionForNormal new];
     item.MediaActionID =  self.MediaActionID;
     item.ActionTitle =  self.ActionTitle;

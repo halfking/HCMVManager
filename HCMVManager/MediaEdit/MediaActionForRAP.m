@@ -298,6 +298,7 @@
 }
 - (MediaActionDo *) copyItemDo
 {
+    NSLog(@"action rap copy item");
     MediaActionForRAP * item = [MediaActionForRAP new];
     item.MediaActionID =  self.MediaActionID;
     item.ActionTitle =  self.ActionTitle;

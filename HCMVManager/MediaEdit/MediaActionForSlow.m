@@ -91,6 +91,7 @@
 }
 - (MediaActionDo *) copyItemDo
 {
+    NSLog(@"action slow copy item");
     MediaActionForSlow * item = [MediaActionForSlow new];
     item.MediaActionID =  self.MediaActionID;
     item.ActionTitle =  self.ActionTitle;

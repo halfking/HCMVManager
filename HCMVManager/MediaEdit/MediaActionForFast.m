@@ -86,6 +86,7 @@
 }
 - (MediaActionDo *) copyItemDo
 {
+    NSLog(@"action fast copy item");
     MediaActionForFast * item = [MediaActionForFast new];
     item.MediaActionID =  self.MediaActionID;
     item.ActionTitle =  self.ActionTitle;

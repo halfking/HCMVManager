@@ -431,6 +431,7 @@
 }
 - (MediaActionDo *) copyItemDo
 {
+    NSLog(@"action fast reverse item");
     MediaActionForReverse * item = [MediaActionForReverse new];
     item.MediaActionID =  self.MediaActionID;
     item.ActionTitle =  self.ActionTitle;
