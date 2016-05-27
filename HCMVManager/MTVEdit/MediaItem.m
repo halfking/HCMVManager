@@ -31,6 +31,8 @@
         self.TableName = @"mediaitems";
         self.KeyName = @"key";
         secondsDurationInArray = -1;
+        playRate = 1;
+        
     }
     return self;
 }

@@ -1064,8 +1064,7 @@
     }
     if(removeList.count>0)
     {
-        UDManager * um = [UDManager sharedUDManager];
-        
+//        UDManager * um = [UDManager sharedUDManager];
         for (AudioItem * item in removeList) {
             if(item.filePath && item.filePath.length>0)
             {
@@ -3832,7 +3831,12 @@ static BOOL isGenerateAudioing_ = NO;
         
         if(self.addLyricLayer)
         {
+            videoGenerater_.compositeLyric = YES;
             [self checkLyricInfo:lyricList_ begin:lyricBegin_ duration:lyricDuration_];
+        }
+        else
+        {
+            videoGenerater_.compositeLyric = NO;
         }
         if(self.addWaterMark)
         {
@@ -3848,20 +3852,20 @@ static BOOL isGenerateAudioing_ = NO;
         [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
         [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
         
-        if(self.mergeMTVItem.MTVID>0 || !self.addLyricLayer)
-        {
-            videoGenerater_.compositeLyric = NO;
-        }
-        else
-        {
-            videoGenerater_.compositeLyric = YES;
-        }
+//        if(self.mergeMTVItem.MTVID>0 || !self.addLyricLayer)
+//        {
+//            videoGenerater_.compositeLyric = NO;
+//        }
+//        else
+//        {
+//            videoGenerater_.compositeLyric = YES;
+//        }
         
         
         NSArray * exportItemList = [[MediaListModel shareObject]checkMediaTimeLine:videoGenerater_.totalBeginTime endTime:videoGenerater_.totalEndTime resetBegin:YES];
         [[MediaListModel shareObject]checkTempAVStatus];
         
-        BOOL audioExists = NO;
+        BOOL needGenerateAudio = (audioList_ && audioList_.count>0);
         if(audioMixUrl_)
         {
             NSString * filePath = [HCFileManager checkPath:[audioMixUrl_ path]];
@@ -3873,12 +3877,12 @@ static BOOL isGenerateAudioing_ = NO;
                 {
                     PP_RELEASE(audioMixUrl_);
                     audioMixUrl_ = [NSURL fileURLWithPath:newPath];
-                    audioExists = YES;
+                    needGenerateAudio = NO;
                 }
             }
         }
        
-        if (!audioMixUrl_ || !audioExists) {
+        if (needGenerateAudio) {
             BOOL ret = [self generateAudio:videoGenerater_.totalBeginTime
                                        end:videoGenerater_.totalEndTime
                                  completed:^(NSURL * audioUrl,NSError * error)

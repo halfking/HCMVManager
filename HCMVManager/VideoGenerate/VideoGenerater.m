@@ -1126,7 +1126,7 @@
     
     
     //音频混入
-    if(bgmUrl || bgvUrl)
+    if(bgmUrl || bgvUrl || joinAudioUrl)
     {
         NSMutableArray * audioParamters = [self compositeAudioArray:mixComposition maxTime:curTimeCnt rate:rate];
         [audioMixParams addObjectsFromArray:audioParamters];
@@ -1878,12 +1878,14 @@
         bgmAsset = [[AVURLAsset alloc] initWithURL:bgvUrl options:nil];
         useAudioInVideo = YES;
     }
+    
     hasAudioJoined = joinAudioUrl && [HCFileManager isExistsFile:[joinAudioUrl path]];
     
     //需要判断是否已经将人声与背景合成了
     int justUseBgAudio =!hasAudioJoined || ( bgmAsset && hasAudioJoined && [[bgmAsset.URL path]isEqualToString:[joinAudioUrl path]])?1:0;
     //是否已经合成的，然后下载过来的。根据文件所在的目录可以判断
     BOOL isCapture =  [[[HCFileManager manager] getFileName:[bgvUrl path]] hasPrefix:[udManager_ localFileDir]]?NO:YES;
+    
     if((bgmAsset && justUseBgAudio==1) || isCapture)
     {
         AVMutableAudioMixInputParameters * trackMix = [self addAudioTrackWithUrl:bgmAsset.URL composite:mixComposition maxTime:curTimeCnt rate:rate needScaleIfRateNotZero:!useAudioInVideo vol:(hasAudioJoined?bgAudioVolume_:1)];
