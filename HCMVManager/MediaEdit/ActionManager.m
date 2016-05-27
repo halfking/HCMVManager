@@ -556,7 +556,9 @@
                                  at:(CGFloat)playerSeconds
 {
     if(actionDo.isOPCompleted==NO) return nil;
+    
     MediaActionDo * item = [actionDo copyItemDo];
+    
     //Repeat，需要将定位放到前面
     if(item.ActionType==SRepeat)
     {

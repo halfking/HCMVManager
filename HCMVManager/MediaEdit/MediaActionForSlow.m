@@ -89,4 +89,30 @@
     result.Action.DurationInSeconds = result.secondsDurationInArray;
     return result;
 }
+- (MediaActionDo *) copyItemDo
+{
+    MediaActionForSlow * item = [MediaActionForSlow new];
+    item.MediaActionID =  self.MediaActionID;
+    item.ActionTitle =  self.ActionTitle;
+    item.ActionIcon = self.ActionIcon;
+    item.ActionType = self.ActionType;
+    item.SubActions = self.SubActions;
+    item.Rate = self.Rate;
+    item.ReverseSeconds =  self.ReverseSeconds;
+    item.DurationInSeconds = self.DurationInSeconds;
+    item.IsMutex = self.IsMutex;
+    item.IsFilter = self.IsFilter;
+    item.IsOverlap = self.IsOverlap;
+    item.isOPCompleted = self.isOPCompleted;
+    item.secondsBeginAdjust = self.secondsBeginAdjust;
+    item.IsReverse = self.IsReverse;
+    
+    item.Index = self.Index;
+    item.SecondsInArray = self.SecondsInArray;
+    item.DurationInArray = self.DurationInArray;
+    item.Media = [MediaItemCore new];
+    [item.Media fetchAsCore:self.Media];
+    
+    return item;
+}
 @end
