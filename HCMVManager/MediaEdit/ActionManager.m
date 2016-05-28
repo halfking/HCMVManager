@@ -77,6 +77,21 @@
     }
     return self;
 }
+- (void)resetStates
+{
+    isGeneratingByFilter_ = NO;
+    isReverseGenerating_ = NO;
+    isGenerating_ = NO;
+    currentFilterIndex_ = 0;
+    lastFilterIndex_ = 0;
+    needSendPlayControl_ = YES;
+    durationForSource_ = 0;
+    durationForAudio_ = 0;
+    durationForTarget_ = 0;
+    
+    videoVol_ = 1;
+    audioVol_ = 1;
+}
 - (void)clear
 {
     isGeneratingByFilter_ = NO;
@@ -558,7 +573,17 @@
         {
             item.Media = [videoBg_ copyAsCore];
             //重新设置开始与结束时间
-            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds, item.Media.begin.timescale);
+            
+            if(item.ActionType==SRepeat && item.ReverseSeconds>=0 && durationInSeconds>0)
+            {
+                item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds - durationInSeconds,
+                                      item.Media.begin.timescale);
+            }
+            else
+            {
+                item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds,
+                                                         item.Media.begin.timescale);
+            }
             if(durationInSeconds>0)
             {
                 item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
@@ -899,8 +924,8 @@
 {
     if(videoBGHistroy_.count<=0) return NO;
     
-    videoBg_ = [videoBGHistroy_ lastObject];
-    reverseBG_ = [reverseBgHistory_ lastObject];
+    videoBg_ = [videoBGHistroy_ firstObject];
+    reverseBG_ = [reverseBgHistory_ firstObject];
     currentFilterIndex_ = 0;
     [actionList_ removeAllObjects];
     

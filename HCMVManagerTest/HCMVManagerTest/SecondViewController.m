@@ -106,7 +106,7 @@
     [manager_ removeActions];
     
     //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"MOV"];
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -458,8 +458,8 @@
     CGFloat secondsPlaying = CMTimeGetSeconds(repeatTime_);
     MediaAction * action = [MediaAction new];
     action.ActionType = SRepeat;
-    action.ReverseSeconds = 0 - RepeatTime;
-    action.DurationInSeconds = RepeatTime;
+    action.ReverseSeconds = 0;// - RepeatTime;
+    action.DurationInSeconds = 1;
     action.IsOverlap = NO;
     action.IsMutex = NO;
     action.isOPCompleted = YES;
@@ -536,7 +536,7 @@
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
-    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+//    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
     
     MediaAction * action = [MediaAction new];
     action.ActionType = SSlow;
@@ -681,6 +681,9 @@
     {
         [self buildControls];
     }
+//    [player_ seek:0 accurate:YES];
+//    [player_ play];
+
     [self hideIndicatorView];
     
 }
@@ -778,10 +781,12 @@
     [player_ pause];
     [rPlayer_ pause];
     [player_ setRate:1];
-    [[ActionManager shareObject]clear];
     
+    [manager_ loadOrigin];
     
-    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+    [[ActionManager shareObject]resetStates];
+    
+//    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
     [player_ play];
 }
 -(void)join:(UIButton *)sender

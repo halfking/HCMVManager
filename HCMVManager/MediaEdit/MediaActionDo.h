@@ -20,7 +20,7 @@
 @property (nonatomic,assign) CGFloat DurationInArray;   //效果持续时长
 @property (nonatomic,PP_STRONG) MediaItemCore * Media;
 @property (nonatomic,PP_STRONG,readonly,getter=get_MaterialList) NSMutableArray * MaterialList;
-
+@property (nonatomic,PP_STRONG) MediaWithAction * mediaToPlay;
 - (void)fetchAsAction:(MediaAction *)action;
 - (MediaActionDo *)copyItemDo;
 

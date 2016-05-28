@@ -328,7 +328,7 @@
     MediaWithAction *  mediaToPlay = nil;
     //Repeat 是将前面1秒的记录为Repeat，然后，将后面的整体切为一段，所以这时候要指向下一个对像
     //时间无效，也应该指向下一个
-    if(seconds == SECONDS_NOTVALID || (seconds == SECONDS_NOEND && action.ActionType ==SRepeat))
+    if(seconds == SECONDS_NOTVALID || (seconds == SECONDS_NOEND && action.ActionType ==SRepeat && action.ReverseSeconds<0))
     {
         if(action.ActionType==SReverse && action.DurationInArray>0)
         {

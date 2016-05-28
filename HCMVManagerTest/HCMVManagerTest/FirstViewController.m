@@ -38,7 +38,7 @@
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(20, 20, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"add" forState:UIControlStateNormal];
+        [btn setTitle:@"testclick" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(addItem:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
@@ -46,7 +46,7 @@
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(104, 20, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"begin" forState:UIControlStateNormal];
+        [btn setTitle:@"testlong" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(beginLongTouch:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
@@ -54,7 +54,7 @@
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(204, 20, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"end" forState:UIControlStateNormal];
+        [btn setTitle:@"testrap" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(endLongTouch:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
@@ -62,7 +62,7 @@
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(304, 20, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"play" forState:UIControlStateNormal];
+        [btn setTitle:@"testshake" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(playItem:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
@@ -103,7 +103,7 @@
     ActionManager * manager = [ActionManager shareObject];
     manager.delegate = self;
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
-    NSString * path = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
+    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"MOV"];
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -140,20 +140,31 @@
 }
 - (void)addItem:(id)sender
 {
-     MediaActionDo * acdo = nil;
+    MediaActionDo * acdo = nil;
     ActionManager * manager = [ActionManager shareObject];
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = 3;
-//        action.ActionTitle = @"Rap";
-//        action.ReverseSeconds = -1;
-//        action.DurationInSeconds = 1;
-//        action.Rate = 1;
-//        action.IsMutex = NO;
-//        action.IsFilter = NO;
-//        
-//        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
-//    }
+
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SSlow;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = YES;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:1 from:1 duration:1];
+    }
+
+        {
+            MediaAction * action = [MediaAction new];
+            action.ActionType = SRepeat;
+            action.ReverseSeconds = 0 ;
+            action.IsOverlap = NO;
+            action.IsMutex = NO;
+            action.Rate = 1;
+            action.isOPCompleted = YES;
+            [manager addActionItem:action filePath:nil at:9 from:9 duration:1];
+        }
+    
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
@@ -162,7 +173,7 @@
         action.IsMutex = NO;
         action.Rate = 1;
         action.isOPCompleted = YES;
-        acdo =  [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:2];
+        acdo =  [manager addActionItem:action filePath:nil at:2 from:2 duration:1];
     }
   
     [manager setPlaySeconds:4.1 isReverse:NO];
@@ -226,16 +237,7 @@
 //        [manager addActionItem:action filePath:nil at:5.5 from:5.5 duration:1];
 //    }
 //
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SRepeat;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:5 from:4 duration:1];
-//    }
+
 //    {
 //        MediaAction * action = [MediaAction new];
 //        action.ActionType = SRepeat;
@@ -404,6 +406,9 @@
 #pragma mark - action manager delgates
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
+    if(testAction_)
+        testAction_.mediaToPlay = mediaToPlay;
+    
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
     dispatch_async(dispatch_get_main_queue(), ^{

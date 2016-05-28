@@ -71,11 +71,45 @@
 - (CGFloat) processNewActions
 {
     MediaActionDo * action = [actionList_ lastObject];
-    
+#ifndef __OPTIMIZE__
+    NSMutableArray * orgMediaList = [NSMutableArray new];
+    [orgMediaList addObjectsFromArray:mediaList_];
+    CGFloat orgSecondsEffect = secondsEffectPlayer_;
+#endif
     mediaList_ = [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
+    
+#ifndef __OPTIMIZE__
+    BOOL hasItem = NO;
+    for (MediaWithAction * item in mediaList_) {
+        if(item.Action.MediaActionID == action.MediaActionID)
+        {
+            hasItem = YES;
+            break;
+        }
+    }
+    if(!hasItem)
+    {
+         mediaList_ = [action processAction:orgMediaList secondsEffected:orgSecondsEffect];
+    }
+#endif
     
     mediaList_ = [self combinateArrayItems:mediaList_];
     
+    
+#ifndef __OPTIMIZE__
+    hasItem = NO;
+    for (MediaWithAction * item in mediaList_) {
+        if(item.Action.MediaActionID == action.MediaActionID)
+        {
+            hasItem = YES;
+            break;
+        }
+    }
+    if(!hasItem)
+    {
+        NSLog(@"has been combinate....");
+    }
+#endif
     durationForTarget_ = 0;
     for (MediaWithAction * action in mediaList_) {
         durationForTarget_ += action.durationInPlaying;
@@ -131,17 +165,17 @@
     NSArray * actionMediaList = [self getMediaList];
     
     NSLog(@"-------------** generate begin **--------------------");
-    NSLog(@"duration:%.2f",durationForTarget_);
-    int index = 0;
-    for (MediaWithAction * item in actionMediaList) {
-        NSLog(@"%@",[item toString]);
-        index ++;
-    }
-    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
+//    NSLog(@"duration:%.2f",durationForTarget_);
+//    int index = 0;
+//    for (MediaWithAction * item in actionMediaList) {
+//        NSLog(@"%@",[item toString]);
+//        index ++;
+//    }
+//    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];
-    vg.waterMarkFile = CT_WATERMARKFILE;
+    vg.waterMarkFile = nil;
     vg.mergeRate = 1;
     vg.volRampSeconds = 0;
     vg.compositeLyric = NO;
