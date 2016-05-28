@@ -497,8 +497,8 @@
         action.IsReverse = YES;
         
         
-        if([manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1])
-        {
+        currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1];
+        if(currentAction_){
             sender.selected = YES;
         }
         
@@ -506,13 +506,21 @@
     } else {
         sender.selected = NO;
         MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
+        if(!actionDo)
+        {
+            secondsInTrack = [manager_ secondsForTrack:seconds];
+            actionDo = [manager_ findActionAt:secondsInTrack index:-1];
+        }
+        actionDo = currentAction_;// [manager_ findActionAt:secondsInTrack index:-1];
         if(actionDo)
         {
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
-            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
-            CGFloat duration = end - playerPos;
+            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
+            
+//            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
+//            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
+//            CGFloat duration = end - playerPos;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
@@ -746,6 +754,9 @@
     
     player_.key = nil;
     rPlayer_.key = nil;
+    [player_ seek:0 accurate:YES];
+    [rPlayer_ seek:0 accurate:YES];
+    
     [self buildControls];
     
     player_.hidden = NO;

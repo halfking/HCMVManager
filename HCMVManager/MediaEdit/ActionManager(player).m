@@ -407,7 +407,9 @@
     if(!isGenerating_)
     {
         //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        if(mediaToPlay.Action.ActionType!=SReverse)
+        NSLog(@"mediaplay:%@ (%.2f)",mediaToPlay.fileName,mediaToPlay.secondsBegin);
+        if(mediaToPlay.Action.ActionType!=SReverse
+           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
         {
             [reversePlayer_ pause];
             [player_ seek:mediaToPlay.secondsBegin accurate:YES];
@@ -449,22 +451,27 @@
     }
     [self.delegate ActionManager:self play:mediaToPlay];
 }
-- (void)setPlaySeconds:(CGFloat)seconds
+- (void)setPlaySeconds:(CGFloat)playerSeconds
 {
+    CGFloat secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     if(!currentMediaWithAction_)
     {
-        currentMediaWithAction_ = [self findMediaItemAt:seconds];
+        currentMediaWithAction_ = [self findMediaItemAt:secondsInArray];
         return ;
     }
     //如果在有效范围内，不处理
-    if(currentMediaWithAction_.secondsDurationInArray<0 || (seconds + secondsEffectPlayer_ <= currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray+SECONDS_ERRORRANGE))
+    NSLog(@"current:%.2f <0 || %.2f + %.2f <=%.2f +%.2f+%.2f",currentMediaWithAction_.secondsDurationInArray,
+          secondsInArray,secondsEffectPlayer_,currentMediaWithAction_.secondsInArray,currentMediaWithAction_.secondsDurationInArray ,SECONDS_ERRORRANGE);
+    if(currentMediaWithAction_.secondsDurationInArray<0
+       || (secondsInArray + secondsEffectPlayer_ <= currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray+SECONDS_ERRORRANGE)
+       || currentMediaWithAction_.secondsEnd+SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
     {
         
     }
     //切换对像
     else
     {
-        MediaActionDo * itemDo = [self findActionAt:seconds index:-1];
+        MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
         [self ActionManager:self play:itemDo seconds:SECONDS_NOEND];
     }
 }

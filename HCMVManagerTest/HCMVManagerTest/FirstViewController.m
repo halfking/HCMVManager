@@ -164,26 +164,37 @@
 //        [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:0.5];
 //    }
     
-    {
-        MediaAction * action = [MediaAction new];
-        action.ActionType = SSlow;
-        action.ReverseSeconds = 0 ;
-        action.IsOverlap = YES;
-        action.IsMutex = NO;
-        action.Rate = 0.33;
-        action.isOPCompleted = YES;
-        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
-    }
-//
 //    {
 //        MediaAction * action = [MediaAction new];
 //        action.ActionType = SSlow;
 //        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
+//        action.IsOverlap = YES;
 //        action.IsMutex = NO;
 //        action.Rate = 0.33;
 //        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:1];
+//        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
+//    }
+
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = SReverse;
+//        action.ReverseSeconds = 0 ;
+//        action.IsOverlap = NO;
+//        action.IsMutex = NO;
+//        action.Rate = 1;
+//        action.isOPCompleted = YES;
+//        [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
+//    }
+    
+//    {
+//        MediaAction * action = [MediaAction new];
+//        action.ActionType = SReverse;
+//        action.ReverseSeconds = 0 ;
+//        action.IsOverlap = NO;
+//        action.IsMutex = NO;
+//        action.Rate = 1;
+//        action.isOPCompleted = YES;
+//        [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
 //    }
 //    {
 //        MediaAction * action = [MediaAction new];
@@ -219,18 +230,35 @@
     MediaActionDo * acdo = nil;
     {
         MediaAction * action = [MediaAction new];
-        action.ActionType = SFast;
+        action.ActionType = SReverse;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.Rate = 1;
         action.isOPCompleted = NO;
-        acdo = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
+        acdo = [manager addActionItem:action filePath:nil at:4 from:4 duration:-1];
     }
+    [manager setActionItemDuration:acdo duration:3];
 //    [manager ensureActions:[manager getBaseVideo].secondsDuration];
     
-    [manager setActionItemDuration:acdo duration:manager.getBaseVideo.secondsDuration - 6];
+//    [manager setActionItemDuration:acdo duration:manager.getBaseVideo.secondsDuration - 6];
     
+    [manager setPlaySeconds:4];
+    
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
+        acdo = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
+    }
+    
+    [manager setActionItemDuration:acdo duration:2];
+    
+    [manager setPlaySeconds:7];
 //    
 //    MediaAction * action = [MediaAction new];
 //    action.ActionType = SReverse;
@@ -357,6 +385,8 @@
 #pragma mark - action manager delgates
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
+    NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
+    NSLog(@"mediaItem:%@",[mediaToPlay toString]);
     dispatch_async(dispatch_get_main_queue(), ^{
     [pannel_ refresh];
     });

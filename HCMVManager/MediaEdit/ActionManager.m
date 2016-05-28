@@ -385,15 +385,67 @@
 {
     CGFloat secondsInFinal = 0;
     
-    for (int i = (int)mediaList_.count-1; i>=0; i --) {
-        MediaWithAction * item = mediaList_[i];
-        if(item.secondsBegin <= playerSeconds &&
-           (item.secondsDurationInArray+item.secondsBegin > playerSeconds || item.secondsInArrayNotConfirm)
-           && isReversePlayer == item.Action.IsReverse)
-        {
-            secondsInFinal = item.secondsInArray + (playerSeconds - item.secondsBegin);
-            break;
+    MediaWithAction * lastDo_ = nil;
+    int index = 0;
+    if(!isReversePlayer)
+    {
+        for (int i = (int)mediaList_.count-1; i>=0; i --) {
+            MediaWithAction * item = mediaList_[i];
+            if(item.secondsBegin <= playerSeconds
+               && item.secondsEnd > playerSeconds
+               && ![self isReverseFile:item.fileName]
+               && !item.secondsInArrayNotConfirm
+               )
+            {
+                index = i;
+                lastDo_ = item;
+                break;
+            }
         }
+    }
+    else
+    {
+        for (int i = (int)mediaList_.count-1; i>=0; i --) {
+            MediaWithAction * item = mediaList_[i];
+            if(item.secondsBegin <= playerSeconds
+               && item.secondsEnd > playerSeconds
+               && [self isReverseFile:item.fileName]
+               && !item.secondsInArrayNotConfirm
+               )
+            {
+                index = i;
+                lastDo_ = item;
+                break;
+            }
+        }
+    }
+    if(lastDo_)
+    {
+        secondsInFinal = lastDo_.secondsInArray;
+        if(lastDo_.Action.ActionType==SReverse)
+        {
+            if([self isReverseFile:lastDo_.fileName])
+            {
+                if(isReversePlayer)
+                {
+                    secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+                }
+                else
+                {
+                    secondsInFinal += [self getReverseVideo].secondsDuration -  lastDo_.secondsBegin +  playerSeconds;
+                    NSLog(@"不应该发生的事情。。。。");
+                }
+            }
+            else
+            {
+                secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+            }
+        }
+        else
+        {
+            secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+        }
+        
     }
     return secondsInFinal;
     
@@ -409,6 +461,11 @@
     //        }
     //    }
     //    return playerSeconds;
+}
+- (BOOL) isReverseFile:(NSString *)fileName
+{
+    if(!fileName) return NO;
+    return [fileName rangeOfString:@"reverse_"].location !=NSNotFound;
 }
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action
 {
@@ -476,7 +533,7 @@
     }
     else
     {
-        //倒放对应的东东不太一样，有两段 
+        //倒放对应的东东不太一样，有两段
         if(item.ActionType == SReverse)
         {
             item.Media = [reverseBG_ copyAsCore];
@@ -529,7 +586,8 @@
     {
         item.isOPCompleted = YES;
         
-        secondsEffectPlayer_ += [item secondsEffectPlayer];
+        [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
+        //        secondsEffectPlayer_ += [item secondsEffectPlayer];
         NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     }
     item.Index = (int)actionList_.count;
@@ -578,7 +636,9 @@
     {
         item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     }
-    secondsEffectPlayer_ += [item secondsEffectPlayer];
+    
+    [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
+    //    secondsEffectPlayer_ += [item secondsEffectPlayer];
     
     item.Index = (int)actionList_.count;
     item.MediaActionID = [self getMediaActionID];
@@ -612,11 +672,12 @@
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     
     action.isOPCompleted = YES;
-    
+    NSLog(@"set actionitem %d inarray:%.2f  d:%.2f",action.ActionType, action.SecondsInArray,durationInSeconds);
     mediaList_ = [action ensureAction:mediaList_ durationInArray:durationInSeconds];
-//    [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
+    //    [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
     
-    secondsEffectPlayer_ += [action secondsEffectPlayer];
+    [self refreshSecondsEffectPlayer:action.DurationInArray + action.SecondsInArray];
+    //    secondsEffectPlayer_ += [action secondsEffectPlayer];
     NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     
     [self ActionManager:self actionChanged:action type:1];
@@ -626,6 +687,17 @@
     [self ActionManager:self play:action seconds:SECONDS_NOTVALID];
     
     return YES;
+}
+- (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
+{
+    secondsEffectPlayer_ = 0;
+    for (MediaWithAction * item in mediaList_) {
+        if(item.secondsInArray >= secondsEndInArray- SECONDS_ERRORRANGE)
+        {
+            break;
+        }
+        secondsEffectPlayer_ += item.secondsChangedWithActionForPlayer;
+    }
 }
 //将未完成的Action完成，一般用于播放完成
 - (BOOL) ensureActions:(CGFloat)playerSeconds

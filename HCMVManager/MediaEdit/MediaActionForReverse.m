@@ -72,7 +72,7 @@
         reversItem.end = CMTimeMakeWithSeconds(reversItem.secondsBegin + durationInArrayA, reversItem.end.timescale);
         
         MediaWithAction * normalItem = [mediaList objectAtIndex:1];
-        normalItem.begin = CMTimeMakeWithSeconds(normalItem.secondsEnd - durationInArrayA, normalItem.begin.timescale);
+        normalItem.begin = CMTimeMakeWithSeconds(MAX(normalItem.secondsEnd - durationInArrayA,0), normalItem.begin.timescale);
     }
     else
     {
@@ -452,6 +452,11 @@
     }
     return nil;
 }
+////不带参数，则返回整个过程
+//- (CGFloat) secondsEffectPlayer
+//{
+//    return 2 * [self secondsEffectPlayer:self.DurationInArray];
+//}
 - (CGFloat)secondsEffectPlayer:(CGFloat)durationInArray
 {
     //Rap可能导致播放器时长加两份
