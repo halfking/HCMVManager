@@ -8,6 +8,7 @@
 
 #import "MediaAction.h"
 #import "MediaActionDo.h"
+#import "MediaWithAction.h"
 @interface MediaActionForReverse : MediaActionDo
-
+@property (nonatomic,PP_STRONG) MediaItemCore * normalMedia;//正向素材
 @end

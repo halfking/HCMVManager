@@ -25,9 +25,15 @@
 - (MediaActionDo *)copyItemDo;
 
 - (NSMutableArray *)processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected;
+- (NSMutableArray *)ensureAction:(NSMutableArray *)sources durationInArray:(CGFloat)durationInArray;
+- (void) ensureMediaDuration:(CGFloat)durationInArrayA;
+
+- (NSMutableArray *)splitArrayForAction:(NSArray *)sources insertIndex:(int *)insertIndex;
+- (MediaWithAction *)splitMediaItem:(MediaWithAction *)item splitSecondsInArray:(CGFloat)splitSecondsInArray;
+- (void)addMediaToArray:(NSArray*)items sources:(NSMutableArray *)sources insertIndex:(int)insertIndex;
 - (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources;
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
+//- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
 
 - (CGFloat) getDurationInFinal:(NSArray *)sources;
 - (CGFloat) getDurationInPlaying:(MediaWithAction *)media;
@@ -35,11 +41,11 @@
 
 - (CGFloat) getFinalDurationForMedia:(MediaWithAction *)media;
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources;
-- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
-                                   atSeconds:(CGFloat)seconds
-                                        from:(CGFloat)mediaBeginSeconds
-                                    duration:(CGFloat)duration
-                                     overlap:(BOOL)isOverlap;
+//- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
+//                                   atSeconds:(CGFloat)seconds
+//                                        from:(CGFloat)mediaBeginSeconds
+//                                    duration:(CGFloat)duration
+//                                     overlap:(BOOL)isOverlap;
 
 //因为我们处理的采样时间来自于播放器，因此，Rap，Reverse这种类型会影响播放器的时刻对应在合成视频上的位置变化
 // 如Reverse 1秒后，播放器位置在4秒，这时，在合成视频上的位置应该是4+2 = 6秒 timeinarray

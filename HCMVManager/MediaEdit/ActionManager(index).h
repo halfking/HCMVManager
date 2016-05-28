@@ -11,6 +11,10 @@
 @interface ActionManager(index)
 #pragma mark - overlap manager
 - (CGFloat) reindexAllActions;
+
+//从队列中检查，合并同样的被拆分的段
+- (NSMutableArray *) combinateArrayItems:(NSMutableArray *)source;
+
 - (CGFloat) processNewActions;
 #pragma mark - export
 - (BOOL) generateMV;

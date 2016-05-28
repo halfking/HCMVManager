@@ -119,6 +119,8 @@
     [self showIndicatorView];
     [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
     
+    baseVideo_ = [manager_ getBaseVideo];
+    
     showTimeChanged_ = YES;
     // Do any additional setup after loading the view, typically from a nib.
 }
@@ -203,7 +205,7 @@
         subtract_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:subtract_];
         
-//        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
+        //        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
         [subtract_ addTarget:self action:@selector(generateFilterItem) forControlEvents:UIControlEventTouchUpInside];
         
         top += 46;
@@ -252,13 +254,30 @@
     }
     AVAsset * asset = [AVAsset assetWithURL:baseVideo_.url];
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:asset];
+    NSString * key = [CommonUtil md5Hash:baseVideo_.url.absoluteString];
     if(player_)
     {
-        [player_ changeCurrentPlayerItem:item];
-//        [self.view.layer addSublayer:[player_ currentLayer]];
+        if([key isEqualToString:player_.key])
+        {
+            
+        }
+        else
+        {
+            CGFloat seconds = player_.secondsPlaying;
+            BOOL isPlaying = player_.playing;
+            player_.key = key;
+            [player_ changeCurrentPlayerItem:item];
+            [player_ seek:seconds accurate:YES];
+            if(isPlaying)
+            {
+                [player_ play];
+            }
+        }
+        //        [self.view.layer addSublayer:[player_ currentLayer]];
     }
     else
     {
+        player_.key = key;
         player_ = [[HCPlayerSimple alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.width /16 * 9)];
         [player_ changeCurrentPlayerItem:item];
         player_.delegate = self;
@@ -302,6 +321,14 @@
 }
 - (void) buildControls
 {
+    if(![NSThread isMainThread])
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self buildControls];
+        });
+        return ;
+    }
+    BOOL needPlayer = !viewShowed_ || !player_;
     if(baseVideo_)
     {
         [self buildPlayer];
@@ -313,9 +340,9 @@
     [pannel_ setActionManager:manager_];
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
     
-//    [manager_ initGPUFilter:player_ in:self.view];
-    
-    [player_ play];
+    //    [manager_ initGPUFilter:player_ in:self.view];
+    if(needPlayer)
+        [player_ play];
 }
 - (void) showIndicatorView
 {
@@ -438,9 +465,9 @@
     action.isOPCompleted = YES;
     action.Rate = 1;
     
-    CGFloat secondsInTrack = [manager_ secondsForTrack:secondsPlaying];
+    //    CGFloat secondsInTrack = [manager_ secondsForTrack:secondsPlaying];
     
-    [manager_ addActionItem:action filePath:nil at:secondsInTrack from:secondsPlaying duration:1];
+    [manager_ addActionItem:action filePath:nil at:secondsPlaying from:secondsPlaying duration:1];
     
     //    }
     
@@ -470,7 +497,7 @@
         action.IsReverse = YES;
         
         
-        if([manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1])
+        if([manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1])
         {
             sender.selected = YES;
         }
@@ -510,43 +537,43 @@
     action.IsMutex = NO;
     action.Rate = 0.33333;
     action.isOPCompleted = YES;
-    [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:0.5];
+    [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:0.5];
     
     return;
     
-//    if (sender.selected) {
-//        sender.selected = NO;
-//        NSLog(@"player action seconds:%f",seconds);
-//        MediaWithAction * media = [manager_ findMediaItemAt:secondsInTrack];
-//        
-//        MediaActionDo * actionDo = nil;
-//        if([media.Action isKindOfClass:[MediaActionDo class]])
-//        {
-//            actionDo = (MediaActionDo *)media.Action;
-//        }
-//        else
-//        {
-//            actionDo = [manager_ findActionAt:media.secondsInArray index:-1];
-//        }
-//        if(actionDo)
-//        {
-//            CGFloat duration = secondsInTrack;// seconds;//[manager_ getSecondsWithoutAction:seconds];
-//            duration -= actionDo.SecondsInArray;
-//            
-//            [manager_ setActionItemDuration:actionDo duration:duration];
-//        }
-//    } else {
-//        sender.selected = YES;
-//        
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SSlow;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = YES;
-//        action.IsMutex = NO;
-//        action.Rate = 0.33333;
-//        action.isOPCompleted = NO;
-//        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
-//    }
+    //    if (sender.selected) {
+    //        sender.selected = NO;
+    //        NSLog(@"player action seconds:%f",seconds);
+    //        MediaWithAction * media = [manager_ findMediaItemAt:secondsInTrack];
+    //
+    //        MediaActionDo * actionDo = nil;
+    //        if([media.Action isKindOfClass:[MediaActionDo class]])
+    //        {
+    //            actionDo = (MediaActionDo *)media.Action;
+    //        }
+    //        else
+    //        {
+    //            actionDo = [manager_ findActionAt:media.secondsInArray index:-1];
+    //        }
+    //        if(actionDo)
+    //        {
+    //            CGFloat duration = secondsInTrack;// seconds;//[manager_ getSecondsWithoutAction:seconds];
+    //            duration -= actionDo.SecondsInArray;
+    //
+    //            [manager_ setActionItemDuration:actionDo duration:duration];
+    //        }
+    //    } else {
+    //        sender.selected = YES;
+    //
+    //        MediaAction * action = [MediaAction new];
+    //        action.ActionType = SSlow;
+    //        action.ReverseSeconds = 0 ;
+    //        action.IsOverlap = YES;
+    //        action.IsMutex = NO;
+    //        action.Rate = 0.33333;
+    //        action.isOPCompleted = NO;
+    //        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
+    //    }
 }
 -(void)fast:(UIButton *)sender
 {
@@ -576,7 +603,7 @@
         action.IsOverlap = YES;
         action.IsMutex = NO;
         action.isOPCompleted = NO;
-        [manager_ addActionItem:action filePath:nil at:secondsInTrack from:seconds duration:-1];
+        [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1];
     }
 }
 #pragma mark - player delegate
@@ -600,6 +627,7 @@
     {
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
+        NSLog(@"pause in play end");
         [rPlayer_ pause];
         
         [manager_ ensureActions:endSeconds];
@@ -614,6 +642,7 @@
             endSeconds = CMTimeGetSeconds([player_ durationWhen]);
         //        [player_ seek:0 accurate:YES];
         //        [player_ play];
+        NSLog(@"pause in play end");
         [player_ pause];
     }
     //自动结束没有结束的动作
@@ -683,17 +712,23 @@
 
 - (void)ActionManager:(ActionManager *)manager generateOK:(NSString *)filePath cover:(NSString *)cover isFilter:(BOOL)isFilter
 {
-//    if(!isFilter)
-//    {
-        VideoGenerater * vg = [VideoGenerater new];
-        [vg showMediaInfo:filePath];
-        
-        [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
-        
-        [manager_ removeActions];
+    //    if(!isFilter)
+    //    {
+    VideoGenerater * vg = [VideoGenerater new];
+    [vg showMediaInfo:filePath];
+    
+    [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
+    
+    [manager_ removeActions];
+    
+    baseVideo_ = [manager_ getBaseVideo];
+    
+    [self buildControls];
     
     [player_ play];
-//    }
+    
+    
+    //    }
     
 }
 - (void)ActionManager:(ActionManager *)manager genreateFailure:(NSError *)error isFilter:(BOOL)isFilter
@@ -708,11 +743,22 @@
 {
     [self showIndicatorView];
     [self resetAllButtons];
+    
+    player_.key = nil;
+    rPlayer_.key = nil;
+    [self buildControls];
+    
+    player_.hidden = NO;
+    rPlayer_.hidden = YES;
+    
     [player_ pause];
     [rPlayer_ pause];
     [player_ setRate:1];
     [[ActionManager shareObject]clear];
+    
+    
     [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+    [player_ play];
 }
 -(void)join:(UIButton *)sender
 {
@@ -720,6 +766,7 @@
     
     [player_ setRate:1];
     
+    NSLog(@"pause in join");
     [player_ pause];
     [rPlayer_ pause];
     
@@ -730,12 +777,18 @@
     
     //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
     
-    if(![manager_ generateMV])
+    if(![manager_ generateMV] && !manager_.isGenerating)
     {
         [player_ seek:0 accurate:YES];
         [player_ play];
         [self hideIndicatorView];
         return;
+    }
+    else
+    {
+        NSLog(@"pause in join 2");
+        [player_ seek:0 accurate:YES];
+        [player_ pause];
     }
     
 }

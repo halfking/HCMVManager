@@ -30,7 +30,7 @@
 
 @property (nonatomic,PP_WEAK) id<HCPlayerSimpleDelegate> delegate;
 @property (strong, nonatomic,readonly) AVPlayerItem *playerItem;
-@property (assign,nonatomic) NSString * key;
+@property (strong,nonatomic) NSString * key;
 @property (assign,nonatomic) CGRect mainBounds;
 @property (assign,nonatomic) BOOL playing;
 @property (assign,nonatomic,readonly) CGFloat secondsPlaying;

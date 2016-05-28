@@ -34,10 +34,10 @@
     
     BOOL isReverseGenerating_;
     BOOL isReverseHasGenerated_;
-    
 }
 @synthesize videoVolume = videoVol_;
 @synthesize audioVolume = audioVol_;
+@synthesize isGenerating = isGenerating_;
 +(id)shareObject
 {
     static dispatch_once_t pred = 0;
@@ -72,6 +72,7 @@
         currentFilterIndex_ = 0;
         videoVol_ = 1;
         audioVol_ = 1;
+        needSendPlayControl_ = YES;
     }
     return self;
 }
@@ -82,6 +83,7 @@
     isGenerating_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
+    needSendPlayControl_ = YES;
     
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
@@ -474,14 +476,22 @@
     }
     else
     {
-        //倒放对应的东东不太一样
+        //倒放对应的东东不太一样，有两段 
         if(item.ActionType == SReverse)
         {
             item.Media = [reverseBG_ copyAsCore];
-            item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsDuration - mediaBeginSeconds, item.Media.begin.timescale);
+            item.Media.begin = CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
                 item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+            }
+            
+            MediaActionForReverse * reverse = (MediaActionForReverse *)item;
+            reverse.normalMedia = [videoBg_ copyAsCore];
+            reverse.normalMedia.end = CMTimeMakeWithSeconds(mediaBeginSeconds, reverse.normalMedia.end.timescale);
+            if(durationInSeconds>0)
+            {
+                reverse.normalMedia.begin = CMTimeMakeWithSeconds(MAX(mediaBeginSeconds - durationInSeconds,0) , reverse.normalMedia.begin.timescale);
             }
         }
         else
@@ -600,9 +610,11 @@
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
+    
     action.isOPCompleted = YES;
     
-    mediaList_ = [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
+    mediaList_ = [action ensureAction:mediaList_ durationInArray:durationInSeconds];
+//    [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
     
     secondsEffectPlayer_ += [action secondsEffectPlayer];
     NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
@@ -613,15 +625,16 @@
     
     [self ActionManager:self play:action seconds:SECONDS_NOTVALID];
     
-    
     return YES;
 }
 //将未完成的Action完成，一般用于播放完成
 - (BOOL) ensureActions:(CGFloat)playerSeconds
 {
     MediaActionDo * action = [actionList_ lastObject];
+    
     if(action && action.isOPCompleted==NO)
     {
+        needSendPlayControl_ = NO;
         if(action.ActionType==SReverse)
         {
             CGFloat duration = playerSeconds - action.Media.secondsBegin;
@@ -636,6 +649,7 @@
             duration -= action.SecondsInArray;
             [self setActionItemDuration:action duration:duration];
         }
+        needSendPlayControl_ = YES;
         return YES;
     }
     return NO;
@@ -723,7 +737,14 @@
     }
     NSLog(@"find media:%@",retItem?@"OK":@"NO");
     if(index<0)
+    {
+        //最后了
+        if(!nextItem && action.Media.secondsEnd >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE)
+        {
+            nextItem = [mediaList_ firstObject];
+        }
         return nextItem;
+    }
     else
         return retItem;
 }

@@ -16,7 +16,7 @@
 
 #define SECONDS_NOTVALID 999999
 #define SECONDS_NOEND 999998
-#define SECONDS_ERRORRANGE  0.1
+#define SECONDS_ERRORRANGE  0.05
 @class MediaAction;
 @class MediaActionDo;
 @class MediaItem;
@@ -86,11 +86,12 @@
     
     BOOL isGeneratingByFilter_;//是否正在生成中
     BOOL isGenerating_;             //是否正在生成过程中
+    BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;
 @property (nonatomic,assign,readonly) CGFloat videoVolume;
-
+@property (nonatomic,assign,readonly) BOOL isGenerating;
 @property (nonatomic,assign) BOOL needPlayerItem;
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除

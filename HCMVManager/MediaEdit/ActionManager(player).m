@@ -223,13 +223,13 @@
             [filterView_ removeFromSuperview];
             filterView_ =nil;
         }
-            filters_ = nil;
-            currentFilterIndex_ = 0;
-            
-            //restore player
-            CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
-            [player_ changeCurrentItemUrl:videoBg_.url];
-            [player_ seek:seconds accurate:YES];
+        filters_ = nil;
+        currentFilterIndex_ = 0;
+        
+        //restore player
+        CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
+        [player_ changeCurrentItemUrl:videoBg_.url];
+        [player_ seek:seconds accurate:YES];
         
     }
 }
@@ -320,6 +320,7 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action seconds:(CGFloat)seconds
 {
+    if(!needSendPlayControl_) return ;
     if(!(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)]))
     {
         return ;
@@ -329,23 +330,44 @@
     //时间无效，也应该指向下一个
     if(seconds == SECONDS_NOTVALID || (seconds == SECONDS_NOEND && action.ActionType ==SRepeat))
     {
-        mediaToPlay = [self findMediaWithAction:action index:-1];
+        if(action.ActionType==SReverse && action.DurationInArray>0)
+        {
+            mediaToPlay = [self findMediaWithAction:action index:0];
+        }
+        else
+        {
+            mediaToPlay = [self findMediaWithAction:action index:-1];
+        }
     }
     else if(seconds==SECONDS_NOEND)   //当前对像未结束
     {
-        mediaToPlay = [self findMediaWithAction:action index:0];
+        if(action.ActionType==SReverse)
+        {
+            if(action.DurationInArray >0)
+            {
+                mediaToPlay = [self findMediaWithAction:action index:0];
+            }
+            else
+            {
+                mediaToPlay = [self findMediaWithAction:action index:1];
+            }
+        }
+        else
+        {
+            mediaToPlay = [self findMediaWithAction:action index:0];
+        }
     }
     else
     {
         mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
     }
     
-//    MediaWithAction *  mediaToPlay = [self findMediaWithAction:action index:0];
-//    
-//    if(!mediaToPlay)
-//    {
-//        mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
-//    }
+    //    MediaWithAction *  mediaToPlay = [self findMediaWithAction:action index:0];
+    //
+    //    if(!mediaToPlay)
+    //    {
+    //        mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
+    //    }
     if(!mediaToPlay)
     {
 #ifndef __OPTIMIZE__
@@ -355,7 +377,21 @@
         }
         else if(seconds==SECONDS_NOEND)   //当前对像未结束
         {
-            mediaToPlay = [self findMediaWithAction:action index:0];
+            if(action.ActionType==SReverse)
+            {
+                if(action.SecondsInArray >0)
+                {
+                    mediaToPlay = [self findMediaWithAction:action index:0];
+                }
+                else
+                {
+                    mediaToPlay = [self findMediaWithAction:action index:1];
+                }
+            }
+            else
+            {
+                mediaToPlay = [self findMediaWithAction:action index:0];
+            }
         }
         else
         {
@@ -368,38 +404,48 @@
         return ;
     }
     currentMediaWithAction_ = mediaToPlay;
-    //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-    if(mediaToPlay.Action.ActionType!=SReverse)
+    if(!isGenerating_)
     {
-        [reversePlayer_ pause];
-        [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-        player_.hidden = NO;
-        reversePlayer_.hidden = YES;
-        //        [player_ currentLayer].opacity = 1;
-        //        [reversePlayer_ currentLayer].opacity = 0;
-        [player_ setRate:mediaToPlay.playRate];
-        [player_ play];
-        if(audioPlayer_)
+        //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
+        if(mediaToPlay.Action.ActionType!=SReverse)
         {
-            audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-            [audioPlayer_ play];
+            [reversePlayer_ pause];
+            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            player_.hidden = NO;
+            reversePlayer_.hidden = YES;
+            //        [player_ currentLayer].opacity = 1;
+            //        [reversePlayer_ currentLayer].opacity = 0;
+            [player_ setRate:mediaToPlay.playRate];
+            [player_ play];
+            if(audioPlayer_)
+            {
+                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+                [audioPlayer_ play];
+            }
+        }
+        else
+        {
+            [player_ pause];
+            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+            reversePlayer_.hidden = NO;
+            player_.hidden = YES;
+            //        [reversePlayer_ currentLayer].opacity = 1;
+            //        [player_ currentLayer].opacity = 0;
+            [reversePlayer_ setRate:mediaToPlay.playRate];
+            [reversePlayer_ play];
+            if(audioPlayer_)
+            {
+                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+                [audioPlayer_ play];
+            }
         }
     }
     else
     {
+        NSLog(@"pause in play functions");
         [player_ pause];
-        [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-        reversePlayer_.hidden = NO;
-        player_.hidden = YES;
-        //        [reversePlayer_ currentLayer].opacity = 1;
-        //        [player_ currentLayer].opacity = 0;
-        [reversePlayer_ setRate:mediaToPlay.playRate];
-        [reversePlayer_ play];
-        if(audioPlayer_)
-        {
-            audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-            [audioPlayer_ play];
-        }
+        [reversePlayer_ pause];
+        [audioPlayer_ pause];
     }
     [self.delegate ActionManager:self play:mediaToPlay];
 }
@@ -411,7 +457,7 @@
         return ;
     }
     //如果在有效范围内，不处理
-    if(currentMediaWithAction_.secondsDurationInArray<0 || (seconds + secondsEffectPlayer_ < currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray))
+    if(currentMediaWithAction_.secondsDurationInArray<0 || (seconds + secondsEffectPlayer_ <= currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray+SECONDS_ERRORRANGE))
     {
         
     }
@@ -424,7 +470,7 @@
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
-    NSLog(@"action do changed:%@",action.ActionTitle);
+    NSLog(@"action do changed:%@ pause",action.ActionTitle);
     [reversePlayer_ pause];
     [player_ pause];
     [audioPlayer_ pause];

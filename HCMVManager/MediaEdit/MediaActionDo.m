@@ -89,7 +89,14 @@
     }
     else if(self.MaterialList && self.MaterialList.count>1)
     {
+        if(self.ActionType==SReverse)
+        {
+            [self ensureMediaDuration:DurationInSecondsA];
+        }
+        else
+        {
         NSLog(@"这种多个对像的情况没有处理。。。。");
+        }
     }
 }
 - (NSMutableArray *)get_MaterialList
@@ -135,319 +142,198 @@
 #pragma mark - do process
 - (NSMutableArray *) processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected
 {
-//    if(self.ActionType==SFast)
-//    {
-//        NSLog(@"fast...");
-//    }
-    NSMutableArray * overlapList = [self buildMaterialOverlaped:sources];
+    //    if(self.ActionType==SFast)
+    //    {
+    //        NSLog(@"fast...");
+    //    }
+    
     NSMutableArray * materialList = [self buildMaterialProcess:sources];
     if(!materialList || materialList.count==0)
     {
         return sources;
     }
-    if(overlapList.count==0)
+    
+    int insertIndex = 0;
+    NSMutableArray * newSources = [self splitArrayForAction:sources insertIndex:&insertIndex];
+    
+    [self addMediaToArray:materialList sources:newSources insertIndex:insertIndex];
+    
+    self.SecondsInArray  = ((MediaWithAction *)[materialList firstObject]).secondsInArray;
+    
+    return newSources;
+}
+- (NSMutableArray *)ensureAction:(NSMutableArray *)sources durationInArray:(CGFloat)durationInArrayA
+{
+    NSMutableArray * materialList = [self buildMaterialProcess:sources];
+    if(!materialList || materialList.count==0)
     {
-        NSLog(@"cannot find overlap items.");
         return sources;
     }
-    else if(overlapList.count>1)
+    [self ensureMediaDuration:durationInArrayA];
+    [self addMediaToArray:materialList sources:sources insertIndex:-1];
+    
+    return sources;
+}
+- (void) ensureMediaDuration:(CGFloat)durationInArrayA
+{
+    NSArray * mediaList = materialList_;
+    if(mediaList.count>0)
     {
-        NSLog(@"overlaps:%d",(int)overlapList.count);
+        for (MediaWithAction * item in mediaList) {
+            item.end = CMTimeMakeWithSeconds(item.secondsBegin + durationInArrayA, item.end.timescale);
+        }
     }
-    //检查插入的起点对像
-    MediaWithAction * mediaToSplit = [overlapList firstObject];
-    NSAssert(mediaToSplit, @"无法找到需要分割或移动的素材，数据有问题1");
-    
-    MediaWithAction * mediaToTail = [self splitMediaItemAtSeconds:overlapList
-                                                        atSeconds:self.SecondsInArray
-                                                             from:self.SecondsInArray - secondsEffected
-                                                         duration:self.DurationInArray
-                                                          overlap:self.IsOverlap];
-    
-    //    NSAssert(mediaToTail, @"无法找到需要分割或移动的素材，数据有问题2");
-    //需要校正前一个的数据结尾是否正常，非IsOverLap的在分割时已经处理过了。
-    if(mediaToSplit && mediaToSplit!=mediaToTail && self.IsOverlap)
+    else if(self.Media)
     {
-        //获取之前所有的对像的播放器时间影响
-        CGFloat secondsChangedBefore = 0;
-        for (MediaWithAction * ma in sources) {
-            if(ma == mediaToSplit)
-                break;
-            secondsChangedBefore += ma.secondsChangedWithActionForPlayer;
-        }
-        //这里，当前对像的SeconsInArray 还没有处理
-        if(mediaToSplit.secondsInArray + mediaToSplit.secondsDurationInArray > self.SecondsInArray + secondsChangedBefore)
-        {
-            CGFloat orgSecondsInDuration = mediaToSplit.secondsDurationInArray;
-            
-            mediaToSplit.end =
-            CMTimeMakeWithSeconds(
-                                  mediaToSplit.secondsEnd - (mediaToSplit.secondsInArray + mediaToSplit.secondsDurationInArray - self.SecondsInArray - secondsChangedBefore), mediaToSplit.end.timescale);
-            
-            CGFloat rate = mediaToSplit.secondsDurationInArray / orgSecondsInDuration;
-            mediaToSplit.secondsChangedWithActionForPlayer *= rate;
-            mediaToSplit.durationInPlaying *= rate;
-        }
-    }
-    //将数据插入到原队列中，并且将队列中对像的时间重新计算
-    NSMutableArray * headList = [NSMutableArray new];
-    NSMutableArray * tailList = [NSMutableArray new];
-    BOOL isHead = YES;
-    BOOL isTail = NO;
-    
-    CGFloat secondsInArray = 0;
-    
-    for (MediaWithAction * item in sources) {
-        if([materialList containsObject:item]) continue;
-        if(item==mediaToSplit && (item.secondsDurationInArray>0||item.secondsInArrayNotConfirm))
-        {
-            //如果起点刚好与新加的动作相同，在非覆盖模式下，此对像后移，但对像地址并没有发生变化，就会出现这种情况。
-            if(mediaToSplit == mediaToTail)
-            {
-                [tailList addObject:mediaToTail];
-            }
-            else
-            {
-                [headList addObject:mediaToSplit];
-                //这里不能用变速后的时长
-                secondsInArray += mediaToSplit.secondsDurationInArray;
-            }
-            isHead = NO;
-            
-            //如果后一段就是从前而切出来的，则直接将其后的加入到队列中
-            if(!mediaToTail || mediaToTail==mediaToSplit || !self.IsOverlap)
-            {
-                isTail = YES;
-            }
-            continue;
-        }
-        else if(item == mediaToTail) //由于分割的部分已经加入到了materialList中，所以此处不要添加
-        {
-            isTail = YES;
-            isHead = NO;
-        }
-        
-        if(isHead && item.secondsDurationInArray>0)
-        {
-            [headList addObject:item];
-            secondsInArray += item.secondsDurationInArray;
-        }
-        else if(isTail && item!=mediaToSplit)
-        {
-            //如果是覆盖，则不能将这些包含在其中的素材放到结果队列中
-            if(self.IsOverlap && [overlapList containsObject:item])
-            {
-                
-            }
-            else if(item.secondsInArrayNotConfirm ==NO && item.secondsDurationInArray<=0)
-            {
-                
-            }
-            else
-            {
-                [tailList addObject:item];
-            }
-        }
-    }
-    if(mediaToTail && mediaToTail != mediaToSplit)
-    {
-        [tailList insertObject:mediaToTail atIndex:0];
-    }
-    //    CGFloat lastMediaSeconds = 0;
-    //插入新对像
-    for (MediaWithAction * item in materialList) {
-        item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
-        
-        [headList addObject:item];
-        
-        secondsInArray += item.secondsDurationInArray;
-        item.durationInPlaying = item.secondsDurationInArray /item.playRate;
-        
-        item.secondsChangedWithActionForPlayer = [self secondsEffectPlayer:item.secondsDurationInArray];
-        
+        self.Media.end = CMTimeMakeWithSeconds(self.Media.secondsBegin + durationInArrayA, self.Media.end.timescale);
     }
     
     
-    //插入尾部的对像
-    if(!self.isOPCompleted && tailList.count>0)  //如果是未完成的操作，则其后素材的位置只往后移1秒，因为还会有二次操作的
-    {
-        MediaWithAction * item = [tailList firstObject];
-        secondsInArray = item.secondsInArray +1;
-    }
-    for (MediaWithAction * item in tailList) {
-        item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
-        
-        secondsInArray += item.secondsDurationInArray;
-        
-        //尚无法确认下一个素材的开始时间，因为当前操作未完成
-        if(!self.isOPCompleted)
-        {
-            item.secondsInArrayNotConfirm = YES;
-        }
-        else
-        {
-            item.secondsInArrayNotConfirm = NO;
-            item.durationInPlaying = item.secondsDurationInArray /item.playRate;
-        }
-    }
-    
-    //重新构建完整的列表
-    NSMutableArray * result = [NSMutableArray new];
-    
-    [result addObjectsFromArray:headList];
-    
-    [result addObjectsFromArray:tailList];
-    
-    
-    headList = nil;
-    tailList = nil;
-    
-    return result;
 }
 #pragma mark - split op
-- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
-                                   atSeconds:(CGFloat)seconds
-                                from:(CGFloat)mediaBeginSeconds
-                                    duration:(CGFloat)duration
-                                     overlap:(BOOL)isOverlap
-{
-    MediaWithAction * media = nil;
-    
-    
-    if(!overlaps ||overlaps.count==0 || seconds <0)
-    {
-        NSAssert(media, @"传入了不正确的参数 nil");
-        return nil;
-    }
-    
-    if(isOverlap) //如果是覆盖类型
-    {
-        media = [overlaps lastObject];
-    }
-    else
-    {
-        media = [overlaps firstObject];
-    }
-    
-    UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
-    
-     CGFloat orgDuration = media.secondsDurationInArray;
-    
-    //从中间截断时
-    if(seconds>=media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
-    {
-        //创建后半部
-        MediaWithAction * actionSecond = [media copyItem];
-        actionSecond.durationInPlaying = -1;
-        
-        //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
-        CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
-        CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
-        media.end = endTime;
-        media.durationInPlaying = [self getFinalDurationForMedia:media];
-        
-        if(orgDuration>0)
-        {
-            CGFloat rate = media.secondsDurationInArray/orgDuration;;
-            media.secondsChangedWithActionForPlayer *=  rate;
-            
-        }
-        else
-        {
-            media.secondsChangedWithActionForPlayer = 0;
-            media.durationInPlaying = 0;
-        }
-        if(duration>=0) //当插入的素材有确定时长时
-        {
-            if(isOverlap)
-            {
-                actionSecond.begin = CMTimeMakeWithSeconds(media.secondsEnd +duration, timeScale);
-            }
-            else
-            {
-                actionSecond.begin = media.end;
-            }
-            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds + duration,timeScale);
-            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
-            
-            if(orgDuration>0)
-            {
-                CGFloat rate = actionSecond.secondsDurationInArray/orgDuration;;
-                actionSecond.secondsChangedWithActionForPlayer *=  rate;
-            }
-            else
-            {
-                actionSecond.secondsChangedWithActionForPlayer = 0;
-                actionSecond.durationInPlaying = 0;
-            }
-        }
-        else //无确定时长时
-        {
-            actionSecond.begin = media.end;
-            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
-            actionSecond.durationInPlaying = 0;
-            actionSecond.secondsInArrayNotConfirm = YES;
-            actionSecond.secondsChangedWithActionForPlayer = 0;
-            actionSecond.durationInPlaying = 0;
-        }
-        return actionSecond;
-    }
-    else //如果是全部覆盖
-    {
-        if(isOverlap)
-        {
-            if(media.secondsInArray >=seconds) //  根本没有覆盖，这在没有立即完成的Action，即开始Duration为-1的时候会出现
-            {
-                if(duration>=0)
-                {
-                    media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
-                    if(media.secondsInArrayNotConfirm)
-                    {
-                        media.begin = CMTimeMakeWithSeconds(media.secondsBegin+duration,timeScale);
-                    }
-                    if(orgDuration>0)
-                    {
-                        CGFloat rate = media.secondsDurationInArray/orgDuration;;
-                        media.secondsChangedWithActionForPlayer *=  rate;
-                        media.durationInPlaying *= rate;
-                        
-                    }
-                    else
-                    {
-                        media.secondsChangedWithActionForPlayer = 0;
-                        media.durationInPlaying = 0;
-                    }
-                }
-                else
-                {
-                    media.timeInArray = CMTimeMakeWithSeconds(seconds+1,timeScale);
-                }
-            }
-            else //没有从中间截断，则需要全部弃用
-            {
-                media.end = media.begin;
-                media.durationInPlaying = 0;
-                media.secondsChangedWithActionForPlayer = 0;
-                media.durationInPlaying = 0;
-            }
-            return media;
-        }
-        else
-        {
-            if(duration>=0)
-            {
-                media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
-            }
-            else
-            {
-                media.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
-                media.secondsInArrayNotConfirm = YES;
-            }
-            return media;
-        }
-    }
-    return nil;
-}
+//- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
+//                                   atSeconds:(CGFloat)seconds
+//                                        from:(CGFloat)mediaBeginSeconds
+//                                    duration:(CGFloat)duration
+//                                     overlap:(BOOL)isOverlap
+//{
+//    MediaWithAction * media = nil;
+//
+//
+//    if(!overlaps ||overlaps.count==0 || seconds <0)
+//    {
+//        NSAssert(media, @"传入了不正确的参数 nil");
+//        return nil;
+//    }
+//
+//    if(isOverlap) //如果是覆盖类型
+//    {
+//        media = [overlaps lastObject];
+//    }
+//    else
+//    {
+//        media = [overlaps firstObject];
+//    }
+//
+//    UInt32 timeScale = MAX(media.begin.timescale,DEFAULT_TIMESCALE);
+//
+//    CGFloat orgDuration = media.secondsDurationInArray;
+//
+//    //从中间截断时
+//    if(seconds>=media.secondsInArray && seconds < media.secondsInArray + media.secondsDurationInArray)
+//    {
+//        //创建后半部
+//        MediaWithAction * actionSecond = [media copyItem];
+//        actionSecond.durationInPlaying = -1;
+//
+//        //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+//        CGFloat endSeconds = media.secondsBegin + seconds - media.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+//        CMTime endTime = CMTimeMakeWithSeconds(endSeconds, timeScale);
+//        media.end = endTime;
+//        media.durationInPlaying = [self getFinalDurationForMedia:media];
+//
+//        if(orgDuration>0)
+//        {
+//            CGFloat rate = media.secondsDurationInArray/orgDuration;;
+//            media.secondsChangedWithActionForPlayer *=  rate;
+//
+//        }
+//        else
+//        {
+//            media.secondsChangedWithActionForPlayer = 0;
+//            media.durationInPlaying = 0;
+//        }
+//        if(duration>=0) //当插入的素材有确定时长时
+//        {
+//            if(isOverlap)
+//            {
+//                actionSecond.begin = CMTimeMakeWithSeconds(media.secondsEnd +duration, timeScale);
+//            }
+//            else
+//            {
+//                actionSecond.begin = media.end;
+//            }
+//            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds + duration,timeScale);
+//            actionSecond.durationInPlaying = [self getFinalDurationForMedia:actionSecond];
+//
+//            if(orgDuration>0)
+//            {
+//                CGFloat rate = actionSecond.secondsDurationInArray/orgDuration;;
+//                actionSecond.secondsChangedWithActionForPlayer *=  rate;
+//            }
+//            else
+//            {
+//                actionSecond.secondsChangedWithActionForPlayer = 0;
+//                actionSecond.durationInPlaying = 0;
+//            }
+//        }
+//        else //无确定时长时
+//        {
+//            actionSecond.begin = media.end;
+//            actionSecond.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
+//            actionSecond.durationInPlaying = 0;
+//            actionSecond.secondsInArrayNotConfirm = YES;
+//            actionSecond.secondsChangedWithActionForPlayer = 0;
+//            actionSecond.durationInPlaying = 0;
+//        }
+//        return actionSecond;
+//    }
+//    else //如果是全部覆盖
+//    {
+//        if(isOverlap)
+//        {
+//            if(media.secondsInArray >=seconds) //  根本没有覆盖，这在没有立即完成的Action，即开始Duration为-1的时候会出现
+//            {
+//                if(duration>=0)
+//                {
+//                    media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+//                    if(media.secondsInArrayNotConfirm)
+//                    {
+//                        media.begin = CMTimeMakeWithSeconds(media.secondsBegin+duration,timeScale);
+//                    }
+//                    if(orgDuration>0)
+//                    {
+//                        CGFloat rate = media.secondsDurationInArray/orgDuration;;
+//                        media.secondsChangedWithActionForPlayer *=  rate;
+//                        media.durationInPlaying *= rate;
+//
+//                    }
+//                    else
+//                    {
+//                        media.secondsChangedWithActionForPlayer = 0;
+//                        media.durationInPlaying = 0;
+//                    }
+//                }
+//                else
+//                {
+//                    media.timeInArray = CMTimeMakeWithSeconds(seconds+1,timeScale);
+//                }
+//            }
+//            else //没有从中间截断，则需要全部弃用
+//            {
+//                media.end = media.begin;
+//                media.durationInPlaying = 0;
+//                media.secondsChangedWithActionForPlayer = 0;
+//                media.durationInPlaying = 0;
+//            }
+//            return media;
+//        }
+//        else
+//        {
+//            if(duration>=0)
+//            {
+//                media.timeInArray = CMTimeMakeWithSeconds(seconds+duration,timeScale);
+//            }
+//            else
+//            {
+//                media.timeInArray = CMTimeMakeWithSeconds(seconds +1,timeScale);
+//                media.secondsInArrayNotConfirm = YES;
+//            }
+//            return media;
+//        }
+//    }
+//    return nil;
+//}
 - (CGFloat) getFinalDurationForMedia:(MediaWithAction *)media
 {
     MediaActionDo * action = [[ActionManager shareObject]getMediaActionDo:media.Action];
@@ -499,59 +385,256 @@
     }
     return overlapList;
 }
-- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
+//- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources
+//{
+//    NSMutableArray * overlapList = [NSMutableArray new];
+//
+//    CGFloat seconds = self.SecondsInArray;
+//    CGFloat duration = self.DurationInArray;
+//    for (MediaWithAction * item in sources) {
+//
+//        MediaWithAction * matchItem = nil;
+//        //第一个或跨界的
+//        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+//        {
+//            matchItem = item;
+//
+//        }
+//        //表示需要覆盖的
+//        else if(duration>0)
+//        {
+//            //被包含在这个区段中的
+//            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
+//            {
+//                matchItem = item;
+//            }
+//            //有一部分在范围内，但尾部超过边界的
+//            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
+//            {
+//                matchItem = item;
+//            }
+//            else if (item.secondsInArray > seconds +duration && overlapList.count==0 && item.secondsInArrayNotConfirm)
+//            {
+//                matchItem = item;
+//            }
+//        }
+//        else if(item.secondsInArray >= seconds)
+//        {
+//            matchItem = item;
+//        }
+//        if(matchItem )
+//        {
+//            if(matchItem.Action.MediaActionID == self.MediaActionID)
+//            {
+//                NSLog(@"matched..same....");
+//            }
+//            else
+//            {
+//                [overlapList addObject:matchItem];
+//            }
+//        }
+//    }
+//
+//    return overlapList;
+//}
+#pragma mark - 新处理方法
+//只管切分数据，不管是否要替换
+- (NSMutableArray *)splitArrayForAction:(NSArray *)sources insertIndex:(int *)insertIndex
 {
-    NSMutableArray * overlapList = [NSMutableArray new];
+    NSMutableArray * newSources = [NSMutableArray new];
     
     CGFloat seconds = self.SecondsInArray;
-    CGFloat duration = self.DurationInArray;
+    
+    long matchIndex = sources.count;
+    
     for (MediaWithAction * item in sources) {
-        
-        MediaWithAction * matchItem = nil;
+        if(item.secondsInArray + item.secondsDurationInArray <=seconds)
+        {
+            [newSources addObject:item];
+        }
         //第一个或跨界的
-        if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
+        else if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
         {
-            matchItem = item;
-            
-        }
-        //表示需要覆盖的
-        else if(duration>0)
-        {
-            //被包含在这个区段中的
-            if(item.secondsInArray > seconds && item.secondsDurationInArray + item.secondsInArray <= seconds+duration)
+            if(fabs(item.secondsInArray - seconds) < SECONDS_ERRORRANGE)
             {
-                matchItem = item;
+                matchIndex = newSources.count;
+                [newSources addObject:item];
             }
-            //有一部分在范围内，但尾部超过边界的
-            else if (item.secondsInArray < seconds + duration && item.secondsInArray + item.secondsDurationInArray >= seconds +duration)
-            {
-                matchItem = item;
-            }
-            else if (item.secondsInArray > seconds +duration && overlapList.count==0 && item.secondsInArrayNotConfirm)
-            {
-                matchItem = item;
-            }
-        }
-        else if(item.secondsInArray >= seconds)
-        {
-            matchItem = item;
-        }
-        if(matchItem )
-        {
-            if(matchItem.Action.MediaActionID == self.MediaActionID)
-            {
-                NSLog(@"matched..same....");
-            }
+            //拆分
             else
             {
-                [overlapList addObject:matchItem];
+                MediaWithAction * secondItem =  [self splitMediaItem:item splitSecondsInArray:seconds];
+                
+                [newSources addObject:item];
+                
+                matchIndex = newSources.count;
+                
+                if(secondItem)
+                {
+                    [newSources addObject:secondItem];
+                }
             }
+        }
+        else
+        {
+            [newSources addObject:item];
+        }
+    }
+    if(insertIndex)
+    {
+        *insertIndex = (int)matchIndex;
+    }
+    return newSources;
+}
+- (MediaWithAction *)splitMediaItem:(MediaWithAction *)item splitSecondsInArray:(CGFloat)splitSecondsInArray
+{
+    //不在拆分范围
+    if(item.secondsInArray - splitSecondsInArray >=SECONDS_ERRORRANGE
+       ||
+       item.secondsInArray + item.secondsDurationInArray < splitSecondsInArray + SECONDS_ERRORRANGE)
+    {
+        return nil;
+    }
+    
+    CGFloat orgDuration = item.secondsDurationInArray;
+    CGFloat orgEffect = item.secondsChangedWithActionForPlayer;
+    
+    MediaWithAction * secondItem = [item copyItem];
+    secondItem.durationInPlaying = -1;
+    
+    //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
+    CGFloat endSeconds = item.secondsBegin + splitSecondsInArray - item.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+    CMTime endTime = CMTimeMakeWithSeconds(endSeconds, item.end.timescale);
+    item.end = endTime;
+    
+    item.durationInPlaying = [self getFinalDurationForMedia:item];
+    if(orgDuration>0)
+        item.secondsChangedWithActionForPlayer *= item.secondsDurationInArray/orgDuration;
+    else
+        item.secondsChangedWithActionForPlayer = 0;
+    
+    secondItem.begin = item.end;
+    secondItem.timeInArray = CMTimeMakeWithSeconds(item.secondsInArray + item.secondsDurationInArray, secondItem.timeInArray.timescale);
+    secondItem.durationInPlaying = [self getFinalDurationForMedia:secondItem];
+    secondItem.secondsChangedWithActionForPlayer = orgEffect - item.secondsChangedWithActionForPlayer;
+    
+    return secondItem;
+}
+- (void)addMediaToArray:(NSArray*)items sources:(NSMutableArray *)sources insertIndex:(int)insertIndex
+{
+    CGFloat duration = self.DurationInArray;
+    int newInsertIndex = insertIndex;
+    if(insertIndex<0) //表示不需要添加，已经加入，则是Ensure过程
+    {
+        for (int i = (int)sources.count-1; i>=0; i--) {
+            MediaWithAction * item  = sources[i];
+            if(item.Action.MediaActionID == self.MediaActionID && fabs(item.secondsInArray -self.SecondsInArray)<SECONDS_ERRORRANGE)
+            {
+                insertIndex = i;
+                break;
+            }
+        }
+        newInsertIndex = insertIndex + (int)materialList_.count;
+    }
+    else
+    {
+        if(duration<0)
+        {
+            for(int i = insertIndex;i<(int)sources.count;i++)
+            {
+                MediaWithAction * item = sources[i];
+                item.secondsInArrayNotConfirm = YES;
+            }
+        }
+        for (MediaWithAction * item in items) {
+            [sources insertObject:item atIndex:newInsertIndex];
+            newInsertIndex ++;
         }
     }
     
-    return overlapList;
+    CGFloat secondsInArray = self.SecondsInArray;
+    CGFloat secondsEndInArray = self.SecondsInArray + (duration>0?duration:SECONDS_NOEND);
+    if(self.IsOverlap && duration>0) //确认数据变化
+    {
+        NSMutableArray * removeList = [NSMutableArray new];
+        for (int i = newInsertIndex;i<(int)sources.count;i++) {
+            MediaWithAction * item = sources[i];
+            if(item.secondsInArray + item.secondsDurationInArray <= secondsInArray + SECONDS_ERRORRANGE)
+            {
+                [removeList insertObject:[NSNumber numberWithInt:i] atIndex:0];
+                //                [removeList addObject:item];
+            }
+            else if(item.secondsInArray <= secondsEndInArray+ SECONDS_ERRORRANGE)
+            {
+                if(item.secondsInArray + item.secondsDurationInArray < secondsEndInArray+ SECONDS_ERRORRANGE)
+                {
+                  [removeList insertObject:[NSNumber numberWithInt:i] atIndex:0];
+                }
+                else
+                {
+                    MediaWithAction * secondItem = [self splitMediaItem:item splitSecondsInArray:secondsEndInArray];
+                    [removeList insertObject:[NSNumber numberWithInt:i] atIndex:0];
+                    if(secondItem)
+                    {
+                        [sources insertObject:secondItem atIndex:i+1];
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (NSNumber * num in removeList) {
+            [sources removeObjectAtIndex:[num intValue]];
+        }
+        //        [sources removeObjectsInArray:removeList];
+        PP_RELEASE(removeList);
+    }
+    
+    if(duration>0)
+    {
+        [self ensureExistItemDuration:insertIndex  sources:sources];
+    }
 }
-
+- (void)ensureExistItemDuration:(int)beginIndex sources:(NSMutableArray *)sources
+{
+    //更新后面的数据值
+    int index = 0;
+    CGFloat secondsInArray = 0;
+    int newInsertIndex = beginIndex + (int)materialList_.count;
+    
+    for (MediaWithAction * item in sources) {
+        if(index < beginIndex) //队列左边的
+        {
+            secondsInArray += item.secondsDurationInArray;
+        }
+        else if(index >= newInsertIndex) //队列右边的
+        {
+            item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+            secondsInArray += item.secondsDurationInArray;
+            //尚无法确认下一个素材的开始时间，因为当前操作未完成
+            if(!self.isOPCompleted)
+            {
+                item.secondsInArrayNotConfirm = YES;
+            }
+            else
+            {
+                item.secondsInArrayNotConfirm = NO;
+                item.durationInPlaying = item.secondsDurationInArray /item.playRate;
+            }
+        }
+        else //新增的
+        {
+            item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
+            secondsInArray += item.secondsDurationInArray;
+            item.durationInPlaying = item.secondsDurationInArray /item.playRate;
+            item.secondsChangedWithActionForPlayer = [self secondsEffectPlayer:item.secondsDurationInArray];
+        }
+        index ++;
+    }
+}
 - (CGFloat) secondsEffectPlayer
 {
     return [self secondsEffectPlayer:self.DurationInArray];

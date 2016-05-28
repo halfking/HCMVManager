@@ -30,6 +30,7 @@
         
         [mediaList_ addObject:bgMedia];
         mediaList_ = [self processActions:actionList_ sources:mediaList_];
+        mediaList_ = [self combinateArrayItems:mediaList_];
         
         [self ActionManager:self doProcessOK:mediaList_ duration:durationForTarget_];
         
@@ -72,6 +73,8 @@
     
     mediaList_ = [action processAction:mediaList_ secondsEffected:secondsEffectPlayer_];
     
+    mediaList_ = [self combinateArrayItems:mediaList_];
+    
     durationForTarget_ = 0;
     for (MediaWithAction * action in mediaList_) {
         durationForTarget_ += action.durationInPlaying;
@@ -84,6 +87,27 @@
 - (NSArray *) getMediaBaseLine:(MediaActionDo *)action
 {
     return mediaList_;
+}
+- (NSMutableArray *) combinateArrayItems:(NSMutableArray *)source
+{
+    NSMutableArray * targetSource = [NSMutableArray new];
+    MediaWithAction * lastItem = nil;
+    for (MediaWithAction * item in source) {
+        if(lastItem
+                && lastItem.Action.ActionType == item.Action.ActionType
+                && [lastItem.fileName isEqualToString:item.fileName]==YES
+                && fabs(lastItem.secondsEnd - item.secondsBegin) < SECONDS_ERRORRANGE 
+                && lastItem.playRate == item.playRate)
+        {
+            lastItem.end = item.end;
+        }
+        else
+        {
+            [targetSource addObject:item];
+            lastItem = item;
+        }
+    }
+    return targetSource;
 }
 #pragma mark - export
 - (BOOL) generateMV

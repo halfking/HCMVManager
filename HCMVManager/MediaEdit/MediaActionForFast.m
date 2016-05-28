@@ -44,7 +44,13 @@
     else //没有指定，则需要从当前队列中获取
     {
         materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInArray sources:sources];
+        self.Media = [materialList_ firstObject];
     }
+//    if(self.DurationInArray <0)
+//    {
+//        
+//    }
+//    
     
     return materialList_;
 
