@@ -140,6 +140,7 @@
 }
 - (void)addItem:(id)sender
 {
+     MediaActionDo * acdo = nil;
     ActionManager * manager = [ActionManager shareObject];
 //    {
 //        MediaAction * action = [MediaAction new];
@@ -153,17 +154,35 @@
 //        
 //        [manager addActionItem:action filePath:nil at:7 from:7 duration:action.DurationInSeconds];
 //    }
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SSlow;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = YES;
-//        action.IsMutex = NO;
-//        action.Rate = 0.33333;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:0.5];
-//    }
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = YES;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:2.1 from:2.1 duration:2];
+    }
+  
+    [manager setPlaySeconds:4.1 isReverse:NO];
+  
     
+    {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
+        acdo = [manager addActionItem:action filePath:nil at:4 from:4 duration:-1];
+    }
+    [manager setPlaySeconds:4.1 isReverse:NO];
+    
+    [manager setActionItemDuration:acdo duration:2];
+    
+    [manager setPlaySeconds:8 isReverse:NO];
 //    {
 //        MediaAction * action = [MediaAction new];
 //        action.ActionType = SSlow;
@@ -227,7 +246,7 @@
 //        action.isOPCompleted = YES;
 //        [manager addActionItem:action filePath:nil at:5 from:4 duration:1];
 //    }
-    MediaActionDo * acdo = nil;
+   
     {
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
@@ -243,7 +262,7 @@
     
 //    [manager setActionItemDuration:acdo duration:manager.getBaseVideo.secondsDuration - 6];
     
-    [manager setPlaySeconds:4];
+    [manager setPlaySeconds:4 isReverse:NO];
     
     {
         MediaAction * action = [MediaAction new];
@@ -258,7 +277,7 @@
     
     [manager setActionItemDuration:acdo duration:2];
     
-    [manager setPlaySeconds:7];
+    [manager setPlaySeconds:6.5 isReverse:NO];
 //    
 //    MediaAction * action = [MediaAction new];
 //    action.ActionType = SReverse;

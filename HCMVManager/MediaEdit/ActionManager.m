@@ -73,6 +73,7 @@
         videoVol_ = 1;
         audioVol_ = 1;
         needSendPlayControl_ = YES;
+//        lastPlayerSeconds_ = 0;
     }
     return self;
 }
@@ -392,7 +393,8 @@
         for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * item = mediaList_[i];
             if(item.secondsBegin <= playerSeconds
-               && item.secondsEnd > playerSeconds
+               && (item.secondsEnd > playerSeconds
+                   || (item.secondsEnd + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)) //到结束了
                && ![self isReverseFile:item.fileName]
                && !item.secondsInArrayNotConfirm
                )
@@ -408,7 +410,8 @@
         for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * item = mediaList_[i];
             if(item.secondsBegin <= playerSeconds
-               && item.secondsEnd > playerSeconds
+               && (item.secondsEnd > playerSeconds
+                   || (item.secondsEnd + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getReverseVideo].secondsDuration)) //到结束了
                && [self isReverseFile:item.fileName]
                && !item.secondsInArrayNotConfirm
                )
@@ -742,23 +745,31 @@
         for (int i = (int)actionList_.count -1; i>=0; i--) {
             MediaActionDo * item = actionList_[i];
             
-            NSLog(@"find item: %.4f  targetSeconds:%.4f",item.SecondsInArray,secondsInArray);
-            //起hhko在当前时间前
-            if(item.SecondsInArray - secondsInArray < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
+            BOOL containsSeconds = [item containSecondsInArray:secondsInArray];
+            
+            NSLog(@"[%d]find item: %.4f  targetSeconds:%.4f result:%d",i,item.SecondsInArray,secondsInArray,containsSeconds);
+            
+            if(containsSeconds)
             {
-                if(item.DurationInArray <0 ||
-                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
-                {
-                    retItem = item;
-                    break;
-                }
-                else if(item.DurationInArray <0)
-                {
-                    retItem = item;
-                    break;
-                }
+                retItem = item;
+                break;
             }
-            NSLog(@"find item:%@",retItem?@"OK":@"NO");
+//            //起hhko在当前时间前
+//            if(item.SecondsInArray - secondsInArray < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
+//            {
+//                if(item.DurationInArray <0 ||
+//                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
+//                {
+//                    retItem = item;
+//                    break;
+//                }
+//                else if(item.DurationInArray <0)
+//                {
+//                    retItem = item;
+//                    break;
+//                }
+//            }
+//            NSLog(@"find item:%@",retItem?@"OK":@"NO");
         }
         
     }

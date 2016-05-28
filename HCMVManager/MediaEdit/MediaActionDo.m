@@ -134,6 +134,32 @@
     
     return media.secondsDurationInArray;
 }
+//检查对应的播放器时间在队列中的位置
+//如果播放器时间不在本动作 范围内，则直接-1
+- (CGFloat) getSecondsInArray:(CGFloat)playerSeconds
+{
+    if(self.Media.secondsBegin <=playerSeconds + SECONDS_ERRORRANGE
+       && (self.Media.secondsEnd >= playerSeconds || self.DurationInArray <0) )
+    {
+        return self.Media.secondsInArray + playerSeconds - self.Media.secondsBegin;
+    }
+    else
+    {
+        return -1;
+    }
+}
+- (BOOL) containSecondsInArray:(CGFloat)secondsInArray
+{
+    if(self.SecondsInArray - secondsInArray < 0 - self.secondsBeginAdjust + SECONDS_ERRORRANGE )
+    {
+        if(self.DurationInArray <0 ||
+           (self.DurationInArray>=0 && self.DurationInArray + self.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - self.secondsBeginAdjust))
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources
 {
     NSAssert(NO, @"此函数需要在子类中实现，不能直接使用父类的函数。");

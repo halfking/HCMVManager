@@ -424,6 +424,7 @@
                 audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
+            NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
         }
         else
         {
@@ -451,29 +452,69 @@
     }
     [self.delegate ActionManager:self play:mediaToPlay];
 }
-- (void)setPlaySeconds:(CGFloat)playerSeconds
+- (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
+    if(isReverse) return;
+    //不需要更换
+    if(currentMediaWithAction_ )
+    {
+        //在当前范围内，不能倒播，则时间总是比当前对像的时间新才对，或到末尾了 
+        if((currentMediaWithAction_.secondsBegin<=playerSeconds && currentMediaWithAction_.secondsEnd > playerSeconds)
+           ||
+           (currentMediaWithAction_.secondsBegin > playerSeconds)
+           || (playerSeconds >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE))
+            return;
+        else
+        {
+            currentMediaWithAction_ = nil;
+        }
+    }
+
     CGFloat secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
-    if(!currentMediaWithAction_)
+    MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
+#ifndef __OPTIMIZE__
+    if(!itemDo)
     {
-        currentMediaWithAction_ = [self findMediaItemAt:secondsInArray];
-        return ;
+        if(reversePlayer_.hidden)
+            [player_ pause];
+        else
+            [reversePlayer_ pause];
+
+        secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+        itemDo = [self findActionAt:secondsInArray index:-1];
+         NSLog(@"player:%.2f inarray:%.2f do:%@",playerSeconds,secondsInArray,itemDo? [NSString stringWithFormat:@"%d",itemDo.ActionType]:@"null");
     }
-    //如果在有效范围内，不处理
-    NSLog(@"current:%.2f <0 || %.2f + %.2f <=%.2f +%.2f+%.2f",currentMediaWithAction_.secondsDurationInArray,
-          secondsInArray,secondsEffectPlayer_,currentMediaWithAction_.secondsInArray,currentMediaWithAction_.secondsDurationInArray ,SECONDS_ERRORRANGE);
-    if(currentMediaWithAction_.secondsDurationInArray<0
-       || (secondsInArray + secondsEffectPlayer_ <= currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray+SECONDS_ERRORRANGE)
-       || currentMediaWithAction_.secondsEnd+SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
-    {
-        
-    }
-    //切换对像
-    else
-    {
-        MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
-        [self ActionManager:self play:itemDo seconds:SECONDS_NOEND];
-    }
+#endif
+    [self ActionManager:self play:itemDo seconds:SECONDS_NOEND];
+    
+//    if(reversePlayer_.hidden)
+//        [player_ pause];
+//    else
+//        [reversePlayer_ pause];
+    
+//    
+//    
+//    
+//    if(!currentMediaWithAction_)
+//    {
+//        currentMediaWithAction_ = [self findMediaItemAt:secondsInArray];
+//        return ;
+//    }
+//    //如果在有效范围内，不处理
+//    NSLog(@"current:%.2f <0 || %.2f + %.2f <=%.2f +%.2f+%.2f",currentMediaWithAction_.secondsDurationInArray,
+//          secondsInArray,secondsEffectPlayer_,currentMediaWithAction_.secondsInArray,currentMediaWithAction_.secondsDurationInArray ,SECONDS_ERRORRANGE);
+//    if(currentMediaWithAction_.secondsDurationInArray<0
+//       || (secondsInArray + secondsEffectPlayer_ <= currentMediaWithAction_.secondsInArray + currentMediaWithAction_.secondsDurationInArray+SECONDS_ERRORRANGE)
+//       || currentMediaWithAction_.secondsEnd+SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
+//    {
+//        
+//    }
+//    //切换对像
+//    else
+//    {
+//        MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
+//        [self ActionManager:self play:itemDo seconds:SECONDS_NOEND];
+//    }
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {

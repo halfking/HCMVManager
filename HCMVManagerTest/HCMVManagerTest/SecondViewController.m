@@ -482,7 +482,7 @@
     CMTime reverSeconds = [rPlayer_.playerItem currentTime];
     CMTime reverDuration = [rPlayer_.playerItem duration];
     
-    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+    CGFloat secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
     
     NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
     
@@ -508,7 +508,7 @@
         MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
         if(!actionDo)
         {
-            secondsInTrack = [manager_ secondsForTrack:seconds];
+            secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
             actionDo = [manager_ findActionAt:secondsInTrack index:-1];
         }
         actionDo = currentAction_;// [manager_ findActionAt:secondsInTrack index:-1];
@@ -619,11 +619,11 @@
 {
     if(playerSimple == rPlayer_)
     {
-        
+        [manager_ setPlaySeconds:cmTime isReverse:YES];
     }
     else if(playerSimple == player_)
     {
-        [manager_ setPlaySeconds:cmTime];
+        [manager_ setPlaySeconds:cmTime isReverse:NO];
     }
     
     
@@ -700,8 +700,21 @@
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
     showTimeChanged_ = YES;
+
+    if(player_.hidden)
+        [rPlayer_ pause];
+    else
+        [player_ pause];
+    
+    NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
+    NSLog(@"mediaItem:%@",[mediaToPlay toString]);
     
     [pannel_ refresh];
+    
+    if(player_.hidden)
+        [rPlayer_ play];
+    else
+        [player_ play];
     
     if(!mediaToPlay)
     {

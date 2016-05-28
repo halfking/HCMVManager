@@ -30,7 +30,7 @@
 - (BOOL) generateMVByFilter:(int)filterIndex;
 - (void) removeGPUFilter;
 
-- (void) setPlaySeconds:(CGFloat)seconds;
+- (void) setPlaySeconds:(CGFloat)seconds isReverse:(BOOL)isReverse;
 
 #pragma mark - player control
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action seconds:(CGFloat)seconds;

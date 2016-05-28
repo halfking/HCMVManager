@@ -24,6 +24,7 @@
     @synchronized (self) {
         [mediaList_ removeAllObjects];
         secondsEffectPlayer_ = 0;
+        currentMediaWithAction_ = nil;
         
         NSAssert(videoBgAction_, @"必须先设置了源背景视频才能进行处理!");
         MediaWithAction * bgMedia = [videoBgAction_ copyItem];
