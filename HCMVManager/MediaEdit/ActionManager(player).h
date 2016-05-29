@@ -33,7 +33,7 @@
 - (void) setPlaySeconds:(CGFloat)seconds isReverse:(BOOL)isReverse;
 
 #pragma mark - player control
-- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action seconds:(CGFloat)seconds;
+- (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds;
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType;//0 add 1 update 2 remove;
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration;
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration;

@@ -118,6 +118,7 @@
 - (CGFloat) getSecondsInArrayFromPlayer:(CGFloat)playerSeconds isReversePlayer:(BOOL)isReversePlayer;
 
 - (MediaWithAction *) getCurrentMediaWithAction;
+- (void)setCurrentMediaWithAction:(MediaWithAction *)media;
 //根据当前对像获取...
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds;
 

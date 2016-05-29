@@ -214,6 +214,14 @@
 {
     return currentMediaWithAction_;
 }
+- (void) setCurrentMediaWithAction:(MediaWithAction *)media
+{
+    currentMediaWithAction_ = nil;
+    if(media)
+    {
+        currentMediaWithAction_ = media;
+    }
+}
 //根据当前对像获取...
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds
 {
@@ -231,6 +239,16 @@
             {
                 secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
                 break;
+            }
+        }
+        if(!isValid)
+        {
+            for (MediaWithAction * item in mediaList_) {
+                if(item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+                {
+                    secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                    break;
+                }
             }
         }
     }
@@ -707,6 +725,8 @@
     [self processNewActions];
     //    [self reindexAllActions];
     //    }
+    
+    MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
     if(item.isOPCompleted)
     {
         [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
@@ -714,15 +734,17 @@
         
         if(item.ActionType ==SRepeat) //重复，则需要从下一个开始才行
         {
-            [self ActionManager:self play:item seconds:SECONDS_NOEND];
+            [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
         }
         else //直接点击的，则直接执行当前Action
         {
-            [self ActionManager:self play:item seconds:SECONDS_NOEND];
+            [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
         }
     }
     else
-        [self ActionManager:self play:item seconds:SECONDS_NOEND];
+    {
+        [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
+    }
     return item;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
@@ -776,7 +798,9 @@
     //    {
     [self processNewActions];
     
-    [self ActionManager:self play:item seconds:SECONDS_NOEND];
+    //播当前这个
+    MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
+    [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     
     return item;
     
@@ -805,7 +829,10 @@
     
     //    [self reindexAllActions];
     
-    [self ActionManager:self play:action seconds:SECONDS_NOTVALID];
+    //播下一个
+    MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+    
+    [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
     return YES;
 }

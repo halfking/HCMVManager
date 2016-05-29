@@ -514,6 +514,9 @@
         [playerTimer_ invalidate];
         playerTimer_ = nil;
     }
+    
+    [[ActionManager shareObject]setCurrentMediaWithAction:nil];
+    
     playerTimer_ = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChanged:) userInfo:nil repeats:YES];
 }
 - (void)timeChanged:(NSTimer *)timer
