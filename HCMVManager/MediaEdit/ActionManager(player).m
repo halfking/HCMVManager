@@ -328,7 +328,7 @@
     if(!isGenerating_)
     {
         //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        NSLog(@"mediaplay:%@ (%.2f)",mediaToPlay.fileName,mediaToPlay.secondsBegin);
+        NSLog(@"mediaplay:%@ (%.2f) inarray:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray);
         if(mediaToPlay.Action.ActionType!=SReverse
            || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
         {
@@ -429,7 +429,10 @@
     {
         return ;
     }
+    if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE) return;
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
+    
+    [player_ pause];
     
     MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
     MediaWithAction * media  = itemDo?[self findMediaByActionDo:itemDo withSeconds:SECONDS_NOEND]:nil;
@@ -437,6 +440,7 @@
     {
         media = [self findMediaItemAt:secondsInArray];
     }
+    [player_ play];
     if(currentMediaWithAction_ && media == currentMediaWithAction_)
         return;
     else

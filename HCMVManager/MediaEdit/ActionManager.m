@@ -654,7 +654,7 @@
             item.Media.begin = CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
-                item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
             }
             
             MediaActionForReverse * reverse = (MediaActionForReverse *)item;
@@ -672,17 +672,17 @@
             
             if(item.ActionType==SRepeat && item.ReverseSeconds>=0 && durationInSeconds>0)
             {
-                item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds - durationInSeconds,
+                item.Media.begin = CMTimeMakeWithSeconds(MAX(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds - durationInSeconds,0),
                                                          item.Media.begin.timescale);
             }
             else
             {
-                item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds,
+                item.Media.begin = CMTimeMakeWithSeconds(MAX(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds,0),
                                                          item.Media.begin.timescale);
             }
             if(durationInSeconds>0)
             {
-                item.Media.end = CMTimeMakeWithSeconds(item.Media.secondsBegin + durationInSeconds , item.Media.end.timescale);
+                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
             }
         }
     }
@@ -694,7 +694,7 @@
     //Repeat，需要将定位放到前面
     if(item.ActionType==SRepeat && item.ReverseSeconds<0)
     {
-        item.SecondsInArray =  secondsInArray - durationInSeconds;// [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
+        item.SecondsInArray =  MAX(secondsInArray - durationInSeconds,0);// [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
     }
     else
     {

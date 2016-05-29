@@ -810,7 +810,9 @@
 }
 -(void)join:(UIButton *)sender
 {
+    return ;
     [self showIndicatorView];
+    
     
     [player_ setRate:1];
     
