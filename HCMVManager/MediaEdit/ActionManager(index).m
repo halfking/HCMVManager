@@ -223,7 +223,7 @@
     //        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
     ////        [self hideIndicatorView];
     //    }];
-    
+    needSendPlayControl_ = NO;
     BOOL ret = [self generateMediaListWithActions:actionMediaList complted:^(NSArray * mediaList)
                 {
                     [vg generatePreviewAsset:mediaList
@@ -236,6 +236,7 @@
                 }];
     if(!ret)
     {
+        needSendPlayControl_ = YES;
         isGenerating_ = NO;
         NSLog(@"generate failure.");
     }

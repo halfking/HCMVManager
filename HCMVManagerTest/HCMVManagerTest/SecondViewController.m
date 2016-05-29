@@ -683,10 +683,10 @@
 #pragma mark - delegate
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
 {
-    NSLog(@"*************** generate ok *****************");
-    baseVideo_ = [manager getBaseVideo];
+    NSLog(@"*************** generate reverse ok *****************");
+    //    baseVideo_ = [manager getBaseVideo];
     
-    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
+    //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
     
     reverseVideo_ = reverseVideo;
     if(viewShowed_)
@@ -830,8 +830,20 @@
     if(manager_.isGenerating)
     {
         NSLog(@"正在生成中，不能重入");
+        [player_ seek:0 accurate:YES];
+        [player_ play];
         return;
     }
+    if(![manager_ needGenerateForOP])
+    {
+        [player_ seek:0 accurate:YES];
+        [player_ play];
+        return ;
+    }
+    NSLog(@"generate begin ....");
+    
+    [self showCurrentMediaes:0];
+    
     if(![manager_ generateMV])
     {
         [player_ seek:0 accurate:YES];

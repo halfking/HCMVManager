@@ -94,6 +94,8 @@
 @property (nonatomic,assign,readonly) CGFloat videoVolume;
 @property (nonatomic,assign,readonly) BOOL isGenerating;
 @property (nonatomic,assign) BOOL needPlayerItem;
+@property (nonatomic,assign) BOOL canSendPlayerMedia; //是否可以向前端的播放器发送需要播放的对像。默认YES，在合成或一些未完成的操作时，需要关闭
+
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
 #pragma mark - action list manager

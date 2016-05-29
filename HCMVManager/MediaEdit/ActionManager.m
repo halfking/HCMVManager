@@ -38,6 +38,8 @@
 @synthesize videoVolume = videoVol_;
 @synthesize audioVolume = audioVol_;
 @synthesize isGenerating = isGenerating_;
+@synthesize canSendPlayerMedia = needSendPlayControl_;
+
 +(id)shareObject
 {
     static dispatch_once_t pred = 0;
@@ -221,6 +223,7 @@
     {
         currentMediaWithAction_ = media;
     }
+    needSendPlayControl_ = YES;
 }
 //根据当前对像获取...
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds
@@ -1209,6 +1212,7 @@
     NSLog(@"generate failure:%@",msg);
     NSLog(@"error:%@",[error localizedDescription]);
     isGenerating_ = NO;
+    needSendPlayControl_ = YES;
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
@@ -1217,6 +1221,7 @@
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
     isGenerating_ = NO;
+    needSendPlayControl_ = YES;
     NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];
