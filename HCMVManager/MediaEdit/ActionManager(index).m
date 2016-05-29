@@ -164,7 +164,7 @@
     
     NSArray * actionMediaList = [self getMediaList];
     
-    NSLog(@"-------------** generate begin **--------------------");
+    NSLog(@"generate begin ....");
 //    NSLog(@"duration:%.2f",durationForTarget_);
 //    int index = 0;
 //    for (MediaWithAction * item in actionMediaList) {

@@ -133,11 +133,17 @@
     [ActionManager shareObject].delegate = self;
     
     [pannel_ refresh];
+    
+    [self buildControls];
+    
+    [player_ play];
+    
 }
 - (void) viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [player_ pause];
+    
 }
 -(void)layoutNew
 {
@@ -687,8 +693,8 @@
     {
         [self buildControls];
     }
-//    [player_ seek:0 accurate:YES];
-//    [player_ play];
+    [player_ seek:0 accurate:YES];
+    [player_ play];
 
     [self hideIndicatorView];
     
@@ -756,9 +762,9 @@
     
     baseVideo_ = [manager_ getBaseVideo];
     
-    [self buildControls];
+//    [self buildControls];
     
-    [player_ play];
+//    [player_ play];
     
     
     //    }
@@ -796,6 +802,10 @@
     [[ActionManager shareObject]resetStates];
     
 //    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+    baseVideo_ = [manager_ getBaseVideo];
+    reverseVideo_ = [manager_ getReverseVideo];
+    
+    [self buildControls];
     [player_ play];
 }
 -(void)join:(UIButton *)sender
@@ -814,8 +824,12 @@
     
     
     //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
-    
-    if(![manager_ generateMV] && !manager_.isGenerating)
+    if(manager_.isGenerating)
+    {
+        NSLog(@"正在生成中，不能重入");
+        return;
+    }
+    if(![manager_ generateMV])
     {
         [player_ seek:0 accurate:YES];
         [player_ play];

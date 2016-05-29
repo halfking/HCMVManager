@@ -611,8 +611,8 @@
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;
     
-    NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
-    NSLog(@"mediaItem:%@",[mediaToPlay toString]);
+    NSLog(@"mediaItem1:%@",[mediaToPlay.fileName lastPathComponent]);
+    NSLog(@"mediaItem1:%@",[mediaToPlay toString]);
 }
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {

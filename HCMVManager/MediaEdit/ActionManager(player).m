@@ -456,21 +456,28 @@
 {
     if(isReverse) return;
     //不需要更换
-    if(currentMediaWithAction_ )
-    {
-        //在当前范围内，不能倒播，则时间总是比当前对像的时间新才对，或到末尾了 
-        if((currentMediaWithAction_.secondsBegin<=playerSeconds && currentMediaWithAction_.secondsEnd > playerSeconds)
-           ||
-           (currentMediaWithAction_.secondsBegin > playerSeconds)
-           || (playerSeconds >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE))
-            return;
-        else
-        {
-            currentMediaWithAction_ = nil;
-        }
-    }
-
-    CGFloat secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+    
+    CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
+    MediaWithAction * media = [self findMediaItemAt:secondsInArray];
+    if(currentMediaWithAction_ && media == currentMediaWithAction_)
+        return;
+    else
+        currentMediaWithAction_ = media;
+    
+//    if(currentMediaWithAction_ )
+//    {
+//        //在当前范围内，不能倒播，则时间总是比当前对像的时间新才对，或到末尾了 
+//        if((currentMediaWithAction_.secondsBegin<=playerSeconds && currentMediaWithAction_.secondsEnd > playerSeconds)
+//           ||
+//           (currentMediaWithAction_.secondsBegin > playerSeconds)
+//           || (playerSeconds >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE))
+//            return;
+//        else
+//        {
+//            currentMediaWithAction_ = nil;
+//        }
+//    }
+//    CGFloat secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
 #ifndef __OPTIMIZE__
     if(!itemDo)

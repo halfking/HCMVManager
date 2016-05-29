@@ -116,6 +116,11 @@
 //取最后的一个时间作为标准
 //isrevers 标志当前这个时间是属于倒放的时间，如果是正放，则不需要标记
 - (CGFloat) getSecondsInArrayFromPlayer:(CGFloat)playerSeconds isReversePlayer:(BOOL)isReversePlayer;
+
+- (MediaWithAction *) getCurrentMediaWithAction;
+//根据当前对像获取...
+- (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds;
+
 - (double) getMediaActionID;
 - (MediaActionDo *) findMediaActionDoByType:(int)actionType;
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
@@ -125,11 +130,15 @@
                    at:(CGFloat)playerSeconds
                              from:(CGFloat)mediaBeginSeconds
              duration:(CGFloat)durationInSeconds;
-
+- (MediaActionDo *) addActionItem:(MediaAction *)action filePath:(NSString *)filePath
+                               inArray:(CGFloat)secondsInArray
+                             from:(CGFloat)mediaBeginSeconds
+                         duration:(CGFloat)durationInSeconds;
 //重复添加对像
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                                  at:(CGFloat)playerSeconds;
-
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                                 inArray:(CGFloat)secondsInArray;
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
 - (BOOL) ensureActions:(CGFloat)playerSeconds; //将未完成的Action完成，一般用于播放完成

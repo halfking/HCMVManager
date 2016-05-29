@@ -70,6 +70,7 @@
         isGenerating_ = NO;
         lastFilterIndex_ = 0;
         currentFilterIndex_ = 0;
+        currentMediaWithAction_ = nil;
         videoVol_ = 1;
         audioVol_ = 1;
         needSendPlayControl_ = YES;
@@ -88,6 +89,7 @@
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
+    currentMediaWithAction_ = nil;
     
     videoVol_ = 1;
     audioVol_ = 1;
@@ -100,6 +102,7 @@
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
     needSendPlayControl_ = YES;
+    currentMediaWithAction_ = nil;
     
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
@@ -207,6 +210,42 @@
     }
     return YES;
 }
+- (MediaWithAction *) getCurrentMediaWithAction
+{
+    return currentMediaWithAction_;
+}
+//根据当前对像获取...
+- (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds
+{
+    CGFloat secondsInArray = playerSeconds;
+    
+    if(currentMediaWithAction_)
+    {
+        BOOL isValid = NO;
+        for (MediaWithAction * item in mediaList_) {
+            if(item==currentMediaWithAction_)
+            {
+                isValid = YES;
+            }
+            if(isValid && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+            {
+                secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (MediaWithAction * item in mediaList_) {
+            if(item.Action.ActionType==SNormal && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+            {
+                secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                break;
+            }
+        }
+    }
+    return secondsInArray;
+}
 #pragma mark - action list manager
 - (BOOL) checkIsNeedChangeBG:(NSString *)filePath
 {
@@ -230,6 +269,12 @@
     if(!filePath) return NO;
     //生成反向的视频
     {
+        if(isReverseGenerating_)
+        {
+            NSLog(@"正在生成反向视频中，不能再次进入");
+            return NO;
+        }
+        isReverseGenerating_ = YES;
         if(reverseBG_)
         {
             PP_RELEASE(reverseBG_);
@@ -240,23 +285,32 @@
         VideoGenerater * vg = [VideoGenerater new];
         vg.TagID = 2;
         __weak ActionManager * weakSelf = self;
-        [vg generateMVReverse:filePath target:outputPath
-                     complted:^(NSString * filePathNew){
-                         if(filePathNew)
-                         {
-                             isReverseHasGenerated_ = YES;
-                             reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
-                             reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
-                             reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
-                             
-                             __strong ActionManager * strongSelf = weakSelf;
-                             if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
-                             {
-                                 [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
-                             }
-                         }
-                         isReverseGenerating_ = NO;
-                     }];
+        NSLog(@"begin generate reverse video....");
+        BOOL ret = [vg generateMVReverse:filePath target:outputPath
+                                complted:^(NSString * filePathNew){
+                                    NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
+                                    if(filePathNew)
+                                    {
+                                        isReverseHasGenerated_ = YES;
+                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
+                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
+                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
+                                        
+                                        __strong ActionManager * strongSelf = weakSelf;
+                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+                                        {
+                                            [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+                                        }
+                                    }
+                                    isReverseGenerating_ = NO;
+                                }];
+        if(!ret)
+        {
+            isReverseGenerating_ = NO;
+            isReverseHasGenerated_ = NO;
+            NSLog(@"generate reverse failure....");
+            return NO;
+        }
     }
     return YES;
 }
@@ -265,7 +319,6 @@
     if(![self checkIsNeedChangeBG:filePath]) return NO;
     
     if(isReverseGenerating_) return NO;
-    isReverseGenerating_ = YES;
     
     //设置正向视频
     {
@@ -299,7 +352,7 @@
     action.Media = videoBg_;
     
     videoBgAction_ = [action toMediaWithAction:nil];
-    
+    currentMediaWithAction_ = nil;
     [self reindexAllActions];
     return YES;
 }
@@ -335,6 +388,8 @@
     action.Media = videoBg_;
     
     videoBgAction_ = [action toMediaWithAction:nil];
+    
+    currentMediaWithAction_ = nil;
     
     [self reindexAllActions];
     
@@ -540,6 +595,29 @@
     {
         playerSeconds += item.secondsBeginAdjust;
     }
+    //Repeat，需要将定位放到前面
+    if(item.ActionType==SRepeat && item.ReverseSeconds<0)
+    {
+        item.SecondsInArray =  [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
+    }
+    else
+    {
+        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+    }
+    return [self addActionItem:action filePath:filePath inArray:item.SecondsInArray from:mediaBeginSeconds duration:durationInSeconds];
+}
+- (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
+                         inArray:(CGFloat)secondsInArray
+                            from:(CGFloat)mediaBeginSeconds
+                        duration:(CGFloat)durationInSeconds;
+{
+    MediaActionDo * item = [self getMediaActionDo:action];
+    
+    //    //对用户在用手操作时的延时进行校正
+    //    if(item.secondsBeginAdjust!=0)
+    //    {
+    //        playerSeconds += item.secondsBeginAdjust;
+    //    }
     
     if(filePath && filePath.length>0 && [filePath isEqualToString:videoBg_.filePath]==NO)
     {
@@ -598,11 +676,11 @@
     //Repeat，需要将定位放到前面
     if(item.ActionType==SRepeat && item.ReverseSeconds<0)
     {
-        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
+        item.SecondsInArray =  secondsInArray - durationInSeconds;// [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
     }
     else
     {
-        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+        item.SecondsInArray = secondsInArray;// [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     }
     item.DurationInArray = durationInSeconds;
     
@@ -651,18 +729,34 @@
                                  at:(CGFloat)playerSeconds
 {
     if(actionDo.isOPCompleted==NO) return nil;
-    
-    MediaActionDo * item = [actionDo copyItemDo];
-    
+    CGFloat secondsInArray = actionDo.SecondsInArray;
     //Repeat，需要将定位放到前面
-    if(item.ActionType==SRepeat)
+    if(actionDo.ActionType==SRepeat)
     {
-        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - item.DurationInSeconds;
+        secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - actionDo.DurationInSeconds;
     }
     else
     {
-        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+        secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     }
+    return [self addActionItemDo:actionDo inArray:secondsInArray];
+}
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                            inArray:(CGFloat)secondsInArray
+{
+    if(actionDo.isOPCompleted==NO) return nil;
+    
+    MediaActionDo * item = [actionDo copyItemDo];
+    
+    //    //Repeat，需要将定位放到前面
+    //    if(item.ActionType==SRepeat)
+    //    {
+    //        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - item.DurationInSeconds;
+    //    }
+    //    else
+    //    {
+    //        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+    //    }
     
     [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
     //    secondsEffectPlayer_ += [item secondsEffectPlayer];
@@ -928,6 +1022,11 @@
 }
 - (BOOL) resetOrigin
 {
+    if(videoBGHistroy_.count>0)
+    {
+        videoBg_ = [videoBGHistroy_ firstObject];
+        reverseBG_ = [reverseBgHistory_ firstObject];
+    }
     [actionsHistory_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
@@ -940,6 +1039,8 @@
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
     [self reindexAllActions];
+    
+    [self saveDraft];
     
     return YES;
 }
@@ -958,6 +1059,13 @@
     [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
     [filterHistory_ removeAllObjects];
+    
+    
+    [videoBGHistroy_ addObject:videoBg_];
+    [reverseBgHistory_ addObject:reverseBG_];
+    [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+    [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    
     
     [self reindexAllActions];
     
@@ -984,14 +1092,14 @@
 }
 - (BOOL) loadFirstDraft
 {
-    if(videoBGHistroy_.count<=0) return NO;
+    if(videoBGHistroy_.count<=1) return NO;
     
-    videoBg_ = [videoBGHistroy_ firstObject];
-    reverseBG_ = [reverseBgHistory_ firstObject];
-    currentFilterIndex_ = [[filterHistory_ firstObject]intValue];
+    videoBg_ = [videoBGHistroy_ objectAtIndex:1];
+    reverseBG_ = [reverseBgHistory_ objectAtIndex:1];
+    currentFilterIndex_ = [[filterHistory_ objectAtIndex:1]intValue];
     [actionList_ removeAllObjects];
     //不要赋值
-    //    [actionList_ addObjectsFromArray:[actionsHistory_ firstObject]];
+    //        [actionList_ addObjectsFromArray:[actionsHistory_ objectAtIndex:1]];
     [actionsHistory_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
@@ -1085,7 +1193,7 @@
     NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];
-    NSLog(@"generate completed:%@",filePath);
+    NSLog(@"generate completed:%@",[[HCFileManager manager]getFileName:filePath]);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
     {
         [self.delegate ActionManager:self generateOK:filePath cover:cover isFilter:NO];
