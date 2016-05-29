@@ -103,7 +103,7 @@
     [super viewDidLoad];
     manager_ = [ActionManager shareObject];
     manager_.delegate = self;
-    [manager_ removeActions];
+//    [manager_ removeActions];
     
     //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
     oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
@@ -117,8 +117,10 @@
     
     viewShowed_ = NO;
     [self showIndicatorView];
-    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
-    
+    if(![manager_ getBaseVideo])
+    {
+        [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+    }
     baseVideo_ = [manager_ getBaseVideo];
     
     showTimeChanged_ = YES;
@@ -129,6 +131,8 @@
     //[self layout];
     [self layoutNew];
     [ActionManager shareObject].delegate = self;
+    
+    [pannel_ refresh];
 }
 - (void) viewDidDisappear:(BOOL)animated
 {
@@ -624,6 +628,8 @@
     else if(playerSimple == player_)
     {
         [manager_ setPlaySeconds:cmTime isReverse:NO];
+        
+        [pannel_ setPlayerSeconds:cmTime isReverse:NO];
     }
     
     
@@ -703,7 +709,10 @@
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
     showTimeChanged_ = YES;
-
+    
+    [pannel_ setPlayMedia:mediaToPlay];
+    [pannel_ refresh];
+    
     if(player_.hidden)
         [rPlayer_ pause];
     else
@@ -712,7 +721,7 @@
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
     
-    [pannel_ refresh];
+    
     
     if(player_.hidden)
         [rPlayer_ play];

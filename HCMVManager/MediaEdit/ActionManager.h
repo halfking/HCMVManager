@@ -167,7 +167,11 @@
 - (BOOL) loadFirstDraft;
 //保存的草稿的数量
 - (int)  getHistoryCount;
-//读取草稿的信息，不对当前队列进行任何操作
+
+//用最新的文件作为在初始版本，原初始版本作废
+- (BOOL) resetOrigin;
+
+ //读取草稿的信息，不对当前队列进行任何操作
 - (BOOL) getDraft:(int)index base:(MediaItem **)baseVideo reverse:(MediaItem **)reverseVideo actionList:(NSArray **)actionList filterID:(int *)filterID;
 
 - (BOOL) needGenerateForOP; //因为动作而需要重新生成的

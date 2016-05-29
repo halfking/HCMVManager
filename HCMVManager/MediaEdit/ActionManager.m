@@ -73,7 +73,7 @@
         videoVol_ = 1;
         audioVol_ = 1;
         needSendPlayControl_ = YES;
-//        lastPlayerSeconds_ = 0;
+        //        lastPlayerSeconds_ = 0;
     }
     return self;
 }
@@ -577,7 +577,7 @@
             if(item.ActionType==SRepeat && item.ReverseSeconds>=0 && durationInSeconds>0)
             {
                 item.Media.begin = CMTimeMakeWithSeconds(item.Media.secondsBegin + mediaBeginSeconds + action.ReverseSeconds - durationInSeconds,
-                                      item.Media.begin.timescale);
+                                                         item.Media.begin.timescale);
             }
             else
             {
@@ -613,10 +613,6 @@
     else
     {
         item.isOPCompleted = YES;
-        
-        [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
-        //        secondsEffectPlayer_ += [item secondsEffectPlayer];
-        NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
     }
     item.Index = (int)actionList_.count;
     
@@ -635,6 +631,9 @@
     //    }
     if(item.isOPCompleted)
     {
+        [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
+        NSLog(@"secondsEffectPlayer_:%.4f",secondsEffectPlayer_);
+        
         if(item.ActionType ==SRepeat) //重复，则需要从下一个开始才行
         {
             [self ActionManager:self play:item seconds:SECONDS_NOEND];
@@ -779,22 +778,22 @@
                 retItem = item;
                 break;
             }
-//            //起hhko在当前时间前
-//            if(item.SecondsInArray - secondsInArray < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
-//            {
-//                if(item.DurationInArray <0 ||
-//                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
-//                {
-//                    retItem = item;
-//                    break;
-//                }
-//                else if(item.DurationInArray <0)
-//                {
-//                    retItem = item;
-//                    break;
-//                }
-//            }
-//            NSLog(@"find item:%@",retItem?@"OK":@"NO");
+            //            //起hhko在当前时间前
+            //            if(item.SecondsInArray - secondsInArray < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
+            //            {
+            //                if(item.DurationInArray <0 ||
+            //                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
+            //                {
+            //                    retItem = item;
+            //                    break;
+            //                }
+            //                else if(item.DurationInArray <0)
+            //                {
+            //                    retItem = item;
+            //                    break;
+            //                }
+            //            }
+            //            NSLog(@"find item:%@",retItem?@"OK":@"NO");
         }
         
     }
@@ -904,7 +903,7 @@
         NSLog(@"no data to save....");
         return NO;
     }
-    if(actionList_.count>0)
+    if((actionList_.count>0 || currentFilterIndex_!=lastFilterIndex_) && videoBGHistroy_.count>0 )
     {
         [videoBGHistroy_ addObject:videoBg_];
         [reverseBgHistory_ addObject:reverseBG_];
@@ -913,6 +912,13 @@
         
         NSLog(@"items saved.");
     }
+    else if(videoBGHistroy_.count==0)
+    {
+        [videoBGHistroy_ addObject:videoBg_];
+        [reverseBgHistory_ addObject:reverseBG_];
+        [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+        [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    }
     else
     {
         NSLog(@"no data need save.");
@@ -920,13 +926,32 @@
     
     return YES;
 }
+- (BOOL) resetOrigin
+{
+    [actionsHistory_ removeAllObjects];
+    [reverseBgHistory_ removeAllObjects];
+    [videoBGHistroy_ removeAllObjects];
+    [filterHistory_ removeAllObjects];
+    [actionList_ removeAllObjects];
+    
+    [videoBGHistroy_ addObject:videoBg_];
+    [reverseBgHistory_ addObject:reverseBG_];
+    [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+    [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    
+    [self reindexAllActions];
+    
+    return YES;
+}
 - (BOOL) loadOrigin
 {
-    if(videoBGHistroy_.count<=0) return NO;
-    
-    videoBg_ = [videoBGHistroy_ firstObject];
-    reverseBG_ = [reverseBgHistory_ firstObject];
+    if(videoBGHistroy_.count>0)
+    {
+        videoBg_ = [videoBGHistroy_ firstObject];
+        reverseBG_ = [reverseBgHistory_ firstObject];
+    }
     currentFilterIndex_ = 0;
+    lastFilterIndex_ = 0;
     [actionList_ removeAllObjects];
     
     [actionsHistory_ removeAllObjects];

@@ -27,49 +27,77 @@
     UIScrollView * imagesContainer_;
     int kThumbImageTag_;
     ActionManagerPannel * pannel_;
+    
+    NSTimer * playerTimer_;
+    CGFloat playerSeconds_;
+    int clickIndex_;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    CGFloat left = 20;
+    CGFloat top = 20;
     
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(20, 20, 64, 44);
+        btn.frame = CGRectMake(left, top, 74, 44);
         btn.backgroundColor = [UIColor blueColor];
         [btn setTitle:@"testclick" forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(addItem:) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(clickTest:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
+        left += 74+10;
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(104, 20, 64, 44);
+        btn.frame = CGRectMake(left, top, 74, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"testlong" forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(beginLongTouch:) forControlEvents:UIControlEventTouchUpInside];
+        [btn setTitle:@"longtouch" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(testLongTouch:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
+        left += 74+10;
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(204, 20, 64, 44);
+        btn.frame = CGRectMake(left, top, 64, 44);
         btn.backgroundColor = [UIColor blueColor];
         [btn setTitle:@"testrap" forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(endLongTouch:) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(TestRap:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
+        left += 64+10;
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(304, 20, 64, 44);
+        btn.frame = CGRectMake(left, top, 74, 44);
         btn.backgroundColor = [UIColor blueColor];
         [btn setTitle:@"testshake" forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(playItem:) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(testShake:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
-    
+    left = 20;
+    top += 54;
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(104, 80, 100, 44);
+        btn.frame = CGRectMake(left, top, 74, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"testtime" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(testTime:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+        left += 84;
+    }
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(left, top, 64, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"reset" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(resetClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+        left += 74;
+    }
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(left, top, 100, 44);
         btn.backgroundColor = [UIColor blueColor];
         [btn setTitle:@"thumnates" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(thumnates:) forControlEvents:UIControlEventTouchUpInside];
@@ -83,9 +111,9 @@
         kThumbImageTag_ = 20000;
     }
     {
-        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 200,
-                                                                       self.view.frame.size.width -20,
-                                                                       500)];
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(0, 150,
+                                                                       self.view.frame.size.width,
+                                                                       self.view.frame.size.height - 150)];
         pannel_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:pannel_];
     }
@@ -95,244 +123,411 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
     [ActionManager shareObject].delegate = self;
+    
+    [pannel_ refresh];
 }
 - (void)buildBaseData
 {
     
     ActionManager * manager = [ActionManager shareObject];
     manager.delegate = self;
-//    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
+    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
     NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"MOV"];
-//    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
-//    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
-//    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
-//    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanright" ofType:@"MOV"];
-//        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
-//        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
-    
-    [manager setBackMV:path begin:0 end:-1 buildReverse:YES];
+    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
+    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
+    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
+    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanright" ofType:@"MOV"];
+    //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_up" ofType:@"MOV"];
+    //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
+    if(![manager getBaseVideo])
+    {
+        [manager setBackMV:path begin:0 end:-1 buildReverse:YES];
+    }
     [pannel_ setActionManager:manager];
     [pannel_ refresh];
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = 1;
-//        action.ActionTitle = @"slow";
-//        action.ReverseSeconds = 0;
-//        action.DurationInSeconds = 1;
-//        action.Rate = 0.25;
-//        action.IsMutex = NO;
-//        action.IsFilter = NO;
-//        
-//        [manager addActionItem:action filePath:nil at:4 from:4 duration:action.DurationInSeconds];
-//    }
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SSlow;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = YES;
-//        action.IsMutex = NO;
-//        action.Rate = 0.33333;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:2 from:2 duration:0.5];
-//    }
-    
 }
-- (void)addItem:(id)sender
+#pragma  mark - buutons
+- (void)resetClick:(id)sender
 {
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
+    [[ActionManager shareObject]loadOrigin];
+    playerSeconds_ = 0;
+    clickIndex_ =0;
+    [pannel_ refresh];
+}
+- (void)clickTest:(id)sender
+{
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
     MediaActionDo * acdo = nil;
     ActionManager * manager = [ActionManager shareObject];
-
-    {
+    
+    if(clickIndex_ ==0){
         MediaAction * action = [MediaAction new];
         action.ActionType = SSlow;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = YES;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = 0.3333333;
         action.isOPCompleted = YES;
         acdo =  [manager addActionItem:action filePath:nil at:1 from:1 duration:1];
     }
-
-        {
-            MediaAction * action = [MediaAction new];
-            action.ActionType = SRepeat;
-            action.ReverseSeconds = 0 ;
-            action.IsOverlap = NO;
-            action.IsMutex = NO;
-            action.Rate = 1;
-            action.isOPCompleted = YES;
-            [manager addActionItem:action filePath:nil at:9 from:9 duration:1];
-        }
     
-    {
+    if(clickIndex_ ==1){
         MediaAction * action = [MediaAction new];
-        action.ActionType = SReverse;
+        action.ActionType = SFast;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = YES;
         action.IsMutex = NO;
+        action.Rate = 2;
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:1.5 from:1.5 duration:2];
+    }
+    
+    
+    if(clickIndex_ ==2){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
         action.Rate = 1;
         action.isOPCompleted = YES;
-        acdo =  [manager addActionItem:action filePath:nil at:2 from:2 duration:1];
+        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
     }
-  
-    [manager setPlaySeconds:4.1 isReverse:NO];
-  
-    
-    {
+    if(clickIndex_ ==3){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
+    }
+    if(clickIndex_ ==4){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        [manager addActionItem:action filePath:nil at:6 from:5 duration:1];
+    }
+    if(clickIndex_ ==5){
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.Rate = 1;
-        action.isOPCompleted = NO;
-        acdo = [manager addActionItem:action filePath:nil at:4 from:4 duration:-1];
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:8 from:8 duration:1];
     }
-    [manager setPlaySeconds:4.1 isReverse:NO];
     
-    [manager setActionItemDuration:acdo duration:2];
-    
-    [manager setPlaySeconds:8 isReverse:NO];
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SSlow;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = YES;
-//        action.IsMutex = NO;
-//        action.Rate = 0.33;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
-//    }
-
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SReverse;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
-//    }
-    
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SReverse;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
-//    }
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SReverse;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:5.5 from:5.5 duration:1];
-//    }
-//
-
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SRepeat;
-//        action.ReverseSeconds = 0 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:5 from:4 duration:1];
-//    }
-   
-    {
+    if(clickIndex_ ==6){
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.Rate = 1;
-        action.isOPCompleted = NO;
-        acdo = [manager addActionItem:action filePath:nil at:4 from:4 duration:-1];
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:9 from:9 duration:1];
     }
-    [manager setActionItemDuration:acdo duration:3];
-//    [manager ensureActions:[manager getBaseVideo].secondsDuration];
     
-//    [manager setActionItemDuration:acdo duration:manager.getBaseVideo.secondsDuration - 6];
-    
-    [manager setPlaySeconds:4 isReverse:NO];
-    
-    {
+    CGFloat lastSeconds = [manager getBaseVideo].secondsDuration;
+    if(clickIndex_ ==7){
         MediaAction * action = [MediaAction new];
-        action.ActionType = SReverse;
+        action.ActionType = SFast;
         action.ReverseSeconds = 0 ;
-        action.IsOverlap = NO;
+        action.IsOverlap = YES;
         action.IsMutex = NO;
-        action.Rate = 1;
-        action.isOPCompleted = NO;
-        acdo = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
+        action.Rate = 2;
+        action.isOPCompleted = YES;
+        acdo =  [manager addActionItem:action filePath:nil at:lastSeconds - 0.5 from:lastSeconds- 0.5 duration:2];
     }
-    
-    [manager setActionItemDuration:acdo duration:2];
-    
-    [manager setPlaySeconds:6.5 isReverse:NO];
-//    
-//    MediaAction * action = [MediaAction new];
-//    action.ActionType = SReverse;
-//    action.ReverseSeconds = 0 ;
-//    action.IsOverlap = NO;
-//    action.IsMutex = NO;
-//    action.Rate = 1;
-//    action.isOPCompleted = NO;
-//    acdo = [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
-//    
-//    [manager setActionItemDuration:acdo duration:2];
-//    {
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SRepeat;
-//        action.ReverseSeconds = -1 ;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.Rate = 1;
-//        action.isOPCompleted = YES;
-//        [manager addActionItem:action filePath:nil at:5 from:4.5 duration:1];
-//    }
+    clickIndex_ ++;
+    if(clickIndex_ >7)
+    {
+        clickIndex_ = 0;
+    }
 }
-- (void)beginLongTouch:(id)sender
+- (void)testLongTouch:(id)sender
 {
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
     ActionManager * manager = [ActionManager shareObject];
     
-    {
+    if(clickIndex_ ==0){
         MediaAction * action = [MediaAction new];
-        action.ActionType = 4;
-        action.ActionTitle = @"reverse";
+        action.ActionType = SSlow;
+        action.ActionTitle = @"slow";
         action.ReverseSeconds = 0;
         action.DurationInSeconds = 1;
-        action.Rate = 1;
+        action.Rate = 0.333333;
         action.IsMutex = NO;
         action.IsFilter = NO;
         
+        testAction_ = [manager addActionItem:action filePath:nil at:1 from:1 duration:-1];
+    }
+    if(clickIndex_ ==1)
+    {
+        [manager setActionItemDuration:testAction_ duration:2.5];
+    }
+    if(clickIndex_ ==2){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SFast;
+        action.ActionTitle = @"fast";
+        action.ReverseSeconds = 0;
+        action.DurationInSeconds = 1;
+        action.Rate = 2;
+        action.IsMutex = NO;
+        action.IsFilter = NO;
+        
+        testAction_ = [manager addActionItem:action filePath:nil at:3.5 from:3.5 duration:-1];
+    }
+    if(clickIndex_ ==3)
+        [manager setActionItemDuration:testAction_ duration:2];
+    
+    
+    
+    if(clickIndex_ ==4){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SSlow;
+        action.ActionTitle = @"fast";
+        action.ReverseSeconds = 0;
+        action.DurationInSeconds = 1;
+        action.Rate = 0.333333;
+        action.IsMutex = NO;
+        action.IsFilter = NO;
+        
+        testAction_ = [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:-1];
+    }
+    if(clickIndex_ ==5)
+        [manager setActionItemDuration:testAction_ duration:1];
+    
+    
+    if(clickIndex_ ==6){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
+        testAction_ = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
+    }
+    
+    if(clickIndex_ ==7)
+        [manager setActionItemDuration:testAction_ duration:2];
+    
+    if(clickIndex_ ==8){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
         testAction_ = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
     }
     
+    if(clickIndex_ ==9)
+        [manager setActionItemDuration:testAction_ duration:1];
+    
+    if(clickIndex_ ==10){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SFast;
+        
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 2;
+        action.isOPCompleted = NO;
+        testAction_ = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
+    }
+    if(clickIndex_ ==11)
+        [manager ensureActions:[manager getBaseVideo].secondsDuration];
+    //    [manager setActionItemDuration:testAction_ duration:[manager getBaseVideo].secondsDuration - 7];
+    clickIndex_ ++;
+    if(clickIndex_ >11)
+        clickIndex_ = 0;
+    [pannel_ refresh];
 }
-- (void)endLongTouch:(id)sender
+- (void)TestRap:(id)sender
 {
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
     ActionManager * manager = [ActionManager shareObject];
     
-    if(!testAction_) return;
     
-    [manager setActionItemDuration:testAction_ duration:2];
+    if(clickIndex_ ==0){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:5 from:5 duration:0.5];
+    }
+    if(clickIndex_ ==1)
+        [manager addActionItemDo:testAction_ at:6];
+    if(clickIndex_ ==2)
+        [manager addActionItemDo:testAction_ at:7];
+    
+    if(clickIndex_ ==3){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:8 from:5 duration:1];
+    }
+    if(clickIndex_ ==4)
+        [manager addActionItemDo:testAction_ at:9];
     
     
+    //test last action
+    CGFloat lastSeconds = [manager getBaseVideo].secondsDuration;
+    if(clickIndex_ ==5){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SRepeat;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:lastSeconds - 0.5 from:lastSeconds - 0.5 duration:1];
+    }
+    clickIndex_ ++;
+    if(clickIndex_>5)
+        clickIndex_ = 0;
+    //    [manager ensureActions:[manager getBaseVideo].secondsDuration];
+    [pannel_ refresh];
 }
-- (void)playItem:(id)sender
+- (void)testShake:(id)sender
 {
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
+    ActionManager * manager = [ActionManager shareObject];
     
+    //    [manager setActionItemDuration:testAction_ duration:2];
+    
+    
+    if(clickIndex_ ==0){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:2.5 from:2.5 duration:2];
+    }
+    
+    if(clickIndex_ ==1) {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
+    }
+    
+    
+    if(clickIndex_ ==2){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
+        testAction_ = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
+    }
+    if(clickIndex_ ==3)
+        [manager setActionItemDuration:testAction_ duration:3];
+    
+    //test interrect
+    if(clickIndex_ ==4){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
+    }
+    
+    if(clickIndex_ ==5){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = 1;
+        action.isOPCompleted = NO;
+        testAction_ = [manager addActionItem:action filePath:nil at:8 from:8 duration:-1];
+    }
+    if(clickIndex_ ==6)
+        [manager ensureActions:[manager getBaseVideo].secondsDuration];
+    
+    clickIndex_ ++;
+    if(clickIndex_>6) clickIndex_ = 0;
+    [pannel_ refresh];
+}
+//player times
+- (void)testTime:(id)sender
+{
+    playerSeconds_  = 0;
+    clickIndex_ = 0;
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
+    playerTimer_ = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChanged:) userInfo:nil repeats:YES];
+}
+- (void)timeChanged:(NSTimer *)timer
+{
+    playerSeconds_ += 0.1;
+    ActionManager * manager = [ActionManager shareObject];
+    
+    if(playerSeconds_ >= [manager getBaseVideo].secondsDuration)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
+    [manager setPlaySeconds:playerSeconds_ isReverse:NO];
+    [pannel_ setPlayerSeconds:playerSeconds_ isReverse:NO];
 }
 - (void)thumnates:(id)sender
 {
@@ -352,19 +547,19 @@
     if (temp > count + 0.1) {
         count++;
     }
-//    CGFloat scale = [DeviceConfig config].Scale;
-//    width_ *= scale;
+    //    CGFloat scale = [DeviceConfig config].Scale;
+    //    width_ *= scale;
     CGSize size = CGSizeMake((width_ * maxValue_ / imageCountInView), (width_ * maxValue_ / imageCountInView));
     
     size.width = (int)(size.width * 10 + 0.5)/10;
     size.height = (int)(size.height * 10+0.5)/10;
     
     CGSize displaySize = size;
-//    CGSize displaySize = CGSizeMake(size.width/scale, size.height/scale);
-
+    //    CGSize displaySize = CGSizeMake(size.width/scale, size.height/scale);
+    
     //        __block int tempIndex = 0;
     [[WTPlayerResource sharedWTPlayerResource] getVideoThumbs:item.url
-//                                                      alAsset:nil
+     //                                                      alAsset:nil
                                        targetThumnateFileName:@"videoThumb"
                                                         begin:0 andEnd:-1
                                                       andStep:step
@@ -374,7 +569,7 @@
                                                          [self changeImageViewContent:path index:index size:displaySize];
                                                          
                                                      } completed:^(CMTime requestTime, NSString *path, NSInteger index) {
-
+                                                         
                                                      } failure:^(CMTime requestTime, NSError *error, NSString *filePath) {
                                                      }];
     
@@ -394,7 +589,7 @@
         {
             imagesContainer_.contentSize = CGSizeMake(index * size.width, size.height);
         }
-//        NSLog(@"video thumb path %@ index %d",path,(int)index);
+        //        NSLog(@"video thumb path %@ index %d",path,(int)index);
     }
     else
     {
@@ -404,23 +599,27 @@
     }
 }
 #pragma mark - action manager delgates
+- (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo
+{
+    [manager saveDraft];
+}
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
+    [pannel_ setPlayMedia:mediaToPlay];
+    [pannel_ refresh];
+    
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
-    dispatch_async(dispatch_get_main_queue(), ^{
-    [pannel_ refresh];
-    });
 }
 - (void)ActionManager:(ActionManager *)manager doProcessOK:(NSArray *)mediaList duration:(CGFloat)duration
 {
     NSLog(@"-------------**----**--------------------");
     NSLog(@"duration:%.2f",duration);
-//    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
-//    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
+    //    NSLog(@"** playerSeconds:7 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:7]);
+    //    NSLog(@"** playerSeconds:10 track seconds:%.2f",[[ActionManager shareObject]getSecondsWithoutAction:10]);
     int index = 0;
     for (MediaWithAction * item in mediaList) {
         NSLog(@"--%d--",index);
