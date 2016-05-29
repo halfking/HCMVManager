@@ -1068,7 +1068,8 @@
     [actionList_ removeAllObjects];
     
     [videoBGHistroy_ addObject:videoBg_];
-    [reverseBgHistory_ addObject:reverseBG_];
+    if(reverseBG_)
+        [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
@@ -1101,7 +1102,8 @@
     
     
     [videoBGHistroy_ addObject:videoBg_];
-    [reverseBgHistory_ addObject:reverseBG_];
+    if(reverseBG_)
+        [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     

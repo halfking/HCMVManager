@@ -24,6 +24,7 @@
 
 @interface VideoGenerater()
 {
+    AVAssetReverseSession * currentReverseSession_;
 }
 @end
 @implementation VideoGenerater
@@ -1292,11 +1293,14 @@
     
     AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:sourcePath]];
     AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
+    currentReverseSession_ = session;
     NSURL *outputURL = [NSURL fileURLWithPath:targetPath];
     
     session.outputFileType = AVFileTypeMPEG4;
     session.outputURL = outputURL;
+    
     [session reverseAsynchronouslyWithCompletionHandler:^{
+        currentReverseSession_ = nil;
         if (session.status == AVAssetReverseSessionStatusCompleted) {
             NSURL *outputURL = session.outputURL;
             NSLog(@"reverse mv file finished:%@",[outputURL path]);
@@ -2437,6 +2441,10 @@
     if(joinVideoExporter)
         [joinVideoExporter cancelExport];
     PP_RELEASE(joinVideoExporter);
+    if(currentReverseSession_)
+    {
+        [currentReverseSession_ cancelReverse];
+    }
 }
 - (void)checkProgress:(NSTimer *)timer
 {
