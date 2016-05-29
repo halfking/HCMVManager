@@ -99,7 +99,7 @@
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(left, top, 100, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"thumnates" forState:UIControlStateNormal];
+        [btn setTitle:@"clear" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(thumnates:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
@@ -541,41 +541,47 @@
         NSLog(@"not item .");
         return ;
     }
-    CGFloat width_ = self.view.frame.size.width - 20;
-    CGFloat maxValue_ = 0.9; //最多可以滑到哪里，最多点屏幕的90%
-    int step = 3;//共15秒，5张图，3秒一个
-    int imageCountInView = 5;
-    float temp = round(item.secondsDuration / 3.0 * 10) / 10.0f;
-    int count = item.secondsDuration / 3.0;
-    if (temp > count + 0.1) {
-        count++;
-    }
-    //    CGFloat scale = [DeviceConfig config].Scale;
-    //    width_ *= scale;
-    CGSize size = CGSizeMake((width_ * maxValue_ / imageCountInView), (width_ * maxValue_ / imageCountInView));
     
-    size.width = (int)(size.width * 10 + 0.5)/10;
-    size.height = (int)(size.height * 10+0.5)/10;
-    
-    CGSize displaySize = size;
-    //    CGSize displaySize = CGSizeMake(size.width/scale, size.height/scale);
-    
-    //        __block int tempIndex = 0;
-    [[WTPlayerResource sharedWTPlayerResource] getVideoThumbs:item.url
-     //                                                      alAsset:nil
-                                       targetThumnateFileName:@"videoThumb"
-                                                        begin:0 andEnd:-1
-                                                      andStep:step
-                                                     andCount:count
-                                                      andSize:size
-                                                     callback:^(CMTime requestTime, NSString *path, NSInteger index) {
-                                                         [self changeImageViewContent:path index:index size:displaySize];
-                                                         
-                                                     } completed:^(CMTime requestTime, NSString *path, NSInteger index) {
-                                                         
-                                                     } failure:^(CMTime requestTime, NSError *error, NSString *filePath) {
-                                                     }];
-    
+//    CGFloat width_ = self.view.frame.size.width - 20;
+//    CGFloat maxValue_ = 0.9; //最多可以滑到哪里，最多点屏幕的90%
+//    int step = 3;//共15秒，5张图，3秒一个
+//    int imageCountInView = 5;
+//    float temp = round(item.secondsDuration / 3.0 * 10) / 10.0f;
+//    int count = item.secondsDuration / 3.0;
+//    if (temp > count + 0.1) {
+//        count++;
+//    }
+//    //    CGFloat scale = [DeviceConfig config].Scale;
+//    //    width_ *= scale;
+//    CGSize size = CGSizeMake((width_ * maxValue_ / imageCountInView), (width_ * maxValue_ / imageCountInView));
+//    
+//    size.width = (int)(size.width * 10 + 0.5)/10;
+//    size.height = (int)(size.height * 10+0.5)/10;
+//    
+//    CGSize displaySize = size;
+//    //    CGSize displaySize = CGSizeMake(size.width/scale, size.height/scale);
+//    
+//    //        __block int tempIndex = 0;
+//    [[WTPlayerResource sharedWTPlayerResource] getVideoThumbs:item.url
+//     //                                                      alAsset:nil
+//                                       targetThumnateFileName:@"videoThumb"
+//                                                        begin:0 andEnd:-1
+//                                                      andStep:step
+//                                                     andCount:count
+//                                                      andSize:size
+//                                                     callback:^(CMTime requestTime, NSString *path, NSInteger index) {
+//                                                         [self changeImageViewContent:path index:index size:displaySize];
+//                                                         
+//                                                     } completed:^(CMTime requestTime, NSString *path, NSInteger index) {
+//                                                         
+//                                                     } failure:^(CMTime requestTime, NSError *error, NSString *filePath) {
+//                                                     }];
+//    
+    [manager clear];
+    [manager setBackMV:item buildReverse:YES];
+    [NSThread sleepForTimeInterval:1];
+    [manager clear];
+    [manager setBackMV:item buildReverse:YES];
 }
 - (void) changeImageViewContent:(NSString *)path index:(NSInteger)index size:(CGSize)size
 {

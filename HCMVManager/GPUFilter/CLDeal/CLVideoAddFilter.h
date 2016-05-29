@@ -36,5 +36,5 @@
  *  @param index         选择的第几个滤镜
  */
 - (void)addVideoFilter:(NSURL *)videoUrl tempVideoPath:(NSString *)tempVideoPath index:(NSInteger)index;
-
+- (void)cancelFilter;
 @end

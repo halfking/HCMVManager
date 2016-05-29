@@ -11,6 +11,7 @@
 //#import "WTPlayerResource.h"
 #import "VideoGenerater.h"
 #import "GPUImage.h"
+#import "CLVideoAddFilter.h"
 
 #import "HCPlayerSimple.h"
 
@@ -85,11 +86,13 @@
     int currentFilterIndex_;//本次选择的过滤器序号
     
     BOOL isGeneratingByFilter_;//是否正在生成中
+    BOOL isReverseGenerating_;
     BOOL isGenerating_;             //是否正在生成过程中
     BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
 //    CGFloat lastPlayerSeconds_; //上次播放时间
     
     VideoGenerater * currentGenerate_;
+    CLVideoAddFilter * currentFilterGen_;
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;

@@ -106,9 +106,11 @@
             _timerEffect = nil;
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                _movieWriter = nil;
                 if ([self.delegate respondsToSelector:@selector(didFinishVideoDeal:)]) {
                     [self.delegate didFinishVideoDeal:tempVideo];
                 }
+                
             });
         }];
         
@@ -137,7 +139,13 @@
 }
 
 #pragma mark - Actions
-
+- (void)cancelFilter
+{
+    if(_movieWriter)
+    {
+        [_movieWriter cancelRecording];
+    }
+}
 - (void)deleteTempFile:(NSString *)tempVideoPath
 {
     NSURL *url = [NSURL fileURLWithPath:tempVideoPath];

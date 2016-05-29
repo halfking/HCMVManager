@@ -32,7 +32,7 @@
 @implementation ActionManager
 {
     
-    BOOL isReverseGenerating_;
+    
     BOOL isReverseHasGenerated_;
 }
 @synthesize videoVolume = videoVol_;

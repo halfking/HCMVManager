@@ -151,6 +151,13 @@
     {
         [currentGenerate_ cancelExporter];
     }
+    if(currentFilterGen_)
+    {
+        [currentFilterGen_ cancelFilter];
+    }
+    isGenerating_ = NO;
+    isReverseGenerating_ = NO;
+    isGeneratingByFilter_ = NO;
 }
 - (BOOL) generateMV
 {
@@ -252,10 +259,7 @@
 }
 - (void) generatePlayerItem:(NSArray *)mediaList
 {
-    if(currentGenerate_)
-    {
-        [currentGenerate_ cancelExporter];
-    }
+    
 }
 
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize

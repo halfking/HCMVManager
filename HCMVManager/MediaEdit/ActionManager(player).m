@@ -272,6 +272,8 @@
     isGeneratingByFilter_ = YES;
     
     CLVideoAddFilter *addFilter = [[CLVideoAddFilter alloc]init];
+    currentFilterGen_ = addFilter;
+    
     addFilter.delegate = self;
     NSString * targetPath = [NSString stringWithFormat:@"filter_%d.mp4",filterIndex];
     targetPath = [[HCFileManager manager]getFileNameByTicks:targetPath];
@@ -293,6 +295,7 @@
     {
         [self.delegate ActionManager:self generateOK:[videoUrl path] cover:nil isFilter:YES];
     }
+    currentFilterGen_ = nil;
 }
 
 // 滤镜处理进度
@@ -315,6 +318,7 @@
         NSError * error = [NSError errorWithDomain:@"com.seenvoice.maiba" code:-1008 userInfo:@{NSLocalizedDescriptionKey:failure}];
         [self.delegate ActionManager:self genreateFailure:error isFilter:YES];
     }
+    currentFilterGen_ = nil;
 }
 #pragma mark - delegates
 //当播放器的内容需要发生改变时
