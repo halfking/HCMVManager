@@ -19,7 +19,7 @@
 #pragma mark - export
 - (BOOL) generateMV;
 - (void) generatePlayerItem:(NSArray *)mediaList;
-
+- (void) cancelGenerate;
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;
 
 

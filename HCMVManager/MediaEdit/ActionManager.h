@@ -88,6 +88,8 @@
     BOOL isGenerating_;             //是否正在生成过程中
     BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
 //    CGFloat lastPlayerSeconds_; //上次播放时间
+    
+    VideoGenerater * currentGenerate_;
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;

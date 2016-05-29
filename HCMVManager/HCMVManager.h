@@ -83,6 +83,7 @@ FOUNDATION_EXPORT const unsigned char HCMVManagerVersionString[];
 #import <HCMVManager/MediaActionForReverse.h>
 #import <HCMVManager/MediaActionForNormal.h>
 #import <HCMVManager/ActionManagerPannel.h>
+#import <HCMVManager/MediaWithActionView.h>
 
 #import <HCMVManager/HCPlayerSimple.h>
 #import <HCMVManager/AVAssetReverseSession.h>

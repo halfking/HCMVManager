@@ -82,6 +82,7 @@
 }
 - (void)resetStates
 {
+    [self cancelGenerate];
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
@@ -95,9 +96,13 @@
     
     videoVol_ = 1;
     audioVol_ = 1;
+    
+    
 }
 - (void)clear
 {
+    [self cancelGenerate];
+    currentGenerate_ = nil;
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
@@ -1231,6 +1236,7 @@
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
     }
+    currentGenerate_ = nil;
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
@@ -1244,5 +1250,6 @@
     {
         [self.delegate ActionManager:self generateOK:filePath cover:cover isFilter:NO];
     }
+    currentGenerate_ = nil;
 }
 @end

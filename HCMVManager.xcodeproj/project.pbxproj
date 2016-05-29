@@ -50,6 +50,8 @@
 		11754F8E1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m in Sources */ = {isa = PBXBuildFile; fileRef = 11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */; };
 		11ABAEA01CF0E63F00E94CD9 /* ActionManagerPannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11ABAEA11CF0E63F00E94CD9 /* ActionManagerPannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */; };
+		11D595D01CFB6E7100D96FAA /* MediaWithActionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11D595D11CFB6E7100D96FAA /* MediaWithActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D595CF1CFB6E7100D96FAA /* MediaWithActionView.m */; };
 		11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A681CE384A700A0BE8D /* ActionManager(index).h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11DE4A711CE384A700A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A691CE384A700A0BE8D /* ActionManager(index).m */; };
 		11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A6A1CE384A700A0BE8D /* ActionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -221,6 +223,8 @@
 		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
 		11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
 		11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
+		11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithActionView.h; sourceTree = "<group>"; };
+		11D595CF1CFB6E7100D96FAA /* MediaWithActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithActionView.m; sourceTree = "<group>"; };
 		11DE4A681CE384A700A0BE8D /* ActionManager(index).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(index).h"; sourceTree = "<group>"; };
 		11DE4A691CE384A700A0BE8D /* ActionManager(index).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(index).m"; sourceTree = "<group>"; };
 		11DE4A6A1CE384A700A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
@@ -463,6 +467,8 @@
 				11DE4A6D1CE384A700A0BE8D /* ActionProcess.m */,
 				11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */,
 				11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */,
+				11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */,
+				11D595CF1CFB6E7100D96FAA /* MediaWithActionView.m */,
 				11DE4A8F1CE4852500A0BE8D /* MediaActionForFast.h */,
 				11DE4A901CE4852500A0BE8D /* MediaActionForFast.m */,
 				11DE4A911CE4852500A0BE8D /* MediaActionForNormal.h */,
@@ -766,6 +772,7 @@
 				1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */,
 				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
+				11D595D01CFB6E7100D96FAA /* MediaWithActionView.h in Headers */,
 				11ABAEA01CF0E63F00E94CD9 /* ActionManagerPannel.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11DE4AAC1CE4EC2500A0BE8D /* mediaedit_full.h in Headers */,
@@ -999,6 +1006,7 @@
 				11ED43631CC9003300561E33 /* ReportInfo.m in Sources */,
 				11200A331CF2FC7C007E8B20 /* ActionManager(player).m in Sources */,
 				11DE4A771CE384A700A0BE8D /* MediaAction.m in Sources */,
+				11D595D11CFB6E7100D96FAA /* MediaWithActionView.m in Sources */,
 				11ED42F51CC8DF4D00561E33 /* Music.m in Sources */,
 				11ED42ED1CC8DF4D00561E33 /* MTV.m in Sources */,
 				11ED43431CC9001C00561E33 /* AudioGenerater.m in Sources */,

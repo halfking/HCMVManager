@@ -202,6 +202,7 @@
     }
     
     
+    currentGenerate_ = vg;
     //    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
     //        NSLog(@"progress %f",progress);
     //    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
@@ -244,7 +245,10 @@
 }
 - (void) generatePlayerItem:(NSArray *)mediaList
 {
-    
+    if(currentGenerate_)
+    {
+        [currentGenerate_ cancelExporter];
+    }
 }
 
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize
