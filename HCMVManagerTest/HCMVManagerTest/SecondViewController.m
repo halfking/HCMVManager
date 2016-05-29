@@ -103,7 +103,7 @@
     [super viewDidLoad];
     manager_ = [ActionManager shareObject];
     manager_.delegate = self;
-//    [manager_ removeActions];
+    //    [manager_ removeActions];
     
     //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
     oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
@@ -492,10 +492,10 @@
     CMTime reverSeconds = [rPlayer_.playerItem currentTime];
     CMTime reverDuration = [rPlayer_.playerItem duration];
     
-    CGFloat secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
+    CGFloat secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
     
     NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
-    
+    [player_ pause];
     if (!sender.selected) {
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
@@ -528,9 +528,9 @@
             //反向轨转成正向轨
             CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
             
-//            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-//            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
-//            CGFloat duration = end - playerPos;
+            //            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
+            //            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
+            //            CGFloat duration = end - playerPos;
             
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
@@ -546,7 +546,7 @@
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
-//    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
+    //    CGFloat secondsInTrack = [manager_ secondsForTrack:seconds];
     
     MediaAction * action = [MediaAction new];
     action.ActionType = SSlow;
@@ -693,9 +693,11 @@
     {
         [self buildControls];
     }
-    [player_ seek:0 accurate:YES];
-    [player_ play];
-
+    if(player_.playing==NO)
+    {
+        [player_ seek:0 accurate:YES];
+        [player_ play];
+    }
     [self hideIndicatorView];
     
 }
@@ -762,9 +764,9 @@
     
     baseVideo_ = [manager_ getBaseVideo];
     
-//    [self buildControls];
+    //    [self buildControls];
     
-//    [player_ play];
+    //    [player_ play];
     
     
     //    }
@@ -801,7 +803,7 @@
     
     [[ActionManager shareObject]resetStates];
     
-//    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+    //    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
     baseVideo_ = [manager_ getBaseVideo];
     reverseVideo_ = [manager_ getReverseVideo];
     
@@ -810,7 +812,6 @@
 }
 -(void)join:(UIButton *)sender
 {
-    return ;
     [self showIndicatorView];
     
     

@@ -725,8 +725,8 @@
     [self processNewActions];
     //    [self reindexAllActions];
     //    }
-    
-    MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
+    NSArray * array = [item buildMaterialProcess:mediaList_];
+    MediaWithAction * media = [array firstObject];
     if(item.isOPCompleted)
     {
         [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];

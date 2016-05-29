@@ -334,6 +334,7 @@
         {
             [reversePlayer_ pause];
             [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            NSLog(@"player seconds:%.2f item:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime));
             player_.hidden = NO;
             reversePlayer_.hidden = YES;
             //        [player_ currentLayer].opacity = 1;
@@ -425,11 +426,21 @@
 {
     if(isReverse) return;
     //不需要更换
-    if(currentMediaWithAction_ && currentMediaWithAction_.secondsBegin <=playerSeconds && currentMediaWithAction_.secondsEnd > playerSeconds)
+    //有时候播放器定位不准，因此在某种情况下，也不作处理
+    if(currentMediaWithAction_)
     {
-        return ;
+        if(currentMediaWithAction_.secondsBegin <=playerSeconds + 0.2 && currentMediaWithAction_.secondsEnd > playerSeconds)
+        {
+            return ;
+        }
+        else if(playerSeconds + 1 < currentMediaWithAction_.secondsBegin)
+        {
+            [player_ pause];
+            NSLog(@"??? %.2f <-- %.2f",playerSeconds,currentMediaWithAction_.secondsBegin);
+        }
     }
     if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE) return;
+    
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
     
     [player_ pause];
@@ -440,9 +451,12 @@
     {
         media = [self findMediaItemAt:secondsInArray];
     }
-    [player_ play];
+    
     if(currentMediaWithAction_ && media == currentMediaWithAction_)
+    {
+        [player_ play];
         return;
+    }
     else
         currentMediaWithAction_ = media;
     
