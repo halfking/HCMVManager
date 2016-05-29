@@ -145,6 +145,13 @@
     return targetSource;
 }
 #pragma mark - export
+- (void)cancelGenerate
+{
+    if(currentGenerate_)
+    {
+        [currentGenerate_ cancelExporter];
+    }
+}
 - (BOOL) generateMV
 {
 //    if(![self needGenerateForOP])
