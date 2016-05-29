@@ -344,8 +344,8 @@
 {
     if(![self checkIsNeedChangeBG:filePath]) return NO;
     
-    if(isReverseGenerating_) return NO;
-    
+    if(isGenerating_ || isReverseGenerating_) return NO;
+    isGenerating_ = YES;
     //设置正向视频
     {
         PP_RELEASE(videoBg_);
@@ -365,6 +365,7 @@
     //生成反向的视频
     if(buildReverse)
     {
+        isReverseGenerating_ = NO;
         [self generateReverseMV:filePath];
     }
     
@@ -392,8 +393,9 @@
     if(!bgMedia) return NO;
     if(![self checkIsNeedChangeBG:bgMedia.filePath]) return NO;
     
-    if(isReverseGenerating_) return NO;
-    isReverseGenerating_ = YES;
+    if(isGenerating_ || isReverseGenerating_)
+        return NO;
+    isGenerating_ = YES;
     
     //设置正向视频
     {
