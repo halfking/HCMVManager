@@ -808,6 +808,9 @@
     reverseVideo_ = [manager_ getReverseVideo];
     
     [self buildControls];
+    
+    [pannel_ refresh];
+    
     [player_ play];
 }
 -(void)join:(UIButton *)sender

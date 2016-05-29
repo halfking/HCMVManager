@@ -362,6 +362,14 @@
     {
         [self generateReverseMV:filePath];
     }
+    
+    videoBgAction_ = [self getNormalActionForBase];
+    currentMediaWithAction_ = nil;
+    [self reindexAllActions];
+    return YES;
+}
+- (MediaWithAction *) getNormalActionForBase
+{
     MediaActionForNormal * action =[MediaActionForNormal new];
     action.ActionType = 0;
     action.MediaActionID = [self getMediaActionID];
@@ -372,10 +380,7 @@
     action.IsMutex = NO;
     action.Media = videoBg_;
     
-    videoBgAction_ = [action toMediaWithAction:nil];
-    currentMediaWithAction_ = nil;
-    [self reindexAllActions];
-    return YES;
+    return [action toMediaWithAction:nil];
 }
 - (BOOL)setBackMV:(MediaItem *)bgMedia  buildReverse:(BOOL)buildReverse
 {
@@ -398,17 +403,8 @@
     {
         [self generateReverseMV:videoBg_.filePath];
     }
-    MediaActionForNormal * action =[MediaActionForNormal new];
-    action.ActionType = 0;
-    action.MediaActionID = 0;
-    action.Rate = 1;
-    action.ReverseSeconds = 0;
-    action.DurationInSeconds = -1;
-    action.IsFilter = NO;
-    action.IsMutex = NO;
-    action.Media = videoBg_;
     
-    videoBgAction_ = [action toMediaWithAction:nil];
+    videoBgAction_ = [self getNormalActionForBase];
     
     currentMediaWithAction_ = nil;
     
@@ -1057,6 +1053,9 @@
         videoBg_ = [videoBGHistroy_ firstObject];
         reverseBG_ = [reverseBgHistory_ firstObject];
     }
+    
+    currentMediaWithAction_ = nil;
+    
     [actionsHistory_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
@@ -1067,6 +1066,8 @@
     [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    
+    videoBgAction_ = [self getNormalActionForBase];
     
     [self reindexAllActions];
     
@@ -1083,6 +1084,9 @@
     }
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
+    currentMediaWithAction_ = nil;
+    
+    
     [actionList_ removeAllObjects];
     
     [actionsHistory_ removeAllObjects];
@@ -1096,6 +1100,7 @@
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
+    videoBgAction_ = [self getNormalActionForBase];
     
     [self reindexAllActions];
     
@@ -1104,6 +1109,9 @@
 - (BOOL) loadLastDraft
 {
     if(videoBGHistroy_.count<=0) return NO;
+    
+
+    currentMediaWithAction_ = nil;
     
     videoBg_ = [videoBGHistroy_ lastObject];
     reverseBG_ = [reverseBgHistory_ lastObject];
@@ -1116,6 +1124,8 @@
     [reverseBgHistory_ removeObjectAtIndex:reverseBgHistory_.count-1];
     [filterHistory_ removeObjectAtIndex:filterHistory_.count-1];
     
+    videoBgAction_ = [self getNormalActionForBase];
+    
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
     return YES;
@@ -1123,6 +1133,8 @@
 - (BOOL) loadFirstDraft
 {
     if(videoBGHistroy_.count<=1) return NO;
+    
+    currentMediaWithAction_ = nil;
     
     videoBg_ = [videoBGHistroy_ objectAtIndex:1];
     reverseBG_ = [reverseBgHistory_ objectAtIndex:1];
@@ -1139,6 +1151,8 @@
     [reverseBgHistory_ addObject:reverseBG_];
     [videoBGHistroy_ addObject:videoBg_];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    
+    videoBgAction_ = [self getNormalActionForBase];
     
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
