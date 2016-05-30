@@ -94,6 +94,7 @@
     
     VideoGenerater * currentGenerate_;
     CLVideoAddFilter * currentFilterGen_;
+    VideoGenerater * reverseGenerate_;
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;

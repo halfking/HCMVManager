@@ -311,11 +311,13 @@
         VideoGenerater * vg = [VideoGenerater new];
         vg.delegate = self;
         vg.TagID = 2;
+        reverseGenerate_ = vg;
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
         BOOL ret = [vg generateMVReverse:filePath target:outputPath
                                 complted:^(NSString * filePathNew){
                                     NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
+                                    reverseGenerate_ = nil;
                                     if(filePathNew)
                                     {
                                         isReverseHasGenerated_ = YES;
@@ -335,6 +337,7 @@
         {
             isReverseGenerating_ = NO;
             isReverseHasGenerated_ = NO;
+            reverseGenerate_ = nil;
             NSLog(@"generate reverse failure....");
             return NO;
         }

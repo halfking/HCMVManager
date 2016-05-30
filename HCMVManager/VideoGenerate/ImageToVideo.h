@@ -5,6 +5,8 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #import "MediaItem.h"
+#import "mvconfig.h"
+
 //#import "LyricLayerAnimation.h"
 //#import "LyricItem.h"
 
@@ -61,8 +63,8 @@ FOUNDATION_EXPORT NSInteger const FramesToWaitBeforeTransition;
 //                              item:(VideoItem *)item
 //                 withCallbackBlock:(SuccessBlock)callbackBlock;
 //构建歌词动画
-+ (CALayer *)buildTitleLayer:(NSString *)title singer:(NSString*)singer renderSize:(CGSize)renderSize;
-+ (CALayer *)buildWaterMarkerLayer:(NSString *)imageFilePath renderSize:(CGSize)renderSize;
++ (CALayer *)buildTitleLayer:(NSString *)title singer:(NSString*)singer renderSize:(CGSize)renderSize orientation:(int)orientation position:(int)position;
++ (CALayer *)buildWaterMarkerLayer:(NSString *)imageFilePath renderSize:(CGSize)renderSize orientation:(int)orientation position:(WaterMarkerPosition)position;
 + (CALayer *)getLrcAnimationLayer:(CGFloat)beginTime duration:(CGFloat)videoDuration lrc:(NSArray *)lrcList orientation:(int)orientation  renderSize:(CGSize) renderSize rate:(CGFloat)rate filterLyrics:(NSArray **)filterLyrics;
 //+ (NSArray *)parseLyricItems:(DDAudioLRC *)lrcFile beginTime:(CGFloat)beginTime endTime:(CGFloat)endTime;
 + (NSArray *)filterLyricItems:(NSArray *)lrcItems beginTime:(CGFloat)beginTime endTime:(CGFloat)endTime;

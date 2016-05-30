@@ -23,7 +23,7 @@
 #import "HCPlayerSimple.h"
 #import "ActionManagerPannel.h"
 #import "ActionManager(player).h"
-
+#import "mvconfig.h"
 #import "CLFiltersClass.h"
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
@@ -105,7 +105,7 @@
     manager_.delegate = self;
     //    [manager_ removeActions];
     
-    //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+//        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
     oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
@@ -848,7 +848,7 @@
     
     [self showCurrentMediaes:0];
     
-    if(![manager_ generateMV])
+    if(![manager_ generateMVWithWaterMarker:@"watermark_MtvPlus.png" position:MP_RightBottom])
     {
         [player_ seek:0 accurate:YES];
         [player_ play];

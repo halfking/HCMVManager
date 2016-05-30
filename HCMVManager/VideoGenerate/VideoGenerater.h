@@ -13,6 +13,7 @@
 #import <hccoren/base.h>
 #import <Photos/Photos.h>
 #import <AssetsLibrary/ALAssetsLibrary.h>
+#import "mvconfig.h"
 
 @class MediaItem;
 
@@ -72,6 +73,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 @property (nonatomic,PP_STRONG) NSArray * filterLrcList;//截取后的歌词(可能起始时间不为0)
 @property (nonatomic,assign) CGFloat lrcBeginTime;//从歌词哪个的位置开始
 @property (nonatomic,PP_STRONG) NSString * waterMarkFile;//水印
+@property (nonatomic,assign) WaterMarkerPosition waterMarkerPosition;//水印位置
 @property (nonatomic,PP_STRONG) NSString * title; //标题
 @property (nonatomic,PP_STRONG) NSString * author;//作者
 @property (nonatomic,PP_STRONG) NSString * singer;//演唱者

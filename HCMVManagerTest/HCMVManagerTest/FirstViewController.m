@@ -133,7 +133,7 @@
     
     ActionManager * manager = [ActionManager shareObject];
     manager.delegate = self;
-    //    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
+//        NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
     NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"MOV"];
     //    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];

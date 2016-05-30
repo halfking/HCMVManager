@@ -150,10 +150,17 @@
     if(currentGenerate_)
     {
         [currentGenerate_ cancelExporter];
+        currentGenerate_ = nil;
     }
     if(currentFilterGen_)
     {
         [currentFilterGen_ cancelFilter];
+        currentFilterGen_ = nil;
+    }
+    if(reverseGenerate_)
+    {
+        [reverseGenerate_ cancelExporter];
+        reverseGenerate_ = nil;
     }
     isGenerating_ = NO;
     isReverseGenerating_ = NO;
@@ -161,10 +168,18 @@
 }
 - (BOOL) generateMV
 {
+    return [self generateMVWithWaterMarker:nil position:MP_RightBottom];
+}
+- (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
+{
 //    if(![self needGenerateForOP])
 //    {
 //        return NO;
 //    }
+    if(isGenerating_ || isReverseGenerating_)
+    {
+        [self cancelGenerate];
+    }
     if(isGenerating_) return NO;
     isGenerating_ = YES;
     //    //滤镜处理
@@ -189,7 +204,8 @@
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];
-    vg.waterMarkFile = nil;
+    vg.waterMarkFile = waterMarker;
+    vg.waterMarkerPosition = position;
     vg.mergeRate = 1;
     vg.volRampSeconds = 0;
     vg.compositeLyric = NO;

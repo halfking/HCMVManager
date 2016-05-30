@@ -82,7 +82,7 @@
     udManager_ = [UDManager sharedUDManager];
     DeviceConfig * config = [DeviceConfig config];
     _volRampSeconds = 0;
-    
+    _waterMarkerPosition = MP_RightTop;
     if(config.Height < 500)
     {
         [self setRenderSize:CGSizeMake(config.Height * config.Scale, config.Width * config.Scale) orientation:self.orientation withFontCamera:self.useFontCamera];
@@ -104,6 +104,7 @@
     failureBlock_ = nil;
     totalBeginTime_ = kCMTimeZero;
     totalEndTime_ = kCMTimeZero;
+    _waterMarkerPosition = MP_RightTop;
     //    [chooseQueue removeAllObjects];
 }
 - (void)setRenderSize:(CGSize)size orientation:(int)orient withFontCamera:(BOOL)useFontCamera
@@ -360,6 +361,7 @@
         [timerForReverseExport_ invalidate];
         PP_RELEASE(timerForReverseExport_);
     }
+    _waterMarkerPosition = MP_RightTop;
     PP_RELEASE(_waterMarkFile);
     previewAVassetIsReady = NO;
     PP_RELEASE(_mixComposition);
@@ -506,14 +508,14 @@
             [[NSRunLoop mainRunLoop] addTimer:timerForExport_ forMode:NSDefaultRunLoopMode];
         }
         timerForExport_.fireDate = [NSDate distantPast];
-//        timerForExport_ = PP_RETAIN([NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgress:) userInfo:nil repeats:YES]);
+        //        timerForExport_ = PP_RETAIN([NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgress:) userInfo:nil repeats:YES]);
         
         __weak SDAVAssetExportSession * weakJoin = joinVideoExporter;
         [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
             
             __strong SDAVAssetExportSession * strongJoin = weakJoin;
-//            [timerForExport_ invalidate];
-//            PP_RELEASE(timerForExport_);
+            //            [timerForExport_ invalidate];
+            //            PP_RELEASE(timerForExport_);
             timerForExport_.fireDate = [NSDate distantFuture];
             
             //            dispatch_async(dispatch_get_main_queue(), ^{
@@ -1181,16 +1183,13 @@
         mixComposition.naturalSize = size;//[self getSizeByOrientation:size];
         
     }
-    if(self.compositeLyric)
+    CMTime lyricDuration = curTimeCnt;
+    if(rate!=1)
     {
-        CMTime lyricDuration = curTimeCnt;
-        if(rate!=1)
-        {
-            lyricDuration.value *= rate;
-        }
-        
-        mainComposition.animationTool = [self compositeTitleAndLyric:nil duration:lyricDuration size:size rate:rate];
+        lyricDuration.value *= rate;
     }
+    
+    mainComposition.animationTool = [self compositeTitleAndLyric:nil duration:lyricDuration size:size rate:rate];
     
     NSLog(@"prejoin:%@",NSStringFromCGSize(size));
     
@@ -1330,10 +1329,10 @@
     if(!timerForReverseExport_)
     {
         timerForReverseExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1
-                                                            target:self
-                                                          selector:@selector(checkReverseProgress:)
-                                                          userInfo:nil
-                                                           repeats:YES]);
+                                                                   target:self
+                                                                 selector:@selector(checkReverseProgress:)
+                                                                 userInfo:nil
+                                                                  repeats:YES]);
         
         [[NSRunLoop mainRunLoop] addTimer:timerForReverseExport_ forMode:NSDefaultRunLoopMode];
     }
@@ -1403,37 +1402,41 @@
     
     if((self.lrcList && self.lrcList.count>0)||(self.waterMarkFile&&self.waterMarkFile.length>0))
     {
+        CGRect layerFrame = CGRectMake(0, 0, size.width, size.height);
+        
         CALayer *parentLayer = [CALayer layer];
-        parentLayer.frame = CGRectMake(0, 0, size.width,size.height);
+        parentLayer.frame = layerFrame;// CGRectMake(0, 0, size.width,size.height);
         
         CALayer *videoLayer = [CALayer layer];
-        videoLayer.frame = CGRectMake(0, 0, size.width,size.height);
+        videoLayer.frame = layerFrame;// CGRectMake(0, 0, size.width,size.height);
         [parentLayer addSublayer:videoLayer];
         
-        
-        //        歌词开始时间为：开始录制时（视频开始时）的歌词时间（有可能不从开始拍摄）+ 视频剪辑的位置（从视频开头的位置）
-        NSArray * filterLyrics = nil;
-        CALayer * lrcLayer = [ImagesToVideo getLrcAnimationLayer:self.lrcBeginTime + CMTimeGetSeconds(totalBeginTime_)
-                                                        duration:CMTimeGetSeconds(duration)
-                                                             lrc:self.lrcList
-                                                     orientation:_orientation
-                                                      renderSize:size
-                                                            rate:rate
-                                                    filterLyrics:&filterLyrics];
-        
-        [parentLayer addSublayer:lrcLayer];
-        
-        if(filterLyrics)
+        if(self.compositeLyric)
         {
-            self.filterLrcList = [NSArray arrayWithArray:filterLyrics];
-        }
-        else
-        {
-            self.filterLrcList = nil;
+            //        歌词开始时间为：开始录制时（视频开始时）的歌词时间（有可能不从开始拍摄）+ 视频剪辑的位置（从视频开头的位置）
+            NSArray * filterLyrics = nil;
+            CALayer * lrcLayer = [ImagesToVideo getLrcAnimationLayer:self.lrcBeginTime + CMTimeGetSeconds(totalBeginTime_)
+                                                            duration:CMTimeGetSeconds(duration)
+                                                                 lrc:self.lrcList
+                                                         orientation:_orientation
+                                                          renderSize:size
+                                                                rate:rate
+                                                        filterLyrics:&filterLyrics];
+            
+            [parentLayer addSublayer:lrcLayer];
+            
+            if(filterLyrics)
+            {
+                self.filterLrcList = [NSArray arrayWithArray:filterLyrics];
+            }
+            else
+            {
+                self.filterLrcList = nil;
+            }
         }
         if(self.waterMarkFile && self.waterMarkFile.length>2)
         {
-            CALayer * wmLayer = [ImagesToVideo buildWaterMarkerLayer:self.waterMarkFile renderSize:size];
+            CALayer * wmLayer = [ImagesToVideo buildWaterMarkerLayer:self.waterMarkFile renderSize:size orientation:self.orientation position:self.waterMarkerPosition];
             if(wmLayer)
                 [parentLayer addSublayer:wmLayer];
         }
@@ -2698,6 +2701,7 @@
         [timerForReverseExport_ invalidate];
         PP_RELEASE(timerForReverseExport_);
     }
+    _waterMarkerPosition = MP_RightTop;
     isGenerating_ = NO;
     progressBlock_ = nil;
     itemReadyBlock_ = nil;

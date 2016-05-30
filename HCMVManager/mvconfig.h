@@ -23,6 +23,21 @@ enum _MediaItemInQueueType{
 typedef u_int8_t MediaItemInQueueType;
 
 #endif
+
+#ifndef WATERMARK_POSITION
+#define WATERMARK_POSITION
+enum _WaterMarkerPosition{
+    
+    MP_LeftTop =0,
+    MP_RightTop,
+    MP_LeftBottom,
+    MP_RightBottom
+    
+} ;
+typedef u_int8_t WaterMarkerPosition;
+
+#endif
+
 #ifndef   CUTINOUT_MODE
 #define   CUTINOUT_MODE
 //转场模式类型

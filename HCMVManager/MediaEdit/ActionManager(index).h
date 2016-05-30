@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ActionManager.h"
+#import "mvconfig.h"
 @interface ActionManager(index)
 #pragma mark - overlap manager
 - (CGFloat) reindexAllActions;
@@ -18,6 +19,7 @@
 - (CGFloat) processNewActions;
 #pragma mark - export
 - (BOOL) generateMV;
+- (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position;
 - (void) generatePlayerItem:(NSArray *)mediaList;
 - (void) cancelGenerate;
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;

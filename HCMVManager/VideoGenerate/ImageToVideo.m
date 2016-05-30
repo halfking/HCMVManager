@@ -559,7 +559,7 @@ BOOL const DefaultTransitionShouldAnimate = YES;
     
 }
 #pragma mark - get lpresentTime	CMTime	yric animates
-+ (CALayer *)buildWaterMarkerLayer:(NSString *)imageFilePath renderSize:(CGSize)renderSize
++ (CALayer *)buildWaterMarkerLayer:(NSString *)imageFilePath renderSize:(CGSize)renderSize orientation:(int)orientation position:(WaterMarkerPosition)position
 {
     UIImage * image = [UIImage imageNamed:imageFilePath];
     if(!image)
@@ -567,37 +567,133 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         image = [UIImage imageWithContentsOfFile:imageFilePath];
     }
     if(image){
-        
+        CGFloat scale = 1;
+        BOOL isPortrait = NO;
+//        CGAffineTransform transfer = CGAffineTransformIdentity;
+        switch (orientation) {
+            case UIDeviceOrientationLandscapeLeft:
+            case UIDeviceOrientationLandscapeRight:
+                scale = renderSize.width * 1.5 / 720;
+                break;
+            case UIDeviceOrientationPortraitUpsideDown:
+            default:
+                image = [image imageRotatedByRadians: 0 - M_PI_2];
+                scale = renderSize.height * 1.5 / 720;
+                isPortrait = YES;
+                break;
+        }
         CGSize imgSize = image.size;
+        if(scale!=1)
+        {
+            image = [image imageByScalingProportionallyToSize:CGSizeMake(imgSize.width * scale, imgSize.height * scale)];
+        }
+        imgSize = image.size;
         
         //放在一点，看清楚
-#ifndef __OPTIMIZE__
-        imgSize.width *=2;
-        imgSize.height *=2;
-#endif
-        CALayer *backgroundLayer = [CALayer layer];
-        CGRect frame = CGRectMake(renderSize.width - imgSize.width - 20,renderSize.height - imgSize.height-20,imgSize.width,imgSize.height);
-        backgroundLayer.frame = frame;
         
+//#ifndef __OPTIMIZE__
+//        imgSize.width *=2;
+//        imgSize.height *=2;
+//#endif
+        CGSize imageOrgSize = imgSize;
+        
+        
+        CALayer *backgroundLayer = [CALayer layer];
+        backgroundLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+        
+        
+        //Layer 旋转 原点位于左上角
+        //视频 旋转 原点位于右下解
+        CGRect frame = CGRectZero;
+        if(!isPortrait)
+        {
+            CGFloat margin = 20 * renderSize.width / 720;
+//            CGFloat scale = renderSize.width/180;
+//            transfer = CGAffineTransformScale(transfer, scale, scale);
+//            imgSize.width *= scale;
+//            imgSize.height *= scale;
+//             position = MP_RightBottom;
+            if(position== MP_LeftTop)
+            {
+                frame = CGRectMake(margin,
+                                   renderSize.height - margin - imgSize.height,
+                                   imageOrgSize.width,imageOrgSize.height);
+               
+            }
+            else if(position == MP_LeftBottom)
+            {
+                frame = CGRectMake(margin,
+                                   margin,
+                                   imageOrgSize.width,imageOrgSize.height);
+              
+                
+            }
+            else if(position == MP_RightBottom)
+            {
+                frame = CGRectMake(renderSize.width - margin - imgSize.width,
+                                   margin,
+                                   imageOrgSize.width,imageOrgSize.height);
+            }
+            else
+            {
+                frame = CGRectMake(renderSize.width - margin - imgSize.width,
+                                   renderSize.height - margin - imgSize.height,
+                                   imageOrgSize.width,imageOrgSize.height);
+            }
+        }
+        else //需要考虑视频的旋转加成
+        {
+            CGFloat margin = 20 * renderSize.height / 720;
+//            CGFloat scale = renderSize.height/720;
+//            transfer = CGAffineTransformScale(transfer, scale, scale);
+//
+//            imgSize.width *= scale;
+//            imgSize.height *= scale;
+//
+            if(position== MP_LeftTop)
+            {
+                frame =  CGRectMake(margin,margin ,imageOrgSize.width,imageOrgSize.height);
+            }
+            else if(position == MP_LeftBottom)
+            {
+                frame =  CGRectMake(renderSize.width - margin - imgSize.width,margin,imageOrgSize.width,imageOrgSize.height);
+            }
+            else if(position == MP_RightBottom)
+            {
+                frame =  CGRectMake(renderSize.width - margin - imgSize.width,
+                                    renderSize.height - margin - imgSize.height ,
+                                    imageOrgSize.width,imageOrgSize.height);
+            }
+            else
+            {
+                frame = CGRectMake(margin,
+                                   renderSize.height - margin - imgSize.height,
+                                   imageOrgSize.width,imageOrgSize.height);
+            }
+        }
+        
+        backgroundLayer.frame = frame;
         [backgroundLayer setContents:(id)[image CGImage]];
+//        [backgroundLayer setAffineTransform:transfer];
+        
         return backgroundLayer;
     }
     return nil;
 }
-+ (CALayer *)buildTitleLayer:(NSString *)title singer:(NSString*)singer renderSize:(CGSize)renderSize
++ (CALayer *)buildTitleLayer:(NSString *)title singer:(NSString*)singer renderSize:(CGSize)renderSize orientation:(int)orientation position:(int)position
 {
     if(title && title.length>0)
     {
         CALayer * lrcTextLayer = [CALayer layer];
         lrcTextLayer.frame = CGRectMake((renderSize.width - 200)/2.0f,(renderSize.height - 100)/2.0f, 200, 100);
         
-//        CGFloat endTime = beginTime + videoDuration;
-//        if(videoDuration <0) endTime = -1;
-//        NSArray * lyricItemsFiltered = [ImagesToVideo filterLyricItems:lrcList beginTime:beginTime endTime:endTime];
-//        
-//        CAAnimationGroup * animation  = [LyricLayerAnimation animationWithLyrics:lyricItemsFiltered  witAniType:Scale size:lrcTextLayer.frame.size font:FONT_TITLES];
-//        
-//        [lrcTextLayer addAnimation:animation forKey:nil];
+        //        CGFloat endTime = beginTime + videoDuration;
+        //        if(videoDuration <0) endTime = -1;
+        //        NSArray * lyricItemsFiltered = [ImagesToVideo filterLyricItems:lrcList beginTime:beginTime endTime:endTime];
+        //
+        //        CAAnimationGroup * animation  = [LyricLayerAnimation animationWithLyrics:lyricItemsFiltered  witAniType:Scale size:lrcTextLayer.frame.size font:FONT_TITLES];
+        //
+        //        [lrcTextLayer addAnimation:animation forKey:nil];
         return lrcTextLayer;
     }
     return nil;
@@ -606,12 +702,12 @@ BOOL const DefaultTransitionShouldAnimate = YES;
                               lrc:(NSArray *)lrcList orientation:(int)orientation
                        renderSize:(CGSize) renderSize rate:(CGFloat)rate filterLyrics:(NSArray **)filterLyrics
 {
-        if(renderSize.width < renderSize.height)
-        {
-            CGFloat w = renderSize.width;
-            renderSize.width = renderSize.height;
-            renderSize.height = w;
-        }
+    if(renderSize.width < renderSize.height)
+    {
+        CGFloat w = renderSize.width;
+        renderSize.width = renderSize.height;
+        renderSize.height = w;
+    }
     CALayer * OptLrcLayer = [CALayer layer];
     {
         switch (orientation) {
