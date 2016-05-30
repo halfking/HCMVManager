@@ -527,6 +527,17 @@
     NSLog(@"bg rotation:%.0f,file:%@",degree,[backgroundVideo.url path]);
 #endif
 }
+- (void)setTotalDuration:(CMTime)totalDurationA
+{
+    if(backgroundVideo && backgroundVideo.secondsDuration>0 && backgroundVideo.secondsDuration <= CMTimeGetSeconds(totalDurationA))
+    {
+        NSLog(@"已经有全局素材，不允许再赋值.");
+        return;
+    }
+    totalDuration = totalDurationA;
+    totalSecondsDuration_ = CMTimeGetSeconds(totalDuration);
+    totalSecondsDurationByFullItems_ = totalSecondsDuration_;
+}
 - (void)setBackgroundVideo:(NSURL *)video andAudio:(NSURL *)audio cover:(NSString *)coverUrl coverImage:(UIImage *)image
 {
     if(video)
@@ -2083,12 +2094,12 @@
             cItem.timeInArray = CMTimeMakeWithSeconds(prevSeconds, cItem.duration.timescale);
         }
         //在显示范围内的调整，之外不处理
-        if(cItem.secondsInArray < totalSecondsDuration_ && cItem.secondsDurationInArray + cItem.secondsInArray > totalSecondsDuration_ )
+        if(cItem.secondsInArray < totalSecondsDuration_ && cItem.secondsDurationInArray + cItem.secondsInArray > totalSecondsDuration_ && totalSecondsDuration_>0)
         {
             cItem.end = CMTimeMakeWithSeconds(cItem.secondsBegin + (totalSecondsDuration_ - cItem.secondsInArray), cItem.duration.timescale);
             ;
         }
-        else if(cItem.secondsInArray >= totalSecondsDuration_)
+        else if(cItem.secondsInArray >= totalSecondsDuration_ && totalSecondsDuration_>0)
         {
             totalSecondsDurationByFullItems_ = MAX(totalSecondsDurationByFullItems_,cItem.secondsDurationInArray + cItem.secondsInArray);
             [removeList addObject:cItem];

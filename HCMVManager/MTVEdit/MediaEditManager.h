@@ -101,7 +101,7 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 }
 @property (nonatomic,PP_WEAK) id<VideoGeneraterDelegate> delegate;
 @property (nonatomic,readonly,assign) BOOL  isFragment;//是否片断管理，还是全曲管理
-@property (nonatomic,readonly,assign) CMTime  totalDuration;
+@property (nonatomic,assign) CMTime  totalDuration;
 @property (nonatomic,readonly,assign) CGSize  renderSize;
 
 @property (nonatomic,readonly,PP_STRONG) MTV * Sample;
