@@ -340,6 +340,20 @@
             
             [player_ setRate:mediaToPlay.playRate];
             
+            //防止跳动
+//            if(mediaToPlay.Action.ActionType==SReverse)
+//            {
+//                //防止播到前面或后面跳动
+//                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
+//                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
+//                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+//                
+//                if(audioPlayer_)
+//                {
+//                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
+//                }
+//            }
+//            else
             if(!mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
             {
                 [player_ seek:mediaToPlay.secondsBegin accurate:YES];
@@ -350,10 +364,6 @@
             }
             
             NSLog(@"player seconds:%.2f item:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime));
-            player_.hidden = NO;
-            reversePlayer_.hidden = YES;
-            //        [player_ currentLayer].opacity = 1;
-            //        [reversePlayer_ currentLayer].opacity = 0;
             
             [player_ play];
             if(audioPlayer_)
@@ -361,22 +371,27 @@
 //                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
+            player_.hidden = NO;
+            reversePlayer_.hidden = YES;
             NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
         }
         else
         {
             [player_ pause];
             [reversePlayer_ setRate:mediaToPlay.playRate];
-            [reversePlayer_ play];
+            
+            //防止播到前面或后面跳动
+//            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
+//            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
             [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-            reversePlayer_.hidden = NO;
-            player_.hidden = YES;
-           
+            [reversePlayer_ play];
             if(audioPlayer_)
             {
                 audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
+            reversePlayer_.hidden = NO;
+            player_.hidden = YES;
         }
     }
     else
