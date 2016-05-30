@@ -71,7 +71,7 @@
     
     HCPlayerSimple * player_;
     HCPlayerSimple * rPlayer_;
-    
+    AVAudioPlayer * audioPlayer_;
     
     NSString * oPath_;
     NSString * rPath_;
@@ -297,6 +297,7 @@
         [self.view addSubview:player_];
         //        [self.view.layer addSublayer:[player_ currentLayer]];
     }
+    [player_ setVideoVolume:0.3];
     player_.backgroundColor = [UIColor clearColor];
     [NSThread sleepForTimeInterval:0.1];
     //    [player_ play];
@@ -332,6 +333,35 @@
     }
     rPlayer_.backgroundColor = [UIColor clearColor];
 }
+- (void) buildAudioPlayer
+{
+    //初始化播放器，注意这里的Url参数只能时文件路径，不支持HTTP Url
+    if(audioPlayer_)
+    {
+        [audioPlayer_ pause];
+        audioPlayer_ = nil;
+    }
+    MediaItem * audioItem = [manager_ getBaseAudio];
+    if(audioItem && audioItem.fileName)
+    {
+        NSString * filePath = [[HCFileManager manager]getFilePath:audioItem.fileName];
+        NSError * error;
+        audioPlayer_ =[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:filePath]
+                                                            error:&error];
+        if(error)
+        {
+            NSLog(@"init audio player error:%@",[error localizedDescription]);
+        }
+        [audioPlayer_ setVolume:manager_.audioVolume];
+        //设置播放器属性
+        audioPlayer_.numberOfLoops=0;//设置为0不循环
+//        audioPlayer_.delegate=self;
+        [audioPlayer_ prepareToPlay];//加载音频文件到缓存
+        [audioPlayer_ setVolume:1];
+        
+    }
+    [manager_ initAudioPlayer:audioPlayer_];
+}
 - (void) buildControls
 {
     if(![NSThread isMainThread])
@@ -350,6 +380,10 @@
     {
         [self buildReversePlayer];
     }
+    if([manager_ getBaseAudio])
+    {
+        [self buildAudioPlayer];
+    }
     [pannel_ setActionManager:manager_];
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
     
@@ -357,6 +391,7 @@
     if(needPlayer)
         [player_ play];
 }
+
 - (void) showIndicatorView
 {
     if([NSThread isMainThread])

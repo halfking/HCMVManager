@@ -112,6 +112,7 @@
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
 - (MediaItem *) getReverseVideo;
+- (MediaItem *) getBaseAudio;
 - (int) getLastFilterID;
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;

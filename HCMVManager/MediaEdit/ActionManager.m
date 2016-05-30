@@ -171,6 +171,10 @@
 {
     return videoBg_;
 }
+- (MediaItem *)getBaseAudio
+{
+    return audioBg_;
+}
 - (int) getLastFilterID
 {
     return lastFilterIndex_;
