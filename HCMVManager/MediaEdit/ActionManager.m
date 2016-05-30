@@ -785,7 +785,7 @@
     needSendPlayControl_ = NO;
     [player_ pause];
     [reversePlayer_ pause];
-    [audioPlayer_ pause];
+//    [audioPlayer_ pause];
 }
 - (void)resumePlayer
 {
@@ -793,10 +793,10 @@
         [player_ play];
     else
         [reversePlayer_ play];
-    if(audioPlayer_)
-    {
-        [audioPlayer_ play];
-    }
+//    if(audioPlayer_)
+//    {
+//        [audioPlayer_ play];
+//    }
     needSendPlayControl_ = YES;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo

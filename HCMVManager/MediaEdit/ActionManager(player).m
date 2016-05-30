@@ -383,12 +383,12 @@
                 }
             }
             
-            NSLog(@"player seconds:%.2f item:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime));
+            NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
+                  audioPlayer_? audioPlayer_.currentTime:-1);
             
             [player_ play];
             if(audioPlayer_)
             {
-                //                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
             player_.hidden = NO;
@@ -410,6 +410,8 @@
                 audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
+            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
+                  audioPlayer_? audioPlayer_.currentTime:-1);
             reversePlayer_.hidden = NO;
             player_.hidden = YES;
         }

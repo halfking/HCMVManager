@@ -81,6 +81,7 @@
 		11D595CA1CFA0B2A00D96FAA /* test2.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11D595C91CFA0B2A00D96FAA /* test2.MOV */; };
 		11D595CD1CFAE9AE00D96FAA /* MediaWithActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D595CC1CFAE9AE00D96FAA /* MediaWithActionView.m */; };
 		11D595D31CFC222200D96FAA /* watermark_MtvPlus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */; };
+		11D595EE1CFC679B00D96FAA /* man.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11D595ED1CFC679B00D96FAA /* man.mp3 */; };
 		11DE4A5D1CE2DDA500A0BE8D /* MediaAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */; };
 		11DE4A601CE2E94200A0BE8D /* ActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A5F1CE2E94200A0BE8D /* ActionManager.m */; };
 		11DE4A631CE323A500A0BE8D /* ActionManager(index).m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A621CE323A500A0BE8D /* ActionManager(index).m */; };
@@ -234,6 +235,7 @@
 		11D595CB1CFAE9AE00D96FAA /* MediaWithActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithActionView.h; sourceTree = "<group>"; };
 		11D595CC1CFAE9AE00D96FAA /* MediaWithActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithActionView.m; sourceTree = "<group>"; };
 		11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "watermark_MtvPlus@2x.png"; sourceTree = "<group>"; };
+		11D595ED1CFC679B00D96FAA /* man.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = man.mp3; sourceTree = "<group>"; };
 		11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaAction.h; sourceTree = "<group>"; };
 		11DE4A5C1CE2DDA500A0BE8D /* MediaAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaAction.m; sourceTree = "<group>"; };
 		11DE4A5E1CE2E94200A0BE8D /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11D595ED1CFC679B00D96FAA /* man.mp3 */,
 				11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */,
 				11D595C91CFA0B2A00D96FAA /* test2.MOV */,
 				11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */,
@@ -648,6 +651,7 @@
 				11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */,
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
+				11D595EE1CFC679B00D96FAA /* man.mp3 in Resources */,
 				11200A151CF2B14C007E8B20 /* lookup_LOMO.png in Resources */,
 				11D595D31CFC222200D96FAA /* watermark_MtvPlus@2x.png in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
