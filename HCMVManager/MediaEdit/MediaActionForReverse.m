@@ -18,7 +18,7 @@
     {
         self.IsOverlap = NO;
         self.IsReverse = YES;
-        self.allowPlayerBeFaster = YES;
+        self.allowPlayerBeFaster = NO;
     }
     return self;
 }
@@ -331,6 +331,7 @@
     result.Action = [(MediaAction *)self copyItem];
     result.playRate = self.Rate;
     result.Action.DurationInSeconds = result.secondsDurationInArray;
+    result.Action.allowPlayerBeFaster = NO;
     return result;
 }
 - (MediaWithAction *)toMediaWithActionNormal:(NSArray *)sources
@@ -340,6 +341,7 @@
     result.Action = [(MediaAction *)self copyItem];
     result.playRate = self.Rate;
     result.Action.DurationInSeconds = result.secondsDurationInArray;
+    result.Action.allowPlayerBeFaster = NO;
     return result;
 }
 - (CGFloat) getSecondsInArray:(CGFloat)playerSeconds

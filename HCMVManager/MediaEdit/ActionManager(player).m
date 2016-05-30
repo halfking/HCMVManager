@@ -340,26 +340,26 @@
             
             [player_ setRate:mediaToPlay.playRate];
             
-            //防止跳动
-            if(mediaToPlay.Action.ActionType==SReverse)
-            {
-//                //防止播到前面或后面跳动
-//                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
-//                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
-//                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-//                
+//            //防止跳动
+//            if(mediaToPlay.Action.ActionType==SReverse)
+//            {
+////                //防止播到前面或后面跳动
+////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
+////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
+////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+////                
+////                if(audioPlayer_)
+////                {
+////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
+////                }
+//                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
 //                if(audioPlayer_)
 //                {
-//                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
+//                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
 //                }
-                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-                if(audioPlayer_)
-                {
-                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-                }
-            }
-            else
-            if(!mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
+//            }
+//            else
+            if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
             {
                 [player_ seek:mediaToPlay.secondsBegin accurate:YES];
                 if(audioPlayer_)
