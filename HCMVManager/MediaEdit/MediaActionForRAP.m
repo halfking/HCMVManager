@@ -17,6 +17,7 @@
     {
         self.IsOverlap = NO;
         self.IsReverse = NO;
+        self.allowPlayerBeFaster = NO;
     }
     return self;
 }
@@ -280,6 +281,8 @@
     MediaWithAction * result = [MediaWithAction new];
     [result fetchAsCore:self.Media];
     result.Action = [(MediaAction *)self copyItem];
+    result.Action.allowPlayerBeFaster = NO;
+    
     result.playRate = self.Rate;
     result.Action.DurationInSeconds = result.secondsDurationInArray;
     return result;
@@ -314,6 +317,7 @@
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
     item.IsReverse = self.IsReverse;
+    item.allowPlayerBeFaster = self.allowPlayerBeFaster;
     
     item.Index = self.Index;
     item.SecondsInArray = self.SecondsInArray;

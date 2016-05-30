@@ -41,6 +41,7 @@
     self.isOPCompleted = action.isOPCompleted;
     self.secondsBeginAdjust = action.secondsBeginAdjust;
     self.IsReverse = action.IsReverse;
+    self.allowPlayerBeFaster = action.allowPlayerBeFaster;
     
 }
 - (MediaActionDo *) copyItemDo
@@ -60,6 +61,7 @@
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
     item.IsReverse = self.IsReverse;
+    item.allowPlayerBeFaster = self.allowPlayerBeFaster;
     
     item.Index = self.Index;
     item.SecondsInArray = self.SecondsInArray;

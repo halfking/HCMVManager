@@ -485,6 +485,7 @@
 }
 -(void)reverseStart:(UIButton *)sender
 {
+    [manager_ cancelGenerate];
     [manager_ removeGPUFilter];
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);

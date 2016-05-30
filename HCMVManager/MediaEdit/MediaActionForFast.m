@@ -17,6 +17,7 @@
     {
         self.IsOverlap = YES;
         self.IsReverse = NO;
+        self.allowPlayerBeFaster = YES;
     }
     return self;
 }
@@ -108,6 +109,7 @@
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
     item.IsReverse = self.IsReverse;
+    item.allowPlayerBeFaster = self.allowPlayerBeFaster;
     
     item.Index = self.Index;
     item.SecondsInArray = self.SecondsInArray;

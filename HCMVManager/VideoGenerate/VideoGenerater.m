@@ -346,6 +346,12 @@
 }
 - (void) resetGenerateInfo
 {
+    if(timerForExport_)
+    {
+        timerForExport_.fireDate = [NSDate distantFuture];
+        [timerForExport_ invalidate];
+        PP_RELEASE(timerForExport_);
+    }
     PP_RELEASE(_waterMarkFile);
     previewAVassetIsReady = NO;
     PP_RELEASE(_mixComposition);
@@ -465,6 +471,7 @@
                                        AVVideoHeightKey: height,
                                        AVVideoCompressionPropertiesKey: @
                                            {
+                                           AVVideoProfileLevelKey: AVVideoProfileLevelH264High40,
                                            AVVideoAverageBitRateKey:@697000,
                                                //                                          AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
                                            },
@@ -480,14 +487,26 @@
     
     if (_mixComposition && _videoComposition) {
         
-        timerForExport_ = PP_RETAIN([NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgress:) userInfo:nil repeats:YES]);
+        if(!timerForExport_)
+        {
+            timerForExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1
+                                                                target:self
+                                                              selector:@selector(checkProgress:)
+                                                              userInfo:nil
+                                                               repeats:YES]);
+            
+            [[NSRunLoop mainRunLoop] addTimer:timerForExport_ forMode:NSDefaultRunLoopMode];
+        }
+        timerForExport_.fireDate = [NSDate distantPast];
+//        timerForExport_ = PP_RETAIN([NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgress:) userInfo:nil repeats:YES]);
         
         __weak SDAVAssetExportSession * weakJoin = joinVideoExporter;
         [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
             
             __strong SDAVAssetExportSession * strongJoin = weakJoin;
-            [timerForExport_ invalidate];
-            PP_RELEASE(timerForExport_);
+//            [timerForExport_ invalidate];
+//            PP_RELEASE(timerForExport_);
+            timerForExport_.fireDate = [NSDate distantFuture];
             
             //            dispatch_async(dispatch_get_main_queue(), ^{
             [self exportDidFinish:strongJoin];
@@ -495,6 +514,7 @@
         }];
         if(joinVideoExporter.error)
         {
+            timerForExport_.fireDate = [NSDate distantFuture];
             NSLog(@"export error:%@",[joinVideoExporter.error localizedDescription]);
             return NO;
         }
@@ -2630,6 +2650,13 @@
 }
 - (void)clear
 {
+    if(timerForExport_)
+    {
+        timerForExport_.fireDate = [NSDate distantFuture];
+        [timerForExport_ invalidate];
+        PP_RELEASE(timerForExport_);
+    }
+    
     isGenerating_ = NO;
     progressBlock_ = nil;
     itemReadyBlock_ = nil;

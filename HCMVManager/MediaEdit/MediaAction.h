@@ -37,6 +37,7 @@ typedef NS_ENUM(int, SType)
 @property (nonatomic,assign)    BOOL IsOverlap;     //对于源视频是否进行覆盖
 @property (nonatomic,assign)    BOOL isOPCompleted; //是否操作完成？当Action长按操作时，有可能操作没有完成，需要另外的函数来处理完成
 @property (nonatomic,assign)    BOOL IsReverse;     //是否需要倒放的
+@property (nonatomic,assign)    BOOL allowPlayerBeFaster;//允许播放器播到前面，然后从播放器的位置开始继续，而不是强制回到本对像的起点。用于解决播放器抖动
 //@property (nonatomic,assign)
 
 - (NSArray *) getSubActionList;

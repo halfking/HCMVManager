@@ -371,6 +371,7 @@
     
     videoBgAction_ = [self getNormalActionForBase];
     currentMediaWithAction_ = nil;
+    isGenerating_ = NO;
     [self reindexAllActions];
     return YES;
 }
@@ -416,7 +417,7 @@
     currentMediaWithAction_ = nil;
     
     [self reindexAllActions];
-    
+    isGenerating_ = NO;
     return YES;
 }
 
@@ -612,6 +613,7 @@
                             from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
+    [self pausePlayer];
     MediaActionDo * item = [self getMediaActionDo:action];
     
     //对用户在用手操作时的延时进行校正
@@ -635,6 +637,7 @@
                             from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
+    [self pausePlayer];
     MediaActionDo * item = [self getMediaActionDo:action];
     
     //    //对用户在用手操作时的延时进行校正
@@ -695,6 +698,7 @@
     if(!item.Media || !item.Media.fileName || item.Media.fileName.length<2)
     {
         PP_RELEASE(item);
+        [self resumePlayer];
         return nil;
     }
     //Repeat，需要将定位放到前面
@@ -751,12 +755,15 @@
     {
         [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     }
+    needSendPlayControl_ = YES;
     return item;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                                  at:(CGFloat)playerSeconds
 {
     if(actionDo.isOPCompleted==NO) return nil;
+    [self pausePlayer];
+    
     CGFloat secondsInArray = actionDo.SecondsInArray;
     //Repeat，需要将定位放到前面
     if(actionDo.ActionType==SRepeat)
@@ -769,10 +776,31 @@
     }
     return [self addActionItemDo:actionDo inArray:secondsInArray];
 }
+- (void)pausePlayer
+{
+    needSendPlayControl_ = NO;
+    [player_ pause];
+    [reversePlayer_ pause];
+    [audioPlayer_ pause];
+}
+- (void)resumePlayer
+{
+    if(player_.hidden==NO)
+        [player_ play];
+    else
+        [reversePlayer_ play];
+    if(audioPlayer_)
+    {
+        [audioPlayer_ play];
+    }
+    needSendPlayControl_ = YES;
+}
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                             inArray:(CGFloat)secondsInArray
 {
     if(actionDo.isOPCompleted==NO) return nil;
+    
+    [self pausePlayer];
     
     MediaActionDo * item = [actionDo copyItemDo];
     
@@ -807,7 +835,7 @@
     //播当前这个
     MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
     [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
-    
+    needSendPlayControl_ = YES;
     return item;
     
     
@@ -817,6 +845,8 @@
 {
     if(!action) return NO;
     if(![actionList_ containsObject:action]) return NO;
+    
+    [self pausePlayer];
     
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
@@ -839,7 +869,7 @@
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
     
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
-    
+    needSendPlayControl_ = YES;
     return YES;
 }
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
@@ -1119,7 +1149,7 @@
 {
     if(videoBGHistroy_.count<=0) return NO;
     
-
+    
     currentMediaWithAction_ = nil;
     
     videoBg_ = [videoBGHistroy_ lastObject];

@@ -324,30 +324,41 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
-    if(!needSendPlayControl_) return ;
+//    if(!needSendPlayControl_) return ;
     
     MediaWithAction * mediaToPlay = media;
     
     currentMediaWithAction_ = media;
-    if(!isGenerating_)
+    if(!isGenerating_ || player_.playing)
     {
         //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        NSLog(@"mediaplay:%@ (%.2f) inarray:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray);
+        NSLog(@"mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
         if(mediaToPlay.Action.ActionType!=SReverse
            || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
         {
             [reversePlayer_ pause];
-            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            
+            [player_ setRate:mediaToPlay.playRate];
+            
+            if(!mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
+            {
+                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+                if(audioPlayer_)
+                {
+                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+                }
+            }
+            
             NSLog(@"player seconds:%.2f item:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime));
             player_.hidden = NO;
             reversePlayer_.hidden = YES;
             //        [player_ currentLayer].opacity = 1;
             //        [reversePlayer_ currentLayer].opacity = 0;
-            [player_ setRate:mediaToPlay.playRate];
+            
             [player_ play];
             if(audioPlayer_)
             {
-                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+//                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
             NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
@@ -355,13 +366,12 @@
         else
         {
             [player_ pause];
+            [reversePlayer_ setRate:mediaToPlay.playRate];
+            [reversePlayer_ play];
             [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
             reversePlayer_.hidden = NO;
             player_.hidden = YES;
-            //        [reversePlayer_ currentLayer].opacity = 1;
-            //        [player_ currentLayer].opacity = 0;
-            [reversePlayer_ setRate:mediaToPlay.playRate];
-            [reversePlayer_ play];
+           
             if(audioPlayer_)
             {
                 audioPlayer_.currentTime = mediaToPlay.secondsInArray;
@@ -371,6 +381,8 @@
     }
     else
     {
+        NSLog(@"genreateing ,mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
+        
         NSLog(@"pause in play functions");
         [player_ pause];
         [reversePlayer_ pause];

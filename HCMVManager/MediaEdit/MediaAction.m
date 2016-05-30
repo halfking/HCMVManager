@@ -36,6 +36,7 @@
         self.isOPCompleted = YES;
         self.IsReverse = NO;
         self.secondsBeginAdjust = 0;//- 0.15;
+        self.allowPlayerBeFaster = YES;
     }
     return self;
 }
@@ -96,6 +97,7 @@
     item.isOPCompleted = self.isOPCompleted;
     item.secondsBeginAdjust = self.secondsBeginAdjust;
     item.IsReverse = self.IsReverse;
+    item.allowPlayerBeFaster = self.allowPlayerBeFaster;
     return item;
 }
 - (void)dealloc

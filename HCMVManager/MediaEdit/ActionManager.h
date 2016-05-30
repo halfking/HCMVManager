@@ -114,6 +114,8 @@
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
 - (BOOL)generateReverseMV:(NSString*)filePath;
+- (void)pausePlayer;
+- (void)resumePlayer;
 // 是否能在指定位置增加一个动作
 // action:当前动作，需要加入的
 // seconds:当前播放器时间，有可能为反向播放器的时间
