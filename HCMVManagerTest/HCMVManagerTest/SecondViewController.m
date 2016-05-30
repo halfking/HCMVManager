@@ -775,6 +775,11 @@
     else
         [player_ play];
     
+    if(audioPlayer_)
+    {
+        [audioPlayer_ play];
+    }
+    
     if(!mediaToPlay)
     {
         [self showCurrentMediaes:-1];
