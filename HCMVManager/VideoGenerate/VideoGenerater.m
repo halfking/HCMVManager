@@ -35,6 +35,7 @@
     AVMutableComposition * _mixComposition;
     AVMutableAudioMix * _audioMixOnce;
     NSTimer * timerForExport_;
+    NSTimer * timerForReverseExport_;
     
     UDManager * udManager_;
     BOOL isGenerating_;
@@ -346,11 +347,18 @@
 }
 - (void) resetGenerateInfo
 {
+    [self cancelExporter];
     if(timerForExport_)
     {
         timerForExport_.fireDate = [NSDate distantFuture];
         [timerForExport_ invalidate];
         PP_RELEASE(timerForExport_);
+    }
+    if(timerForReverseExport_)
+    {
+        timerForReverseExport_.fireDate = [NSDate distantFuture];
+        [timerForReverseExport_ invalidate];
+        PP_RELEASE(timerForReverseExport_);
     }
     PP_RELEASE(_waterMarkFile);
     previewAVassetIsReady = NO;
@@ -1319,8 +1327,20 @@
     session.outputFileType = AVFileTypeMPEG4;
     session.outputURL = outputURL;
     
+    if(!timerForReverseExport_)
+    {
+        timerForReverseExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1
+                                                            target:self
+                                                          selector:@selector(checkReverseProgress:)
+                                                          userInfo:nil
+                                                           repeats:YES]);
+        
+        [[NSRunLoop mainRunLoop] addTimer:timerForReverseExport_ forMode:NSDefaultRunLoopMode];
+    }
+    timerForReverseExport_.fireDate = [NSDate distantPast];
     [session reverseAsynchronouslyWithCompletionHandler:^{
         currentReverseSession_ = nil;
+        timerForReverseExport_.fireDate = [NSDate distantFuture];
         if (session.status == AVAssetReverseSessionStatusCompleted) {
             NSURL *outputURL = session.outputURL;
             NSLog(@"reverse mv file finished:%@",[outputURL path]);
@@ -2457,7 +2477,12 @@
         [timerForExport_ invalidate];
         PP_RELEASE(timerForExport_);
     }
-    
+    if(timerForReverseExport_)
+    {
+        timerForReverseExport_.fireDate = [NSDate distantFuture];
+        [timerForReverseExport_ invalidate];
+        PP_RELEASE(timerForReverseExport_);
+    }
     if(joinVideoExporter)
         [joinVideoExporter cancelExport];
     PP_RELEASE(joinVideoExporter);
@@ -2477,7 +2502,18 @@
         [self.delegate VideoGenerater:self generateProgress:joinVideoExporter.progress];
     }
 }
-
+- (void)checkReverseProgress:(NSTimer *)timer
+{
+    
+    if(progressBlock_)
+    {
+        progressBlock_(self,currentReverseSession_.progress);
+    }
+    else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:generateReverseProgress:)])
+    {
+        [self.delegate VideoGenerater:self generateReverseProgress:currentReverseSession_.progress];
+    }
+}
 -(void)exportDidFinish:(SDAVAssetExportSession*)session{
     
     NSLog(@"exportDidFinish");
@@ -2656,7 +2692,12 @@
         [timerForExport_ invalidate];
         PP_RELEASE(timerForExport_);
     }
-    
+    if(timerForReverseExport_)
+    {
+        timerForReverseExport_.fireDate = [NSDate distantFuture];
+        [timerForReverseExport_ invalidate];
+        PP_RELEASE(timerForReverseExport_);
+    }
     isGenerating_ = NO;
     progressBlock_ = nil;
     itemReadyBlock_ = nil;

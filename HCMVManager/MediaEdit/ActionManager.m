@@ -309,6 +309,7 @@
         NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
         
         VideoGenerater * vg = [VideoGenerater new];
+        vg.delegate = self;
         vg.TagID = 2;
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
@@ -1258,6 +1259,15 @@
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:isFilter:)])
     {
         [self.delegate ActionManager:self generateProgress:progress isFilter:NO];
+    }
+}
+- (void)VideoGenerater:(VideoGenerater *)queue generateReverseProgress:(CGFloat)progress
+{
+    NSLog(@"reverse progress:%f",progress);
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateReverseProgress:)])
+    {
+        [self.delegate ActionManager:self generateReverseProgress:progress];
     }
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error

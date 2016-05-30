@@ -24,6 +24,9 @@
 - (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress;
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error;
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover;
+
+- (void)VideoGenerater:(VideoGenerater *)queue generateReverseProgress:(CGFloat)progress;
+
 @end
 
 typedef void (^MEPlayerItemReady)(VideoGenerater *queue,AVPlayerItem * playerItem);
