@@ -56,15 +56,30 @@
 }
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer
 {
-    player_ = player;
-    reversePlayer_ = reversePlayer;
-    audioPlayer_ = audioPlayer;
+    if(player_!=player)
+    {
+        player_ = player;
+        [player_ setVideoVolume:videoVol_];
+    }
+    if(reversePlayer_!=reversePlayer)
+    {
+        reversePlayer_ = reversePlayer;
+        [reversePlayer_ setVideoVolume:videoVol_];
+    }
     
-    [player_ setVideoVolume:videoVol_];
-    [reversePlayer_ setVideoVolume:videoVol_];
+    audioPlayer_ = audioPlayer;
     if(audioPlayer_)
     {
         [audioPlayer_ setVolume:audioVol_];
+    }
+    return YES;
+}
+- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer
+{
+    if(reversePlayer_!=reversePlayer)
+    {
+        reversePlayer_ = reversePlayer;
+        [reversePlayer_ setVideoVolume:videoVol_];
     }
     return YES;
 }
@@ -324,7 +339,7 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
-//    if(!needSendPlayControl_) return ;
+    //    if(!needSendPlayControl_) return ;
     
     MediaWithAction * mediaToPlay = media;
     
@@ -340,25 +355,25 @@
             
             [player_ setRate:mediaToPlay.playRate];
             
-//            //防止跳动
-//            if(mediaToPlay.Action.ActionType==SReverse)
-//            {
-////                //防止播到前面或后面跳动
-////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
-////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
-////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-////                
-////                if(audioPlayer_)
-////                {
-////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
-////                }
-//                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-//                if(audioPlayer_)
-//                {
-//                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-//                }
-//            }
-//            else
+            //            //防止跳动
+            //            if(mediaToPlay.Action.ActionType==SReverse)
+            //            {
+            ////                //防止播到前面或后面跳动
+            ////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
+            ////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
+            ////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+            ////
+            ////                if(audioPlayer_)
+            ////                {
+            ////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
+            ////                }
+            //                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            //                if(audioPlayer_)
+            //                {
+            //                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+            //                }
+            //            }
+            //            else
             if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
             {
                 [player_ seek:mediaToPlay.secondsBegin accurate:YES];
@@ -373,7 +388,7 @@
             [player_ play];
             if(audioPlayer_)
             {
-//                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+                //                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
                 [audioPlayer_ play];
             }
             player_.hidden = NO;
@@ -386,8 +401,8 @@
             [reversePlayer_ setRate:mediaToPlay.playRate];
             
             //防止播到前面或后面跳动
-//            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
-//            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
+            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
             [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
             [reversePlayer_ play];
             if(audioPlayer_)

@@ -23,6 +23,8 @@
 
 - (int) getCurrentFilterIndex;
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;
+- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer;
+
 - (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer;
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player  in:(UIView *)contaner;
 - (BOOL) setGPUFilter:(int)index;
