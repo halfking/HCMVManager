@@ -79,10 +79,12 @@
     HCPlayerSimple * player_;
     HCPlayerSimple * reversePlayer_;
     AVAudioPlayer * audioPlayer_;
+    
     //关于滤镜
     GPUImageView *filterView_;
     GPUImageMovie *movieFile_;
     GPUImageOutput<GPUImageInput> *filters_;
+    
     int lastFilterIndex_;//上次合成时使用的过滤器
     int currentFilterIndex_;//本次选择的过滤器序号
     

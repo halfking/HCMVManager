@@ -83,6 +83,8 @@
 - (void)resetStates
 {
     [self cancelGenerate];
+    [self removeGPUFilter];
+    
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
@@ -102,6 +104,8 @@
 - (void)clear
 {
     [self cancelGenerate];
+    [self removeGPUFilter];
+    
     currentGenerate_ = nil;
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
@@ -110,6 +114,8 @@
     lastFilterIndex_ = 0;
     needSendPlayControl_ = YES;
     currentMediaWithAction_ = nil;
+    
+    
     
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];

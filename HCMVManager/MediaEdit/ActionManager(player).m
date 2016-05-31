@@ -113,22 +113,33 @@
     {
         container = player_.superview;
     }
+    [player_ pause];
+    if(movieFile_)
+    {
+        [movieFile_ cancelProcessing];
+        [movieFile_ removeAllTargets];
+        movieFile_ = nil;
+    }
+    if(filters_)
+    {
+        [filters_ endProcessing];
+        [filters_ removeAllTargets];
+        filters_ = nil;
+    }
+    
+    [NSThread sleepForTimeInterval:0.1];
+    
     if(filterView_)
     {
         [filterView_ removeFromSuperview];
         filterView_ =nil;
     }
-    if(movieFile_)
-    {
-        [movieFile_ endProcessing];
-        movieFile_ = nil;
-    }
-    filters_ = nil;
+    
+    filterView_ = [GPUImageView new];
     
     AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
     AVAssetTrack *videoAssetTrack = [[aset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     CGAffineTransform transform = CGAffineTransformIdentity;
-    filterView_ = [GPUImageView new];
     
     CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
     if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
@@ -222,8 +233,8 @@
     
     [filters_ addTarget:filterView_];
     [movieFile_ startProcessing];
+    [player play];
     
-    //    [player_ play];
     return YES;
 }
 - (void) removeGPUFilter
@@ -231,13 +242,20 @@
     if(movieFile_ || filterView_)
     {
         [movieFile_ endProcessing];
+        
+        [filters_ removeAllTargets];
+        [movieFile_ removeAllTargets];
+        
+        [filters_ endProcessing];
         movieFile_ = nil;
+        
         
         if(filterView_)
         {
             [filterView_ removeFromSuperview];
             filterView_ =nil;
         }
+        
         filters_ = nil;
         currentFilterIndex_ = 0;
         
@@ -250,6 +268,11 @@
 }
 - (BOOL) setGPUFilter:(int)index
 {
+//    if([filters_ targets] && [filters_ targets].count>0)
+//    {
+//        [filters_ removeAllTargets];
+//        [movieFile_ removeAllTargets];
+//    }
     // 实时切换滤镜
     [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
     [player_ play];
@@ -305,12 +328,17 @@
 - (void)didFinishVideoDeal:(NSURL *)videoUrl
 {
     isGeneratingByFilter_ = NO;
+    if(currentFilterGen_)
+    {
+        [currentFilterGen_ readyToRelease];
+        currentFilterGen_ = nil;
+    }
     NSLog(@"filter generate ok....%@",[videoUrl path]);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
     {
         [self.delegate ActionManager:self generateOK:[videoUrl path] cover:nil isFilter:YES];
     }
-    currentFilterGen_ = nil;
+   
 }
 
 // 滤镜处理进度
@@ -327,13 +355,18 @@
 - (void)operationFailure:(NSString *)failure
 {
     isGeneratingByFilter_ = NO;
+    if(currentFilterGen_)
+    {
+        [currentFilterGen_ readyToRelease];
+        currentFilterGen_ = nil;
+    }
     NSLog(@"filter generate failure:%@",failure);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
         NSError * error = [NSError errorWithDomain:@"com.seenvoice.maiba" code:-1008 userInfo:@{NSLocalizedDescriptionKey:failure}];
         [self.delegate ActionManager:self genreateFailure:error isFilter:YES];
     }
-    currentFilterGen_ = nil;
+  
 }
 #pragma mark - delegates
 //当播放器的内容需要发生改变时

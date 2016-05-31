@@ -37,4 +37,5 @@
  */
 - (void)addVideoFilter:(NSURL *)videoUrl tempVideoPath:(NSString *)tempVideoPath index:(NSInteger)index;
 - (void)cancelFilter;
+- (void)readyToRelease;
 @end

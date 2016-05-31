@@ -25,6 +25,7 @@
 @interface VideoGenerater()
 {
     AVAssetReverseSession * currentReverseSession_;
+    NSMutableArray * mediaTrackList_;
 }
 @end
 @implementation VideoGenerater
@@ -348,6 +349,8 @@
 }
 - (void) resetGenerateInfo
 {
+    PP_RELEASE(mediaTrackList_);
+    
     [self cancelExporter];
     if(timerForExport_)
     {
@@ -1018,6 +1021,9 @@
         NSLog(@"正在生成过程中，不能重入....");
         return;
     }
+    
+    mediaTrackList_ = [NSMutableArray new];
+    
     isGenerating_ = YES;
     BOOL isOverlap = YES; //在背景视频上添加视频
     //注意此处需要处理是否根据一张图和一个音乐来合成视频。现在的检查不支持这种情况
@@ -1514,6 +1520,11 @@
                       size:(CGSize *)size
              hasAudioTrack:(BOOL *) hasAudioTrack
 {
+    NSMutableDictionary * trackInfo = [NSMutableDictionary new];
+    [trackInfo setObject:@(0) forKey:@"type"];
+    [trackInfo setObject:@(trackInfo.count) forKey:@"index"];
+    [trackInfo setObject:curItem.fileName forKey:@"filename"];
+    
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
     if(hasAudioTrack)
         *hasAudioTrack = NO;
@@ -1687,6 +1698,11 @@
             }
         }
         {
+            [trackInfo setObject:[NSNumber numberWithFloat:curItem.secondsBegin] forKey:@"beginInFile"];
+            [trackInfo setObject:[NSNumber numberWithFloat:curItem.secondsEnd] forKey:@"endInFile"];
+            [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)] forKey:@"secondsDurationInArray"];
+            [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(modalInStInQueue)] forKey:@"secondsInTrack"];
+            
             NSError * error = nil;
             [videoTrack insertTimeRange:CMTimeRangeMake(curItem.begin, duration)
                                 ofTrack:curTrack
@@ -1727,6 +1743,7 @@
             [videoTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
                             toDuration:durationScaled];
             
+            [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(durationScaled)] forKey:@"scaleDuration"];
             if(curAudioTrack && audioTrack)
             {
                 [audioTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
@@ -1748,8 +1765,10 @@
         
         [videoLayerInstruction setOpacity:1.0 atTime:modalInStInQueue];
         [videoLayerInstruction setOpacity:0.0 atTime:modalOffEtInQueue];
+        
+        [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(modalOffEtInQueue)] forKey:@"endInTrack"];
     }
-    
+    [mediaTrackList_ addObject:trackInfo];
     return modalOffEtInQueue;
 }
 //此函数暂时未用
@@ -1777,7 +1796,7 @@
     
     
     CMTime stInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray, audioTimeScale);
-    CMTime edInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray + curAudioItem.secondsDurationInArray, audioTimeScale);
+//    CMTime edInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray + curAudioItem.secondsDurationInArray, audioTimeScale);
     
     //    //接好
     //    edInQ.value = edInQ.value + lastTimeValue - stInQ.value;
@@ -1804,6 +1823,8 @@
     }
     
     [audioMixParams addObject:curTrackMix];
+    
+    
     return YES;
 }
 - (CMTime )compositeBGVideo:(AVMutableComposition *)mixComposition layers:(NSMutableArray *)layers maxTime:(CMTime)curTimeCnt size:(CGSize *)size rate:(CGFloat)rate
@@ -1977,7 +1998,7 @@
 - (AVMutableAudioMixInputParameters*)addAudioTrackWithUrl:(NSURL *)url composite:(AVMutableComposition *)mixComposition maxTime:(CMTime)curTimeCnt rate:(CGFloat)rate needScaleIfRateNotZero:(BOOL)needScale vol:(CGFloat)vol
 {
     //将背景视频和背景音乐合成进去
-    
+    NSMutableDictionary * trackInfo = [NSMutableDictionary new];
     AVURLAsset * asset = nil;
     
     asset = [AVURLAsset assetWithURL:url];
@@ -2062,8 +2083,10 @@
         bgAudioTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(curTimeCnt), bgAudioTime.timescale);
         duration = bgAudioTime;
     }
-    AVMutableCompositionTrack *track = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:track];
+    AVMutableCompositionTrack *track = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                   preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters
+                                                  audioMixInputParametersWithTrack:track];
     
     if(_volRampSeconds>0 && needScale)
     {
@@ -2088,6 +2111,12 @@
     {
         NSLog(@"join video:(mix bgaudio) %@",[error localizedDescription]);
     }
+    [trackInfo setObject:@(1) forKey:@"type"];
+    [trackInfo setObject:@(mediaTrackList_.count) forKey:@"index"];
+    [trackInfo setObject:[[url absoluteString]lastPathComponent] forKey:@"filename"];
+    [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(startTime)] forKey:@"beginInFile"];
+    [trackInfo setObject:[NSNumber numberWithFloat:0] forKey:@"secondsInTrack"];
+    
     NSLog(@"join video:(bg audio) %ld/%d (%ld)",(long)duration.value,(int)bgScale,(long)duration.timescale);
     
     if(rate >0 && rate!=1.0)
@@ -2096,7 +2125,10 @@
                    toDuration:CMTimeMake(duration.value/rate, duration.timescale)];
         duration.value /= rate;
         NSLog(@"scale audio  to %f",CMTimeGetSeconds(duration));
+        [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)] forKey:@"scaleDuration"];
     }
+    
+    [mediaTrackList_ addObject:trackInfo];
     return trackMix;
 }
 #pragma mark - layertrans
@@ -2701,6 +2733,7 @@
         [timerForReverseExport_ invalidate];
         PP_RELEASE(timerForReverseExport_);
     }
+    PP_RELEASE(mediaTrackList_);
     _waterMarkerPosition = MP_RightTop;
     isGenerating_ = NO;
     progressBlock_ = nil;
@@ -2763,6 +2796,10 @@
     asset = nil;
 }
 #pragma mark - dealloc
+- (NSMutableArray *)getMediaTrackList
+{
+    return mediaTrackList_;
+}
 - (void)dealloc
 {
     [self clear];

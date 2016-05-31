@@ -7,18 +7,19 @@
 //
 
 #import "CLVideoAddFilter.h"
+#import <hccoren/base.h>
 #import <GPUImage.h>
 #import "CLFiltersClass.h"
 
 @interface CLVideoAddFilter ()
 {
     GPUImageOutput<GPUImageInput> *filterCurrent;
-    NSTimer *_timerEffect;    
+    NSTimer *_timerEffect;
 }
 
-@property (retain, nonatomic) GPUImageMovie *movieFile;
-@property (retain, nonatomic) GPUImageOutput<GPUImageInput> *filter;
-@property (retain, nonatomic) GPUImageMovieWriter *movieWriter;
+@property (PP_STRONG, nonatomic) GPUImageMovie *movieFile;
+@property (PP_STRONG, nonatomic) GPUImageOutput<GPUImageInput> *filter;
+@property (PP_STRONG, nonatomic) GPUImageMovieWriter *movieWriter;
 
 @end
 
@@ -40,7 +41,7 @@
     
     NSURL *tempVideo = [NSURL fileURLWithPath:tempVideoPath];
     //1. 传入视频文件
-    _movieFile = [[GPUImageMovie alloc] initWithURL:videoUrl];
+    //    _movieFile = [[GPUImageMovie alloc] initWithURL:videoUrl];
     
     //2. 添加滤镜
     [self initializeVideo:videoUrl index:index];
@@ -48,15 +49,15 @@
     CGSize videoSize = CGSizeMake(asetTrack.naturalSize.width, asetTrack.naturalSize.height);
     
     // 自定义视频参数
-//    NSDictionary* settings = @{AVVideoCodecKey : AVVideoCodecH264,
-//                               AVVideoWidthKey : @(videoSize.width),
-//                               AVVideoHeightKey : @(videoSize.height),
-//                               AVVideoCompressionPropertiesKey: @ {
-//                                   AVVideoAverageBitRateKey : @(1500000),
-//                                   AVVideoProfileLevelKey : AVVideoProfileLevelH264Baseline31,
-//                               },
-//                               AVVideoScalingModeKey : AVVideoScalingModeResizeAspect};
-//    _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:tempVideo size:videoSize fileType:AVFileTypeQuickTimeMovie outputSettings:settings];
+    //    NSDictionary* settings = @{AVVideoCodecKey : AVVideoCodecH264,
+    //                               AVVideoWidthKey : @(videoSize.width),
+    //                               AVVideoHeightKey : @(videoSize.height),
+    //                               AVVideoCompressionPropertiesKey: @ {
+    //                                   AVVideoAverageBitRateKey : @(1500000),
+    //                                   AVVideoProfileLevelKey : AVVideoProfileLevelH264Baseline31,
+    //                               },
+    //                               AVVideoScalingModeKey : AVVideoScalingModeResizeAspect};
+    //    _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:tempVideo size:videoSize fileType:AVFileTypeQuickTimeMovie outputSettings:settings];
     // 3.
     _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:tempVideo size:videoSize];
     if ((NSNull*)_filter != [NSNull null] && _filter != nil)
@@ -104,7 +105,7 @@
             // 完成后处理进度计时器 关闭、清空
             [_timerEffect invalidate];
             _timerEffect = nil;
-
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 _movieWriter = nil;
                 if ([self.delegate respondsToSelector:@selector(didFinishVideoDeal:)]) {
@@ -113,13 +114,18 @@
                 
             });
         }];
-        
     }];
 }
 
 
 - (void) initializeVideo:(NSURL*) inputMovieURL index:(NSInteger)index
 {
+    if(_timerEffect)
+    {
+        
+        [_timerEffect invalidate];
+        _timerEffect = nil;
+    }
     // 1.
     _movieFile = [[GPUImageMovie alloc] initWithURL:inputMovieURL];
     _movieFile.runBenchmark = NO;
@@ -141,10 +147,31 @@
 #pragma mark - Actions
 - (void)cancelFilter
 {
+    if(_timerEffect)
+    {
+        [_timerEffect invalidate];
+        _timerEffect = nil;
+    }
     if(_movieWriter)
     {
         [_movieWriter cancelRecording];
+        [_movieFile removeAllTargets];
     }
+    [self readyToRelease];
+}
+- (void)readyToRelease
+{
+    if(_timerEffect)
+    {
+        [_timerEffect invalidate];
+        _timerEffect = nil;
+    }
+    if(_movieFile)
+        [_movieFile removeAllTargets];
+    
+    _movieWriter = nil;
+    _movieFile = nil;
+    
 }
 - (void)deleteTempFile:(NSString *)tempVideoPath
 {
