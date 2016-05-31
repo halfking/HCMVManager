@@ -26,7 +26,9 @@
 - (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer;
 
 - (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer;
+//注意，此函数一个VC只能初始化一次
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player  in:(UIView *)contaner;
+- (GPUImageView *) buildFilterView:(AVAssetTrack *) videoAssetTrack playerFrame:(CGRect)playerFrame;
 - (BOOL) setGPUFilter:(int)index;
 
 - (BOOL) generateMVByFilter:(int)filterIndex;

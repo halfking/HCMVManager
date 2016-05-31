@@ -154,7 +154,7 @@
 #pragma mark - 实时切换滤镜
 + (void)addFilterLayer:(GPUImageMovie *)movieFile filters:(GPUImageOutput<GPUImageInput> *)filters filterView:(GPUImageView *)filterView index:(NSInteger)index
 {
-//    [movieFile cancelProcessing];
+//    [movieFile endProcessing];
     [movieFile removeAllTargets];
     [filters removeAllTargets];
     struct GPUVector3  color;
@@ -341,6 +341,8 @@
     }
     
     [filters addTarget:filterView];
+    
+//    [movieFile startProcessing];
 }
 
 

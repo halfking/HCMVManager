@@ -387,7 +387,8 @@
     [pannel_ setActionManager:manager_];
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
     
-    //    [manager_ initGPUFilter:player_ in:self.view];
+    [manager_ initGPUFilter:player_ in:self.view];
+    
     if(needPlayer)
         [player_ play];
 }
@@ -438,7 +439,7 @@
 - (void) changeFilter:(UIButton *)sender
 {
     rPlayer_.hidden = YES;
-    [manager_ initGPUFilter:player_ in:self.view];
+    player_.hidden = NO;
     
     int index = (int)sender.tag - 10000;
     sender.selected = YES;
@@ -451,6 +452,7 @@
         }
     }
     
+//    [manager_ initGPUFilter:player_ in:self.view];
     // 实时切换滤镜
     [manager_ setGPUFilter:index];
 }

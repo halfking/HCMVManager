@@ -99,21 +99,20 @@
 }
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player in:(UIView *)container
 {
-    if(player)
-    {
-        player_ = player;
-    }
-    if(!player_)
+    if(!player && !player_)
     {
         NSLog(@"not found player.. initPlayer pls.");
         return NO;
     }
-    currentFilterIndex_ = 0;
     if(!container)
     {
-        container = player_.superview;
+        NSLog(@"container cannot be nil");
+        return NO;
     }
+    
     [player_ pause];
+    
+    currentFilterIndex_ = 0;
     if(movieFile_)
     {
         [movieFile_ cancelProcessing];
@@ -126,116 +125,58 @@
         [filters_ removeAllTargets];
         filters_ = nil;
     }
-    
-    [NSThread sleepForTimeInterval:0.1];
-    
     if(filterView_)
     {
         [filterView_ removeFromSuperview];
         filterView_ =nil;
     }
     
-    filterView_ = [GPUImageView new];
-    
     AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
     AVAssetTrack *videoAssetTrack = [[aset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-    CGAffineTransform transform = CGAffineTransformIdentity;
     
-    CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
-    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
-        NSLog(@"1 up");
-        
-        CGAffineTransform transformA = CGAffineTransformMakeRotation(M_PI/2);
-        transform = CGAffineTransformConcat(transform, transformA);
-        
-        CGFloat scale = 1;
-        CGSize originSize = videoAssetTrack.naturalSize;
-        CGSize renderSize = player_.frame.size;
-        
-        scale  = MIN(renderSize.width/originSize.height , renderSize.height/originSize.width);
-        
-        if(scale!=1)
-        {
-            transform = CGAffineTransformScale(transform, scale, scale);
-        }
-        // transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, - frame.size.height));
-        
-        filterView_.frame = CGRectMake(0, 0, originSize.width, originSize.height);
-        
-    }else if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
-        NSLog(@"2 updownset");
-        CGAffineTransform transformA = CGAffineTransformMakeRotation(- M_PI/2);
-        transform = CGAffineTransformConcat(transform, transformA);
-        
-        CGFloat scale = 1;
-        CGSize originSize = videoAssetTrack.naturalSize;
-        CGSize renderSize = player_.frame.size;
-        
-        scale  = MIN(renderSize.width/originSize.height , renderSize.height/originSize.width);
-        
-        if(scale!=1)
-        {
-            transform = CGAffineTransformScale(transform, scale, scale);
-        }
-        // transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, - frame.size.height));
-        
-        filterView_.frame = CGRectMake(0, 0, originSize.width, originSize.height);
-        
-    }else if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
-        NSLog(@"3 lanleft");
-        CGSize originSize = videoAssetTrack.naturalSize;
-        CGSize renderSize = player_.frame.size;
-        
-        CGFloat scale  = MIN(renderSize.width/originSize.width , renderSize.height/originSize.height);
-        
-        if(scale!=1)
-        {
-            transform = CGAffineTransformScale(transform, scale, scale);
-        }
-        filterView_.frame = CGRectMake(0, 0, originSize.width, originSize.height);
-        
-    }else if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
-        NSLog(@"4");
-        CGSize originSize = videoAssetTrack.naturalSize;
-        CGSize renderSize = player_.frame.size;
-        
-        CGAffineTransform transformA = CGAffineTransformMakeRotation(M_PI);
-        transform = CGAffineTransformConcat(transform, transformA);
-        
-        CGFloat scale  = MIN(renderSize.width/originSize.width , renderSize.height/originSize.height);
-        
-        if(scale!=1)
-        {
-            transform = CGAffineTransformScale(transform, scale, scale);
-        }
-        
-        filterView_.frame = CGRectMake(0, 0, originSize.width, originSize.height);
-        //        filterView_.frame = CGRectMake(0, 0, kScreenHeight, kScreenWidth);
-    }
+    filterView_ = [self buildFilterView:videoAssetTrack playerFrame:player_.frame];
+    
+    filterView_.center = player_.center;
+    [container addSubview:filterView_];
+    
     
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
     [player_ changeCurrentPlayerItem:item];
     
-    //    [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];// 监听status属性
-    
     movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
-    movieFile_.runBenchmark = YES;
+    movieFile_.runBenchmark = NO;
     movieFile_.playAtActualSpeed = NO;
     
-    GPUImageFilter *filt = [GPUImageFilter new];
-    filters_ = filt;
+    filters_ = [GPUImageFilter new];
+    [filters_ addTarget:filterView_];
+    
     [movieFile_ addTarget:filters_];
     
-    filterView_.center = player_.center;
-    [container addSubview:filterView_];
-    [container bringSubviewToFront:filterView_];
-    [filterView_ setTransform:transform];
-    
-    [filters_ addTarget:filterView_];
     [movieFile_ startProcessing];
-    [player play];
+    
+    
+    [container bringSubviewToFront:filterView_];
+    
+    
+//        [player_ play];
+    
     
     return YES;
+}
+- (BOOL) setGPUFilter:(int)index
+{
+    lastFilterIndex_ = currentFilterIndex_;
+//    [player_ pause];
+    // 实时切换滤镜
+//    filters_ = [CLFiltersClass addVideoFilter:movieFile_ index:index];
+    [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
+//    [filters_ addTarget:filterView_];
+    
+    currentFilterIndex_ = index;
+    
+//    [player_ play];
+    
+    return  YES;
 }
 - (void) removeGPUFilter
 {
@@ -263,21 +204,95 @@
         CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
         [player_ changeCurrentItemUrl:videoBg_.url];
         [player_ seek:seconds accurate:YES];
+//        [player_ play];
         
     }
 }
-- (BOOL) setGPUFilter:(int)index
+- (GPUImageView *) buildFilterView:(AVAssetTrack *) videoAssetTrack playerFrame:(CGRect)playerFrame
 {
-//    if([filters_ targets] && [filters_ targets].count>0)
-//    {
-//        [filters_ removeAllTargets];
-//        [movieFile_ removeAllTargets];
-//    }
-    // 实时切换滤镜
-    [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
-    [player_ play];
-    currentFilterIndex_ = index;
-    return  YES;
+    GPUImageView * filterView = [GPUImageView new];
+    if(!videoAssetTrack)
+    {
+        AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
+        videoAssetTrack = [[aset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    }
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
+        NSLog(@"1 up");
+        
+        CGAffineTransform transformA = CGAffineTransformMakeRotation(M_PI/2);
+        transform = CGAffineTransformConcat(transform, transformA);
+        
+        CGFloat scale = 1;
+        CGSize originSize = videoAssetTrack.naturalSize;
+        CGSize renderSize = playerFrame.size;
+        
+        scale  = MIN(renderSize.width/originSize.height , renderSize.height/originSize.width);
+        
+        if(scale!=1)
+        {
+            transform = CGAffineTransformScale(transform, scale, scale);
+        }
+        // transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, - frame.size.height));
+        
+        filterView.frame = CGRectMake(0, 0, originSize.width, originSize.height);
+        
+    }else if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
+        NSLog(@"2 updownset");
+        CGAffineTransform transformA = CGAffineTransformMakeRotation(- M_PI/2);
+        transform = CGAffineTransformConcat(transform, transformA);
+        
+        CGFloat scale = 1;
+        CGSize originSize = videoAssetTrack.naturalSize;
+        CGSize renderSize = playerFrame.size;
+        
+        scale  = MIN(renderSize.width/originSize.height , renderSize.height/originSize.width);
+        
+        if(scale!=1)
+        {
+            transform = CGAffineTransformScale(transform, scale, scale);
+        }
+        // transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, - frame.size.height));
+        
+        filterView.frame = CGRectMake(0, 0, originSize.width, originSize.height);
+        
+    }else if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
+        NSLog(@"3 lanleft");
+        CGSize originSize = videoAssetTrack.naturalSize;
+        CGSize renderSize = playerFrame.size;
+        
+        CGFloat scale  = MIN(renderSize.width/originSize.width , renderSize.height/originSize.height);
+        
+        if(scale!=1)
+        {
+            transform = CGAffineTransformScale(transform, scale, scale);
+        }
+        filterView.frame = CGRectMake(0, 0, originSize.width, originSize.height);
+        
+    }else if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
+        NSLog(@"4");
+        CGSize originSize = videoAssetTrack.naturalSize;
+        CGSize renderSize = playerFrame.size;
+        
+        CGAffineTransform transformA = CGAffineTransformMakeRotation(M_PI);
+        transform = CGAffineTransformConcat(transform, transformA);
+        
+        CGFloat scale  = MIN(renderSize.width/originSize.width , renderSize.height/originSize.height);
+        
+        if(scale!=1)
+        {
+            transform = CGAffineTransformScale(transform, scale, scale);
+        }
+        
+        filterView.frame = CGRectMake(0, 0, originSize.width, originSize.height);
+        //        filterView_.frame = CGRectMake(0, 0, kScreenHeight, kScreenWidth);
+    }
+    [filterView setTransform:transform];
+    
+    return PP_AUTORELEASE(filterView);
 }
 
 - (BOOL) generateMVByFilter:(int)filterIndex
@@ -338,7 +353,7 @@
     {
         [self.delegate ActionManager:self generateOK:[videoUrl path] cover:nil isFilter:YES];
     }
-   
+    
 }
 
 // 滤镜处理进度
@@ -366,7 +381,7 @@
         NSError * error = [NSError errorWithDomain:@"com.seenvoice.maiba" code:-1008 userInfo:@{NSLocalizedDescriptionKey:failure}];
         [self.delegate ActionManager:self genreateFailure:error isFilter:YES];
     }
-  
+    
 }
 #pragma mark - delegates
 //当播放器的内容需要发生改变时
