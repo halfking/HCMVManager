@@ -16,8 +16,10 @@
 #import "ActionManager(player).h"
 #import "ActionManager(index).h"
 #import "ActionManagerPannel.h"
+#import "MediaEditManager.h"
+#import "VideoGenerater.h"
 
-@interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate>
+@interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,VideoGeneraterDelegate>
 
 @end
 
@@ -102,6 +104,16 @@
         [btn setTitle:@"clear" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(thumnates:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
+        left += 110;
+    }
+    
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(left, top, 100, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"merge files" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(mergerFiles:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
     }
     
     {
@@ -143,7 +155,7 @@
     //        NSString * path = [[NSBundle mainBundle]pathForResource:@"front_lanright" ofType:@"MOV"];
     if(![manager getBaseVideo])
     {
-        [manager setBackMV:path begin:0 end:-1 buildReverse:YES];
+        [manager setBackMV:path begin:0 end:-1 buildReverse:NO];
     }
     [pannel_ setActionManager:manager];
     [pannel_ refresh];
@@ -606,6 +618,107 @@
             [self changeImageViewContent:path index:index size:size];
         });
     }
+}
+- (void)mergerFiles:(id)sender
+{
+//    {
+//        beginInFile = 0;
+//        endInFile = "5.003334";
+//        endInTrack = "5.003334";
+//        filename = "recordfiles/movie_26845112.m4v";
+//        index = 1;
+//        secondsDurationInArray = "5.003334";
+//        secondsInTrack = 0;
+//        type = 0;
+//    },
+//    {
+//        beginInFile = 0;
+//        endInFile = "8.74";
+//        endInTrack = "13.74333";
+//        filename = "recordfiles/movie_26855310.m4v";
+//        index = 1;
+//        secondsDurationInArray = "8.74";
+//        secondsInTrack = "5.003334";
+//        type = 0;
+//    }
+    
+    
+    NSString * path1 = [[NSBundle mainBundle]pathForResource:@"a" ofType:@"m4v"];
+    NSString * path2 = [[NSBundle mainBundle]pathForResource:@"b" ofType:@"m4v"];
+    
+    
+    MediaEditManager * manager = [MediaEditManager shareObject];
+    
+    [manager clearFiles];
+    [manager clear];
+    
+    [manager setVideoOrietation:UIDeviceOrientationPortrait renderSize:CGSizeMake(720, 1280) withFontCamera:NO];
+    manager.NotAddCover = YES;
+    manager.delegate = self;
+    
+    
+    int index = 0;
+    NSArray * videoFiles = [NSArray arrayWithObjects:path1,path2, nil];
+    CGFloat secondsInArray2 =0;
+    for (NSString * filePath in videoFiles) {
+        MediaItem * item = [manager addMediaItemWithFile:filePath atIndex:index indicatorPos:secondsInArray2];
+        item.playRate = 1;
+        
+        secondsInArray2 += item.secondsDurationInArray;
+        index ++;
+    }
+    manager.addWaterMark = NO;
+    manager.addLyricLayer = NO;
+    [manager setTimeForMerge:0 end:13.73];
+    
+//    if(![manager recheckGenerateQueue])
+//    {
+//        NSLog(@"check failure.");
+//    }
+    [manager joinMedias:0];
+
+    
+    
+}
+
+#pragma mark - delegate
+- (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress
+{
+    NSLog(@"progress.....%.2f",progress);
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        if (self.ShareDelegae && [self.ShareDelegae respondsToSelector:@selector(SettingCaptureJoinProgress:)]) {
+//            [self.ShareDelegae SettingCaptureJoinProgress:progress];
+//        }
+//    });
+}
+- (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error
+{
+    NSLog(@"generate failure:%@",msg);
+    
+        NSArray * trackList = [queue getMediaTrackList];
+        NSLog(@"mediatracklist:%@",trackList);
+    
+    
+//    self.FinalPath = nil;
+//    isGenerating_ = NO;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        if (self.ShareDelegae && [self.ShareDelegae respondsToSelector:@selector(SettingCaptureJoinFail:error:)]) {
+//            [self.ShareDelegae SettingCaptureJoinFail:self error:error];
+//        }
+//    });
+    
+    
+}
+- (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
+{
+//    isGenerating_ = NO;
+//    self.FinalPath = [fileUrl path];
+//    // [self generateCover];
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        if (self.ShareDelegae && [self.ShareDelegae respondsToSelector:@selector(SettingCaptureJoinCompleted:)]) {
+//            [self.ShareDelegae SettingCaptureJoinCompleted:self];
+//        }
+//    });
 }
 #pragma mark - action manager delgates
 - (void)ActionManager:(ActionManager *)manager reverseGenerated:(MediaItem *)reverseVideo

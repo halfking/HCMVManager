@@ -25,7 +25,9 @@
 @interface VideoGenerater()
 {
     AVAssetReverseSession * currentReverseSession_;
+#ifndef __OPTIMIZE__
     NSMutableArray * mediaTrackList_;
+#endif
 }
 @end
 @implementation VideoGenerater
@@ -430,6 +432,14 @@
 
 
 #pragma mark - join
+- (BOOL) canMerge
+{
+    if(_videoComposition && _mixComposition && previewAVassetIsReady)
+    {
+        return YES;
+    }
+    return NO;
+}
 -(BOOL)generateMVFile:(NSArray *)mediaList retryCount:(int)retryCount// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume
 {
     //
@@ -1021,9 +1031,9 @@
         NSLog(@"正在生成过程中，不能重入....");
         return;
     }
-    
+#ifndef __OPTIMIZE__
     mediaTrackList_ = [NSMutableArray new];
-    
+#endif
     isGenerating_ = YES;
     BOOL isOverlap = YES; //在背景视频上添加视频
     //注意此处需要处理是否根据一张图和一个音乐来合成视频。现在的检查不支持这种情况
@@ -1039,6 +1049,7 @@
         isOverlap = NO; //多个视频分段相加
         totalDuration = [self getTotalDurationByList:mediaList];
     }
+    NSLog(@"total duration:%.2f",CMTimeGetSeconds(totalDuration));
     
     CGFloat rate = self.mergeRate>0 ?self.mergeRate :1.0;
     if(rate!=1.0)
@@ -1068,6 +1079,7 @@
     CMTimeRange range = kCMTimeRangeZero;
     CMTime curTimeCnt = kCMTimeZero;
     
+    
     if (mediaList && mediaList.count>0) {
         //选择的素材>1
         AVMutableCompositionTrack * imageTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
@@ -1077,12 +1089,20 @@
                                                                              preferredTrackID:kCMPersistentTrackID_Invalid];
         
         AVMutableCompositionTrack * audioTrack = nil;
+        
+        BOOL needAudioTrack = NO;
+        
         //如果有背景视频，这里就是合并了，所以就不需要这个过程中的声音。
-        if(!bgvUrl && singVolume_>0)
+        AVAsset * testAsset = [self getVideoItemAsset:[mediaList objectAtIndex:0]];
+        NSArray * testTracks = [testAsset tracksWithMediaType:AVMediaTypeAudio];
+        if(testTracks.count>0)
+            needAudioTrack = YES;
+        if(!bgvUrl && singVolume_>0 && needAudioTrack)
         {
             audioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
                                                      preferredTrackID:kCMPersistentTrackID_Invalid];
         }
+        
         AVMutableVideoCompositionLayerInstruction *imageLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:imageTrack];
         AVMutableVideoCompositionLayerInstruction *videoLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
         
@@ -1126,7 +1146,8 @@
                 curTimeCnt = modalOffEtInQueue;
             }
             
-            NSLog(@"current total duration:%.2f,this (%.2f-->%.2f)(%.2f) rate:%.2f",
+            NSLog(@"index %d total duration:%.2f,this (%.2f-->%.2f)(%.2f) rate:%.2f",
+                  i,
                   CMTimeGetSeconds(curTimeCnt),
                   (float)lastTimeValue/modalOffEtInQueue.timescale,
                   CMTimeGetSeconds(modalOffEtInQueue),
@@ -1509,7 +1530,8 @@
     return totalDuration;
 }
 
-- (CMTime) compsiteOneItem:(MediaItem*)curItem index:(int)index
+- (CMTime) compsiteOneItem:(MediaItem*)curItem
+                     index:(int)index
              lastTimeValue:(CMTimeValue)lastTimeValue totalDuration:(CMTime)totalDuration
                 imageTrack:(AVMutableCompositionTrack*)imageTrack
                imagelayers:(AVMutableVideoCompositionLayerInstruction*)imageLayerInstruction
@@ -1520,11 +1542,12 @@
                       size:(CGSize *)size
              hasAudioTrack:(BOOL *) hasAudioTrack
 {
+#ifndef __OPTIMIZE__
     NSMutableDictionary * trackInfo = [NSMutableDictionary new];
     [trackInfo setObject:@(0) forKey:@"type"];
     [trackInfo setObject:@(trackInfo.count) forKey:@"index"];
     [trackInfo setObject:curItem.fileName forKey:@"filename"];
-    
+#endif
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
     if(hasAudioTrack)
         *hasAudioTrack = NO;
@@ -1698,11 +1721,12 @@
             }
         }
         {
+#ifndef __OPTIMIZE__
             [trackInfo setObject:[NSNumber numberWithFloat:curItem.secondsBegin] forKey:@"beginInFile"];
             [trackInfo setObject:[NSNumber numberWithFloat:curItem.secondsEnd] forKey:@"endInFile"];
             [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)] forKey:@"secondsDurationInArray"];
             [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(modalInStInQueue)] forKey:@"secondsInTrack"];
-            
+#endif
             NSError * error = nil;
             [videoTrack insertTimeRange:CMTimeRangeMake(curItem.begin, duration)
                                 ofTrack:curTrack
@@ -1768,7 +1792,9 @@
         
         [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(modalOffEtInQueue)] forKey:@"endInTrack"];
     }
+#ifndef __OPTIMIZE__
     [mediaTrackList_ addObject:trackInfo];
+#endif
     return modalOffEtInQueue;
 }
 //此函数暂时未用
@@ -1796,7 +1822,7 @@
     
     
     CMTime stInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray, audioTimeScale);
-//    CMTime edInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray + curAudioItem.secondsDurationInArray, audioTimeScale);
+    //    CMTime edInQ = CMTimeMakeWithSeconds(curAudioItem.secondsInArray + curAudioItem.secondsDurationInArray, audioTimeScale);
     
     //    //接好
     //    edInQ.value = edInQ.value + lastTimeValue - stInQ.value;
@@ -1998,7 +2024,9 @@
 - (AVMutableAudioMixInputParameters*)addAudioTrackWithUrl:(NSURL *)url composite:(AVMutableComposition *)mixComposition maxTime:(CMTime)curTimeCnt rate:(CGFloat)rate needScaleIfRateNotZero:(BOOL)needScale vol:(CGFloat)vol
 {
     //将背景视频和背景音乐合成进去
+#ifndef __OPTIMIZE__
     NSMutableDictionary * trackInfo = [NSMutableDictionary new];
+#endif
     AVURLAsset * asset = nil;
     
     asset = [AVURLAsset assetWithURL:url];
@@ -2111,12 +2139,13 @@
     {
         NSLog(@"join video:(mix bgaudio) %@",[error localizedDescription]);
     }
+#ifndef __OPTIMIZE__
     [trackInfo setObject:@(1) forKey:@"type"];
     [trackInfo setObject:@(mediaTrackList_.count) forKey:@"index"];
     [trackInfo setObject:[[url absoluteString]lastPathComponent] forKey:@"filename"];
     [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(startTime)] forKey:@"beginInFile"];
     [trackInfo setObject:[NSNumber numberWithFloat:0] forKey:@"secondsInTrack"];
-    
+#endif
     NSLog(@"join video:(bg audio) %ld/%d (%ld)",(long)duration.value,(int)bgScale,(long)duration.timescale);
     
     if(rate >0 && rate!=1.0)
@@ -2127,8 +2156,9 @@
         NSLog(@"scale audio  to %f",CMTimeGetSeconds(duration));
         [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)] forKey:@"scaleDuration"];
     }
-    
+#ifndef __OPTIMIZE__
     [mediaTrackList_ addObject:trackInfo];
+#endif
     return trackMix;
 }
 #pragma mark - layertrans
@@ -2733,7 +2763,9 @@
         [timerForReverseExport_ invalidate];
         PP_RELEASE(timerForReverseExport_);
     }
+#ifndef __OPTIMIZE__
     PP_RELEASE(mediaTrackList_);
+#endif
     _waterMarkerPosition = MP_RightTop;
     isGenerating_ = NO;
     progressBlock_ = nil;
@@ -2798,7 +2830,12 @@
 #pragma mark - dealloc
 - (NSMutableArray *)getMediaTrackList
 {
+#ifndef __OPTIMIZE__
     return mediaTrackList_;
+#else
+    return nil;
+#endif
+    
 }
 - (void)dealloc
 {

@@ -3874,6 +3874,7 @@ static BOOL isGenerateAudioing_ = NO;
         
         
         NSArray * exportItemList = [[MediaListModel shareObject]checkMediaTimeLine:videoGenerater_.totalBeginTime endTime:videoGenerater_.totalEndTime resetBegin:YES];
+        NSLog(@"export lits:%@",exportItemList);
         [[MediaListModel shareObject]checkTempAVStatus];
         
         BOOL needGenerateAudio = (audioList_ && audioList_.count>0);
@@ -3945,6 +3946,12 @@ static BOOL isGenerateAudioing_ = NO;
 }
 - (void)joinMedias:(int)retryCount
 {
+    if([videoGenerater_ canMerge])
+    {
+        [videoGenerater_ generateMVFile:nil retryCount:retryCount];
+        return;
+    }
+    
     [self checkLyricInfo:lyricList_ begin:lyricBegin_ duration:lyricDuration_];
     
     videoGenerater_.mergeRate = mergeRate_;
@@ -3991,7 +3998,6 @@ static BOOL isGenerateAudioing_ = NO;
 }
 - (void)cancelExporter
 {
-    
     [videoGenerater_ cancelExporter];
 }
 - (void)regenerateItems

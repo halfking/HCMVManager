@@ -118,6 +118,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 - (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end targetSize:(CGSize)targetSize;
 - (BOOL) generateMVSegmentsViaPhAsset:(PHAsset *)asset begin:(CGFloat) begin end:(CGFloat)end  targetSize:(CGSize)targetSize;
 
+- (BOOL) canMerge;
 /*
  中止合成进程
  */
