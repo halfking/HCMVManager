@@ -158,23 +158,41 @@
     [container bringSubviewToFront:filterView_];
     
     
-//        [player_ play];
+    //        [player_ play];
     
     
+    return YES;
+}
+//当外部对像发生变化时，需要更新当前播放对像
+- (BOOL)changeFilterPlayerItem
+{
+    if(movieFile_)
+    {
+        AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
+        AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
+        [player_ changeCurrentPlayerItem:item];
+        
+        [movieFile_ endProcessing];
+        [movieFile_ removeAllTargets];
+        [filters_ endProcessing];
+        [filters_ removeAllTargets];
+        
+        movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
+    }
     return YES;
 }
 - (BOOL) setGPUFilter:(int)index
 {
     lastFilterIndex_ = currentFilterIndex_;
-//    [player_ pause];
+    //    [player_ pause];
     // 实时切换滤镜
-//    filters_ = [CLFiltersClass addVideoFilter:movieFile_ index:index];
+    //    filters_ = [CLFiltersClass addVideoFilter:movieFile_ index:index];
     [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
-//    [filters_ addTarget:filterView_];
+    //    [filters_ addTarget:filterView_];
     
     currentFilterIndex_ = index;
     
-//    [player_ play];
+    //    [player_ play];
     
     return  YES;
 }
@@ -204,7 +222,7 @@
         CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
         [player_ changeCurrentItemUrl:videoBg_.url];
         [player_ seek:seconds accurate:YES];
-//        [player_ play];
+        //        [player_ play];
         
     }
 }

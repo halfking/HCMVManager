@@ -387,6 +387,9 @@
     currentMediaWithAction_ = nil;
     isGenerating_ = NO;
     [self reindexAllActions];
+    
+    [self changeFilterPlayerItem];
+    
     return YES;
 }
 - (MediaWithAction *) getNormalActionForBase
@@ -432,6 +435,9 @@
     
     [self reindexAllActions];
     isGenerating_ = NO;
+    
+    [self changeFilterPlayerItem];
+    
     return YES;
 }
 
@@ -1157,6 +1163,37 @@
     
     [self reindexAllActions];
     
+    [self changeFilterPlayerItem];
+    
+    return YES;
+}
+- (BOOL) setLastDraftAsOrigin
+{
+    videoBg_ = [videoBGHistroy_ lastObject];
+    reverseBG_ = [reverseBgHistory_ lastObject];
+    
+    currentMediaWithAction_ = nil;
+    
+    [actionsHistory_ removeAllObjects];
+    [reverseBgHistory_ removeAllObjects];
+    [videoBGHistroy_ removeAllObjects];
+    [filterHistory_ removeAllObjects];
+    [actionList_ removeAllObjects];
+    
+    [videoBGHistroy_ addObject:videoBg_];
+    if(reverseBG_)
+        [reverseBgHistory_ addObject:reverseBG_];
+    [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
+    [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
+    
+    videoBgAction_ = [self getNormalActionForBase];
+    
+    [self reindexAllActions];
+    
+    [self saveDraft];
+    
+    [self changeFilterPlayerItem];
+    
     return YES;
 }
 - (BOOL) loadLastDraft
@@ -1181,6 +1218,9 @@
     
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
+    
+    [self changeFilterPlayerItem];
+    
     return YES;
 }
 - (BOOL) loadFirstDraft
@@ -1209,6 +1249,8 @@
     
     [self reindexAllActions];
     NSLog(@"last draft loaded.remain history:%d",(int)videoBGHistroy_.count);
+    
+    [self changeFilterPlayerItem];
     return YES;
 }
 - (int) getHistoryCount

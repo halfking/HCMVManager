@@ -15,11 +15,13 @@
 #import "CLVideoAddFilter.h"
 
 @interface ActionManager(player)<CLVideoAddFilterDelegate>
+
 - (HCPlayerSimple *) getPlayer;
 - (HCPlayerSimple *) getReversePlayer;
 - (GPUImageView *) getFilterView;
 - (NSArray *) getGPUFilters;
 - (UIImage*) getFilteredIcon:(UIImage *)image index:(int)index;
+- (BOOL) changeFilterPlayerItem;
 
 - (int) getCurrentFilterIndex;
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;

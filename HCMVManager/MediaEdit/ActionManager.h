@@ -194,6 +194,7 @@
 
 //用最新的文件作为在初始版本，原初始版本作废
 - (BOOL) resetOrigin;
+- (BOOL) setLastDraftAsOrigin;
 
  //读取草稿的信息，不对当前队列进行任何操作
 - (BOOL) getDraft:(int)index base:(MediaItem **)baseVideo reverse:(MediaItem **)reverseVideo actionList:(NSArray **)actionList filterID:(int *)filterID;
