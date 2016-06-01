@@ -255,7 +255,14 @@
             }
             if(isValid && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
             {
-                secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                if(item.playRate>0)
+                {
+                    secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                }
+                else
+                {
+                    secondsInArray = item.secondsInArray + item.secondsBegin - playerSeconds;
+                }
                 break;
             }
         }
@@ -265,6 +272,11 @@
                 if(item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
                 {
                     secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                    break;
+                }
+                else if(item.secondsBegin > playerSeconds && item.secondsEnd <= playerSeconds)
+                {
+                    secondsInArray = item.secondsInArray + item.secondsBegin - playerSeconds;
                     break;
                 }
             }
@@ -300,7 +312,12 @@
     }
     return YES;
 }
+
 - (BOOL)generateReverseMV:(NSString*)filePath
+{
+    return [self generateReverseMV:filePath begin:0 end:-1];
+}
+- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd
 {
     if(!filePath) return NO;
     //生成反向的视频
@@ -325,6 +342,7 @@
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
         BOOL ret = [vg generateMVReverse:filePath target:outputPath
+                        begin:sourceBegin end:sourceEnd
                                 complted:^(NSString * filePathNew){
                                     NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
                                     reverseGenerate_ = nil;
@@ -679,11 +697,14 @@
         //倒放对应的东东不太一样，有两段
         if(item.ActionType == SReverse)
         {
-            item.Media = [reverseBG_ copyAsCore];
-            item.Media.begin = CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
+            item.Media = [videoBg_ copyAsCore];
+//            item.Media = [reverseBG_ copyAsCore];
+            item.Media.begin = CMTimeMakeWithSeconds(mediaBeginSeconds, item.Media.begin.timescale);
+//                CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
-                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
+                item.Media.end = CMTimeMakeWithSeconds(MAX(item.Media.secondsBegin - durationInSeconds,0) , item.Media.end.timescale);
+//                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
             }
             
             MediaActionForReverse * reverse = (MediaActionForReverse *)item;
@@ -887,7 +908,12 @@
     
     //播下一个
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
-    
+#ifndef __OPTIMIZE__
+    if(!media)
+    {
+        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+    }
+#endif
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     needSendPlayControl_ = YES;
     return YES;

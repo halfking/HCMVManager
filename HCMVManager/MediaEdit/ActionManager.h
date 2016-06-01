@@ -119,6 +119,7 @@
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
 - (BOOL)generateReverseMV:(NSString*)filePath;
+- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd;
 - (void)pausePlayer;
 - (void)resumePlayer;
 // 是否能在指定位置增加一个动作

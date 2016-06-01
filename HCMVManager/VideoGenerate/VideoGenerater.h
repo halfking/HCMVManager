@@ -153,7 +153,10 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 
 
 //将视频倒序来放
-- (BOOL) generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath complted:(void (^)(NSString * filePath))complted;
+- (BOOL) generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath
+                     begin:(CGFloat)sourceBegin
+                       end:(CGFloat)sourceEnd
+                  complted:(void (^)(NSString * filePath))complted;
 - (void) setBlock:(MEProgress)progress
             ready:(MEPlayerItemReady)itemReady
         completed:(MECompleted)complted

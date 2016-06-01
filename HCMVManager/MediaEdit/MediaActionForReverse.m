@@ -19,6 +19,7 @@
         self.IsOverlap = NO;
         self.IsReverse = YES;
         self.allowPlayerBeFaster = NO;
+        self.Rate = -1;
     }
     return self;
 }
@@ -49,7 +50,7 @@
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         media.durationInPlaying = [self getDurationInFinal:sources];
-        
+        media.playRate = self.Rate;
         [materialList_ addObject:media];
     }
     if(normalItem)
@@ -58,7 +59,7 @@
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray + MAX(self.DurationInArray,0.1),DEFAULT_TIMESCALE);
         media.durationInPlaying = [self getDurationInFinal:sources];
-        
+        media.playRate = 0 - self.Rate;
         [materialList_ addObject:media];
         
     }
@@ -71,10 +72,19 @@
     if(mediaList.count>1)
     {
         MediaWithAction * reversItem = [mediaList objectAtIndex:0];
-        reversItem.end = CMTimeMakeWithSeconds(reversItem.secondsBegin + durationInArrayA, reversItem.end.timescale);
-        
+        reversItem.end = CMTimeMakeWithSeconds(MAX(reversItem.secondsBegin - durationInArrayA,0), reversItem.end.timescale);
+        if(reversItem!=self.Media)
+        {
+            self.Media.begin = reversItem.begin;
+            self.Media.end = reversItem.end;
+        }
         MediaWithAction * normalItem = [mediaList objectAtIndex:1];
         normalItem.begin = CMTimeMakeWithSeconds(MAX(normalItem.secondsEnd - durationInArrayA,0), normalItem.begin.timescale);
+        if(normalItem!=self.normalMedia)
+        {
+            self.normalMedia.begin = normalItem.begin;
+            self.normalMedia.end = normalItem.end;
+        }
     }
     else
     {
@@ -314,11 +324,11 @@
         CGFloat duration = 0;
         if(media.secondsDurationInArray>0)
         {
-            duration = media.secondsDurationInArray /media.playRate;
+            duration = fabs(media.secondsDurationInArray /media.playRate);
         }
         else if(media.Action)
         {
-            duration = media.Action.DurationInSeconds / media.Action.Rate;
+            duration = fabs(media.Action.DurationInSeconds / media.Action.Rate);
         }
         durationForFinal_ += duration * 2;
     }
@@ -339,7 +349,7 @@
     MediaWithAction * result = [MediaWithAction new];
     [result fetchAsCore:self.normalMedia];
     result.Action = [(MediaAction *)self copyItem];
-    result.playRate = self.Rate;
+    result.playRate = 0 - self.Rate;
     result.Action.DurationInSeconds = result.secondsDurationInArray;
     result.Action.allowPlayerBeFaster = NO;
     return result;

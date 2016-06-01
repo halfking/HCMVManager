@@ -84,7 +84,7 @@
 }
 - (void) buildBaseLine:(MediaWithAction *)media
 {
-    NSString * rightText = [NSString stringWithFormat:@"原长(%.2f)合成(%.2f)",media.secondsDurationInArray, media.secondsDurationInArray/(media.playRate>0?media.playRate:1)];
+    NSString * rightText = [NSString stringWithFormat:@"原长(%.2f)合成(%.2f)",media.secondsDurationInArray, media.secondsDurationInArray/(media.playRate!=0?fabs(media.playRate):1)];
     font_ = [UIFont systemFontOfSize:10];
 
     CGSize rightSize = [rightText sizeWithAttributes:@{NSFontAttributeName:font_}];

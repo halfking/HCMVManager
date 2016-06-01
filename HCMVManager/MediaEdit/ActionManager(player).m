@@ -413,10 +413,12 @@
     if(!isGenerating_ || player_.playing)
     {
         //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        NSLog(@"mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
-        if(mediaToPlay.Action.ActionType!=SReverse
-           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
-        {
+        NSLog(@"action %d play:%@ (%.2f) inarray:%.2f begin:%.2f",
+              action.ActionType,
+              [mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
+//        if(mediaToPlay.Action.ActionType!=SReverse
+//           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
+//        {
             [reversePlayer_ pause];
             
             [player_ setRate:mediaToPlay.playRate];
@@ -455,32 +457,36 @@
             [player_ play];
             if(audioPlayer_)
             {
+                if(mediaToPlay.playRate <0)
+                    audioPlayer_.rate = mediaToPlay.playRate;
+                else
+                    audioPlayer_.rate = 1;
                 [audioPlayer_ play];
             }
             player_.hidden = NO;
             reversePlayer_.hidden = YES;
             NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
-        }
-        else
-        {
-            [player_ pause];
-            [reversePlayer_ setRate:mediaToPlay.playRate];
-            
-            //防止播到前面或后面跳动
-            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
-            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-            [reversePlayer_ play];
-            if(audioPlayer_)
-            {
-                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-                [audioPlayer_ play];
-            }
-            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
-                  audioPlayer_? audioPlayer_.currentTime:-1);
-            reversePlayer_.hidden = NO;
-            player_.hidden = YES;
-        }
+//        }
+//        else
+//        {
+//            [player_ pause];
+//            [reversePlayer_ setRate:mediaToPlay.playRate];
+//            
+//            //防止播到前面或后面跳动
+//            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
+//            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+//            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+//            [reversePlayer_ play];
+//            if(audioPlayer_)
+//            {
+//                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+//                [audioPlayer_ play];
+//            }
+//            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
+//                  audioPlayer_? audioPlayer_.currentTime:-1);
+//            reversePlayer_.hidden = NO;
+//            player_.hidden = YES;
+//        }
     }
     else
     {
@@ -543,7 +549,7 @@
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
-    if(isReverse) return;
+//    if(isReverse) return;
     if(!needSendPlayControl_) return ;
     //有动作未完成时，不接收时间的变化
     BOOL hasNotCompleted = NO;
@@ -563,6 +569,10 @@
         if(currentMediaWithAction_.secondsBegin <=playerSeconds + 0.2 && currentMediaWithAction_.secondsEnd > playerSeconds)
         {
             return ;
+        }
+        else if(isReverse && currentMediaWithAction_.secondsEnd <=playerSeconds + 0.2 && currentMediaWithAction_.secondsBegin > playerSeconds)
+        {
+            return;
         }
         else if(playerSeconds + 1 < currentMediaWithAction_.secondsBegin)
         {

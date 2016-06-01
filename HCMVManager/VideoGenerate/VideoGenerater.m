@@ -1328,7 +1328,10 @@
     composition.animationTool = [AVVideoCompositionCoreAnimationTool
                                  videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
 }
-- (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath complted:(void (^)(NSString * filePath))complted
+- (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath
+                    begin:(CGFloat)sourceBegin
+                      end:(CGFloat)sourceEnd
+                 complted:(void (^)(NSString * filePath))complted
 {
     if(![HCFileManager isExistsFile:sourcePath])
     {
@@ -1497,7 +1500,7 @@
     CGFloat seconds = 0;
     CMTimeScale timescale = DEFAULT_TIMESCALE;
     for (MediaItem * item in mediaList) {
-        seconds += roundf(item.secondsDurationInArray/item.playRate * 100)/100;
+        seconds += roundf(fabs(item.secondsDurationInArray/item.playRate) * 100)/100;
         timescale = item.begin.timescale;
     }
     return CMTimeMakeWithSeconds(seconds, timescale);
@@ -1578,6 +1581,11 @@
         modalInStInQueue.value = round(modalInStInQueue.value/rate +0.5);
         modalOffEtInQueue.value = round(modalOffEtInQueue.value/rate + 0.5);
     }
+    else if(rate <0 && rate!=-1.0)
+    {
+        modalInStInQueue.value = round(0 - modalInStInQueue.value/rate +0.5);
+        modalOffEtInQueue.value = round(0 - modalOffEtInQueue.value/rate + 0.5);
+    }
     
     //单个对像处理
     if(curItem.playRate!=1 && curItem.playRate>0)
@@ -1585,6 +1593,11 @@
         CMTime diff = CMTimeSubtract(modalOffEtInQueue, modalInStInQueue);
         modalOffEtInQueue.value = (CMTimeValue)(diff.value /curItem.playRate) + modalInStInQueue.value;
         //        modalOffEtInQueue.value = round(modalOffEtInQueue.value/curItem.playRate + 0.5);
+    }
+    else if(curItem.playRate!=-1 && curItem.playRate<0)
+    {
+        CMTime diff = CMTimeSubtract(modalOffEtInQueue, modalInStInQueue);
+        modalOffEtInQueue.value = (CMTimeValue)(0 - diff.value /curItem.playRate) + modalInStInQueue.value;
     }
     //修正数据计算中的小误差
     if(modalInStInQueue.value < lastTimeValue)
@@ -1766,8 +1779,24 @@
             
             [videoTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
                             toDuration:durationScaled];
-            
+#ifndef __OPTIMIZE__
             [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(durationScaled)] forKey:@"scaleDuration"];
+#endif
+            if(curAudioTrack && audioTrack)
+            {
+                [audioTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
+                                toDuration:durationScaled];
+            }
+        }
+        else if((rate>0 && rate!=1.0)||(curItem.playRate!=-1 && curItem.playRate<0))
+        {
+            CMTime durationScaled = CMTimeMake(duration.value/(0 - rate * curItem.playRate), duration.timescale);
+            
+            [videoTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
+                            toDuration:durationScaled];
+#ifndef __OPTIMIZE__
+            [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(durationScaled)] forKey:@"scaleDuration"];
+#endif
             if(curAudioTrack && audioTrack)
             {
                 [audioTrack scaleTimeRange:CMTimeRangeMake(modalInStInQueue, duration)
@@ -1789,8 +1818,9 @@
         
         [videoLayerInstruction setOpacity:1.0 atTime:modalInStInQueue];
         [videoLayerInstruction setOpacity:0.0 atTime:modalOffEtInQueue];
-        
+#ifndef __OPTIMIZE__
         [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(modalOffEtInQueue)] forKey:@"endInTrack"];
+#endif
     }
 #ifndef __OPTIMIZE__
     [mediaTrackList_ addObject:trackInfo];
@@ -2154,7 +2184,9 @@
                    toDuration:CMTimeMake(duration.value/rate, duration.timescale)];
         duration.value /= rate;
         NSLog(@"scale audio  to %f",CMTimeGetSeconds(duration));
+#ifndef __OPTIMIZE__
         [trackInfo setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)] forKey:@"scaleDuration"];
+#endif
     }
 #ifndef __OPTIMIZE__
     [mediaTrackList_ addObject:trackInfo];

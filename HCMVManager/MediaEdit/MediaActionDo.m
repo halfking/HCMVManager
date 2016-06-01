@@ -114,9 +114,9 @@
 {
     if(!media||!media.fileName || media.fileName.length<2) return 0;
     
-    if(media.playRate>0)
+    if(media.playRate!=0)
     {
-        return media.secondsDurationInArray / media.playRate;
+        return fabs(media.secondsDurationInArray / media.playRate);
     }
     //保存原值
     NSMutableArray * tempArray = materialList_;
@@ -209,6 +209,11 @@
     {
         for (MediaWithAction * item in mediaList) {
             item.end = CMTimeMakeWithSeconds(item.secondsBegin + durationInArrayA, item.end.timescale);
+        }
+        MediaWithAction * firstItem = [mediaList lastObject];
+        if(firstItem!=self.Media && self.Media)
+        {
+            self.Media.end = firstItem.end;
         }
     }
     else if(self.Media)
@@ -650,14 +655,14 @@
             else
             {
                 item.secondsInArrayNotConfirm = NO;
-                item.durationInPlaying = item.secondsDurationInArray /item.playRate;
+                item.durationInPlaying = fabs(item.secondsDurationInArray /item.playRate);
             }
         }
         else //新增的
         {
             item.timeInArray = CMTimeMakeWithSeconds(secondsInArray,item.timeInArray.timescale);
             secondsInArray += item.secondsDurationInArray;
-            item.durationInPlaying = item.secondsDurationInArray /item.playRate;
+            item.durationInPlaying = fabs(item.secondsDurationInArray /item.playRate);
             item.secondsChangedWithActionForPlayer = [self secondsEffectPlayer:item.secondsDurationInArray];
         }
         index ++;

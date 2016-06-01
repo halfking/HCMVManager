@@ -74,13 +74,13 @@
 {
     begin = pbegin;
     secondsBegin = CMTimeGetSeconds(begin);
-    secondsDurationInArray = secondsEnd - secondsBegin;
+    secondsDurationInArray = fabs(secondsEnd - secondsBegin);
 }
 - (void)setEnd:(CMTime)pend
 {
     end = pend;
     secondsEnd = CMTimeGetSeconds(end);
-    secondsDurationInArray = secondsEnd - secondsBegin;
+    secondsDurationInArray = fabs(secondsEnd - secondsBegin);
 }
 - (void)setDuration:(CMTime)pduration
 {

@@ -457,7 +457,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = YES;
         testAction_ = [manager addActionItem:action filePath:nil at:2.5 from:2.5 duration:2];
     }
@@ -468,7 +468,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = YES;
         testAction_ = [manager addActionItem:action filePath:nil at:4.5 from:4.5 duration:2];
     }
@@ -480,7 +480,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = NO;
         testAction_ = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
     }
@@ -494,7 +494,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = YES;
         testAction_ = [manager addActionItem:action filePath:nil at:5 from:5 duration:1];
     }
@@ -505,7 +505,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = NO;
         testAction_ = [manager addActionItem:action filePath:nil at:8 from:8 duration:-1];
     }

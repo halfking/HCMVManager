@@ -106,8 +106,8 @@
     //    [manager_ removeActions];
     
     NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"man" ofType:@"mp3"];
-        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+    //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -120,7 +120,7 @@
     [self showIndicatorView];
     if(![manager_ getBaseVideo])
     {
-        [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
+        [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:NO];
     }
     [manager_ setBackAudio:audioPath begin:0 end:-1];
     
@@ -355,7 +355,7 @@
         [audioPlayer_ setVolume:manager_.audioVolume];
         //设置播放器属性
         audioPlayer_.numberOfLoops=0;//设置为0不循环
-//        audioPlayer_.delegate=self;
+        //        audioPlayer_.delegate=self;
         [audioPlayer_ prepareToPlay];//加载音频文件到缓存
         [audioPlayer_ setVolume:1];
         
@@ -386,9 +386,14 @@
     }
     [pannel_ setActionManager:manager_];
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
-    
-    [manager_ initGPUFilter:player_ in:self.view];
-    
+    if(![manager_ getFilterView])
+    {
+        [manager_ initGPUFilter:player_ in:self.view];
+    }
+    else
+    {
+        [manager_ setGPUFilter:0];
+    }
     if(needPlayer)
         [player_ play];
 }
@@ -452,7 +457,7 @@
         }
     }
     
-//    [manager_ initGPUFilter:player_ in:self.view];
+    //    [manager_ initGPUFilter:player_ in:self.view];
     // 实时切换滤镜
     [manager_ setGPUFilter:index];
 }
@@ -492,7 +497,8 @@
 #pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
-    [manager_ removeGPUFilter];
+    [manager_ setGPUFilter:0];
+    //    [manager_ removeGPUFilter];
     //    [repeatTimer_ invalidate];
     //    repeatTimer_ = nil;
     //    if (repeatCnt_ > 2) {
@@ -525,13 +531,15 @@
 }
 -(void)reverseStart:(UIButton *)sender
 {
+    
     [manager_ cancelGenerate];
-    [manager_ removeGPUFilter];
+    [manager_ setGPUFilter:0];
+    
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
     CMTime reverSeconds = [rPlayer_.playerItem currentTime];
-    CMTime reverDuration = [rPlayer_.playerItem duration];
+    //    CMTime reverDuration = [rPlayer_.playerItem duration];
     
     CGFloat secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
     
@@ -544,7 +552,7 @@
         action.IsOverlap = NO;
         action.IsMutex = NO;
         action.isOPCompleted = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.IsReverse = YES;
         
         
@@ -567,7 +575,8 @@
         {
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
-            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
+            CGFloat duration = actionDo.Rate <0?secondsInTrack- actionDo.SecondsInArray:seconds - actionDo.Media.secondsBegin;
+//            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
             
             //            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
             //            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
@@ -580,7 +589,8 @@
 }
 -(void)slow:(UIButton *)sender
 {
-    [manager_ removeGPUFilter];
+    [manager_ setGPUFilter:0];
+    //    [manager_ removeGPUFilter];
     [player_ pause];
     
     
@@ -636,7 +646,8 @@
 }
 -(void)fast:(UIButton *)sender
 {
-    [manager_ removeGPUFilter];
+    [manager_ setGPUFilter:0];
+    //    [manager_ removeGPUFilter];
     CMTime playerTime =  [player_ durationWhen];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     

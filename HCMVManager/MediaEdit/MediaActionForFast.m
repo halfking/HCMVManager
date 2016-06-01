@@ -71,11 +71,11 @@
         CGFloat duration = 0;
         if(media.secondsDurationInArray>0)
         {
-            duration = media.secondsDurationInArray /media.playRate;
+            duration = fabs(media.secondsDurationInArray /media.playRate);
         }
         else if(media.Action)
         {
-            duration = media.Action.DurationInSeconds / media.Action.Rate;
+            duration = fabs(media.Action.DurationInSeconds / media.Action.Rate);
             
         }
         durationForFinal_ += duration;
