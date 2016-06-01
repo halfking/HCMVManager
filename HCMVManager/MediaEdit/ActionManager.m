@@ -576,10 +576,10 @@
 {
     if(isGenerating_) return NO;
     
-    if(action.ActionType==SReverse && !reverseBG_)
-    {
-        return NO;
-    }
+//    if(action.ActionType==SReverse && !reverseBG_)
+//    {
+//        return NO;
+//    }
     
     //    if([self findActionAt:seconds index:-1])
     //    {

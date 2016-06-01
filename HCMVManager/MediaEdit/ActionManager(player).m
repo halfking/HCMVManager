@@ -511,6 +511,7 @@
         //            else
         if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
         {
+            NSLog(@"通过Media 更改播放器的时间：%.2f",mediaToPlay.secondsBegin);
             [player_ seek:mediaToPlay.secondsBegin accurate:YES];
             if(audioPlayer_ && audioBg_)
             {
@@ -518,17 +519,20 @@
                 NSLog(@"audio player pos changed:%.2f = (%.2f + %.2f)",audioPlayer_.currentTime,mediaToPlay.secondsInArray,audioBg_.secondsBegin);
             }
         }
-        
+        else
+        {
+            NSLog(@"通过Media 属性%d，没有更改播放器的时间：%.2f-->%.2f",mediaToPlay.Action.allowPlayerBeFaster,player_.secondsPlaying, mediaToPlay.secondsBegin);
+        }
         NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
               audioPlayer_? audioPlayer_.currentTime:-1);
         
         [player_ play];
         if(audioPlayer_)
         {
-            if(mediaToPlay.playRate <0)
-                audioPlayer_.rate = mediaToPlay.playRate;
-            else
-                audioPlayer_.rate = 1;
+//            if(mediaToPlay.playRate <0)
+//                audioPlayer_.rate = mediaToPlay.playRate;
+//            else
+//                audioPlayer_.rate = 1;
             [audioPlayer_ play];
         }
         player_.hidden = NO;
