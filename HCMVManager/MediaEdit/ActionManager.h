@@ -216,5 +216,5 @@
 
 
 - (void) setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol;
-
+- (void) setNeedPlaySync:(BOOL)need;
 @end

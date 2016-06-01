@@ -43,7 +43,7 @@
 - (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
 {
     DurationInSeconds = DurationInSecondsA;
-    if(DurationInSeconds >=0)
+    if(DurationInSeconds >=0 )
     {
         self.isOPCompleted = YES;
     }

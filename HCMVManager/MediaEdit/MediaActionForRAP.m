@@ -64,6 +64,16 @@
         {
             [sources removeObject:nextMedia];
         }
+        nextMedia = nil;
+        if(sources.count>newInsertIndex)
+        {
+            nextMedia = [sources objectAtIndex:newInsertIndex];
+        }
+        //如果间隔小于1秒，则自动接上
+        if(nextMedia && nextMedia.Action.ActionType == SNormal && nextMedia.secondsBegin - self.Media.secondsEnd <= 1)
+        {
+            nextMedia.begin = self.Media.end;
+        }
     }
     
     if(duration>0)

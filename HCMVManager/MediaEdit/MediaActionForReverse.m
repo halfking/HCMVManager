@@ -19,6 +19,7 @@
         self.IsOverlap = NO;
         self.IsReverse = YES;
         self.allowPlayerBeFaster = NO;
+        self.isOPCompleted = NO;
         self.Rate = -1;
     }
     return self;
@@ -446,8 +447,11 @@
 }
 - (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
 {
+    BOOL opCompleted = self.isOPCompleted;
     [super setDurationInSeconds:DurationInSecondsA];
+    self.isOPCompleted = opCompleted;
     [self ensureMediaDuration:DurationInSecondsA];
+    self.isOPCompleted = opCompleted;
     
 }
 #pragma mark - split op

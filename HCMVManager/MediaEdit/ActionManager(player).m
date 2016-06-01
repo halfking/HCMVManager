@@ -660,7 +660,12 @@
     if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE) return;
     
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
-    
+#ifndef __OPTIMIZE__
+    if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE)
+    {
+        secondsInArray =[self getSecondsInArrayViaCurrentState:playerSeconds];
+    }
+#endif
 #ifndef __OPTIMIZE__
     [player_ pause];
 #endif

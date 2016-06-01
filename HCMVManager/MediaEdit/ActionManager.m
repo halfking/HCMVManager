@@ -74,7 +74,8 @@
         currentMediaWithAction_ = nil;
         videoVol_ = 1;
         audioVol_ = 1;
-        needSendPlayControl_ = YES;
+        [self setNeedPlaySync:YES];
+        
         //        lastPlayerSeconds_ = 0;
     }
     return self;
@@ -82,7 +83,7 @@
 - (void)resetStates
 {
     [self cancelGenerate];
-//    [self removeGPUFilter];
+    //    [self removeGPUFilter];
     
     isReverseMediaGenerating_ = NO;
     isGeneratingByFilter_ = NO;
@@ -90,7 +91,7 @@
     isGenerating_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
@@ -136,7 +137,7 @@
     isGenerating_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
     currentMediaWithAction_ = nil;
     
     
@@ -268,13 +269,13 @@
     {
         currentMediaWithAction_ = media;
     }
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
 }
 //根据当前对像获取...
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds
 {
     CGFloat secondsInArray = playerSeconds;
-    
+    MediaWithAction * nextItem = nil;
     if(currentMediaWithAction_)
     {
         BOOL isValid = NO;
@@ -283,6 +284,11 @@
             {
                 isValid = YES;
             }
+            else if(isValid)
+            {
+                nextItem = item;
+                break;
+            }
             if(isValid)
             {
                 secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
@@ -290,28 +296,81 @@
                     break;
             }
         }
-        if(!isValid)
+        if(nextItem && secondsInArray<0)
         {
-            for (MediaWithAction * item in mediaList_) {
-                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
-                if(secondsInArray>=0) break;
-            }
+            secondsInArray  = nextItem.secondsInArray;
         }
-        //如果没有合法的数据，则假定没有变化
-        if(secondsInArray<0 && currentMediaWithAction_.Action.ActionType ==SNormal)
-        {
-            return playerSeconds;
-        }
+//        if(!isValid || secondsInArray <0)
+//        {
+//            for (int i = (int)mediaList_.count-1;i>=0;i--){
+//                MediaWithAction * item = [mediaList_ objectAtIndex:i];
+//                if(!item.secondsInArrayNotConfirm)
+//                {
+//                    secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+//                    if(secondsInArray>=0) break;
+//                }
+//            }
+//            //            for (MediaWithAction * item in mediaList_) {
+//            //                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+//            //                if(secondsInArray>=0) break;
+//            //            }
+//        }
+//        //如果没有合法的数据，则假定没有变化
+//        if(secondsInArray<0 && currentMediaWithAction_.Action.ActionType ==SNormal)
+//        {
+//            return playerSeconds;
+//        }
     }
     else
     {
-        for (MediaWithAction * item in mediaList_) {
-            if(item.Action.ActionType==SNormal && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+        MediaWithAction * lastItem = nil;
+        MediaWithAction * notLastItem = nil;
+        
+        
+        for (int i = (int)mediaList_.count-1;i>=0;i--){
+            //        for (MediaWithAction * item in mediaList_) {
+            MediaWithAction * item = [mediaList_ objectAtIndex:i];
+            if(!item.secondsInArrayNotConfirm)
             {
-                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
-                break;
+                if(!lastItem)
+                {
+                    lastItem = item;
+                }
+                else if(!notLastItem)
+                {
+                    notLastItem = item;
+                }
+                if(item.Action.ActionType==SNormal && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+                {
+                    secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+                    break;
+                }
             }
         }
+        if(secondsInArray<0)
+        {
+            if(notLastItem.Action.ActionType==SReverse)
+            {
+                secondsInArray = notLastItem.secondsInArray;
+            }
+            else
+                secondsInArray = lastItem.secondsInArray;
+        }
+//        if(secondsInArray<0)
+//        {
+//            for (int i = (int)mediaList_.count-1;i>=0;i--){
+//                //        for (MediaWithAction * item in mediaList_) {
+//                MediaWithAction * item = [mediaList_ objectAtIndex:i];
+//                if(!item.secondsInArrayNotConfirm)
+//                {
+//                    if(item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+//                    {
+//                        secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
     return secondsInArray;
 }
@@ -677,9 +736,9 @@
                             from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
-    needSendPlayControl_ = NO;
+    [self setNeedPlaySync:NO];
     [self pausePlayer];
-//    MediaActionDo * item = [self getMediaActionDo:action];
+    //    MediaActionDo * item = [self getMediaActionDo:action];
     
     //对用户在用手操作时的延时进行校正
     if(action.secondsBeginAdjust!=0)
@@ -705,7 +764,7 @@
 {
     needSendPlayControl_ = NO;
     [self pausePlayer];
-
+    
     MediaActionDo * item = [self getMediaActionDo:action];
     
     //    //对用户在用手操作时的延时进行校正
@@ -770,7 +829,7 @@
     {
         PP_RELEASE(item);
         [self resumePlayer];
-        needSendPlayControl_ = YES;
+        [self setNeedPlaySync:YES];
         return nil;
     }
     //Repeat，需要将定位放到前面
@@ -824,7 +883,7 @@
         }
         __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
                                                                             block:^(id userInfo) {
-                                                                                needSendPlayControl_ = YES;
+                                                                                [self setNeedPlaySync:YES];
                                                                                 [weakTimer invalidate];
                                                                                 weakTimer = nil;
                                                                             } userInfo:nil repeats:NO];
@@ -876,7 +935,8 @@
     //    {
     //        [audioPlayer_ play];
     //    }
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
+//    needSendPlayControl_ = YES;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                             inArray:(CGFloat)secondsInArray
@@ -924,7 +984,7 @@
     {
         __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
                                                                             block:^(id userInfo) {
-                                                                                needSendPlayControl_ = YES;
+                                                                                [self setNeedPlaySync:YES];
                                                                                 [weakTimer invalidate];
                                                                                 weakTimer = nil;
                                                                             } userInfo:nil repeats:NO];
@@ -978,7 +1038,7 @@
     //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下
     __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
                                                                         block:^(id userInfo) {
-                                                                            needSendPlayControl_ = YES;
+                                                                            [self setNeedPlaySync:YES];
                                                                             [weakTimer invalidate];
                                                                             weakTimer = nil;
                                                                             
@@ -994,7 +1054,7 @@
                                                                              weakTimer2 = nil;
                                                                              if(action.ActionType==SReverse)
                                                                              {
-                                                                                  __strong ActionManager * strongSelf = weakSelf;
+                                                                                 __strong ActionManager * strongSelf = weakSelf;
                                                                                  [strongSelf generateMediaFileViaAction:(MediaActionDo *)userInfo];
                                                                              }
                                                                              
@@ -1061,7 +1121,9 @@
             
             BOOL containsSeconds = [item containSecondsInArray:secondsInArray];
             
-            NSLog(@"[%d]find item[%d]: %.4f dur:%.4f media:%.2f-%.2f  targetSeconds:%.4f result:%d",i,item.ActionType,item.SecondsInArray,item.DurationInSeconds,
+            NSLog(@"[%d]find index:%d item[%d]: %.4f dur:%.4f media:%.2f-%.2f  targetSeconds:%.4f result:%d",i,
+                  item.Index,
+                  item.ActionType,item.SecondsInArray,item.DurationInSeconds,
                   item.Media.secondsBegin,item.Media.secondsEnd,
                   secondsInArray,containsSeconds);
             
@@ -1088,6 +1150,10 @@
             //            NSLog(@"find item:%@",retItem?@"OK":@"NO");
         }
         
+    }
+    if(secondsInArray<0||!retItem)
+    {
+        NSLog(@"not found");
     }
     return retItem;
 }
@@ -1186,6 +1252,20 @@
     [mediaList_ removeAllObjects];
     [self reindexAllActions];
     return YES;
+}
+- (void) setNeedPlaySync:(BOOL)need
+{
+    needSendPlayControl_ = need;
+#ifndef __OPTIMIZE__
+    if(actionList_.count>0)
+    {
+        MediaActionDo * action = [actionList_ lastObject];
+        if(action.isOPCompleted==NO && need)
+        {
+            NSLog(@"此时不需要同步播放时钟，但传入需要同步的信息，需检查 。");
+        }
+    }
+#endif
 }
 #pragma mark - draft manager
 - (BOOL) saveDraft
@@ -1445,7 +1525,8 @@
     NSLog(@"generate failure:%@",msg);
     NSLog(@"error:%@",[error localizedDescription]);
     isGenerating_ = NO;
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
+
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
@@ -1455,7 +1536,7 @@
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
     isGenerating_ = NO;
-    needSendPlayControl_ = YES;
+    [self setNeedPlaySync:YES];
     NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"action_merge.mp4"];
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];

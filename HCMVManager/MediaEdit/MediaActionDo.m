@@ -188,8 +188,9 @@
     
     [self addMediaToArray:materialList sources:newSources insertIndex:insertIndex];
     
-    self.SecondsInArray  = ((MediaWithAction *)[materialList firstObject]).secondsInArray;
-    
+//    self.SecondsInArray  = ((MediaWithAction *)[materialList firstObject]).secondsInArray;
+    self.SecondsInArray = self.Media.secondsInArray;
+    self.DurationInSeconds = self.Media.secondsDurationInArray>0?self.Media.secondsDurationInArray:0 - self.Media.secondsDurationInArray;
     return newSources;
 }
 - (NSMutableArray *)ensureAction:(NSMutableArray *)sources durationInArray:(CGFloat)durationInArrayA
@@ -201,6 +202,9 @@
     }
     [self ensureMediaDuration:durationInArrayA];
     [self addMediaToArray:materialList sources:sources insertIndex:-1];
+    
+    self.SecondsInArray = self.Media.secondsInArray;
+    self.DurationInSeconds = self.Media.secondsDurationInArray>0?self.Media.secondsDurationInArray:0 - self.Media.secondsDurationInArray;
     
     return sources;
 }
