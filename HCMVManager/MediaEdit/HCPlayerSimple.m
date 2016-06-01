@@ -74,7 +74,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
         self.backgroundColor = [UIColor blackColor];
         self.mainBounds = frame;
         
-//        self.cachingWhenPlaying = YES;
+        //        self.cachingWhenPlaying = YES;
         
         playRate_ = 1;
         
@@ -480,32 +480,33 @@ static HCPlayerSimple *sharedPlayerView = nil;
             [self clearObserver];
             [player_ replaceCurrentItemWithPlayerItem:item];
             [self addObserver];
+            secondsEnd_ = -1;
         }
         
-//        if(player_.currentItem!=item)
-//        {
-//            [self resetPlayer];
-//        }
-//        else
-//        {
-//            NSLog(@"player item matched,but has error.");
-//        }
+        //        if(player_.currentItem!=item)
+        //        {
+        //            [self resetPlayer];
+        //        }
+        //        else
+        //        {
+        //            NSLog(@"player item matched,but has error.");
+        //        }
         else
         {
-        
-        
-        if([NSThread isMainThread])
-        {
-            [self buildPlayerContents];
-        }
-        else
-        {
-            dispatch_async(dispatch_get_main_queue(), ^(void)
-                           {
-                               [self buildPlayerContents];
-                           });
-        }
-        NSLog(@"play item status:%d duration:%.2f",(int)item.status,CMTimeGetSeconds(item.duration));
+            
+            
+            if([NSThread isMainThread])
+            {
+                [self buildPlayerContents];
+            }
+            else
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void)
+                               {
+                                   [self buildPlayerContents];
+                               });
+            }
+            NSLog(@"play item status:%d duration:%.2f",(int)item.status,CMTimeGetSeconds(item.duration));
         }
     }
 }
@@ -514,7 +515,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     AVURLAsset *movieAsset = nil;
     NSLog(@"play item url:%@",[url absoluteString]);
-    
+
     movieAsset = [AVURLAsset URLAssetWithURL:url options:nil];
     AVPlayerItem * playerItem = [AVPlayerItem playerItemWithAsset:movieAsset];
     [self changeCurrentPlayerItem:playerItem];
