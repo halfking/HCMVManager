@@ -23,18 +23,54 @@
 {
     if(!materialList_ || materialList_.count==0)
     {
-        MediaWithAction * item = [self toMediaWithAction:sources];
-        item.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
+        MediaItemCore * item = self.Media;
+        
+        if(!item || !item.fileName || item.fileName.length==0)
+        {
+            item = nil;
+        }
+        
+        if(!item)
+        {
+            MediaWithAction * sourceItem = nil;
+            for (MediaWithAction * mm in sources) {
+                if(mm.Action.ActionType==SNormal)
+                {
+                    sourceItem = mm;
+                    break;
+                }
+            }
+            MediaWithAction * tempItem = [[MediaWithAction alloc]init];
+            [tempItem fetchAsCore:sourceItem];
+            tempItem.Action = [self copyItem];
+            self.Media = tempItem;
+            item = tempItem;
+        }
+        MediaWithAction * media = nil;
+        //指定了素材
+        if(item)
+        {
+            if([item isKindOfClass:[MediaWithAction class]])
+                media = (MediaWithAction *)item;
+            else
+                media = [self toMediaWithAction:sources];
+        }
+        else
+        {
+            NSLog(@"异常情况");
+        }
+        
+        media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
+        
+        materialList_ = [NSMutableArray arrayWithObject:media];
+        media.durationInPlaying = [self getDurationInFinal:sources];
         
         
-        materialList_ = [NSMutableArray arrayWithObject:item];
-        item.durationInPlaying = [self getDurationInFinal:sources];
+        //        item.secondsInFinalArray = item.secondsInArray;
+        //        item.durationInFinalArray = item.secondsDurationInArray;
         
-//        item.secondsInFinalArray = item.secondsInArray;
-//        item.durationInFinalArray = item.secondsDurationInArray;
-
-// 可能多重调用，因此，注释
-//        item.finalDuration = [self getDurationInFinal:sources];
+        // 可能多重调用，因此，注释
+        //        item.finalDuration = [self getDurationInFinal:sources];
     }
     return materialList_;
 }
@@ -42,7 +78,7 @@
 - (CGFloat) getDurationInFinal:(NSArray *)sources
 {
     if(!sources && !materialList_ && !self.Media) return 0;
-
+    
     if(!materialList_)
     {
         [self buildMaterialProcess:sources];

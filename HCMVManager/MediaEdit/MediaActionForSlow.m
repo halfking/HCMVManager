@@ -32,19 +32,45 @@
         item = nil;
     }
     
+    if(!item)
+    {
+        MediaWithAction * sourceItem = nil;
+        for (MediaWithAction * mm in sources) {
+            if(mm.Action.ActionType!=SReverse)
+            {
+                sourceItem = mm;
+                break;
+            }
+        }
+        MediaWithAction * tempItem = [[MediaWithAction alloc]init];
+        [tempItem fetchAsCore:sourceItem];
+        tempItem.Action = [self copyItem];
+        self.Media = tempItem;
+        item = tempItem;
+    }
+    
     //指定了素材
     if(item)
     {
-        MediaWithAction * media = [self toMediaWithAction:sources];
+        MediaWithAction * media = nil;//[self toMediaWithAction:sources];
+        if([item isKindOfClass:[MediaWithAction class]])
+            media = (MediaWithAction *)item;
+        else
+            media = [self toMediaWithAction:sources];
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         materialList_ = [NSMutableArray arrayWithObject:media];
         media.durationInPlaying = [self getDurationInFinal:sources];
+        self.Media = media;
     }
-    else //没有指定，则需要从当前队列中获取
-    {
-        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInArray sources:sources];
-    }
+//    else //没有指定，则需要从当前队列中获取
+//    {
+//        materialList_ = [self getMateriasInterrect:self.SecondsInArray duration:self.DurationInArray sources:sources];
+//        if(materialList_.count>0)
+//        {
+//            self.Media = [materialList_ objectAtIndex:0];
+//        }
+//    }
     
     return materialList_;
 }

@@ -351,8 +351,9 @@
 }
 - (void) resetGenerateInfo
 {
+#ifndef __OPTIMIZE__
     PP_RELEASE(mediaTrackList_);
-    
+#endif
     [self cancelExporter];
     if(timerForExport_)
     {

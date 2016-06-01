@@ -44,24 +44,59 @@
         normalItem = nil;
     }
     //先取正反向
-    if(item)
+    if(!item)
     {
-        MediaWithAction * media = [self toMediaWithAction:sources];
+        MediaWithAction * sourceItem = nil;
+        for (MediaWithAction * mm in sources) {
+            if(mm.Action.ActionType==SNormal)
+            {
+                sourceItem = mm;
+                break;
+            }
+        }
+        MediaWithAction * tempItem = [[MediaWithAction alloc]init];
+        [tempItem fetchAsCore:sourceItem];
+        tempItem.Action = [self copyItem];
+        self.Media = tempItem;
+        item = tempItem;
+        if(!normalItem)
+        {
+            MediaWithAction * tempItemNormal = [[MediaWithAction alloc]init];
+            [tempItemNormal fetchAsCore:sourceItem];
+            tempItemNormal.Action = [self copyItem];
+            
+            self.normalMedia = tempItemNormal;
+            
+            normalItem = tempItemNormal;
+        }
+    }
+    {
+        MediaWithAction * media = nil;//[self toMediaWithAction:sources];
+        if([item isKindOfClass:[MediaWithAction class]])
+            media = (MediaWithAction *)item;
+        else
+            media = [self toMediaWithAction:sources];
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
         media.durationInPlaying = [self getDurationInFinal:sources];
         media.playRate = self.Rate;
         [materialList_ addObject:media];
+        self.Media = media;
     }
-    if(normalItem)
+    
     {
-        MediaWithAction * media = [self toMediaWithActionNormal:sources];
+        MediaWithAction * media = nil;//[self toMediaWithAction:sources];
+        if([normalItem isKindOfClass:[MediaWithAction class]])
+            media = (MediaWithAction *)normalItem;
+        else
+            media = [self toMediaWithActionNormal:sources];
+//        MediaWithAction * media = [self toMediaWithActionNormal:sources];
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray + MAX(self.DurationInArray,0.1),DEFAULT_TIMESCALE);
         media.durationInPlaying = [self getDurationInFinal:sources];
         media.playRate = 0 - self.Rate;
         [materialList_ addObject:media];
-        
+        self.normalMedia = media;
     }
     return materialList_;
     
