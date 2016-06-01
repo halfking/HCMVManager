@@ -661,13 +661,14 @@
     }
     else
     {
+        __weak MediaEditManager * weakSelf = self;
         [[UDManager sharedUDManager]getImageDataFromUrl:urlString size:size completed:^(UIImage *image, NSError *error) {
             PP_RELEASE(coverImageUrl);
             //             NSString * path  = PP_RETAIN([self getCoverImageFileName]);
             if(image)
             {
-                image = [self checkImageSizeAndSave:image isCover:YES path:nil];
-                [self generateCoverItem];
+                image = [weakSelf checkImageSizeAndSave:image isCover:YES path:nil];
+                [weakSelf generateCoverItem];
                 //                 if([UIImagePNGRepresentation(image) writeToFile: path atomically:YES])
                 //                 {
                 //                     coverImageUrl = PP_RETAIN(path);
@@ -804,6 +805,7 @@
     //    }
     if(needCreateBGVideo_)
     {
+        __weak MediaEditManager * weakSelf = self;
         NSString * targetPath = [self getCoverVideoFilePath];
         [[MediaListModel shareObject] generateMVByCover:coverImageUrl
                                              targetPath:targetPath
@@ -811,7 +813,7 @@
                                                     fps:1 size:item.renderSize
                                             orientation:self.DeviceOrietation
                                                progress:^(NSString *filePath, NSError *error) {
-                                                   [self didCreateBGVideo:filePath];
+                                                   [weakSelf didCreateBGVideo:filePath];
                                                }];
     }
     coverMedialItem_ = PP_RETAIN(item);
@@ -1200,10 +1202,10 @@
     //    }
     if(item.secondsDuration <=0 || item.cover==nil||item.cover.length==0)
     {
-        
+        __weak MediaEditManager * weakSelf = self;
         [self checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
          {
-             [self checkMediaDurationAndInsert:item index:-1 indicatorPos:posSeconds];
+             [weakSelf checkMediaDurationAndInsert:item index:-1 indicatorPos:posSeconds];
          }];
     }
     else
@@ -1236,9 +1238,10 @@
     //    }
     if(item.secondsDuration <=0 || item.cover==nil||item.cover.length==0)
     {
+        __weak MediaEditManager * weakSelf = self;
         [self checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
          {
-             [self checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
+             [weakSelf checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
          }];
     }
     else
@@ -1258,9 +1261,10 @@
     item.cutInMode = CutInOutModeFadeIn;
     item.cutOutMode = CutInOutModeFadeOut;
     
+    __weak MediaEditManager * weakSelf = self;
     [self checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
      {
-         [self checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
+         [weakSelf checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
      }];
     needRegenerate_ = YES;
     return PP_AUTORELEASE(item);
@@ -1270,13 +1274,14 @@
     if(!alAsset) return nil;
     MediaItem * item = [[MediaItem alloc]init];
     
+    __weak MediaEditManager * weakSelf = self;
     [self parseItemWithALLib:alAsset mediaItem:item completed:^{
         item.cutInMode = CutInOutModeFadeIn;
         item.cutOutMode = CutInOutModeFadeOut;
         
-        [self checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
+        [weakSelf checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
          {
-             [self checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
+             [weakSelf checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
          }];
     }];
     
@@ -1418,9 +1423,10 @@
     item.fileName = filePath;
     
     item.key = [self getKeyOfItem:item];
+    __weak MediaEditManager * weakSelf = self;
     [self checkMedia:item thumnateSize:CGSizeMake(itemWidth_, itemHeight_) completed:^(MediaItem * mItem)
      {
-         [self checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
+         [weakSelf checkMediaDurationAndInsert:item index:index indicatorPos:posSeconds];
      }];
     
     //
@@ -2404,6 +2410,7 @@
         if(weakItem.alAsset && weakItem.isImg == NO)
         {
             //            if(CMTimeGetSeconds(weakItem.duration)==0)
+            __weak MediaEditManager * weakSelf = self;
             [self getDurationAndThumnateTimes:weakItem completed:^(MediaItem * item,BOOL isSuccess)
              {
                  if(item && item.contentView)
@@ -2411,7 +2418,7 @@
                      CGFloat itemWidth = item.lastFrame.size.width;
                      if(itemWidth<=0) itemWidth = item.contentView.frame.size.width;
                      dispatch_async(dispatch_get_main_queue(), ^(void) {
-                         [self buildSnapeImageViews:item snapWidth:itemWidth_ itemViewWidth:itemWidth];
+                         [weakSelf buildSnapeImageViews:item snapWidth:itemWidth_ itemViewWidth:itemWidth];
                      });
                  }
                  if(completed)
@@ -2628,12 +2635,13 @@
     //    }
     if(!mItem.cover || mItem.cover.length==0 ||(!mItem.isImg && mItem.videoThumnateFilesCount ==0))
     {
+        __weak MediaEditManager * weakSelf = self;
         BOOL ret = [self getDurationAndThumnateTimes:mItem completed:^(MediaItem * item,BOOL isSuccess)
                     {
                         if(item && item.contentView && item.cover)
                         {
                             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                [self buildSnapeImageViews:item snapWidth:itemWidth_ itemViewWidth:itemFrame.size.width];
+                                [weakSelf buildSnapeImageViews:item snapWidth:itemWidth_ itemViewWidth:itemFrame.size.width];
                             });
                         }
                     }];

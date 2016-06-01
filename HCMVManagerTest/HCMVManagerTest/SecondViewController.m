@@ -884,7 +884,7 @@
     baseVideo_ = [manager_ getBaseVideo];
     reverseVideo_ = [manager_ getReverseVideo];
     
-    [self buildControls];
+//    [self buildControls];
     
     [pannel_ refresh];
     

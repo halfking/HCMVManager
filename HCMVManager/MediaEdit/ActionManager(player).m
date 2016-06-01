@@ -97,6 +97,12 @@
     }
     return YES;
 }
+#pragma mark - filter
+- (void) setFilterIndex:(int)filterIndex
+{
+    currentFilterIndex_ = filterIndex;
+}
+
 - (BOOL) initGPUFilter:(HCPlayerSimple *)player in:(UIView *)container
 {
     if(!player && !player_)
@@ -116,11 +122,13 @@
     {
         [movieFile_ cancelProcessing];
         [movieFile_ removeAllTargets];
+        movieFileOrg_ = movieFile_;
+        //        [gpuMoveFileList_ addObject:movieFile_];
+        
         movieFile_ = nil;
     }
     if(filters_)
     {
-        [filters_ endProcessing];
         [filters_ removeAllTargets];
         filters_ = nil;
     }
@@ -141,22 +149,14 @@
     
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
     NSString * key = [CommonUtil md5Hash:videoBg_.url.absoluteString];
-    //    if(player_.key && [player_.key isEqualToString:key])
-    //    {
-    //
-    //    }
-    //    else
-    //    {
-    //        player_.key = key;
-    //        [player_ changeCurrentPlayerItem:item];
-    //    }
+    
     player_.key = key;
     [player_ changeCurrentPlayerItem:item];
     
     movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
     movieFile_.runBenchmark = NO;
     movieFile_.playAtActualSpeed = NO;
-    
+    movieFile_.delegate = self;
     filters_ = [GPUImageFilter new];
     [filters_ addTarget:filterView_];
     
@@ -172,42 +172,60 @@
     {
         [self setGPUFilter:currentFilterIndex_];
     }
+    //    __weak ActionManager * weakSelf = self;
+    //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    //        [weakSelf releaseGPUFilterInstance:YES];
+    //    });
     return YES;
+}
+- (void)releaseGPUFilterInstance:(BOOL)repeat
+{
+    
 }
 //当外部对像发生变化时，需要更新当前播放对像
 - (BOOL)changeFilterPlayerItem
 {
-    if(movieFile_)
+    if(movieFile_||filterView_)
     {
-        [movieFile_ endProcessing];
+        movieFileOrg_ = movieFile_;
+        [movieFile_ cancelProcessing];
+        
+        //        if(filterView_)
+        //        {
+        //            [filterView_ removeFromSuperview];
+        //            filterView_ = nil;
+        //        }
+        
+        
+        //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
-        AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
         AVAssetTrack * track = [[aset tracksWithMediaType:AVMediaTypeVideo]firstObject];
-        if(filterView_)
+        AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
+        if(!filterView_)
         {
-            [filterView_ removeFromSuperview];
             filterView_ = [self buildFilterView:track playerFrame:player_.frame];
+            filterView_.center = player_.center;
+            [player_.superview addSubview:filterView_];
         }
-        filterView_.center = player_.center;
-        [player_.superview addSubview:filterView_];
         
         movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
+        movieFile_.delegate = self;
         
         NSString * key = [CommonUtil md5Hash:videoBg_.url.absoluteString];
-        //        if(player_.key && [player_.key isEqualToString:key])
-        //        {
-        //
-        //        }
-        //        else
-        //        {
         player_.key = key;
         [player_ changeCurrentPlayerItem:item];
-        //        }
+        
+        if(!filters_)
+        {
+            filters_ = [GPUImageFilter new];
+        }
+        [self setGPUFilter:currentFilterIndex_];
         
         [movieFile_ startProcessing];
-        //等待初绍化完成，才有效
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self setGPUFilter:currentFilterIndex_];
+        //        });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            movieFileOrg_ = nil;
         });
     }
     else if(player_)
@@ -226,23 +244,14 @@
     }
     return YES;
 }
-- (void) setFilterIndex:(int)filterIndex
-{
-    currentFilterIndex_ = filterIndex;
-}
 
 - (BOOL) setGPUFilter:(int)index
 {
     lastFilterIndex_ = currentFilterIndex_;
-    //    [player_ pause];
-    // 实时切换滤镜
-    //    filters_ = [CLFiltersClass addVideoFilter:movieFile_ index:index];
+    
     [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
-    //    [filters_ addTarget:filterView_];
     
     currentFilterIndex_ = index;
-    
-    //    [player_ play];
     
     return  YES;
 }
@@ -250,14 +259,17 @@
 {
     if(movieFile_ || filterView_)
     {
-        [movieFile_ endProcessing];
+        [movieFile_ cancelProcessing];
+        
+        movieFileOrg_ = movieFile_;
+        //        [gpuMoveFileList_ addObject:movieFile_];
         
         [filters_ removeAllTargets];
         [movieFile_ removeAllTargets];
         
-        [filters_ endProcessing];
-        movieFile_ = nil;
         
+        movieFile_ = nil;
+        filters_ = nil;
         
         if(filterView_)
         {
@@ -265,15 +277,16 @@
             filterView_ =nil;
         }
         
-        filters_ = nil;
         currentFilterIndex_ = 0;
         
         //restore player
         CGFloat seconds = CMTimeGetSeconds([player_.playerItem currentTime]);
         [player_ changeCurrentItemUrl:videoBg_.url];
         [player_ seek:seconds accurate:YES];
-        //        [player_ play];
         
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            movieFileOrg_ = nil;
+        });
     }
 }
 - (GPUImageView *) buildFilterView:(AVAssetTrack *) videoAssetTrack playerFrame:(CGRect)playerFrame
@@ -362,7 +375,11 @@
     
     return PP_AUTORELEASE(filterView);
 }
-
+- (void)didCompletePlayingMovie
+{
+    NSLog(@"moviefile complted....");
+}
+#pragma mark - generateMVByFilter
 - (BOOL) generateMVByFilter:(int)filterIndex
 {
     BOOL isExists = NO;

@@ -31,15 +31,14 @@
 @end
 @implementation ActionManager
 {
-    
-    BOOL isReverseMediaGenerating_;
     BOOL isReverseHasGenerated_;
 }
 @synthesize videoVolume = videoVol_;
 @synthesize audioVolume = audioVol_;
 @synthesize isGenerating = isGenerating_;
 @synthesize canSendPlayerMedia = needSendPlayControl_;
-
+//@synthesize moveFile = movieFile_;
+//@synthesize moveFileOrg = movieFileOrg_;
 +(id)shareObject
 {
     static dispatch_once_t pred = 0;
@@ -83,8 +82,9 @@
 - (void)resetStates
 {
     [self cancelGenerate];
-    [self removeGPUFilter];
+//    [self removeGPUFilter];
     
+    isReverseMediaGenerating_ = NO;
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
@@ -127,6 +127,9 @@
     
     [self cancelGenerate];
     
+    [self removeGPUFilter];
+    
+    isReverseMediaGenerating_ = NO;
     currentGenerate_ = nil;
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
@@ -676,23 +679,24 @@
 {
     needSendPlayControl_ = NO;
     [self pausePlayer];
-    MediaActionDo * item = [self getMediaActionDo:action];
+//    MediaActionDo * item = [self getMediaActionDo:action];
     
     //对用户在用手操作时的延时进行校正
-    if(item.secondsBeginAdjust!=0)
+    if(action.secondsBeginAdjust!=0)
     {
-        playerSeconds += item.secondsBeginAdjust;
+        playerSeconds += action.secondsBeginAdjust;
     }
     //Repeat，需要将定位放到前面
-    if(item.ActionType==SRepeat && item.ReverseSeconds<0)
+    CGFloat secondsInArray = playerSeconds;
+    if(action.ActionType==SRepeat && action.ReverseSeconds<0)
     {
-        item.SecondsInArray =  [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
+        secondsInArray =  [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - durationInSeconds;
     }
     else
     {
-        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
+        secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     }
-    return [self addActionItem:action filePath:filePath inArray:item.SecondsInArray from:mediaBeginSeconds duration:durationInSeconds];
+    return [self addActionItem:action filePath:filePath inArray:secondsInArray from:mediaBeginSeconds duration:durationInSeconds];
 }
 - (MediaActionDo *)addActionItem:(MediaAction *)action filePath:(NSString *)filePath
                          inArray:(CGFloat)secondsInArray
@@ -981,13 +985,15 @@
     [weakTimer fire];
     
     //延时处理倒放视频的问题
+    __weak ActionManager * weakSelf = self;
     __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.25f
                                                                          block:^(id userInfo) {
                                                                              [weakTimer2 invalidate];
                                                                              weakTimer2 = nil;
                                                                              if(action.ActionType==SReverse)
                                                                              {
-                                                                                 [self generateMediaFileViaAction:(MediaActionDo *)userInfo];
+                                                                                  __strong ActionManager * strongSelf = weakSelf;
+                                                                                 [strongSelf generateMediaFileViaAction:(MediaActionDo *)userInfo];
                                                                              }
                                                                              
                                                                          } userInfo:action repeats:NO];
@@ -996,63 +1002,7 @@
     //    needSendPlayControl_ = YES;
     return YES;
 }
-- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action
-{
-    MediaWithAction * media = nil;
-    if(action.ActionType==SReverse)
-    {
-        if([action.Media isKindOfClass:[MediaWithAction class]])
-        {
-            media = (MediaWithAction *)action.Media;
-        }
-    }
-    if(media && media.playRate <0)
-    {
-        return [self generateMediaFile:media];
-    }
-    return NO;
-}
-- (BOOL)generateMediaFile:(MediaWithAction *)media
-{
-    if(!media || ([media isReverseMedia]==NO && media.playRate>0))
-        return NO;
-    @synchronized (self) {
-        if(isReverseMediaGenerating_)
-        {
-            NSLog(@"正在生成上一个，不能重入....");
-            return NO;
-        }
-        isReverseMediaGenerating_ = YES;
-    }
-    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"media_reverse.mp4"];
-    NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
-    
-    VideoGenerater * vg = [VideoGenerater new];
-    //        vg.delegate = self;
-    vg.TagID = 3;
-    NSLog(@"VG  :reverse media video begin....");
-    BOOL ret = [vg generateMVReverse:media.filePath
-                              target:outputPath
-                               begin:media.secondsEnd end:media.secondsBegin
-                            complted:^(NSString * filePathNew){
-                                NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
-                                if(filePathNew)
-                                {
-                                    [media setFileName:filePathNew];
-                                    CGFloat duration = media.secondsDurationInArray;
-                                    media.begin =  CMTimeMakeWithSeconds(0, media.begin.timescale);
-                                    media.end = CMTimeMakeWithSeconds(duration, media.end.timescale);
-                                    media.playRate = 0 - media.playRate;
-                                    media.url = [NSURL fileURLWithPath:filePathNew];
-                                }
-                                isReverseMediaGenerating_ = NO;
-                            }];
-    if(!ret)
-    {
-        isReverseMediaGenerating_ = NO;
-    }
-    return ret;
-}
+
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
 {
     secondsEffectPlayer_ = 0;

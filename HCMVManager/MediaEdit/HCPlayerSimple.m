@@ -474,16 +474,25 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     if(playerItem_!=item)
     {
-        if(player_.currentItem!=item)
+        playerItem_ = item;
+        if(player_)
         {
-            [self resetPlayer];
+            [self clearObserver];
+            [player_ replaceCurrentItemWithPlayerItem:item];
+            [self addObserver];
         }
+        
+//        if(player_.currentItem!=item)
+//        {
+//            [self resetPlayer];
+//        }
+//        else
+//        {
+//            NSLog(@"player item matched,but has error.");
+//        }
         else
         {
-            NSLog(@"player item matched,but has error.");
-        }
-        playerItem_ = item;
-        NSLog(@"play item status:%d duration:%.2f",(int)item.status,CMTimeGetSeconds(item.duration));
+        
         
         if([NSThread isMainThread])
         {
@@ -495,6 +504,8 @@ static HCPlayerSimple *sharedPlayerView = nil;
                            {
                                [self buildPlayerContents];
                            });
+        }
+        NSLog(@"play item status:%d duration:%.2f",(int)item.status,CMTimeGetSeconds(item.duration));
         }
     }
 }

@@ -20,6 +20,10 @@
 #pragma mark - export
 - (BOOL) generateMV;
 - (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position;
+//从原文件中切一部分内容生成新文件
+- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action;
+- (BOOL)generateMediaFile:(MediaWithAction *)media;
+
 - (void) generatePlayerItem:(NSArray *)mediaList;
 - (void) cancelGenerate;
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize;

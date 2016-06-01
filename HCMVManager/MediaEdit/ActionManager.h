@@ -84,19 +84,25 @@
     GPUImageView *filterView_;
     GPUImageMovie *movieFile_;
     GPUImageOutput<GPUImageInput> *filters_;
+//    NSMutableArray * gpuMoveFileList_; //用于延时释放
+    GPUImageMovie *movieFileOrg_; //用于延时释放
     
     int lastFilterIndex_;//上次合成时使用的过滤器
     int currentFilterIndex_;//本次选择的过滤器序号
     
     BOOL isGeneratingByFilter_;//是否正在生成中
-    BOOL isReverseGenerating_;
+    BOOL isReverseGenerating_;  //完整的Reverse文件生成
+    BOOL isReverseMediaGenerating_; //局部文件生成
     BOOL isGenerating_;             //是否正在生成过程中
     BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
 //    CGFloat lastPlayerSeconds_; //上次播放时间
     
     VideoGenerater * currentGenerate_;
+    VideoGenerater * reverseMediaGenerate_;
     CLVideoAddFilter * currentFilterGen_;
     VideoGenerater * reverseGenerate_;
+    
+    
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;
@@ -104,7 +110,8 @@
 @property (nonatomic,assign,readonly) BOOL isGenerating;
 @property (nonatomic,assign) BOOL needPlayerItem;
 @property (nonatomic,assign) BOOL canSendPlayerMedia; //是否可以向前端的播放器发送需要播放的对像。默认YES，在合成或一些未完成的操作时，需要关闭
-
+//@property (nonatomic,strong) GPUImageMovie * moveFile;
+//@property (nonatomic,strong) GPUImageMovie * moveFileOrg;
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
 - (void)clearPlayers;
@@ -206,9 +213,7 @@
 - (CGFloat) secondsEffectedByActionsForPlayer;
 - (CGFloat) secondsEffectedByActionsForPlayerBeforeMedia:(MediaWithAction *)media;
 - (CGFloat) secondsForTrack:(CGFloat)seconds;
-//从原文件中切一部分内容生成新文件
-- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action;
-- (BOOL)generateMediaFile:(MediaWithAction *)media;
+
 
 - (void) setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol;
 

@@ -14,7 +14,7 @@
 
 #import "CLVideoAddFilter.h"
 
-@interface ActionManager(player)<CLVideoAddFilterDelegate>
+@interface ActionManager(player)<CLVideoAddFilterDelegate,GPUImageMovieDelegate>
 
 - (HCPlayerSimple *) getPlayer;
 - (HCPlayerSimple *) getReversePlayer;

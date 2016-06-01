@@ -162,6 +162,11 @@
         [reverseGenerate_ cancelExporter];
         reverseGenerate_ = nil;
     }
+    if(reverseMediaGenerate_)
+    {
+        [reverseMediaGenerate_ cancelExporter];
+        reverseMediaGenerate_ = nil;
+    }
     isGenerating_ = NO;
     isReverseGenerating_ = NO;
     isGeneratingByFilter_ = NO;
@@ -182,6 +187,7 @@
         {
             [self generateMediaFile:media];
             needCheckAgagin = YES;
+            break;
         }
     }
     if(needCheckAgagin)
@@ -308,6 +314,72 @@
         needSendPlayControl_ = YES;
         isGenerating_ = NO;
         NSLog(@"generate failure.");
+    }
+    return ret;
+}
+- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action
+{
+    MediaWithAction * media = nil;
+    if(action.ActionType==SReverse)
+    {
+        if([action.Media isKindOfClass:[MediaWithAction class]])
+        {
+            media = (MediaWithAction *)action.Media;
+        }
+    }
+    if(media && media.playRate <0)
+    {
+        return [self generateMediaFile:media];
+    }
+    return NO;
+}
+- (BOOL)generateMediaFile:(MediaWithAction *)media
+{
+    if(!media || ([media isReverseMedia]==NO && media.playRate>0))
+        return NO;
+    @synchronized (self) {
+        if(isReverseMediaGenerating_)
+        {
+            NSLog(@"正在生成上一个，不能重入....");
+            return NO;
+        }
+        isReverseMediaGenerating_ = YES;
+        
+        if([media isReverseMedia] && [[HCFileManager manager]existFileAtPath:media.filePath])
+        {
+            NSLog(@"已经生成了，不需要再处理....");
+            return YES;
+        }
+    }
+    
+    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"media_reverse.mp4"];
+    NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
+    
+    VideoGenerater * vg = [VideoGenerater new];
+    //        vg.delegate = self;
+    vg.TagID = 3;
+    reverseMediaGenerate_ = vg;
+    NSLog(@"VG  :reverse media video begin....");
+    BOOL ret = [vg generateMVReverse:media.filePath
+                              target:outputPath
+                               begin:media.secondsEnd end:media.secondsBegin
+                            complted:^(NSString * filePathNew){
+                                NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
+                                if(filePathNew)
+                                {
+                                    [media setFileName:filePathNew];
+                                    CGFloat duration = media.secondsDurationInArray;
+                                    media.begin =  CMTimeMakeWithSeconds(0, media.begin.timescale);
+                                    media.end = CMTimeMakeWithSeconds(duration, media.end.timescale);
+                                    media.playRate = 0 - media.playRate;
+                                    media.url = [NSURL fileURLWithPath:filePathNew];
+                                }
+                                reverseMediaGenerate_ = nil;
+                                isReverseMediaGenerating_ = NO;
+                            }];
+    if(!ret)
+    {
+        isReverseMediaGenerating_ = NO;
     }
     return ret;
 }

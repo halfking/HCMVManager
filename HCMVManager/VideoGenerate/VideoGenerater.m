@@ -776,15 +776,18 @@
     NSString * tempFileName =   [gen getAudioFileNameByQueue:audios];
     NSString * tempPath = [udManager_ localFileFullPath:tempFileName];
     
+    __weak VideoGenerater * weakSelf = self;
+    
     return [gen generateAudioWithAccompany:audios
                                   filePath:tempPath
                               beginSeconds:CMTimeGetSeconds(totalBeginTime_)
                                 endSeconds:CMTimeGetSeconds(totalEndTime_)
                                  overwrite:YES
                                  completed:^(NSURL *audioUrl, NSError *error) {
-                                     [self setJoinAudioUrlWithDraft:audioUrl];
+                                     __strong VideoGenerater * strongSelf = weakSelf;
+                                     [strongSelf setJoinAudioUrlWithDraft:audioUrl];
                                      
-                                     [self generatePreviewAsset:mediaList bgVolume:bgAudioVolume_ singVolume:singVolume_ completion:^(BOOL finished)
+                                     [strongSelf generatePreviewAsset:mediaList bgVolume:bgAudioVolume_ singVolume:singVolume_ completion:^(BOOL finished)
                                       {
                                           //                                          [self generatePlayerItem:mediaList size:self.renderSize];
                                           [self generateMVFile:mediaList retryCount:0]; // bgAudioVolume:bgAudioVolume_ singVolume:singVolume_];
