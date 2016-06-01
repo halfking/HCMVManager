@@ -32,7 +32,7 @@
 @implementation ActionManager
 {
     
-    
+    BOOL isReverseMediaGenerating_;
     BOOL isReverseHasGenerated_;
 }
 @synthesize videoVolume = videoVol_;
@@ -674,6 +674,7 @@
                             from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
+    needSendPlayControl_ = NO;
     [self pausePlayer];
     MediaActionDo * item = [self getMediaActionDo:action];
     
@@ -698,7 +699,9 @@
                             from:(CGFloat)mediaBeginSeconds
                         duration:(CGFloat)durationInSeconds;
 {
+    needSendPlayControl_ = NO;
     [self pausePlayer];
+
     MediaActionDo * item = [self getMediaActionDo:action];
     
     //    //对用户在用手操作时的延时进行校正
@@ -763,6 +766,7 @@
     {
         PP_RELEASE(item);
         [self resumePlayer];
+        needSendPlayControl_ = YES;
         return nil;
     }
     //Repeat，需要将定位放到前面
@@ -814,7 +818,7 @@
         {
             [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
         }
-        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
                                                                             block:^(id userInfo) {
                                                                                 needSendPlayControl_ = YES;
                                                                                 [weakTimer invalidate];
@@ -836,6 +840,7 @@
                                  at:(CGFloat)playerSeconds
 {
     if(actionDo.isOPCompleted==NO) return nil;
+    needSendPlayControl_ = NO;
     [self pausePlayer];
     
     CGFloat secondsInArray = actionDo.SecondsInArray;
@@ -911,7 +916,7 @@
     [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     if(actionDo.isOPCompleted)
     {
-        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
                                                                             block:^(id userInfo) {
                                                                                 needSendPlayControl_ = YES;
                                                                                 [weakTimer invalidate];
@@ -965,30 +970,30 @@
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
     //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下
-    __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
-                                                                            block:^(id userInfo) {
-                                                                                needSendPlayControl_ = YES;
-                                                                                [weakTimer invalidate];
-                                                                                weakTimer = nil;
-                                                                                
-    } userInfo:nil repeats:NO];
+    __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
+                                                                        block:^(id userInfo) {
+                                                                            needSendPlayControl_ = YES;
+                                                                            [weakTimer invalidate];
+                                                                            weakTimer = nil;
+                                                                            
+                                                                        } userInfo:nil repeats:NO];
     
     [weakTimer fire];
     
     //延时处理倒放视频的问题
-    __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
-                                                                        block:^(id userInfo) {
-                                                                            [weakTimer2 invalidate];
-                                                                            weakTimer2 = nil;
-                                                                            if(action.ActionType==SReverse)
-                                                                            {
-                                                                                [self generateMediaFileViaAction:(MediaActionDo *)userInfo];
-                                                                            }
-                                                                            
-                                                                        } userInfo:action repeats:NO];
+    __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.25f
+                                                                         block:^(id userInfo) {
+                                                                             [weakTimer2 invalidate];
+                                                                             weakTimer2 = nil;
+                                                                             if(action.ActionType==SReverse)
+                                                                             {
+                                                                                 [self generateMediaFileViaAction:(MediaActionDo *)userInfo];
+                                                                             }
+                                                                             
+                                                                         } userInfo:action repeats:NO];
     
     [weakTimer2 fire];
-//    needSendPlayControl_ = YES;
+    //    needSendPlayControl_ = YES;
     return YES;
 }
 - (BOOL)generateMediaFileViaAction:(MediaActionDo *)action
@@ -1011,7 +1016,14 @@
 {
     if(!media || ([media isReverseMedia]==NO && media.playRate>0))
         return NO;
-    
+    @synchronized (self) {
+        if(isReverseMediaGenerating_)
+        {
+            NSLog(@"正在生成上一个，不能重入....");
+            return NO;
+        }
+        isReverseMediaGenerating_ = YES;
+    }
     NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"media_reverse.mp4"];
     NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
     
@@ -1033,7 +1045,12 @@
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
+                                isReverseMediaGenerating_ = NO;
                             }];
+    if(!ret)
+    {
+        isReverseMediaGenerating_ = NO;
+    }
     return ret;
 }
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
@@ -1054,7 +1071,7 @@
     
     if(action && action.isOPCompleted==NO)
     {
-//        needSendPlayControl_ = NO;
+        //        needSendPlayControl_ = NO;
         if(action.ActionType==SReverse)
         {
             CGFloat duration = playerSeconds - action.Media.secondsBegin;
@@ -1069,7 +1086,7 @@
             duration -= action.SecondsInArray;
             [self setActionItemDuration:action duration:duration];
         }
-//        needSendPlayControl_ = YES;
+        //        needSendPlayControl_ = YES;
         return YES;
     }
     return NO;
