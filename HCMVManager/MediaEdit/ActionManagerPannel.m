@@ -127,7 +127,7 @@
         frame.origin.y = top;
         frame.origin.x = withPerseconds_ * item.secondsInArray + leftMargin_;
         MediaWithActionView * lineView = [[MediaWithActionView alloc]initWithFrame:frame];
-        lineView.Index = index;
+        lineView.Index = index * 10000+[self getIndexForMedia:item];
         [lineView setBaseWidth:leftMargin_ widthPerSeconds:withPerseconds_];
         [lineView setData:item title:nil];
         [self addSubview:lineView];
@@ -155,7 +155,22 @@
     }
     
 }
-
+- (int)getIndexForMedia:(MediaWithAction *)media
+{
+    int index = 0;
+    NSArray * actionList = [manager_ getActionList];
+    int i = 0;
+    for(MediaActionDo * item in actionList)
+    {
+        i ++;
+        if(item.MediaActionID == media.Action.MediaActionID)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
 - (void) buildActionView:(MediaActionDo*)action mediaList:(NSArray *)mediaList
 {
     

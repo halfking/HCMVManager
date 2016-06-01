@@ -640,11 +640,12 @@
     //有时候播放器定位不准，因此在某种情况下，也不作处理
     if(currentMediaWithAction_)
     {
-        if(currentMediaWithAction_.secondsBegin <=playerSeconds + 0.2 && currentMediaWithAction_.secondsEnd > playerSeconds)
+        CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
+        if(currentMediaWithAction_.secondsBegin <=playerSeconds +diff && currentMediaWithAction_.secondsEnd > playerSeconds)
         {
             return ;
         }
-        else if(isReverse && currentMediaWithAction_.secondsEnd <=playerSeconds + 0.2 && currentMediaWithAction_.secondsBegin > playerSeconds)
+        else if(isReverse && currentMediaWithAction_.secondsEnd <=playerSeconds + diff && currentMediaWithAction_.secondsBegin > playerSeconds)
         {
             return;
         }

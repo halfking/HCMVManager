@@ -34,6 +34,7 @@
 - (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources;
 //- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
+- (void)ensureExistItemDuration:(int)beginIndex sources:(NSMutableArray *)sources;
 
 - (CGFloat) getDurationInFinal:(NSArray *)sources;
 - (CGFloat) getDurationInPlaying:(MediaWithAction *)media;

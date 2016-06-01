@@ -849,7 +849,7 @@
     
     CGFloat secondsInArray = actionDo.SecondsInArray;
     //Repeat，需要将定位放到前面
-    if(actionDo.ActionType==SRepeat)
+    if(actionDo.ActionType==SRepeat && actionDo.ReverseSeconds<0)
     {
         secondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO] - actionDo.DurationInSeconds;
     }
@@ -896,6 +896,8 @@
     //    {
     //        item.SecondsInArray = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:NO];
     //    }
+    
+    item.SecondsInArray = secondsInArray;
     
     [self refreshSecondsEffectPlayer:item.DurationInArray + item.SecondsInArray];
     //    secondsEffectPlayer_ += [item secondsEffectPlayer];
@@ -1059,7 +1061,9 @@
             
             BOOL containsSeconds = [item containSecondsInArray:secondsInArray];
             
-            NSLog(@"[%d]find item: %.4f  targetSeconds:%.4f result:%d",i,item.SecondsInArray,secondsInArray,containsSeconds);
+            NSLog(@"[%d]find item[%d]: %.4f dur:%.4f media:%.2f-%.2f  targetSeconds:%.4f result:%d",i,item.ActionType,item.SecondsInArray,item.DurationInSeconds,
+                  item.Media.secondsBegin,item.Media.secondsEnd,
+                  secondsInArray,containsSeconds);
             
             if(containsSeconds)
             {

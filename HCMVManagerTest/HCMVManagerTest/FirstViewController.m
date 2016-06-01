@@ -407,7 +407,10 @@
     if(clickIndex_ ==2)
         [manager addActionItemDo:testAction_ at:7];
     
-    if(clickIndex_ ==3){
+    if(clickIndex_ ==3)
+        [manager addActionItemDo:testAction_ at:4.8];
+    
+    if(clickIndex_ ==4){
         MediaAction * action = [MediaAction new];
         action.ActionType = SRepeat;
         action.ReverseSeconds = 0 ;
@@ -417,13 +420,13 @@
         action.isOPCompleted = YES;
         testAction_ = [manager addActionItem:action filePath:nil at:8 from:5 duration:1];
     }
-    if(clickIndex_ ==4)
+    if(clickIndex_ ==5)
         [manager addActionItemDo:testAction_ at:9];
     
     
     //test last action
     CGFloat lastSeconds = [manager getBaseVideo].secondsDuration;
-    if(clickIndex_ ==5){
+    if(clickIndex_ ==6){
         MediaAction * action = [MediaAction new];
         action.ActionType = SRepeat;
         action.ReverseSeconds = 0 ;
@@ -434,7 +437,7 @@
         testAction_ = [manager addActionItem:action filePath:nil at:lastSeconds - 0.5 from:lastSeconds - 0.5 duration:1];
     }
     clickIndex_ ++;
-    if(clickIndex_>5)
+    if(clickIndex_>6)
         clickIndex_ = 0;
     //    [manager ensureActions:[manager getBaseVideo].secondsDuration];
     [pannel_ refresh];
