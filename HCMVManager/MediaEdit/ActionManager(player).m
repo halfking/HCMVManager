@@ -495,9 +495,10 @@
         if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
         {
             [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-            if(audioPlayer_)
+            if(audioPlayer_ && audioBg_)
             {
-                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+                audioPlayer_.currentTime = mediaToPlay.secondsInArray + audioBg_.secondsBegin;
+                NSLog(@"audio player pos changed:%.2f = (%.2f + %.2f)",audioPlayer_.currentTime,mediaToPlay.secondsInArray,audioBg_.secondsBegin);
             }
         }
         
