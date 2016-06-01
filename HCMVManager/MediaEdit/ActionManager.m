@@ -160,7 +160,7 @@
     [[HCFileManager manager]removeFilesAtPath:tempFilePath matchRegex:@"^media_reverse_\\d+.*"];
     NSString * localFilePath = [manager localFileFullPath:nil];
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^action_merge_\\d+.*"];
-    [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+.*"];
+    [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+\\.[^\\.]+$"];
     
     [videoBGHistroy_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
@@ -1480,7 +1480,7 @@
 {
     isGenerating_ = NO;
     needSendPlayControl_ = YES;
-    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"merge.mp4"];
+    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"action_merge.mp4"];
     NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
     [HCFileManager copyFile:[fileUrl path] target:filePath overwrite:YES];
     NSLog(@"generate completed:%@",[[HCFileManager manager]getFileName:filePath]);
