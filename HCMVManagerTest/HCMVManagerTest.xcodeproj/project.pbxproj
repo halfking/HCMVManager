@@ -78,6 +78,7 @@
 		11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE971CEEE84000E94CD9 /* test3.MOV */; };
 		11ABAE9B1CEEEC6300E94CD9 /* ActionManagerPannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */; };
 		11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */; };
+		11C850A51CFED0830029229B /* testPlayerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C850A41CFED0830029229B /* testPlayerVC.m */; };
 		11CF23D61CFDA10A002851BD /* a.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11CF23D41CFDA10A002851BD /* a.m4v */; };
 		11CF23D71CFDA10A002851BD /* b.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11CF23D51CFDA10A002851BD /* b.m4v */; };
 		11D595CA1CFA0B2A00D96FAA /* test2.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11D595C91CFA0B2A00D96FAA /* test2.MOV */; };
@@ -233,6 +234,8 @@
 		11ABAE991CEEEC6300E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
 		11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
 		11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.mp4; sourceTree = "<group>"; };
+		11C850A31CFED0830029229B /* testPlayerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testPlayerVC.h; sourceTree = "<group>"; };
+		11C850A41CFED0830029229B /* testPlayerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testPlayerVC.m; sourceTree = "<group>"; };
 		11CF23D41CFDA10A002851BD /* a.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = a.m4v; sourceTree = "<group>"; };
 		11CF23D51CFDA10A002851BD /* b.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = b.m4v; sourceTree = "<group>"; };
 		11D595C91CFA0B2A00D96FAA /* test2.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = test2.MOV; sourceTree = "<group>"; };
@@ -366,6 +369,8 @@
 				118CE86F1CE1AF8D00290641 /* FirstViewController.m */,
 				118CE8711CE1AF8D00290641 /* SecondViewController.h */,
 				118CE8721CE1AF8D00290641 /* SecondViewController.m */,
+				11C850A31CFED0830029229B /* testPlayerVC.h */,
+				11C850A41CFED0830029229B /* testPlayerVC.m */,
 				118CE8741CE1AF8D00290641 /* Main.storyboard */,
 				118CE8771CE1AF8D00290641 /* Assets.xcassets */,
 				118CE8791CE1AF8D00290641 /* LaunchScreen.storyboard */,
@@ -777,6 +782,7 @@
 				118CE8F21CE1B00D00290641 /* MBMTV.m in Sources */,
 				118CE8FD1CE1B00D00290641 /* ReportInfo.m in Sources */,
 				11DE4A661CE33F4900A0BE8D /* ActionProcess.m in Sources */,
+				11C850A51CFED0830029229B /* testPlayerVC.m in Sources */,
 				118CE8E81CE1B00D00290641 /* MediaItem.m in Sources */,
 				118CE86D1CE1AF8D00290641 /* AppDelegate.m in Sources */,
 				11DE4A631CE323A500A0BE8D /* ActionManager(index).m in Sources */,

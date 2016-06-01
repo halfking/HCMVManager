@@ -170,7 +170,35 @@
 {
     return [self generateMVWithWaterMarker:nil position:MP_RightBottom];
 }
-- (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
+
+-(BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
+{
+    NSArray * actionMediaList = [self getMediaList];
+    
+    //检查是否都已经将反向视频处理好
+    BOOL needCheckAgagin = NO;
+    for (MediaWithAction * media in actionMediaList) {
+        if(media.playRate<0 && ![media isReverseMedia])
+        {
+            [self generateMediaFile:media];
+            needCheckAgagin = YES;
+        }
+    }
+    if(needCheckAgagin)
+    {
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.25 * NSEC_PER_SEC);// 页面刷新的时间基数
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            [self generateMVWithWaterMarker:waterMarker position:position];
+        });
+        return NO;
+    }
+    else
+    {
+        return [self generateMVWithWaterMarker:waterMarker position:position needReverseCheck:NO];
+    }
+}
+
+- (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position needReverseCheck:(BOOL)needReverseCheck
 {
 //    if(![self needGenerateForOP])
 //    {
@@ -182,25 +210,35 @@
     }
     if(isGenerating_) return NO;
     isGenerating_ = YES;
-    //    //滤镜处理
-    //    if(actionList_.count==0)
-    //    {
-    //        [self generateMVByFilter:currentFilterIndex_];
-    //        return YES;
-    //    }
+  
+    NSArray * actionMediaList = [self getMediaList];
+    
+//    //检查是否都已经将反向视频处理好
+//    BOOL needCheckAgagin = NO;
+//    for (MediaWithAction * media in actionMediaList) {
+//        if(media.playRate<0 && ![media isReverseMedia])
+//        {
+//            [self generateMediaFile:media];
+//            needCheckAgagin = YES;
+//        }
+//    }
+//    if(needCheckAgagin)
+//    {
+//        isGenerating_  = NO;
+//        [self generateMVWithWaterMarker:waterMarker position:position];
+//        return NO;
+//    }
     //动作 处理
     [self saveDraft];
     
-    NSArray * actionMediaList = [self getMediaList];
-    
     NSLog(@"generate begin ....");
-//    NSLog(@"duration:%.2f",durationForTarget_);
-//    int index = 0;
-//    for (MediaWithAction * item in actionMediaList) {
-//        NSLog(@"%@",[item toString]);
-//        index ++;
-//    }
-//    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
+    NSLog(@"duration:%.2f",durationForTarget_);
+    int index = 0;
+    for (MediaWithAction * item in actionMediaList) {
+        NSLog(@"%@",[item toString]);
+        index ++;
+    }
+    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
     [vg resetGenerateInfo];

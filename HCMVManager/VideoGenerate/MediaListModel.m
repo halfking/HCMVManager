@@ -319,6 +319,11 @@
             [self generateImage2Video:item];
         }
     }
+//    else if(item.playRate <0 && [item.filePath rangeOfString:@"reverse_"].location==NSNotFound)
+//    {
+//        item.status = NO;
+//        
+//    }
 }
 - (void) removeMediaItem:(MediaItem *)item
 {

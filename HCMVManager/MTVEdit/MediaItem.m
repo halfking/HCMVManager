@@ -133,6 +133,13 @@
     self.renderSize = item.renderSize;
     self.fileNameGenerated = item.fileNameGenerated;
 }
+- (BOOL)isReverseMedia
+{
+    if(self.fileName && self.fileName.length>0 && [self.fileName rangeOfString:@"reverse_"].location!=NSNotFound)
+        return YES;
+    else
+        return NO;
+}
 @end
 @implementation MediaItem
 //@synthesize filePath,title,cover,url,key;

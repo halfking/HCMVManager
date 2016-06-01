@@ -210,6 +210,20 @@
             [self setGPUFilter:currentFilterIndex_];
         });
     }
+    else if(player_)
+    {
+        
+        NSString * key = [CommonUtil md5Hash:videoBg_.url.absoluteString];
+        if(player_.key && [player_.key isEqualToString:key])
+        {
+            
+        }
+        else
+        {
+            player_.key = key;
+            [player_ changeCurrentItemUrl:videoBg_.url];
+        }
+    }
     return YES;
 }
 - (void) setFilterIndex:(int)filterIndex

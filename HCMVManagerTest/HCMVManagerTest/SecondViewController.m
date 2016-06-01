@@ -842,8 +842,8 @@
 //    [manager_ getFilterView].hidden = YES;
     
     //    [self buildControls];
-    
-        [player_ play];
+    [player_ seek:0 accurate:YES];
+    [player_ play];
     
     
     //    }

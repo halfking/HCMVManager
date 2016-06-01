@@ -40,7 +40,7 @@
 
 - (NSString *) toString
 {
-    return [NSString stringWithFormat:@"%d-%ld(%.2f len:%.2f) file:(%.2f--%.2f)c:%.2f total:%.2f rate:%.2f",
+    return [NSString stringWithFormat:@"%d-%ld(%.2f len:%.2f) file:(%.2f--%.2f)c:%.2f total:%.2f rate:%.2f file:%@",
             (int)self.Action.ActionType,
             (long)self.Action.MediaActionID,
             self.secondsInArray,
@@ -48,7 +48,8 @@
             self.secondsBegin,self.secondsEnd,
             self.secondsChangedWithActionForPlayer,
             self.durationInPlaying,
-            self.playRate];
+            self.playRate,
+            self.fileName];
 }
 //是否同一个Asset
 - (BOOL) isSampleAsset:(MediaItemCore *)item

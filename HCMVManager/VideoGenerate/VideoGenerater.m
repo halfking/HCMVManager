@@ -1352,11 +1352,19 @@
     AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:sourcePath]];
     AVAssetReverseSession *session = [[AVAssetReverseSession alloc] initWithAsset:asset];
     currentReverseSession_ = session;
+    
+    
     NSURL *outputURL = [NSURL fileURLWithPath:targetPath];
     
     session.outputFileType = AVFileTypeMPEG4;
     session.outputURL = outputURL;
-    
+    CGFloat durationSeconds= CMTimeGetSeconds(asset.duration);
+    if(sourceBegin<0) sourceBegin = 0;
+    if(sourceEnd > durationSeconds) sourceEnd = durationSeconds;
+    if(durationSeconds>0)
+    {
+        [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceBegin, asset.duration.timescale), CMTimeMakeWithSeconds(sourceEnd - sourceBegin, asset.duration.timescale))];
+    }
     if(!timerForReverseExport_)
     {
         timerForReverseExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1
@@ -2614,7 +2622,7 @@
 }
 -(void)exportDidFinish:(SDAVAssetExportSession*)session{
     
-      NSLog(@"VG  :exportDidFinish state:%d",(int)session.status);
+    NSLog(@"VG  :exportDidFinish state:%d",(int)session.status);
     dispatch_async(dispatch_get_main_queue(), ^{
         if (session.status == AVAssetExportSessionStatusCompleted) {
             
@@ -2661,9 +2669,9 @@
             //        [alert show];
         }
     });
-  
     
-   
+    
+    
     
 }
 

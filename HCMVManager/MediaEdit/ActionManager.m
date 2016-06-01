@@ -101,10 +101,31 @@
     
     
 }
+- (void)clearPlayers
+{
+    if(filterView_)
+        [self removeGPUFilter];
+    
+    if(player_)
+    {
+        [player_ readyToRelease];
+        player_ = nil;
+    }
+    if(reversePlayer_)
+    {
+        [reversePlayer_ readyToRelease];
+        reversePlayer_ = nil;
+    }
+    if(audioPlayer_)
+    {
+        audioPlayer_ = nil;
+    }
+}
 - (void)clear
 {
+    [self clearPlayers];
+    
     [self cancelGenerate];
-    [self removeGPUFilter];
     
     currentGenerate_ = nil;
     isGeneratingByFilter_ = NO;
@@ -134,6 +155,12 @@
     {
         [[HCFileManager manager]removeFileAtPath:reverseBG_.filePath];
     }
+    HCFileManager * manager = [HCFileManager manager];
+    NSString * tempFilePath = [manager tempFileFullPath:nil];
+    [[HCFileManager manager]removeFilesAtPath:tempFilePath matchRegex:@"^media_reverse_\\d+.*"];
+    NSString * localFilePath = [manager localFileFullPath:nil];
+    [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^action_merge_\\d+.*"];
+    [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+.*"];
     
     [videoBGHistroy_ removeAllObjects];
     [reverseBgHistory_ removeAllObjects];
@@ -938,11 +965,71 @@
                                                                                 needSendPlayControl_ = YES;
                                                                                 [weakTimer invalidate];
                                                                                 weakTimer = nil;
+                                                                                
     } userInfo:nil repeats:NO];
     
     [weakTimer fire];
+    
+    //延时处理倒放视频的问题
+    __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+                                                                        block:^(id userInfo) {
+                                                                            [weakTimer2 invalidate];
+                                                                            weakTimer2 = nil;
+                                                                            if(action.ActionType==SReverse)
+                                                                            {
+                                                                                [self generateMediaFileViaAction:(MediaActionDo *)userInfo];
+                                                                            }
+                                                                            
+                                                                        } userInfo:action repeats:NO];
+    
+    [weakTimer2 fire];
 //    needSendPlayControl_ = YES;
     return YES;
+}
+- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action
+{
+    MediaWithAction * media = nil;
+    if(action.ActionType==SReverse)
+    {
+        if([action.Media isKindOfClass:[MediaWithAction class]])
+        {
+            media = (MediaWithAction *)action.Media;
+        }
+    }
+    if(media && media.playRate <0)
+    {
+        return [self generateMediaFile:media];
+    }
+    return NO;
+}
+- (BOOL)generateMediaFile:(MediaWithAction *)media
+{
+    if(!media || ([media isReverseMedia]==NO && media.playRate>0))
+        return NO;
+    
+    NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"media_reverse.mp4"];
+    NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
+    
+    VideoGenerater * vg = [VideoGenerater new];
+    //        vg.delegate = self;
+    vg.TagID = 3;
+    NSLog(@"VG  :reverse media video begin....");
+    BOOL ret = [vg generateMVReverse:media.filePath
+                              target:outputPath
+                               begin:media.secondsEnd end:media.secondsBegin
+                            complted:^(NSString * filePathNew){
+                                NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
+                                if(filePathNew)
+                                {
+                                    [media setFileName:filePathNew];
+                                    CGFloat duration = media.secondsDurationInArray;
+                                    media.begin =  CMTimeMakeWithSeconds(0, media.begin.timescale);
+                                    media.end = CMTimeMakeWithSeconds(duration, media.end.timescale);
+                                    media.playRate = 0 - media.playRate;
+                                    media.url = [NSURL fileURLWithPath:filePathNew];
+                                }
+                            }];
+    return ret;
 }
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
 {

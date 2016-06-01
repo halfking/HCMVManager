@@ -107,6 +107,7 @@
 
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
+- (void)clearPlayers;
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse;
 - (BOOL) setBackMV:(MediaItem *)bgMedia buildReverse:(BOOL)buildReverse;
@@ -205,6 +206,9 @@
 - (CGFloat) secondsEffectedByActionsForPlayer;
 - (CGFloat) secondsEffectedByActionsForPlayerBeforeMedia:(MediaWithAction *)media;
 - (CGFloat) secondsForTrack:(CGFloat)seconds;
+//从原文件中切一部分内容生成新文件
+- (BOOL)generateMediaFileViaAction:(MediaActionDo *)action;
+- (BOOL)generateMediaFile:(MediaWithAction *)media;
 
 - (void) setVol:(CGFloat)audioVol videoVol:(CGFloat)videoVol;
 

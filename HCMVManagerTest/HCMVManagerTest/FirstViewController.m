@@ -18,7 +18,7 @@
 #import "ActionManagerPannel.h"
 #import "MediaEditManager.h"
 #import "VideoGenerater.h"
-
+#import "testPlayerVC.h"
 @interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,VideoGeneraterDelegate>
 
 @end
@@ -621,6 +621,12 @@
 }
 - (void)mergerFiles:(id)sender
 {
+    testPlayerVC * vc = [[testPlayerVC alloc]initWithNibName:nil bundle:nil];
+    [self presentViewController:vc animated:YES completion:^{
+        
+    }];
+    return;
+    
 //    {
 //        beginInFile = 0;
 //        endInFile = "5.003334";

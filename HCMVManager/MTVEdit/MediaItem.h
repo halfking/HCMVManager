@@ -48,6 +48,7 @@
 - (NSString *)filePath;
 - (BOOL)isEqual:(MediaItemCore *)item;
 - (void)fetchAsCore:(MediaItemCore *)item;
+- (BOOL) isReverseMedia;
 @end
 
 @interface MediaItem : MediaItemCore
