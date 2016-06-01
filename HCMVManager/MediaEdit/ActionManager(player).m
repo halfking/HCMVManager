@@ -413,9 +413,9 @@
     if(!isGenerating_ || player_.playing)
     {
         //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        NSLog(@"action %d play:%@ (%.2f) inarray:%.2f begin:%.2f",
+        NSLog(@"action %d play:%@ (file:%.2f) inarray:%.2f end of file:%.2f",
               action.ActionType,
-              [mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
+              [mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsEnd);
 //        if(mediaToPlay.Action.ActionType!=SReverse
 //           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
 //        {
@@ -549,8 +549,14 @@
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
-//    if(isReverse) return;
-    if(!needSendPlayControl_) return ;
+    //到开始或结束时，或者允许触发时，才可以操作
+    if(
+//       playerSeconds>=SECONDS_ERRORRANGE
+//       &&
+//       playerSeconds <= videoBg_.secondsDuration - SECONDS_ERRORRANGE
+//       &&
+       !needSendPlayControl_)
+        return ;
     //有动作未完成时，不接收时间的变化
     BOOL hasNotCompleted = NO;
     for (MediaActionDo * action in actionList_) {

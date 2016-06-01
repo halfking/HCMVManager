@@ -74,6 +74,8 @@
 - (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
 {
     [super setDurationInSeconds:DurationInSecondsA];
+    
+    
     if(self.Media)
     {
         if(DurationInSecondsA>=0)
@@ -97,7 +99,7 @@
         }
         else
         {
-        NSLog(@"这种多个对像的情况没有处理。。。。");
+            NSLog(@"这种多个对像的情况没有处理。。。。");
         }
     }
 }
@@ -601,7 +603,7 @@
             {
                 if(item.secondsInArray + item.secondsDurationInArray < secondsEndInArray+ SECONDS_ERRORRANGE)
                 {
-                  [removeList insertObject:[NSNumber numberWithInt:i] atIndex:0];
+                    [removeList insertObject:[NSNumber numberWithInt:i] atIndex:0];
                 }
                 else
                 {

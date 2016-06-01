@@ -93,7 +93,7 @@
     }
 #endif
     
-    mediaList_ = [self combinateArrayItems:mediaList_];
+//    mediaList_ = [self combinateArrayItems:mediaList_];
     
     
 #ifndef __OPTIMIZE__

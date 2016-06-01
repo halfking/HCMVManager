@@ -78,6 +78,14 @@
             media = [self toMediaWithAction:sources];
         
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray,DEFAULT_TIMESCALE);
+        if(self.isOPCompleted && self.DurationInArray>0)
+        {
+            media.end = CMTimeMakeWithSeconds(MAX(media.secondsBegin - self.DurationInArray,0), media.end.timescale);
+        }
+        else
+        {
+            media.end = CMTimeMakeWithSeconds(0, media.end.timescale);
+        }
         media.durationInPlaying = [self getDurationInFinal:sources];
         media.playRate = self.Rate;
         [materialList_ addObject:media];
@@ -90,8 +98,15 @@
             media = (MediaWithAction *)normalItem;
         else
             media = [self toMediaWithActionNormal:sources];
-//        MediaWithAction * media = [self toMediaWithActionNormal:sources];
-        
+        //        MediaWithAction * media = [self toMediaWithActionNormal:sources];
+        if(self.isOPCompleted && self.DurationInArray>0)
+        {
+            media.end = CMTimeMakeWithSeconds(MIN(media.secondsBegin + self.DurationInArray,media.secondsDuration), media.end.timescale);
+        }
+        else
+        {
+            media.end = CMTimeMakeWithSeconds(media.secondsDuration, media.end.timescale);
+        }
         media.timeInArray = CMTimeMakeWithSeconds(self.SecondsInArray + MAX(self.DurationInArray,0.1),DEFAULT_TIMESCALE);
         media.durationInPlaying = [self getDurationInFinal:sources];
         media.playRate = 0 - self.Rate;
@@ -114,7 +129,9 @@
             self.Media.end = reversItem.end;
         }
         MediaWithAction * normalItem = [mediaList objectAtIndex:1];
-        normalItem.begin = CMTimeMakeWithSeconds(MAX(normalItem.secondsEnd - durationInArrayA,0), normalItem.begin.timescale);
+        normalItem.begin = reversItem.end;
+        normalItem.end = reversItem.begin;
+//        normalItem.begin = CMTimeMakeWithSeconds(MAX(normalItem.secondsEnd - durationInArrayA,0), normalItem.begin.timescale);
         if(normalItem!=self.normalMedia)
         {
             self.normalMedia.begin = normalItem.begin;
@@ -396,7 +413,7 @@
         if(self.normalMedia.secondsEnd >= playerSeconds - SECONDS_ERRORRANGE)
         {
             return self.Media.secondsInArray + (self.normalMedia.secondsEnd - playerSeconds)*2;
-//            return self.normalMedia.secondsInArray + playerSeconds - self.normalMedia.secondsBegin;
+            //            return self.normalMedia.secondsInArray + playerSeconds - self.normalMedia.secondsBegin;
         }
         else
         {
@@ -426,6 +443,12 @@
         }
     }
     return NO;
+}
+- (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
+{
+    [super setDurationInSeconds:DurationInSecondsA];
+    [self ensureMediaDuration:DurationInSecondsA];
+    
 }
 #pragma mark - split op
 //- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps

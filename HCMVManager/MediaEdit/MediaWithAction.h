@@ -23,5 +23,5 @@
 - (MediaWithAction *)copyItem;
 - (NSString *) toString;
 - (BOOL)isSampleAsset:(MediaItemCore *)item;
-
+- (CGFloat) getSecondsInArrayByPlaySeconds:(CGFloat)playerSeconds;
 @end

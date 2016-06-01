@@ -25,7 +25,7 @@
 #import "ActionManager(player).h"
 
 #import "WTPlayerResource.h"
-
+#import <hccoren/HWWeakTimer.h>
 @interface ActionManager()
 
 @end
@@ -253,32 +253,18 @@
             {
                 isValid = YES;
             }
-            if(isValid && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+            if(isValid)
             {
-                if(item.playRate>0)
-                {
-                    secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
-                }
-                else
-                {
-                    secondsInArray = item.secondsInArray + item.secondsBegin - playerSeconds;
-                }
-                break;
+                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+                if(secondsInArray >=0)
+                    break;
             }
         }
         if(!isValid)
         {
             for (MediaWithAction * item in mediaList_) {
-                if(item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
-                {
-                    secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
-                    break;
-                }
-                else if(item.secondsBegin > playerSeconds && item.secondsEnd <= playerSeconds)
-                {
-                    secondsInArray = item.secondsInArray + item.secondsBegin - playerSeconds;
-                    break;
-                }
+                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
+                if(secondsInArray>=0) break;
             }
         }
     }
@@ -287,7 +273,7 @@
         for (MediaWithAction * item in mediaList_) {
             if(item.Action.ActionType==SNormal && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
             {
-                secondsInArray = item.secondsInArray + playerSeconds - item.secondsBegin;
+                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
                 break;
             }
         }
@@ -342,7 +328,7 @@
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
         BOOL ret = [vg generateMVReverse:filePath target:outputPath
-                        begin:sourceBegin end:sourceEnd
+                                   begin:sourceBegin end:sourceEnd
                                 complted:^(NSString * filePathNew){
                                     NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
                                     reverseGenerate_ = nil;
@@ -698,13 +684,13 @@
         if(item.ActionType == SReverse)
         {
             item.Media = [videoBg_ copyAsCore];
-//            item.Media = [reverseBG_ copyAsCore];
+            //            item.Media = [reverseBG_ copyAsCore];
             item.Media.begin = CMTimeMakeWithSeconds(mediaBeginSeconds, item.Media.begin.timescale);
-//                CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
+            //                CMTimeMakeWithSeconds(MAX(item.Media.secondsDuration - mediaBeginSeconds,0), item.Media.begin.timescale);
             if(durationInSeconds>0)
             {
                 item.Media.end = CMTimeMakeWithSeconds(MAX(item.Media.secondsBegin - durationInSeconds,0) , item.Media.end.timescale);
-//                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
+                //                item.Media.end = CMTimeMakeWithSeconds(MIN(item.Media.secondsBegin + durationInSeconds,videoBg_.secondsDuration) , item.Media.end.timescale);
             }
             
             MediaActionForReverse * reverse = (MediaActionForReverse *)item;
@@ -791,12 +777,22 @@
         {
             [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
         }
+        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+                                                                            block:^(id userInfo) {
+                                                                                needSendPlayControl_ = YES;
+                                                                                [weakTimer invalidate];
+                                                                                weakTimer = nil;
+                                                                            } userInfo:nil repeats:NO];
+        
+        [weakTimer fire];
     }
     else
     {
+        needSendPlayControl_ = NO;
         [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     }
-    needSendPlayControl_ = YES;
+    
+    
     return item;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
@@ -822,7 +818,7 @@
     needSendPlayControl_ = NO;
     [player_ pause];
     [reversePlayer_ pause];
-//    [audioPlayer_ pause];
+    //    [audioPlayer_ pause];
 }
 - (void)resumePlayer
 {
@@ -830,10 +826,10 @@
         [player_ play];
     else
         [reversePlayer_ play];
-//    if(audioPlayer_)
-//    {
-//        [audioPlayer_ play];
-//    }
+    //    if(audioPlayer_)
+    //    {
+    //        [audioPlayer_ play];
+    //    }
     needSendPlayControl_ = YES;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
@@ -876,7 +872,19 @@
     //播当前这个
     MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
     [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
-    needSendPlayControl_ = YES;
+    if(actionDo.isOPCompleted)
+    {
+        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+                                                                            block:^(id userInfo) {
+                                                                                needSendPlayControl_ = YES;
+                                                                                [weakTimer invalidate];
+                                                                                weakTimer = nil;
+                                                                            } userInfo:nil repeats:NO];
+        
+        [weakTimer fire];
+    }
+    else
+        needSendPlayControl_ = NO;
     return item;
     
     
@@ -887,11 +895,14 @@
     if(!action) return NO;
     if(![actionList_ containsObject:action]) return NO;
     
+    needSendPlayControl_ = NO;
+    
     [self pausePlayer];
     
+    //durationInseconds 会触发相关的更新事件
+    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
-    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     
     action.isOPCompleted = YES;
     NSLog(@"set actionitem %d inarray:%.2f  d:%.2f",action.ActionType, action.SecondsInArray,durationInSeconds);
@@ -909,13 +920,23 @@
     //播下一个
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
 #ifndef __OPTIMIZE__
-    if(!media)
+    if(!media || media.secondsBegin < SECONDS_ERRORRANGE)
     {
         media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
     }
 #endif
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
-    needSendPlayControl_ = YES;
+    
+    //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下
+    __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.05f
+                                                                            block:^(id userInfo) {
+                                                                                needSendPlayControl_ = YES;
+                                                                                [weakTimer invalidate];
+                                                                                weakTimer = nil;
+    } userInfo:nil repeats:NO];
+    
+    [weakTimer fire];
+//    needSendPlayControl_ = YES;
     return YES;
 }
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
@@ -936,7 +957,7 @@
     
     if(action && action.isOPCompleted==NO)
     {
-        needSendPlayControl_ = NO;
+//        needSendPlayControl_ = NO;
         if(action.ActionType==SReverse)
         {
             CGFloat duration = playerSeconds - action.Media.secondsBegin;
@@ -951,7 +972,7 @@
             duration -= action.SecondsInArray;
             [self setActionItemDuration:action duration:duration];
         }
-        needSendPlayControl_ = YES;
+//        needSendPlayControl_ = YES;
         return YES;
     }
     return NO;

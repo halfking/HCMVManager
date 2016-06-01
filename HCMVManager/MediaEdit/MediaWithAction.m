@@ -63,6 +63,25 @@
         return NO;
     }
 }
+- (CGFloat) getSecondsInArrayByPlaySeconds:(CGFloat)playerSeconds
+{
+    CGFloat secondsInTrack = -1;
+    if(self.playRate>0)
+    {
+        if(self.secondsBegin <= playerSeconds && self.secondsEnd > playerSeconds)
+        {
+            secondsInTrack = self.secondsInArray + playerSeconds - self.secondsBegin;
+        }
+    }
+    else
+    {
+        if(self.secondsBegin > playerSeconds && self.secondsEnd <=playerSeconds)
+        {
+            secondsInTrack = self.secondsInArray + self.secondsBegin - playerSeconds;
+        }
+    }
+    return secondsInTrack;
+}
 - (void)dealloc
 {
     PP_RELEASE(Action);

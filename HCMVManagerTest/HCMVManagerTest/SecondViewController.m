@@ -386,11 +386,7 @@
     }
     [pannel_ setActionManager:manager_];
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
-    if(![manager_ getFilterView])
-    {
-        [manager_ initGPUFilter:player_ in:self.view];
-    }
-    else
+    if([manager_ getFilterView])
     {
         [manager_ setGPUFilter:0];
     }
@@ -456,9 +452,10 @@
             if(btn) btn.selected = NO;
         }
     }
-    
-    //    [manager_ initGPUFilter:player_ in:self.view];
-    // 实时切换滤镜
+    if(![manager_ getFilterView])
+    {
+        [manager_ initGPUFilter:player_ in:self.view];
+    }
     [manager_ setGPUFilter:index];
 }
 - (void) subtractMV:(id)sender
@@ -533,19 +530,21 @@
 {
     
     [manager_ cancelGenerate];
-    [manager_ setGPUFilter:0];
+    if([manager_ getFilterView])
+        [manager_ setGPUFilter:0];
     
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
-    CMTime reverSeconds = [rPlayer_.playerItem currentTime];
+    //    CMTime reverSeconds = [rPlayer_.playerItem currentTime];
     //    CMTime reverDuration = [rPlayer_.playerItem duration];
     
     CGFloat secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
     
-    NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
+    
     [player_ pause];
     if (!sender.selected) {
+        NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
         action.ReverseSeconds = 0;
@@ -564,7 +563,12 @@
         
     } else {
         sender.selected = NO;
+        [player_ pause];
+        
+        secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
+        
         MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
+        
         if(!actionDo)
         {
             secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
@@ -576,12 +580,13 @@
             //反向没有变速，可以直接获取
             //反向轨转成正向轨
             CGFloat duration = actionDo.Rate <0?secondsInTrack- actionDo.SecondsInArray:seconds - actionDo.Media.secondsBegin;
-//            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
+            //            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
             
             //            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
             //            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
             //            CGFloat duration = end - playerPos;
             
+            NSLog(@"#######reverse:%.4f  trackseconds:%.4f duration:%.2f",seconds,secondsInTrack,duration);
             [manager_ setActionItemDuration:actionDo duration:duration];
         }
         
@@ -755,6 +760,7 @@
 }
 - (void) showCurrentMediaes:(CGFloat)seconds
 {
+    return;
     NSLog(@"-------------** media at player:%.4f rplayer:%.4f**---------------",[player_ secondsPlaying],[rPlayer_ secondsPlaying]);
     int index = 0;
     NSArray * mediaList = [manager_ getMediaList];
@@ -780,7 +786,7 @@
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
-    
+    NSLog(@"player:%.2f",[player_ secondsPlaying]);
     
     
     if(player_.hidden)
