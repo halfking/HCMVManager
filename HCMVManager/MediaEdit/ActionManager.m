@@ -294,6 +294,11 @@
                 if(secondsInArray>=0) break;
             }
         }
+        //如果没有合法的数据，则假定没有变化
+        if(secondsInArray<0 && currentMediaWithAction_.Action.ActionType ==SNormal)
+        {
+            return playerSeconds;
+        }
     }
     else
     {
