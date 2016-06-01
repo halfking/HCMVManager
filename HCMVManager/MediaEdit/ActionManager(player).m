@@ -112,7 +112,6 @@
     
     [player_ pause];
     
-    currentFilterIndex_ = 0;
     if(movieFile_)
     {
         [movieFile_ cancelProcessing];
@@ -141,6 +140,17 @@
     
     
     AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
+    NSString * key = [CommonUtil md5Hash:videoBg_.url.absoluteString];
+    //    if(player_.key && [player_.key isEqualToString:key])
+    //    {
+    //
+    //    }
+    //    else
+    //    {
+    //        player_.key = key;
+    //        [player_ changeCurrentPlayerItem:item];
+    //    }
+    player_.key = key;
     [player_ changeCurrentPlayerItem:item];
     
     movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
@@ -154,13 +164,14 @@
     
     [movieFile_ startProcessing];
     
-    
     [container bringSubviewToFront:filterView_];
     
+    //            [player_ play];
     
-    //        [player_ play];
-    
-    
+    if(currentFilterIndex_>0)
+    {
+        [self setGPUFilter:currentFilterIndex_];
+    }
     return YES;
 }
 //当外部对像发生变化时，需要更新当前播放对像
@@ -168,19 +179,44 @@
 {
     if(movieFile_)
     {
+        [movieFile_ endProcessing];
         AVAsset *aset = [AVAsset assetWithURL:videoBg_.url];
         AVPlayerItem * item = [AVPlayerItem playerItemWithAsset:aset];
-        [player_ changeCurrentPlayerItem:item];
-        
-        [movieFile_ endProcessing];
-        [movieFile_ removeAllTargets];
-        [filters_ endProcessing];
-        [filters_ removeAllTargets];
+        AVAssetTrack * track = [[aset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+        if(filterView_)
+        {
+            [filterView_ removeFromSuperview];
+            filterView_ = [self buildFilterView:track playerFrame:player_.frame];
+        }
+        filterView_.center = player_.center;
+        [player_.superview addSubview:filterView_];
         
         movieFile_ = [[GPUImageMovie alloc] initWithPlayerItem:item];
+        
+        NSString * key = [CommonUtil md5Hash:videoBg_.url.absoluteString];
+        //        if(player_.key && [player_.key isEqualToString:key])
+        //        {
+        //
+        //        }
+        //        else
+        //        {
+        player_.key = key;
+        [player_ changeCurrentPlayerItem:item];
+        //        }
+        
+        [movieFile_ startProcessing];
+        //等待初绍化完成，才有效
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self setGPUFilter:currentFilterIndex_];
+        });
     }
     return YES;
 }
+- (void) setFilterIndex:(int)filterIndex
+{
+    currentFilterIndex_ = filterIndex;
+}
+
 - (BOOL) setGPUFilter:(int)index
 {
     lastFilterIndex_ = currentFilterIndex_;
@@ -416,77 +452,77 @@
         NSLog(@"action %d play:%@ (file:%.2f) inarray:%.2f end of file:%.2f",
               action.ActionType,
               [mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsEnd);
-//        if(mediaToPlay.Action.ActionType!=SReverse
-//           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
-//        {
-            [reversePlayer_ pause];
-            
-            [player_ setRate:mediaToPlay.playRate];
-            
-            //            //防止跳动
-            //            if(mediaToPlay.Action.ActionType==SReverse)
-            //            {
-            ////                //防止播到前面或后面跳动
-            ////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
-            ////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
-            ////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-            ////
-            ////                if(audioPlayer_)
-            ////                {
-            ////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
-            ////                }
-            //                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-            //                if(audioPlayer_)
-            //                {
-            //                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-            //                }
-            //            }
-            //            else
-            if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
-            {
-                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-                if(audioPlayer_)
-                {
-                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-                }
-            }
-            
-            NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
-                  audioPlayer_? audioPlayer_.currentTime:-1);
-            
-            [player_ play];
+        //        if(mediaToPlay.Action.ActionType!=SReverse
+        //           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
+        //        {
+        [reversePlayer_ pause];
+        
+        [player_ setRate:mediaToPlay.playRate];
+        
+        //            //防止跳动
+        //            if(mediaToPlay.Action.ActionType==SReverse)
+        //            {
+        ////                //防止播到前面或后面跳动
+        ////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
+        ////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
+        ////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+        ////
+        ////                if(audioPlayer_)
+        ////                {
+        ////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
+        ////                }
+        //                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+        //                if(audioPlayer_)
+        //                {
+        //                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+        //                }
+        //            }
+        //            else
+        if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
+        {
+            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
             if(audioPlayer_)
             {
-                if(mediaToPlay.playRate <0)
-                    audioPlayer_.rate = mediaToPlay.playRate;
-                else
-                    audioPlayer_.rate = 1;
-                [audioPlayer_ play];
+                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
             }
-            player_.hidden = NO;
-            reversePlayer_.hidden = YES;
-            NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
-//        }
-//        else
-//        {
-//            [player_ pause];
-//            [reversePlayer_ setRate:mediaToPlay.playRate];
-//            
-//            //防止播到前面或后面跳动
-//            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
-//            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-//            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-//            [reversePlayer_ play];
-//            if(audioPlayer_)
-//            {
-//                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-//                [audioPlayer_ play];
-//            }
-//            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
-//                  audioPlayer_? audioPlayer_.currentTime:-1);
-//            reversePlayer_.hidden = NO;
-//            player_.hidden = YES;
-//        }
+        }
+        
+        NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
+              audioPlayer_? audioPlayer_.currentTime:-1);
+        
+        [player_ play];
+        if(audioPlayer_)
+        {
+            if(mediaToPlay.playRate <0)
+                audioPlayer_.rate = mediaToPlay.playRate;
+            else
+                audioPlayer_.rate = 1;
+            [audioPlayer_ play];
+        }
+        player_.hidden = NO;
+        reversePlayer_.hidden = YES;
+        NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
+        //        }
+        //        else
+        //        {
+        //            [player_ pause];
+        //            [reversePlayer_ setRate:mediaToPlay.playRate];
+        //
+        //            //防止播到前面或后面跳动
+        //            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
+        //            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
+        //            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
+        //            [reversePlayer_ play];
+        //            if(audioPlayer_)
+        //            {
+        //                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
+        //                [audioPlayer_ play];
+        //            }
+        //            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
+        //                  audioPlayer_? audioPlayer_.currentTime:-1);
+        //            reversePlayer_.hidden = NO;
+        //            player_.hidden = YES;
+        //        }
     }
     else
     {
@@ -551,10 +587,10 @@
 {
     //到开始或结束时，或者允许触发时，才可以操作
     if(
-//       playerSeconds>=SECONDS_ERRORRANGE
-//       &&
-//       playerSeconds <= videoBg_.secondsDuration - SECONDS_ERRORRANGE
-//       &&
+       //       playerSeconds>=SECONDS_ERRORRANGE
+       //       &&
+       //       playerSeconds <= videoBg_.secondsDuration - SECONDS_ERRORRANGE
+       //       &&
        !needSendPlayControl_)
         return ;
     //有动作未完成时，不接收时间的变化

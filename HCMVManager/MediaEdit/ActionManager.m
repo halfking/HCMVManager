@@ -390,9 +390,14 @@
     videoBgAction_ = [self getNormalActionForBase];
     currentMediaWithAction_ = nil;
     isGenerating_ = NO;
-    [self reindexAllActions];
+    
+    [player_ pause];
     
     [self changeFilterPlayerItem];
+    
+    [self reindexAllActions];
+    
+    
     
     return YES;
 }

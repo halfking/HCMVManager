@@ -23,6 +23,7 @@
 - (UIImage*) getFilteredIcon:(UIImage *)image index:(int)index;
 - (BOOL) changeFilterPlayerItem;
 
+- (void) setFilterIndex:(int)filterIndex;
 - (int) getCurrentFilterIndex;
 - (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;
 - (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer;

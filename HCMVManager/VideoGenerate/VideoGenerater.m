@@ -2614,53 +2614,56 @@
 }
 -(void)exportDidFinish:(SDAVAssetExportSession*)session{
     
-    NSLog(@"exportDidFinish");
+      NSLog(@"VG  :exportDidFinish state:%d",(int)session.status);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (session.status == AVAssetExportSessionStatusCompleted) {
+            
+            NSLog(@"generate completed:%@",[[session outputURL]absoluteString]);
+            if(completedBlock_)
+            {
+                completedBlock_(self,[session outputURL],nil);
+                completedBlock_ = nil;
+            }
+            else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didGenerateCompleted:cover:)])
+            {
+                [self.delegate VideoGenerater:self didGenerateCompleted:[session outputURL] cover:nil];
+            }
+            
+        }else {
+            if(session.status == AVAssetExportSessionStatusCancelled)
+            {
+                NSLog(@"generate AVAssetExportSessionStatusCancelled");
+                if(failureBlock_)
+                {
+                    failureBlock_(self,@"生成被取消",[self buildError:@"生成被取消"]);
+                    failureBlock_ = nil;
+                }
+                return;
+            }
+            else
+            {
+                if(failureBlock_)
+                {
+                    failureBlock_(self,[[session error]localizedDescription],[session error]);
+                    failureBlock_ = nil;
+                }
+                else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didGenerateFailure:error:)])
+                {
+                    [self.delegate VideoGenerater:self didGenerateFailure:[[session error]localizedDescription] error:[session error]];
+                }
+                NSLog(@"generate failure:%@",[session error]);
+            }
+            //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+            //                                                        message:@"存档失败"
+            //                                                       delegate:nil
+            //                                              cancelButtonTitle:@"OK"
+            //                                              otherButtonTitles:nil];
+            //        [alert show];
+        }
+    });
+  
     
-    NSLog(@"session = %d",(int)session.status);
-    if (session.status == AVAssetExportSessionStatusCompleted) {
-        
-        NSLog(@"generate completed:%@",[[session outputURL]absoluteString]);
-        if(completedBlock_)
-        {
-            completedBlock_(self,[session outputURL],nil);
-            completedBlock_ = nil;
-        }
-        else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didGenerateCompleted:cover:)])
-        {
-            [self.delegate VideoGenerater:self didGenerateCompleted:[session outputURL] cover:nil];
-        }
-        
-    }else {
-        if(session.status == AVAssetExportSessionStatusCancelled)
-        {
-            NSLog(@"generate AVAssetExportSessionStatusCancelled");
-            if(failureBlock_)
-            {
-                failureBlock_(self,@"生成被取消",[self buildError:@"生成被取消"]);
-                failureBlock_ = nil;
-            }
-            return;
-        }
-        else
-        {
-            if(failureBlock_)
-            {
-                failureBlock_(self,[[session error]localizedDescription],[session error]);
-                failureBlock_ = nil;
-            }
-            else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didGenerateFailure:error:)])
-            {
-                [self.delegate VideoGenerater:self didGenerateFailure:[[session error]localizedDescription] error:[session error]];
-            }
-            NSLog(@"generate failure:%@",[session error]);
-        }
-        //        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-        //                                                        message:@"存档失败"
-        //                                                       delegate:nil
-        //                                              cancelButtonTitle:@"OK"
-        //                                              otherButtonTitles:nil];
-        //        [alert show];
-    }
+   
     
 }
 

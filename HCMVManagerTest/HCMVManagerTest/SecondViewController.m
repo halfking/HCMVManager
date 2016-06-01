@@ -388,7 +388,8 @@
     [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
     if([manager_ getFilterView])
     {
-        [manager_ setGPUFilter:0];
+        [manager_ changeFilterPlayerItem];
+//        [manager_ setGPUFilter:0];
     }
     if(needPlayer)
         [player_ play];
@@ -452,11 +453,19 @@
             if(btn) btn.selected = NO;
         }
     }
+    
+    
     if(![manager_ getFilterView])
     {
+        [manager_ setFilterIndex:index];
+        [player_ pause];
         [manager_ initGPUFilter:player_ in:self.view];
+        [player_ play];
     }
-    [manager_ setGPUFilter:index];
+    else
+    {
+        [manager_ setGPUFilter:index];
+    }
 }
 - (void) subtractMV:(id)sender
 {
@@ -494,7 +503,8 @@
 #pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
-    [manager_ setGPUFilter:0];
+//    if([manager_ getFilterView])
+//    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     //    [repeatTimer_ invalidate];
     //    repeatTimer_ = nil;
@@ -530,8 +540,8 @@
 {
     
     [manager_ cancelGenerate];
-    if([manager_ getFilterView])
-        [manager_ setGPUFilter:0];
+//    if([manager_ getFilterView])
+//        [manager_ setGPUFilter:0];
     
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
@@ -594,7 +604,8 @@
 }
 -(void)slow:(UIButton *)sender
 {
-    [manager_ setGPUFilter:0];
+//    if([manager_ getFilterView])
+//    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     [player_ pause];
     
@@ -651,7 +662,8 @@
 }
 -(void)fast:(UIButton *)sender
 {
-    [manager_ setGPUFilter:0];
+//    if([manager_ getFilterView])
+//    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     CMTime playerTime =  [player_ durationWhen];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
@@ -821,15 +833,17 @@
     VideoGenerater * vg = [VideoGenerater new];
     [vg showMediaInfo:filePath];
     
-    [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:YES];
+    [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:NO];
     
     [manager_ removeActions];
     
     baseVideo_ = [manager_ getBaseVideo];
     
+//    [manager_ getFilterView].hidden = YES;
+    
     //    [self buildControls];
     
-    //    [player_ play];
+        [player_ play];
     
     
     //    }
@@ -853,7 +867,7 @@
     [player_ seek:0 accurate:YES];
     [rPlayer_ seek:0 accurate:YES];
     
-    [self buildControls];
+//    [self buildControls];
     
     player_.hidden = NO;
     rPlayer_.hidden = YES;
