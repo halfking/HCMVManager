@@ -464,10 +464,10 @@ static HCPlayerSimple *sharedPlayerView = nil;
             }
 //        }
     }
-    else
-    {
-        NSLog(@"cannot get player item.duration:%llu-%lu",(unsigned long long)item.duration.value,(unsigned long)item.duration.timescale);
-    }
+//    else
+//    {
+//        NSLog(@"cannot get player item.duration:%llu-%lu",(unsigned long long)item.duration.value,(unsigned long)item.duration.timescale);
+//    }
 }
 #pragma mark - player item
 //- (void)resetPlayItemKey
