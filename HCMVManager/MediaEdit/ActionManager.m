@@ -74,6 +74,7 @@
         videoVol_ = 1;
         audioVol_ = 1;
         secondsForAudioPlayerMaxRange_ = 0.5;
+        _bitRate = (long)(720 *480 * 8);
         [self setNeedPlaySync:YES];
         
         //        lastPlayerSeconds_ = 0;
@@ -99,6 +100,7 @@
     secondsForAudioPlayerMaxRange_ = 0.5;
     videoVol_ = 1;
     audioVol_ = 1;
+    _bitRate = (long)(720 *480 * 8);
     
     
 }
@@ -139,6 +141,7 @@
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
     secondsForAudioPlayerMaxRange_ = 0.5;
+    _bitRate = (long)(720 *480 * 8);
     [self setNeedPlaySync:YES];
     currentMediaWithAction_ = nil;
     

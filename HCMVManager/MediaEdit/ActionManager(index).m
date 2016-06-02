@@ -255,7 +255,7 @@
     vg.compositeLyric = NO;
     vg.delegate = self;
     vg.TagID = 1;
-    
+    vg.bitRate = self.bitRate;
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgAudio:audioBg_];
@@ -360,6 +360,7 @@
     VideoGenerater * vg = [VideoGenerater new];
     //        vg.delegate = self;
     vg.TagID = 3;
+    vg.bitRate = self.bitRate;
     reverseMediaGenerate_ = vg;
     NSLog(@"VG  :reverse media video begin....");
     BOOL ret = [vg generateMVReverse:media.filePath
@@ -415,6 +416,7 @@
         VideoGenerater * vg = [VideoGenerater new];
         vg.delegate = self;
         vg.TagID = 2;
+        vg.bitRate = self.bitRate;
         reverseGenerate_ = vg;
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
