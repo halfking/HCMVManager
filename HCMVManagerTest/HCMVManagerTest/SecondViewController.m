@@ -106,8 +106,8 @@
     //    [manager_ removeActions];
     
     NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"man" ofType:@"mp3"];
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-    //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
+//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -122,7 +122,7 @@
     {
         [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:NO];
     }
-    [manager_ setBackAudio:audioPath begin:0 end:-1];
+//    [manager_ setBackAudio:audioPath begin:0 end:-1];
     
     baseVideo_ = [manager_ getBaseVideo];
     

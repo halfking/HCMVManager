@@ -106,7 +106,11 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
                      completion:(void (^)(BOOL finished)) completion;
 - (BOOL) generateMVFile:(NSArray *)mediaList
              retryCount:(int)retryCount;// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume;
-
+- (BOOL) generateMVFile:(AVMutableVideoComposition *) videoComposition
+             composte:(AVMutableComposition *) mixComposition
+             audioMix:(AVMutableAudioMix *) audioMixOnce
+                range:(CMTimeRange) joinTimeRange
+           retryCount:(int)retryCount;
 //  ALAsset可以转成asset再处理
 //  NSURL * url = nil;
 //  // url = [NSURL fileURLWithPath:_filePath];

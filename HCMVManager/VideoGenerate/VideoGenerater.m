@@ -441,14 +441,8 @@
     }
     return NO;
 }
--(BOOL)generateMVFile:(NSArray *)mediaList retryCount:(int)retryCount// bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume
+-(BOOL)generateMVFile:(NSArray *)mediaList retryCount:(int)retryCount
 {
-    //
-    //    bgAudioVolume_ = volume;
-    //    singVolume_ = singVolume;
-    
-    NSURL * pathForFinalVideo = [self finalVideoUrl];
-    
     if (!previewAVassetIsReady) {
         [self generatePreviewAVasset:mediaList checked:NO completion:nil];
         return NO;
@@ -462,26 +456,37 @@
     if(self.title)
     {
     }
+    return [self generateMVFile:_videoComposition
+                       composte:_mixComposition
+                       audioMix:_audioMixOnce
+                          range:joinTimeRange_
+                     retryCount:retryCount];
+}
+-(BOOL)generateMVFile:(AVMutableVideoComposition *) videoComposition
+             composte:(AVMutableComposition *) mixComposition
+             audioMix:(AVMutableAudioMix *) audioMixOnce
+                range:(CMTimeRange) joinTimeRange
+           retryCount:(int)retryCount
+
+{
     
+    NSURL * pathForFinalVideo = [self finalVideoUrl];
     
     joinVideoExporter = [SDAVAssetExportSession exportSessionWithAsset:_mixComposition];
     joinVideoExporter.outputURL = pathForFinalVideo;
-    
-    //    AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions firstObject];
-    //    joinVideoExporter.timeRange = instructs.timeRange;
     
     [[HCFileManager manager]removeFileAtPath:[pathForFinalVideo path]];
     
     joinVideoExporter.outputFileType = AVFileTypeMPEG4;
     
     joinVideoExporter.shouldOptimizeForNetworkUse = YES;
-    joinVideoExporter.videoComposition = _videoComposition;
-    joinVideoExporter.audioMix = _audioMixOnce;
+    joinVideoExporter.videoComposition = videoComposition;
+    joinVideoExporter.audioMix = audioMixOnce;
     
-    if(joinTimeRange_.duration.value>0)
-        joinVideoExporter.timeRange = joinTimeRange_;
+    if(joinTimeRange.duration.value>0)
+        joinVideoExporter.timeRange = joinTimeRange;
     
-    CGSize renderSize = _videoComposition.renderSize;// [self getRenderSize];
+    CGSize renderSize = videoComposition.renderSize;// [self getRenderSize];
     if(renderSize.width==0||renderSize.height==0)
     {
         renderSize = [self getRenderSize];
@@ -489,14 +494,15 @@
     NSNumber *width =  [NSNumber numberWithFloat:renderSize.width];
     NSNumber *height=  [NSNumber numberWithFloat:renderSize.height];
     
+    NSNumber * bitRate = [NSNumber numberWithInt:renderSize.width*renderSize.height*7.5];
     joinVideoExporter.videoSettings= @{
                                        AVVideoCodecKey: AVVideoCodecH264,
                                        AVVideoWidthKey: width,
                                        AVVideoHeightKey: height,
                                        AVVideoCompressionPropertiesKey: @
                                            {
-                                           AVVideoProfileLevelKey: AVVideoProfileLevelH264High40,
-                                           AVVideoAverageBitRateKey:@697000,
+                                           AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
+                                           AVVideoAverageBitRateKey:bitRate,
                                                //                                          AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
                                            },
                                        };
@@ -509,7 +515,7 @@
                                         };
     
     
-    if (_mixComposition && _videoComposition) {
+    if (mixComposition && videoComposition) {
         
         if(!timerForExport_)
         {
@@ -1332,7 +1338,8 @@
     composition.animationTool = [AVVideoCompositionCoreAnimationTool
                                  videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
 }
-- (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath
+- (BOOL)generateMVReverse:(NSString *)sourcePath
+                   target:(NSString *)targetPath
                     begin:(CGFloat)sourceBegin
                       end:(CGFloat)sourceEnd
                 audioFile:(NSString *)audioFilePath
@@ -1381,15 +1388,35 @@
         [[NSRunLoop mainRunLoop] addTimer:timerForReverseExport_ forMode:NSDefaultRunLoopMode];
     }
     timerForReverseExport_.fireDate = [NSDate distantPast];
+    __weak VideoGenerater * weakSelf = self;
     [session reverseAsynchronouslyWithCompletionHandler:^{
         currentReverseSession_ = nil;
         timerForReverseExport_.fireDate = [NSDate distantFuture];
         if (session.status == AVAssetReverseSessionStatusCompleted) {
             NSURL *outputURL = session.outputURL;
             NSLog(@"reverse mv file finished:%@",[outputURL path]);
-            if(complted)
+            if(audioFilePath && audioFilePath.length>0 && weakSelf)
             {
-                complted([outputURL path]);
+                __strong VideoGenerater * strongSelf = weakSelf;
+                BOOL ret = [strongSelf combinateFileWithAudio:[outputURL path]
+                                                audioFilePath:audioFilePath secondsBegin:audioBegin
+                                                     complted:^(NSString *filePath) {
+                                                         if(complted)
+                                                         {
+                                                             complted(filePath);
+                                                         }
+                                                     }];
+                if(!ret && complted)
+                {
+                    complted(nil);
+                }
+            }
+            else
+            {
+                if(complted)
+                {
+                    complted([outputURL path]);
+                }
             }
         } else {
             
@@ -1400,6 +1427,90 @@
             }
         }
     }];
+    return YES;
+}
+- (BOOL)combinateFileWithAudio:(NSString *)sourceFilePath
+                 audioFilePath:(NSString *)audioFilePath
+                  secondsBegin:(CGFloat)secondsBegin
+                      complted:(void (^)(NSString * filePath))complted
+{
+    if(!sourceFilePath || !audioFilePath)
+    {
+        NSLog(@"file parameter cannot be nil;");
+        if(complted)
+        {
+            complted(sourceFilePath);
+        }
+        return NO;
+    }
+    
+    AVURLAsset * videoAsset = [[ AVURLAsset alloc ] initWithURL :[ NSURL fileURLWithPath:sourceFilePath] options : nil ];
+    AVURLAsset * audioAsset =[[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:audioFilePath] options:nil];
+    CGFloat audioDurationSeconds = CMTimeGetSeconds(audioAsset.duration);
+    
+    if(secondsBegin<0 || secondsBegin >= audioDurationSeconds)
+    {
+        secondsBegin = 0;
+    }
+    CMTime audioBegin = CMTimeMakeWithSeconds(secondsBegin, audioAsset.duration.timescale);
+    CMTime audioDuration = CMTimeMakeWithSeconds(MIN(audioDurationSeconds - secondsBegin,CMTimeGetSeconds(videoAsset.duration))
+                                                 , audioAsset.duration.timescale);
+    // 下面就是合成的过程了。
+    
+    AVMutableComposition * mixComposition = [ AVMutableComposition composition ];
+    
+    if(CMTimeGetSeconds(audioDuration)>0)
+    {
+        AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType : AVMediaTypeAudio
+                                                                                            preferredTrackID : kCMPersistentTrackID_Invalid ];
+        [compositionCommentaryTrack insertTimeRange : CMTimeRangeMake(audioBegin,audioDuration)
+                                            ofTrack :[[audioAsset tracksWithMediaType:AVMediaTypeAudio ] objectAtIndex:0]
+                                             atTime : kCMTimeZero
+                                              error : nil ];
+    }
+    {
+        AVAssetTrack * curTrack = [[videoAsset tracksWithMediaType : AVMediaTypeVideo ] objectAtIndex:0];
+        AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType : AVMediaTypeVideo
+                                                                                       preferredTrackID : kCMPersistentTrackID_Invalid ];
+        [compositionVideoTrack insertTimeRange :CMTimeRangeMake(kCMTimeZero , videoAsset. duration )
+                                       ofTrack :curTrack
+                                        atTime : kCMTimeZero
+                                          error:nil ];
+        
+        [compositionVideoTrack setPreferredTransform:curTrack.preferredTransform];
+    }
+    AVAssetExportSession * assetExport = [[ AVAssetExportSession alloc ] initWithAsset :mixComposition
+                                                                            presetName : AVAssetExportPresetPassthrough ];
+    
+    NSString *exportPath = [[HCFileManager manager]getFileNameByTicks:@"action_media.mp4"];
+    
+    if ([[ NSFileManager defaultManager ] fileExistsAtPath :exportPath])
+        [[ NSFileManager defaultManager ] removeItemAtPath :exportPath error : nil ];
+    
+    assetExport.outputFileType = @"com.apple.quicktime-movie" ;
+    assetExport.outputURL = [NSURL fileURLWithPath:exportPath];
+    assetExport.shouldOptimizeForNetworkUse = YES ;
+    
+    // 下面是按照上面的要求合成视频的过程。
+    [assetExport exportAsynchronouslyWithCompletionHandler :
+     ^(void) {
+         if(assetExport.status == AVAssetExportSessionStatusCompleted)
+         {
+             if(complted)
+             {
+                 complted([assetExport.outputURL path]);
+             }
+         }
+         else
+         {
+             NSLog(@"export failure:%@",[assetExport.error localizedDescription]);
+             if(complted)
+             {
+                 complted(sourceFilePath);
+             }
+         }
+     }
+     ];
     return YES;
 }
 #pragma mark - 合成标题

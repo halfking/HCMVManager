@@ -247,8 +247,10 @@
 
 - (BOOL) setGPUFilter:(int)index
 {
-    lastFilterIndex_ = currentFilterIndex_;
+    if(!filterView_ || !filters_) return NO;
     
+    lastFilterIndex_ = currentFilterIndex_;
+   
     [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
     
     currentFilterIndex_ = index;
@@ -472,10 +474,10 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
-    if(media.Action.ActionType==SNormal)
-    {
-        NSLog(@"test");
-    }
+//    if(media.Action.ActionType==SNormal)
+//    {
+//        NSLog(@"test");
+//    }
     [self setCurrentMediaWithAction:media];
     
     if(!isGenerating_ || player_.playing)
