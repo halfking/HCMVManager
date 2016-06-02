@@ -39,6 +39,8 @@
 
 //将播放器的时间发送给管理器，用于自动切换素材
 - (void) setPlaySeconds:(CGFloat)seconds isReverse:(BOOL)isReverse;
+//当播放器播到末尾时
+- (void) setPlayerReachEnd:(CGFloat)playerSeconds;
 //根据素材，自动同步背景音乐
 - (void)syncAudioPlayer:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds;
 

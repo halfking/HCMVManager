@@ -61,11 +61,11 @@
         player_ = player;
         [player_ setVideoVolume:videoVol_];
     }
-//    if(reversePlayer_!=reversePlayer)
-//    {
-//        reversePlayer_ = reversePlayer;
-//        [reversePlayer_ setVideoVolume:videoVol_];
-//    }
+    //    if(reversePlayer_!=reversePlayer)
+    //    {
+    //        reversePlayer_ = reversePlayer;
+    //        [reversePlayer_ setVideoVolume:videoVol_];
+    //    }
     
     audioPlayer_ = audioPlayer;
     if(audioPlayer_)
@@ -511,7 +511,7 @@
         NSLog(@"AM :  pause by GEN player seconds:%.4f item:%.4f audio:%.4f mediabegin:%.4f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
               audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBegin);
         [player_ pause];
-//        [reversePlayer_ pause];
+        //        [reversePlayer_ pause];
         [audioPlayer_ pause];
     }
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
@@ -555,19 +555,43 @@
 }
 - (void)checkAudioPlayerSync:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds
 {
-    if(audioPlayer_ && audioPlayer_.playing==NO)
+    if(audioPlayer_)
     {
-        if(!media)
+        if(audioPlayer_.playing==NO)
         {
-            media = [mediaList_ lastObject];
+            if(!media)
+            {
+                media = [mediaList_ lastObject];
+            }
+            [self syncAudioPlayer:media playerSeconds:playerSeconds];
         }
-        [self syncAudioPlayer:media playerSeconds:playerSeconds];
+//        else
+//        {
+//            //end
+//            CGFloat end = [player_ getSecondsEnd];
+//            if(end>0 && playerSeconds >= end - SECONDS_ERRORRANGE)
+//            {
+//                [audioPlayer_ pause];
+//                audioPlayer_.currentTime = 0;
+//            }
+//        }
+    }
+}
+- (void) setPlayerReachEnd:(CGFloat)playerSeconds
+{
+    if(audioPlayer_ && audioPlayer_.playing)
+    {
+        [audioPlayer_ pause];
+        if(audioBg_)
+            audioPlayer_.currentTime = audioBg_.secondsBegin;
+        else
+            audioPlayer_.currentTime = 0;
     }
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
     if(playerSeconds>=0)
-    [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     
     //到开始或结束时，或者允许触发时，才可以操作
     if(!needSendPlayControl_) return ;
@@ -611,13 +635,13 @@
         }
         if(needReturn)
         {
-//            [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+            //            [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
             return ;
         }
     }
     else
     {
-//        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+        //        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     }
     
     //超过媒体最后时间
@@ -705,11 +729,11 @@
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
-//    NSLog(@"action do changed:%@ pause",action.ActionTitle);
+    //    NSLog(@"action do changed:%@ pause",action.ActionTitle);
 #ifndef __OPTIMIZE__
-//    [reversePlayer_ pause];
+    //    [reversePlayer_ pause];
     [player_ pause];
-//    [audioPlayer_ pause];
+    //    [audioPlayer_ pause];
 #endif
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {
@@ -739,7 +763,7 @@
 }
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration
 {
-//    NSLog(@"action playerItem ready");
+    //    NSLog(@"action playerItem ready");
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:playerItem:duration:)])
     {
         [self.delegate ActionManager:manager playerItem:playerItem duration:duration];

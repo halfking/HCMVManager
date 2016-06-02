@@ -106,8 +106,8 @@
     //    [manager_ removeActions];
     
     NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
-//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
+    //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -389,7 +389,7 @@
     if([manager_ getFilterView])
     {
         [manager_ changeFilterPlayerItem];
-//        [manager_ setGPUFilter:0];
+        //        [manager_ setGPUFilter:0];
     }
     if(needPlayer)
         [player_ play];
@@ -503,8 +503,8 @@
 #pragma mark - buttons
 -(void)repeat:(UIButton *)sender
 {
-//    if([manager_ getFilterView])
-//    [manager_ setGPUFilter:0];
+    //    if([manager_ getFilterView])
+    //    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     //    [repeatTimer_ invalidate];
     //    repeatTimer_ = nil;
@@ -540,8 +540,8 @@
 {
     
     [manager_ cancelGenerate];
-//    if([manager_ getFilterView])
-//        [manager_ setGPUFilter:0];
+    //    if([manager_ getFilterView])
+    //        [manager_ setGPUFilter:0];
     
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
@@ -604,8 +604,8 @@
 }
 -(void)slow:(UIButton *)sender
 {
-//    if([manager_ getFilterView])
-//    [manager_ setGPUFilter:0];
+    //    if([manager_ getFilterView])
+    //    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     [player_ pause];
     
@@ -662,8 +662,8 @@
 }
 -(void)fast:(UIButton *)sender
 {
-//    if([manager_ getFilterView])
-//    [manager_ setGPUFilter:0];
+    //    if([manager_ getFilterView])
+    //    [manager_ setGPUFilter:0];
     //    [manager_ removeGPUFilter];
     CMTime playerTime =  [player_ durationWhen];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
@@ -712,29 +712,13 @@
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
     CGFloat endSeconds = end>0?end:-1;
-//    if(playerSimple == rPlayer_)
-//    {
-//        if(endSeconds<0)
-//            endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
-//        NSLog(@"pause in play end");
-//        [rPlayer_ pause];
-//        
-//        [manager_ ensureActions:endSeconds];
-//        
-//        //再继续播放
-//        [self resetAllButtons];
-//        return ;
-//    }
-//    else
-        if(playerSimple == player_)
-    {
-        if(endSeconds<0)
-            endSeconds = CMTimeGetSeconds([player_ durationWhen]);
-        //        [player_ seek:0 accurate:YES];
-        //        [player_ play];
-        NSLog(@"pause in play end");
-        [player_ pause];
-    }
+    
+    if(endSeconds<0)
+        endSeconds = CMTimeGetSeconds([player_ durationWhen]);
+    NSLog(@"pause in play end");
+    [player_ pause];
+    [manager_ setPlayerReachEnd:endSeconds];
+    
     //自动结束没有结束的动作
     [manager_ ensureActions:endSeconds];
     
@@ -834,7 +818,7 @@
     
     baseVideo_ = [manager_ getBaseVideo];
     
-//    [manager_ getFilterView].hidden = YES;
+    //    [manager_ getFilterView].hidden = YES;
     
     //    [self buildControls];
     [player_ seek:0 accurate:YES];
@@ -862,12 +846,12 @@
     [player_ seek:0 accurate:YES];
     [rPlayer_ seek:0 accurate:YES];
     
-//    [self buildControls];
+    //    [self buildControls];
     
     player_.hidden = NO;
     
     [player_ pause];
-
+    
     [player_ setRate:1];
     
     [manager_ loadOrigin];
@@ -879,7 +863,7 @@
     reverseVideo_ = [manager_ getReverseVideo];
     
     [manager_ initAudioPlayer:audioPlayer_];
-//    [self buildControls];
+    //    [self buildControls];
     
     [pannel_ refresh];
     
