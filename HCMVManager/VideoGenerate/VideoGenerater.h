@@ -69,6 +69,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 @property (nonatomic,assign) BOOL compositeLyric;   //是否合成歌词
 @property(PP_STRONG,nonatomic) NSURL * bgvUrl; //背景视频
 @property (nonatomic,PP_STRONG) NSURL * bgmUrl; //背景音乐
+@property (nonatomic,PP_STRONG) MediaItem * bgAudio;//背景音乐对像
 @property (nonatomic,PP_STRONG) NSArray * lrcList; //歌词
 @property (nonatomic,PP_STRONG) NSArray * filterLrcList;//截取后的歌词(可能起始时间不为0)
 @property (nonatomic,assign) CGFloat lrcBeginTime;//从歌词哪个的位置开始

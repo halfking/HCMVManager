@@ -531,8 +531,12 @@
         }
         else
         {
-            audioPlayer_.currentTime = secondsForAudio;
-            [audioPlayer_ play];
+            if(audioPlayer_.currentTime <secondsForAudio+SECONDS_ERRORRANGE)
+            {
+                audioPlayer_.currentTime = secondsForAudio;
+            }
+            if(!audioPlayer_.playing)
+                [audioPlayer_ play];
         }
         NSLog(@"AM : audio player sync changed:%.2f = (%.2f + %.2f-%.2f +%.2f - %.2f)",
               audioPlayer_.currentTime,
@@ -550,7 +554,9 @@
     {
         media = [mediaList_ lastObject];
     }
-    if(audioPlayer_ && audioPlayer_.rate == 0)
+//    if(audioPlayer_)
+//    NSLog(@"audioLayer rate:%f",audioPlayer_.rate);
+    if(audioPlayer_ && audioPlayer_.playing==NO)
     {
         [self syncAudioPlayer:media playerSeconds:playerSeconds];
     }
@@ -609,17 +615,21 @@
     }
     
     //超过媒体最后时间
-    if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE) return;
-    
+    if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE)
+    {
+        [audioPlayer_ pause];
+        audioPlayer_.currentTime = 0;
+        return;
+    }
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
     
 #ifndef __OPTIMIZE__
     if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_)
     {
-        NSLog(@"不可能的事情发生了，没有找到对应的播放时间");
-        NSLog(@"seconds:%.4f",playerSeconds);
-        NSLog(@"current:%@",currentMediaWithAction_);
-        NSLog(@"medialist:%@",mediaList_);
+        NSLog(@"AM : 不可能的事情发生了，没有找到对应的播放时间");
+        NSLog(@"AM : seconds:%.4f",playerSeconds);
+        NSLog(@"AM : current:%@",currentMediaWithAction_);
+        NSLog(@"AM : medialist:%@",mediaList_);
         
         secondsInArray =[self getSecondsInArrayViaCurrentState:playerSeconds];
     }
@@ -680,16 +690,16 @@
         }
         else
         {
-            NSLog(@"不可能的事情发生了，没有找到对应的Media");
-            NSLog(@"secondsInArray:%.4f",secondsInArray);
-            NSLog(@"medialist:%@",mediaList_);
+            NSLog(@"AM : 不可能的事情发生了，没有找到对应的Media");
+            NSLog(@"AM : secondsInArray:%.4f",secondsInArray);
+            NSLog(@"AM : medialist:%@",mediaList_);
         }
     }
     return media;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {
-    NSLog(@"action do changed:%@ pause",action.ActionTitle);
+//    NSLog(@"action do changed:%@ pause",action.ActionTitle);
 #ifndef __OPTIMIZE__
 //    [reversePlayer_ pause];
     [player_ pause];
@@ -723,7 +733,7 @@
 }
 - (void)ActionManager:(ActionManager *)manager playerItem:(AVPlayerItem *)playerItem duration:(CGFloat)duration
 {
-    NSLog(@"action playerItem ready");
+//    NSLog(@"action playerItem ready");
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:playerItem:duration:)])
     {
         [self.delegate ActionManager:manager playerItem:playerItem duration:duration];

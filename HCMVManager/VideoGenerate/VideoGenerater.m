@@ -201,6 +201,40 @@
         totalEndTimeForAudio_ = CMTimeMakeWithSeconds(secondsEnd, AUDIO_CTTIMESCALE);
     }
 }
+- (void)setBgmUrl:(NSURL *)bgmUrlA
+{
+    bgmUrl = bgmUrlA;
+    _bgAudio = nil;
+    if(bgmUrl)
+    {
+        AVURLAsset * asset = [AVURLAsset assetWithURL:bgmUrl];
+        if(asset)
+        {
+            _bgAudio = [[MediaItem alloc]init];
+            _bgAudio.url = bgmUrl;
+            _bgAudio.fileName = [bgmUrl path];
+            _bgAudio.duration = asset.duration;
+            _bgAudio.begin = CMTimeMakeWithSeconds(0, _bgAudio.duration.timescale);
+            _bgAudio.end = asset.duration;
+            _bgAudio.timeInArray = kCMTimeZero;
+        }
+    }
+}
+- (void)setBgAudio:(MediaItem *)bgAudio
+{
+    _bgAudio = bgAudio;
+    if(_bgAudio)
+    {
+        if(_bgAudio.url)
+        {
+            bgmUrl = _bgAudio.url;
+        }
+        else if(_bgAudio.fileName)
+        {
+            bgmUrl = [NSURL fileURLWithPath:_bgAudio.filePath];
+        }
+    }
+}
 #pragma mark - join
 #pragma mark - join audio and mv
 ////用于编辑或全本时
@@ -2150,17 +2184,40 @@
     //混合背景音乐
     if((bgmAsset && justUseBgAudio==1) || isCapture)
     {
-        AVMutableAudioMixInputParameters * trackMix =
-        [self addAudioTrackWithUrl:bgmAsset.URL
-                         composite:mixComposition
-                           maxTime:curTimeCnt
-                              rate:rate
-            needScaleIfRateNotZero:!useAudioInVideo && self.bgAudioCanScale
-                               vol:(hasAudioJoined?bgAudioVolume_:1)
-                        mediaBegin:totalBeginTimeForAudio_
-                          mediaEnd:totalEndTimeForAudio_
-                    volRampSeconds:_volRampSeconds
-         ];
+        AVMutableAudioMixInputParameters * trackMix = nil;
+        //如果用背景音乐，而不是原视频中的音乐
+        if(bgmUrl)
+        {
+            trackMix =
+            [self addAudioTrackWithUrl:bgmAsset.URL
+                             composite:mixComposition
+                               maxTime:curTimeCnt
+                                  rate:rate
+                needScaleIfRateNotZero:!useAudioInVideo && self.bgAudioCanScale
+                                   vol:(hasAudioJoined?bgAudioVolume_:1)
+                           timeInArray:_bgAudio.timeInArray
+                            mediaBegin:_bgAudio.begin
+                              mediaEnd:_bgAudio.end
+                        volRampSeconds:_volRampSeconds];
+            
+        }
+        else
+        {
+            trackMix =
+            [self addAudioTrackWithUrl:bgmAsset.URL
+                             composite:mixComposition
+                               maxTime:curTimeCnt
+                                  rate:rate
+                needScaleIfRateNotZero:!useAudioInVideo && self.bgAudioCanScale
+                                   vol:(hasAudioJoined?bgAudioVolume_:1)
+                           timeInArray:kCMTimeZero
+                            mediaBegin:totalBeginTimeForAudio_
+                              mediaEnd:totalEndTimeForAudio_
+                        volRampSeconds:_volRampSeconds
+             ];
+            
+        }
+        
         if(trackMix)
             [audioMixParams addObject:trackMix];
     }
@@ -2174,6 +2231,7 @@
                               rate:rate
             needScaleIfRateNotZero:YES && self.bgAudioCanScale
                                vol:(!bgmAsset)?1:singVolume_
+                       timeInArray:kCMTimeZero
                         mediaBegin:totalBeginTimeForAudio_
                           mediaEnd:totalEndTimeForAudio_
                     volRampSeconds:_volRampSeconds];
@@ -2189,6 +2247,7 @@
                                                      rate:(CGFloat)rate
                                    needScaleIfRateNotZero:(BOOL)needScale
                                                       vol:(CGFloat)vol
+                                              timeInArray:(CMTime)timeInArray
                                                mediaBegin:(CMTime)mediaBegin //音乐在音乐素材中的开始时间，负值表示，不是从Track的0开始。
                                                  mediaEnd:(CMTime)mediaEnd //音乐在素材中的结束时间,kCMTimeZero表示为空
                                            volRampSeconds:(CGFloat)volRampSeconds //渐变音量的时间
@@ -2213,30 +2272,31 @@
         bgScale = asset.duration.timescale;
     }
     
-    CMTime startTime = CMTimeMake(0, bgScale);
+    CMTime startTime = mediaBegin;
     CMTime duration =  asset.duration;
-    CMTime timeInArray = CMTimeMake(0, bgScale);
+    
+//    CMTime timeInArray = CMTimeMake(0, bgScale);
     //因为背景音乐是完整的，所以如果截取一部分时，要注意重新定位开始的时间
-    if(CMTimeCompare(mediaBegin,kCMTimeZero)>0.0001)
-    {
-        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaBegin), bgScale);
-    }
-    else if(CMTimeCompare(mediaBegin,kCMTimeZero)<0.0001)  //不从开始的位置加音乐
-    {
-        timeInArray = CMTimeMakeWithSeconds(0 - CMTimeGetSeconds(mediaBegin), bgScale);
-    }
+//    if(CMTimeCompare(mediaBegin,kCMTimeZero)>0.0001)
+//    {
+//        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaBegin), bgScale);
+//    }
+//    else if(CMTimeCompare(mediaBegin,kCMTimeZero)<0.0001)  //不从开始的位置加音乐
+//    {
+//        timeInArray = CMTimeMakeWithSeconds(0 - CMTimeGetSeconds(mediaBegin), bgScale);
+//    }
     if(CMTimeCompare(mediaEnd, kCMTimeZero)>0)
     {
         duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaEnd) - CMTimeGetSeconds(mediaBegin), bgScale);
-        bgAudioTime = duration;
     }
+    bgAudioTime = duration;
     
     //因为合成的音乐应该小于等于视频长度，否则会黑屏
     
     //使用视频中的原因，因此不需要处理
     if(!needScale)
     {
-        if(CMTimeGetSeconds(duration)>CMTimeGetSeconds(curTimeCnt))
+        if(CMTimeGetSeconds(duration)+CMTimeGetSeconds(timeInArray)>CMTimeGetSeconds(curTimeCnt))
         {
             duration = CMTimeMakeWithSeconds(MIN(CMTimeGetSeconds(curTimeCnt)-CMTimeGetSeconds(timeInArray),CMTimeGetSeconds(duration)), duration.timescale);
         }
@@ -2288,6 +2348,7 @@
         //音量渐变大
         CMTime rampDuration = CMTimeMakeWithSeconds(volRampSeconds, bgScale);
         CMTime endRampTime = CMTimeSubtract(CMTimeAdd(timeInArray, duration), rampDuration);
+        
         [trackMix setVolumeRampFromStartVolume:0 toEndVolume:vol
                                      timeRange:CMTimeRangeMake(timeInArray, rampDuration)];
         

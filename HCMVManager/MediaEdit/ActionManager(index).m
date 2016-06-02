@@ -258,8 +258,9 @@
     
     if(audioBg_ && audioBg_.fileName)
     {
-        [vg setBgmUrl:audioBg_.url];
-        [vg setTimeForAudioMerge:audioBg_.secondsInArray end:audioBg_.secondsDurationInArray];
+        [vg setBgAudio:audioBg_];
+//        [vg setBgmUrl:audioBg_.url];
+//        [vg setTimeForAudioMerge:audioBg_.secondsInArray end:audioBg_.secondsDurationInArray];
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];

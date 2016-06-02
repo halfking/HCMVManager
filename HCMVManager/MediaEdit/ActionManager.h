@@ -116,11 +116,17 @@
 //@property (nonatomic,strong) GPUImageMovie * moveFileOrg;
 + (ActionManager *)shareObject;
 - (void) clear;  //清除数据及临时文件，最后一个文件不清除
-- (void)clearPlayers;
+- (void) clearPlayers;
+- (void) pausePlayer;
+- (void) resumePlayer;
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse;
 - (BOOL) setBackMV:(MediaItem *)bgMedia buildReverse:(BOOL)buildReverse;
+
+//设置背景音乐
+// beginSeconds 小于0 表示需要从轨的指定的位置(0-beginSeconds)开始播(timeInArray)，大于0，则表示从轨的开头开始播。在于0，同时表示从背景音乐的某个位置开始播。
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
+
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
 - (MediaItem *) getReverseVideo;
@@ -129,8 +135,6 @@
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
 
-- (void)pausePlayer;
-- (void)resumePlayer;
 // 是否能在指定位置增加一个动作
 // action:当前动作，需要加入的
 // seconds:当前播放器时间，有可能为反向播放器的时间

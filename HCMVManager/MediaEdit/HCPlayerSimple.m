@@ -451,21 +451,18 @@ static HCPlayerSimple *sharedPlayerView = nil;
 
 - (void)setDurationWithPlayeritem:(AVPlayerItem *)item
 {
-    if(CMTIME_IS_VALID(item.duration) )
+    if(!item) return;
+    if((isnan(secondsDuration_)||secondsDuration_<=0) && CMTIME_IS_VALID(item.duration)&& !CMTIME_IS_INDEFINITE(item.duration))
     {
-        if((isnan(secondsDuration_)||secondsDuration_<=0))
-        {
+//        if((isnan(secondsDuration_)||secondsDuration_<=0))
+//        {
             duration_ = item.duration;
             secondsDuration_ = CMTimeGetSeconds(duration_);
             if(secondsEnd_<=0 || isnan(secondsEnd_))
             {
                 secondsEnd_ = secondsDuration_;
             }
-        }
-        //        if(self.hasPlayPgrogress && progressView_)
-        //        {
-        //            [progressView_ setTotalSeconds:secondsDuration_];
-        //        }
+//        }
     }
     else
     {
@@ -490,16 +487,9 @@ static HCPlayerSimple *sharedPlayerView = nil;
             [player_ replaceCurrentItemWithPlayerItem:item];
             [self addObserver];
             secondsEnd_ = -1;
+            secondsDuration_ = -1;
+            [self setDurationWithPlayeritem:item];
         }
-        
-        //        if(player_.currentItem!=item)
-        //        {
-        //            [self resetPlayer];
-        //        }
-        //        else
-        //        {
-        //            NSLog(@"player item matched,but has error.");
-        //        }
         else
         {
             

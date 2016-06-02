@@ -455,7 +455,10 @@
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
     PP_RELEASE(audioBg_);
-    
+//    if(audioPlayer_)
+//    {
+//        [audioPlayer_ pause];
+//    }
     if(!filePath) return NO;
     
     audioBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
@@ -467,7 +470,7 @@
     CGFloat secondsInArray = 0;
     if(beginSeconds<0)
     {
-        secondsInArray = beginSeconds;
+        secondsInArray = 0 - beginSeconds;
         beginSeconds = 0;
     }
     audioBg_.begin = CMTimeMakeWithSeconds(beginSeconds,timeScale);

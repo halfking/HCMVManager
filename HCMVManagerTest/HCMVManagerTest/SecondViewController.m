@@ -105,7 +105,7 @@
     manager_.delegate = self;
     //    [manager_ removeActions];
     
-    NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"man" ofType:@"mp3"];
+    NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
 //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
         oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
@@ -385,7 +385,7 @@
         [self buildAudioPlayer];
     }
     [pannel_ setActionManager:manager_];
-    [manager_ initPlayer:player_  audioPlayer:nil];
+    [manager_ initPlayer:player_  audioPlayer:audioPlayer_];
     if([manager_ getFilterView])
     {
         [manager_ changeFilterPlayerItem];
@@ -712,20 +712,21 @@
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
     CGFloat endSeconds = end>0?end:-1;
-    if(playerSimple == rPlayer_)
-    {
-        if(endSeconds<0)
-            endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
-        NSLog(@"pause in play end");
-        [rPlayer_ pause];
-        
-        [manager_ ensureActions:endSeconds];
-        
-        //再继续播放
-        [self resetAllButtons];
-        return ;
-    }
-    else if(playerSimple == player_)
+//    if(playerSimple == rPlayer_)
+//    {
+//        if(endSeconds<0)
+//            endSeconds = CMTimeGetSeconds([rPlayer_ durationWhen]);
+//        NSLog(@"pause in play end");
+//        [rPlayer_ pause];
+//        
+//        [manager_ ensureActions:endSeconds];
+//        
+//        //再继续播放
+//        [self resetAllButtons];
+//        return ;
+//    }
+//    else
+        if(playerSimple == player_)
     {
         if(endSeconds<0)
             endSeconds = CMTimeGetSeconds([player_ durationWhen]);
@@ -772,7 +773,6 @@
 }
 - (void) showCurrentMediaes:(CGFloat)seconds
 {
-    return;
     NSLog(@"-------------** media at player:%.4f rplayer:%.4f**---------------",[player_ secondsPlaying],[rPlayer_ secondsPlaying]);
     int index = 0;
     NSArray * mediaList = [manager_ getMediaList];
@@ -865,10 +865,9 @@
 //    [self buildControls];
     
     player_.hidden = NO;
-    rPlayer_.hidden = YES;
     
     [player_ pause];
-    [rPlayer_ pause];
+
     [player_ setRate:1];
     
     [manager_ loadOrigin];
@@ -879,6 +878,7 @@
     baseVideo_ = [manager_ getBaseVideo];
     reverseVideo_ = [manager_ getReverseVideo];
     
+    [manager_ initAudioPlayer:audioPlayer_];
 //    [self buildControls];
     
     [pannel_ refresh];
@@ -894,11 +894,7 @@
     
     NSLog(@"pause in join");
     [player_ pause];
-    [rPlayer_ pause];
-    
-    
-    //暂时暂停，用于检查
-    //    if([manager_ needGenerateForOP]) return;
+    [audioPlayer_ pause];
     
     
     //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
@@ -928,6 +924,9 @@
     }
     else
     {
+        [manager_ setBackAudio:nil begin:0 end:0];
+        [manager_ initAudioPlayer:nil];
+        
         NSLog(@"pause in join 2");
         [player_ seek:0 accurate:YES];
         [player_ pause];
