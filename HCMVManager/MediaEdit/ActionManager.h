@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <hccoren/HWWeakTimer.h>
+
 //#import "WTPlayerResource.h"
 #import "VideoGenerater.h"
 #import "GPUImage.h"
@@ -104,7 +106,7 @@
     CLVideoAddFilter * currentFilterGen_;
     VideoGenerater * reverseGenerate_;
     
-    
+    NSTimer * timerForPlayerSync_; //用于控制是否可以同步的播放器时间的代码
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
 @property (nonatomic,assign,readonly) CGFloat audioVolume;
@@ -136,7 +138,7 @@
 - (int) getLastFilterID;
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
-
+- (void) buildTimerForPlayerSync:(CGFloat)secondsDurationInArray;
 // 是否能在指定位置增加一个动作
 // action:当前动作，需要加入的
 // seconds:当前播放器时间，有可能为反向播放器的时间

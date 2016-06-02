@@ -555,19 +555,20 @@
 }
 - (void)checkAudioPlayerSync:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds
 {
-    if(!media)
-    {
-        media = [mediaList_ lastObject];
-    }
-//    if(audioPlayer_)
-//    NSLog(@"audioLayer rate:%f",audioPlayer_.rate);
     if(audioPlayer_ && audioPlayer_.playing==NO)
     {
+        if(!media)
+        {
+            media = [mediaList_ lastObject];
+        }
         [self syncAudioPlayer:media playerSeconds:playerSeconds];
     }
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
+    if(playerSeconds>=0)
+    [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+    
     //到开始或结束时，或者允许触发时，才可以操作
     if(!needSendPlayControl_) return ;
     
@@ -610,17 +611,17 @@
         }
         if(needReturn)
         {
-            [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+//            [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
             return ;
         }
     }
     else
     {
-        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+//        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     }
     
     //超过媒体最后时间
-    if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE)
+    if(playerSeconds >= videoBg_.secondsDurationInArray - SECONDS_ERRORRANGE)
     {
         [audioPlayer_ pause];
         audioPlayer_.currentTime = 0;

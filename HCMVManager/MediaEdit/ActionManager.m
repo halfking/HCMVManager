@@ -804,14 +804,7 @@
         {
             [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
         }
-        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
-                                                                            block:^(id userInfo) {
-                                                                                [self setNeedPlaySync:YES];
-                                                                                [weakTimer invalidate];
-                                                                                weakTimer = nil;
-                                                                            } userInfo:nil repeats:NO];
-        
-        [weakTimer fire];
+        [self buildTimerForPlayerSync:media.secondsDurationInArray];
     }
     else
     {
@@ -905,14 +898,7 @@
     [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     if(actionDo.isOPCompleted)
     {
-        __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
-                                                                            block:^(id userInfo) {
-                                                                                [self setNeedPlaySync:YES];
-                                                                                [weakTimer invalidate];
-                                                                                weakTimer = nil;
-                                                                            } userInfo:nil repeats:NO];
-        
-        [weakTimer fire];
+        [self buildTimerForPlayerSync:media.secondsDurationInArray];
     }
     else
         needSendPlayControl_ = NO;
@@ -959,15 +945,7 @@
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
     //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下
-    __block NSTimer * weakTimer = [HWWeakTimer scheduledTimerWithTimeInterval:0.15f
-                                                                        block:^(id userInfo) {
-                                                                            [self setNeedPlaySync:YES];
-                                                                            [weakTimer invalidate];
-                                                                            weakTimer = nil;
-                                                                            
-                                                                        } userInfo:nil repeats:NO];
-    
-    [weakTimer fire];
+    [self buildTimerForPlayerSync:0.15];
     
     //延时处理倒放视频的问题
     __weak ActionManager * weakSelf = self;
@@ -987,7 +965,22 @@
     //    needSendPlayControl_ = YES;
     return YES;
 }
-
+- (void)buildTimerForPlayerSync:(CGFloat)secondsDurationInArray
+{
+    if(timerForPlayerSync_)
+    {
+        [timerForPlayerSync_ invalidate];
+        timerForPlayerSync_ = nil;
+    }
+    timerForPlayerSync_ = [HWWeakTimer scheduledTimerWithTimeInterval:MAX(0.15f,secondsDurationInArray)
+                                                                block:^(id userInfo) {
+                                                                    [self setNeedPlaySync:YES];
+                                                                    [timerForPlayerSync_ invalidate];
+                                                                    timerForPlayerSync_ = nil;
+                                                                } userInfo:nil repeats:NO];
+    
+    [timerForPlayerSync_ fire];
+}
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray
 {
     secondsEffectPlayer_ = 0;
