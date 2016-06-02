@@ -22,10 +22,10 @@
 {
     return player_;
 }
-- (HCPlayerSimple *) getReversePlayer
-{
-    return reversePlayer_;
-}
+//- (HCPlayerSimple *) getReversePlayer
+//{
+//    return reversePlayer_;
+//}
 - (GPUImageView *) getFilterView
 {
     return filterView_;
@@ -54,18 +54,18 @@
 {
     return currentFilterIndex_;
 }
-- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer
+- (BOOL) initPlayer:(HCPlayerSimple *)player  audioPlayer:(AVAudioPlayer *)audioPlayer
 {
     if(player_!=player)
     {
         player_ = player;
         [player_ setVideoVolume:videoVol_];
     }
-    if(reversePlayer_!=reversePlayer)
-    {
-        reversePlayer_ = reversePlayer;
-        [reversePlayer_ setVideoVolume:videoVol_];
-    }
+//    if(reversePlayer_!=reversePlayer)
+//    {
+//        reversePlayer_ = reversePlayer;
+//        [reversePlayer_ setVideoVolume:videoVol_];
+//    }
     
     audioPlayer_ = audioPlayer;
     if(audioPlayer_)
@@ -74,15 +74,15 @@
     }
     return YES;
 }
-- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer
-{
-    if(reversePlayer_!=reversePlayer)
-    {
-        reversePlayer_ = reversePlayer;
-        [reversePlayer_ setVideoVolume:videoVol_];
-    }
-    return YES;
-}
+//- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer
+//{
+//    if(reversePlayer_!=reversePlayer)
+//    {
+//        reversePlayer_ = reversePlayer;
+//        [reversePlayer_ setVideoVolume:videoVol_];
+//    }
+//    return YES;
+//}
 - (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer
 {
     if(audioPlayer_)
@@ -250,7 +250,7 @@
     if(!filterView_ || !filters_) return NO;
     
     lastFilterIndex_ = currentFilterIndex_;
-   
+    
     [CLFiltersClass addFilterLayer:movieFile_ filters:filters_ filterView:filterView_ index:index];
     
     currentFilterIndex_ = index;
@@ -474,19 +474,10 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
-//    if(media.Action.ActionType==SNormal)
-//    {
-//        NSLog(@"test");
-//    }
     [self setCurrentMediaWithAction:media];
     
     if(!isGenerating_ || player_.playing)
     {
-//        NSLog(@"action %d play:%@ (file:%.2f) inarray:%.2f end of file:%.2f",
-//              media.Action.ActionType,
-//              [media.fileName lastPathComponent],media.secondsBegin,media.secondsInArray,media.secondsEnd);
-        
-        
         [player_ setRate:media.playRate];
         
         //为了防止播放进度跳动，需检查是否需要Seek到指定位置
@@ -502,102 +493,70 @@
             });
             
             [player_ seek:media.secondsBegin accurate:YES];
-            if(audioPlayer_ && audioBg_)
-            {
-                audioPlayer_.currentTime = media.secondsInArray + audioBg_.secondsBegin;
-                NSLog(@"audio player pos changed:%.2f = (%.2f + %.2f)",audioPlayer_.currentTime,media.secondsInArray,audioBg_.secondsBegin);
-            }
+            [self syncAudioPlayer:media playerSeconds:media.secondsBegin];
+            
         }
         else
         {
-            NSLog(@"通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBegin);
+            NSLog(@"AM : 通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBegin);
+            [self syncAudioPlayer:media playerSeconds:player_.secondsPlaying];
         }
-        NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
-              audioPlayer_? audioPlayer_.currentTime:-1);
-        
         [player_ play];
-        if(audioPlayer_)
-        {
-            [audioPlayer_ play];
-        }
-        player_.hidden = NO;
-        reversePlayer_.hidden = YES;
-        NSLog(@"mediaplay:%@ player:(%.2f)",media.fileName,player_.secondsPlaying);
+        
+        NSLog(@"AM : player seconds:%.4f item:%.4f audio:%.4f mediabegin:%.4f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
+              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBegin);
     }
     else
     {
-        NSLog(@"genreateing ,mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[media.fileName lastPathComponent],media.secondsBegin,media.secondsInArray,media.secondsBegin);
-        
-        NSLog(@"pause in play functions");
+        NSLog(@"AM :  pause by GEN player seconds:%.4f item:%.4f audio:%.4f mediabegin:%.4f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
+              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBegin);
         [player_ pause];
-        [reversePlayer_ pause];
+//        [reversePlayer_ pause];
         [audioPlayer_ pause];
     }
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
         [self.delegate ActionManager:self play:media];
 }
-//- (MediaWithAction *)findMediaByActionDo:(MediaActionDo *)action withSeconds:(CGFloat)secondsInArray
-//{
-//    MediaWithAction * mediaToPlay = nil;
-//    if(action)
-//    {
-//        //Repeat 是将前面1秒的记录为Repeat，然后，将后面的整体切为一段，所以这时候要指向下一个对像
-//        //时间无效，也应该指向下一个
-//        if(secondsInArray == SECONDS_NOTVALID
-//           || (secondsInArray == SECONDS_NOEND
-//               && action.ActionType ==SRepeat
-//               && action.ReverseSeconds<0)
-//           )
-//        {
-//            if(action.ActionType==SReverse && action.DurationInArray>0)
-//            {
-//                if([action.Media isKindOfClass:[MediaWithAction class]])
-//                    mediaToPlay = (MediaWithAction *)action.Media;
-//                else
-//                    mediaToPlay = [self findMediaWithAction:action index:0]; //取当前这个
-//            }
-//            else
-//            {
-//                mediaToPlay = [self findMediaWithAction:action index:-1]; //取下一个Media
-//            }
-//        }
-//        else if(secondsInArray==SECONDS_NOEND)   //当前对像未结束
-//        {
-//            if(action.ActionType==SReverse)
-//            {
-//                if(action.DurationInArray >0)
-//                {
-//                    if([action.Media isKindOfClass:[MediaWithAction class]])
-//                        mediaToPlay = (MediaWithAction *)action.Media;
-//                    else
-//                        mediaToPlay = [self findMediaWithAction:action index:0];
-//                }
-//                else
-//                {
-//                    mediaToPlay = [self findMediaWithAction:action index:1];//取前一个
-//                }
-//            }
-//            else
-//            {
-//                if([action.Media isKindOfClass:[MediaWithAction class]])
-//                    mediaToPlay = (MediaWithAction *)action.Media;
-//                else
-//                    mediaToPlay = [self findMediaWithAction:action index:0];
-//            }
-//        }
-//        else
-//        {
-//            if([action.Media isKindOfClass:[MediaWithAction class]])
-//                mediaToPlay = (MediaWithAction *)action.Media;
-//            else
-//                mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
-//        }
-//    }
-//    return mediaToPlay;
-//}
+- (void)syncAudioPlayer:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds
+{
+    if(audioPlayer_ && audioBg_)
+    {
+        CGFloat secondsForAudio = media.secondsInArray
+        + audioBg_.secondsBegin - audioBg_.secondsInArray
+        + playerSeconds - media.secondsBegin;
+        if(secondsForAudio <0)
+        {
+            audioPlayer_.currentTime = 0;
+            [audioPlayer_ pause];
+        }
+        else
+        {
+            audioPlayer_.currentTime = secondsForAudio;
+            [audioPlayer_ play];
+        }
+        NSLog(@"AM : audio player sync changed:%.2f = (%.2f + %.2f-%.2f +%.2f - %.2f)",
+              audioPlayer_.currentTime,
+              media.secondsInArray,
+              audioBg_.secondsBegin,
+              audioBg_.secondsInArray,
+              playerSeconds,
+              media.secondsBegin);
+    }
+    
+}
+- (void)checkAudioPlayerSync:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds
+{
+    if(!media)
+    {
+        media = [mediaList_ lastObject];
+    }
+    if(audioPlayer_ && audioPlayer_.rate == 0)
+    {
+        [self syncAudioPlayer:media playerSeconds:playerSeconds];
+    }
+}
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
-//    NSLog(@"播放器时间:%f",playerSeconds);
     //到开始或结束时，或者允许触发时，才可以操作
     if(!needSendPlayControl_) return ;
     
@@ -618,13 +577,14 @@
     {
         //误差处理是否需要?
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
+        BOOL needReturn = NO;
         if(currentMediaWithAction_.secondsBegin <=playerSeconds +diff && currentMediaWithAction_.secondsEnd > playerSeconds)
         {
-            return ;
+            needReturn = YES ;
         }
         else if(isReverse && currentMediaWithAction_.secondsEnd <=playerSeconds + diff && currentMediaWithAction_.secondsBegin > playerSeconds)
         {
-            return;
+            needReturn = YES ;
         }
         else if(playerSeconds + 1 < currentMediaWithAction_.secondsBegin)
         {
@@ -635,8 +595,17 @@
         }
         else if(playerSeconds < currentMediaWithAction_.secondsBegin)
         {
-            return;
+            needReturn = YES ;
         }
+        if(needReturn)
+        {
+            [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
+            return ;
+        }
+    }
+    else
+    {
+        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     }
     
     //超过媒体最后时间
@@ -670,6 +639,7 @@
     }
     
     [self ActionManager:self play:nil media:media seconds:secondsInArray];
+    
 }
 //根据时间，寻找CurrentMedia之后的第一个匹配的素材
 - (MediaWithAction *) getMediaActionViaSecondsInArray:(CGFloat)secondsInArray afterMedia:(MediaWithAction *)currentMedia
@@ -721,7 +691,7 @@
 {
     NSLog(@"action do changed:%@ pause",action.ActionTitle);
 #ifndef __OPTIMIZE__
-    [reversePlayer_ pause];
+//    [reversePlayer_ pause];
     [player_ pause];
     [audioPlayer_ pause];
 #endif

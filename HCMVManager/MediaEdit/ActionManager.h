@@ -77,7 +77,7 @@
     
     //内部关于播放器的控制
     HCPlayerSimple * player_;
-    HCPlayerSimple * reversePlayer_;
+//    HCPlayerSimple * reversePlayer_;
     AVAudioPlayer * audioPlayer_;
     
     //关于滤镜
@@ -94,8 +94,10 @@
     BOOL isReverseGenerating_;  //完整的Reverse文件生成
     BOOL isReverseMediaGenerating_; //局部文件生成
     BOOL isGenerating_;             //是否正在生成过程中
+    BOOL isReverseHasGenerated_;    //反向完整的视频是否生成完成
+    
     BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
-//    CGFloat lastPlayerSeconds_; //上次播放时间
+    BOOL needAudioPlayerSync_;  //是否需要检查音频播放器的同步状态，主要与视频播放器同步
     
     VideoGenerater * currentGenerate_;
     VideoGenerater * reverseMediaGenerate_;
@@ -126,8 +128,7 @@
 - (int) getLastFilterID;
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
-- (BOOL)generateReverseMV:(NSString*)filePath;
-- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd;
+
 - (void)pausePlayer;
 - (void)resumePlayer;
 // 是否能在指定位置增加一个动作

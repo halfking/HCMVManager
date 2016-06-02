@@ -122,7 +122,7 @@
     {
         [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:NO];
     }
-//    [manager_ setBackAudio:audioPath begin:0 end:-1];
+    [manager_ setBackAudio:audioPath begin:-5 end:-1];
     
     baseVideo_ = [manager_ getBaseVideo];
     
@@ -385,7 +385,7 @@
         [self buildAudioPlayer];
     }
     [pannel_ setActionManager:manager_];
-    [manager_ initPlayer:player_ reversePlayer:rPlayer_ audioPlayer:nil];
+    [manager_ initPlayer:player_  audioPlayer:nil];
     if([manager_ getFilterView])
     {
         [manager_ changeFilterPlayerItem];
@@ -805,11 +805,6 @@
         [rPlayer_ play];
     else
         [player_ play];
-    
-    if(audioPlayer_)
-    {
-        [audioPlayer_ play];
-    }
     
     if(!mediaToPlay)
     {

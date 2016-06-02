@@ -92,4 +92,5 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:0.6]
 #define CT_WATERMARKFILE   @"watermark_MtvPlus.png"
 #define FONT_MV_LYRIC      [UIFont fontWithName:@"FZQingKeBenYueSongS-R-GB" size:24]
 #define DEFAULT_TIMESCALE   600
+#define DEFAULT_AUDIOTIMESCALE   44100
 #endif /* mvconfig_h */

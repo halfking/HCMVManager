@@ -2156,7 +2156,11 @@
                            maxTime:curTimeCnt
                               rate:rate
             needScaleIfRateNotZero:!useAudioInVideo && self.bgAudioCanScale
-                               vol:(hasAudioJoined?bgAudioVolume_:1)];
+                               vol:(hasAudioJoined?bgAudioVolume_:1)
+                        mediaBegin:totalBeginTimeForAudio_
+                          mediaEnd:totalEndTimeForAudio_
+                    volRampSeconds:_volRampSeconds
+         ];
         if(trackMix)
             [audioMixParams addObject:trackMix];
     }
@@ -2169,14 +2173,25 @@
                            maxTime:curTimeCnt
                               rate:rate
             needScaleIfRateNotZero:YES && self.bgAudioCanScale
-                               vol:(!bgmAsset)?1:singVolume_];
+                               vol:(!bgmAsset)?1:singVolume_
+                        mediaBegin:totalBeginTimeForAudio_
+                          mediaEnd:totalEndTimeForAudio_
+                    volRampSeconds:_volRampSeconds];
         if(trackMix)
             [audioMixParams addObject:trackMix];
     }
     
     return audioMixParams;
 }
-- (AVMutableAudioMixInputParameters*)addAudioTrackWithUrl:(NSURL *)url composite:(AVMutableComposition *)mixComposition maxTime:(CMTime)curTimeCnt rate:(CGFloat)rate needScaleIfRateNotZero:(BOOL)needScale vol:(CGFloat)vol
+- (AVMutableAudioMixInputParameters*)addAudioTrackWithUrl:(NSURL *)url
+                                                composite:(AVMutableComposition *)mixComposition
+                                                  maxTime:(CMTime)curTimeCnt
+                                                     rate:(CGFloat)rate
+                                   needScaleIfRateNotZero:(BOOL)needScale
+                                                      vol:(CGFloat)vol
+                                               mediaBegin:(CMTime)mediaBegin //音乐在音乐素材中的开始时间，负值表示，不是从Track的0开始。
+                                                 mediaEnd:(CMTime)mediaEnd //音乐在素材中的结束时间,kCMTimeZero表示为空
+                                           volRampSeconds:(CGFloat)volRampSeconds //渐变音量的时间
 {
     //将背景视频和背景音乐合成进去
 #ifndef __OPTIMIZE__
@@ -2200,14 +2215,19 @@
     
     CMTime startTime = CMTimeMake(0, bgScale);
     CMTime duration =  asset.duration;
+    CMTime timeInArray = CMTimeMake(0, bgScale);
     //因为背景音乐是完整的，所以如果截取一部分时，要注意重新定位开始的时间
-    if(CMTimeCompare(totalBeginTimeForAudio_,kCMTimeZero)>0)
+    if(CMTimeCompare(mediaBegin,kCMTimeZero)>0.0001)
     {
-        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalBeginTimeForAudio_), bgScale);
+        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaBegin), bgScale);
     }
-    if(CMTimeCompare(totalEndTimeForAudio_, kCMTimeZero)>0)
+    else if(CMTimeCompare(mediaBegin,kCMTimeZero)<0.0001)  //不从开始的位置加音乐
     {
-        duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalEndTimeForAudio_) - CMTimeGetSeconds(totalBeginTimeForAudio_), bgScale);
+        timeInArray = CMTimeMakeWithSeconds(0 - CMTimeGetSeconds(mediaBegin), bgScale);
+    }
+    if(CMTimeCompare(mediaEnd, kCMTimeZero)>0)
+    {
+        duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaEnd) - CMTimeGetSeconds(mediaBegin), bgScale);
         bgAudioTime = duration;
     }
     
@@ -2218,7 +2238,7 @@
     {
         if(CMTimeGetSeconds(duration)>CMTimeGetSeconds(curTimeCnt))
         {
-            duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(curTimeCnt), duration.timescale);
+            duration = CMTimeMakeWithSeconds(MIN(CMTimeGetSeconds(curTimeCnt)-CMTimeGetSeconds(timeInArray),CMTimeGetSeconds(duration)), duration.timescale);
         }
     }
     else
@@ -2251,44 +2271,38 @@
     
     NSLog(@"bgaudio:%f video:%f",CMTimeGetSeconds(bgAudioTime),CMTimeGetSeconds(curTimeCnt));
     
-    //    //因为背景音乐是完整的，所以如果截取一部分时，要注意重新定位开始的时间
-    //    if(CMTimeCompare(totalBeginTimeForAudio_,kCMTimeZero)>0)
-    //    {
-    //        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalBeginTimeForAudio_), bgScale);
-    //    }
-    //    if(CMTimeCompare(totalEndTimeForAudio_, kCMTimeZero)>0)
-    //    {
-    //        duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalEndTimeForAudio_) - CMTimeGetSeconds(totalBeginTimeForAudio_), bgScale);
-    //        bgAudioTime = duration;
-    //    }
+    
     if(CMTimeCompare(bgAudioTime,curTimeCnt)>0)
     {
         bgAudioTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(curTimeCnt), bgAudioTime.timescale);
         duration = bgAudioTime;
     }
+    
     AVMutableCompositionTrack *track = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
                                                                    preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters
                                                   audioMixInputParametersWithTrack:track];
     
-    if(_volRampSeconds>0 && needScale)
+    if(volRampSeconds>0 && needScale)
     {
         //音量渐变大
-        CMTime rampDuration = CMTimeMakeWithSeconds(_volRampSeconds, bgScale);
-        CMTime endRampTime = CMTimeSubtract(duration, rampDuration);
-        [trackMix setVolumeRampFromStartVolume:0 toEndVolume:vol timeRange:CMTimeRangeMake(kCMTimeZero, rampDuration)];
+        CMTime rampDuration = CMTimeMakeWithSeconds(volRampSeconds, bgScale);
+        CMTime endRampTime = CMTimeSubtract(CMTimeAdd(timeInArray, duration), rampDuration);
+        [trackMix setVolumeRampFromStartVolume:0 toEndVolume:vol
+                                     timeRange:CMTimeRangeMake(timeInArray, rampDuration)];
         
-        [trackMix setVolumeRampFromStartVolume:vol toEndVolume:0 timeRange:CMTimeRangeMake(endRampTime, rampDuration)];
+        [trackMix setVolumeRampFromStartVolume:vol toEndVolume:0
+                                     timeRange:CMTimeRangeMake(endRampTime, rampDuration)];
     }
     else
     {
-        [trackMix setVolume:bgAudioVolume_ atTime:kCMTimeZero];
+        [trackMix setVolume:bgAudioVolume_ atTime:timeInArray];
     }
     NSError * error = nil;
     //默认视频长度大于音频长度
     [track insertTimeRange:CMTimeRangeMake(startTime, duration)
                    ofTrack:[trackList objectAtIndex:0]
-                    atTime:kCMTimeZero
+                    atTime:timeInArray
                      error:&error];
     if(error)
     {
@@ -2305,7 +2319,7 @@
     
     if(rate >0 && rate!=1.0)
     {
-        [track scaleTimeRange:CMTimeRangeMake(kCMTimeZero, duration)
+        [track scaleTimeRange:CMTimeRangeMake(timeInArray, duration)
                    toDuration:CMTimeMake(duration.value/rate, duration.timescale)];
         duration.value /= rate;
         NSLog(@"scale audio  to %f",CMTimeGetSeconds(duration));

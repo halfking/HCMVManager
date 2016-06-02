@@ -31,9 +31,6 @@
 
 @end
 @implementation ActionManager
-{
-    BOOL isReverseHasGenerated_;
-}
 @synthesize videoVolume = videoVol_;
 @synthesize audioVolume = audioVol_;
 @synthesize isGenerating = isGenerating_;
@@ -113,11 +110,11 @@
         [player_ readyToRelease];
         player_ = nil;
     }
-    if(reversePlayer_)
-    {
-        [reversePlayer_ readyToRelease];
-        reversePlayer_ = nil;
-    }
+//    if(reversePlayer_)
+//    {
+//        [reversePlayer_ readyToRelease];
+//        reversePlayer_ = nil;
+//    }
     if(audioPlayer_)
     {
         audioPlayer_ = nil;
@@ -191,10 +188,10 @@
     {
         [player_ setVideoVolume:videoVol_];
     }
-    if(reversePlayer_)
-    {
-        [reversePlayer_ setVideoVolume:videoVol_];
-    }
+//    if(reversePlayer_)
+//    {
+//        [reversePlayer_ setVideoVolume:videoVol_];
+//    }
     NSLog(@"set vol:%.2f videovol:%.2f",audioVol,videoVol);
 }
 - (NSArray *) getMediaList
@@ -363,69 +360,6 @@
     return YES;
 }
 
-- (BOOL)generateReverseMV:(NSString*)filePath
-{
-    return [self generateReverseMV:filePath begin:0 end:-1];
-}
-- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd
-{
-    if(!filePath) return NO;
-    //生成反向的视频
-    {
-        if(isReverseGenerating_)
-        {
-            NSLog(@"正在生成反向视频中，不能再次进入");
-            return NO;
-        }
-        isReverseGenerating_ = YES;
-        if(reverseBG_)
-        {
-            PP_RELEASE(reverseBG_);
-        }
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
-        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
-        
-        VideoGenerater * vg = [VideoGenerater new];
-        vg.delegate = self;
-        vg.TagID = 2;
-        reverseGenerate_ = vg;
-        __weak ActionManager * weakSelf = self;
-        NSLog(@"begin generate reverse video....");
-        BOOL ret = [vg generateMVReverse:filePath
-                                  target:outputPath
-                                   begin:sourceBegin
-                                     end:sourceEnd
-                            audioFile:filePath
-                              audioBegin:sourceBegin
-                                complted:^(NSString * filePathNew){
-                                    NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
-                                    reverseGenerate_ = nil;
-                                    if(filePathNew)
-                                    {
-                                        isReverseHasGenerated_ = YES;
-                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
-                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
-                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
-                                        
-                                        __strong ActionManager * strongSelf = weakSelf;
-                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
-                                        {
-                                            [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
-                                        }
-                                    }
-                                    isReverseGenerating_ = NO;
-                                }];
-        if(!ret)
-        {
-            isReverseGenerating_ = NO;
-            isReverseHasGenerated_ = NO;
-            reverseGenerate_ = nil;
-            NSLog(@"generate reverse failure....");
-            return NO;
-        }
-    }
-    return YES;
-}
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse
 {
     if(![self checkIsNeedChangeBG:filePath]) return NO;
@@ -521,15 +455,33 @@
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
     PP_RELEASE(audioBg_);
+    
+    if(!filePath) return NO;
+    
     audioBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
-    if(beginSeconds>0 && beginSeconds < audioBg_.secondsDuration)
+
+    AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
+    if(!asset || asset.duration.value ==0) return NO;
+    
+    CMTimeScale timeScale = MAX(asset.duration.timescale,DEFAULT_AUDIOTIMESCALE);
+    CGFloat secondsInArray = 0;
+    if(beginSeconds<0)
     {
-        audioBg_.begin = CMTimeMakeWithSeconds(beginSeconds,DEFAULT_TIMESCALE);
+        secondsInArray = beginSeconds;
+        beginSeconds = 0;
     }
+    audioBg_.begin = CMTimeMakeWithSeconds(beginSeconds,timeScale);
+    //    }
+    
     if(endSeconds >0 && endSeconds < audioBg_.secondsDuration)
     {
-        audioBg_.end = CMTimeMakeWithSeconds(endSeconds, DEFAULT_TIMESCALE);
+        audioBg_.end = CMTimeMakeWithSeconds(endSeconds, timeScale);
     }
+    else
+    {
+        audioBg_.end =  CMTimeMakeWithSeconds(0,timeScale);
+    }
+    audioBg_.timeInArray = CMTimeMakeWithSeconds(secondsInArray, timeScale);
     return YES;
 }
 - (BOOL)setBackAudio:(MediaItem *)audioItem
@@ -538,8 +490,7 @@
     if(audioItem)
     {
         audioBg_ = [audioItem copyItem];
-        audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
-        //    videoBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+//        audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
     }
     return YES;
 }
@@ -549,25 +500,13 @@
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)playerSeconds
 {
     if(isGenerating_) return NO;
-    
-//    if(action.ActionType==SReverse && !reverseBG_)
-//    {
-//        return NO;
-//    }
-    
-    //    if([self findActionAt:seconds index:-1])
-    //    {
-    //        return NO;
-    //    }
-    //    else
-    //    {
+
     if(playerSeconds<0||playerSeconds>= videoBg_.secondsDuration)
         return NO;
     else
     {
         return YES;
     }
-    //    }
 }
 //将播放器时间转为原轨时间
 //当Rate发生变化时，播放器的时间并不发生变化，即播放到同一片段时，播放器返回的时钟值在不同速率时是相同的
@@ -896,21 +835,21 @@
 {
     needSendPlayControl_ = NO;
     [player_ pause];
-    [reversePlayer_ pause];
+//    [reversePlayer_ pause];
     //    [audioPlayer_ pause];
 }
 - (void)resumePlayer
 {
-    if(player_.hidden==NO)
+//    if(player_.hidden==NO)
         [player_ play];
-    else
-        [reversePlayer_ play];
+//    else
+//        [reversePlayer_ play];
     //    if(audioPlayer_)
     //    {
     //        [audioPlayer_ play];
     //    }
     [self setNeedPlaySync:YES];
-//    needSendPlayControl_ = YES;
+    //    needSendPlayControl_ = YES;
 }
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                             inArray:(CGFloat)secondsInArray
@@ -1108,10 +1047,10 @@
             }
         }
     }
-//    if(secondsInArray<0||!retItem)
-//    {
-//        NSLog(@"not found");
-//    }
+    //    if(secondsInArray<0||!retItem)
+    //    {
+    //        NSLog(@"not found");
+    //    }
     return retItem;
 }
 - (MediaWithAction *)findMediaItemAt:(CGFloat)secondsInArray
@@ -1142,7 +1081,7 @@
 //    NSMutableArray * mediaInActions = [NSMutableArray new];
 //    for (int i = 0;i< (int)mediaList_.count; i ++) {
 //        MediaWithAction * item = mediaList_[i];
-//        
+//
 //        //根据MediaActionID来判断是否属于某个Action
 //        if((
 //            action
@@ -1163,7 +1102,7 @@
 //            nextItem = item;
 //        }
 //    }
-//    
+//
 //    //取哪一个，负数表示之后的
 //    if(pos==index || (index <0 && pos == 0 - index - 1))
 //    {
@@ -1171,7 +1110,7 @@
 //        break;
 //    }
 //    pos ++;
-//    
+//
 //    NSLog(@"find media:%@",retItem?@"OK":@"NO");
 //    if(index<0)
 //    {
@@ -1498,7 +1437,7 @@
     NSLog(@"error:%@",[error localizedDescription]);
     isGenerating_ = NO;
     [self setNeedPlaySync:YES];
-
+    
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:genreateFailure:isFilter:)])
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];

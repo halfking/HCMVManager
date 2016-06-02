@@ -89,11 +89,11 @@
     }
     if(!hasItem)
     {
-         mediaList_ = [action processAction:orgMediaList secondsEffected:orgSecondsEffect];
+        mediaList_ = [action processAction:orgMediaList secondsEffected:orgSecondsEffect];
     }
 #endif
     
-//    mediaList_ = [self combinateArrayItems:mediaList_];
+    //    mediaList_ = [self combinateArrayItems:mediaList_];
     
     
 #ifndef __OPTIMIZE__
@@ -129,10 +129,10 @@
     MediaWithAction * lastItem = nil;
     for (MediaWithAction * item in source) {
         if(lastItem
-                && lastItem.Action.ActionType == item.Action.ActionType
-                && [lastItem.fileName isEqualToString:item.fileName]==YES
-                && fabs(lastItem.secondsEnd - item.secondsBegin) < SECONDS_ERRORRANGE 
-                && lastItem.playRate == item.playRate)
+           && lastItem.Action.ActionType == item.Action.ActionType
+           && [lastItem.fileName isEqualToString:item.fileName]==YES
+           && fabs(lastItem.secondsEnd - item.secondsBegin) < SECONDS_ERRORRANGE
+           && lastItem.playRate == item.playRate)
         {
             lastItem.end = item.end;
         }
@@ -206,34 +206,34 @@
 
 - (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position needReverseCheck:(BOOL)needReverseCheck
 {
-//    if(![self needGenerateForOP])
-//    {
-//        return NO;
-//    }
+    //    if(![self needGenerateForOP])
+    //    {
+    //        return NO;
+    //    }
     if(isGenerating_ || isReverseGenerating_)
     {
         [self cancelGenerate];
     }
     if(isGenerating_) return NO;
     isGenerating_ = YES;
-  
+    
     NSArray * actionMediaList = [self getMediaList];
     
-//    //检查是否都已经将反向视频处理好
-//    BOOL needCheckAgagin = NO;
-//    for (MediaWithAction * media in actionMediaList) {
-//        if(media.playRate<0 && ![media isReverseMedia])
-//        {
-//            [self generateMediaFile:media];
-//            needCheckAgagin = YES;
-//        }
-//    }
-//    if(needCheckAgagin)
-//    {
-//        isGenerating_  = NO;
-//        [self generateMVWithWaterMarker:waterMarker position:position];
-//        return NO;
-//    }
+    //    //检查是否都已经将反向视频处理好
+    //    BOOL needCheckAgagin = NO;
+    //    for (MediaWithAction * media in actionMediaList) {
+    //        if(media.playRate<0 && ![media isReverseMedia])
+    //        {
+    //            [self generateMediaFile:media];
+    //            needCheckAgagin = YES;
+    //        }
+    //    }
+    //    if(needCheckAgagin)
+    //    {
+    //        isGenerating_  = NO;
+    //        [self generateMVWithWaterMarker:waterMarker position:position];
+    //        return NO;
+    //    }
     //动作 处理
     [self saveDraft];
     
@@ -259,6 +259,7 @@
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgmUrl:audioBg_.url];
+        [vg setTimeForAudioMerge:audioBg_.secondsInArray end:audioBg_.secondsDurationInArray];
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
@@ -364,7 +365,7 @@
                               target:outputPath
                                begin:media.secondsEnd
                                  end:media.secondsBegin
-                audioFile:media.filePath
+                           audioFile:media.filePath
                           audioBegin:media.secondsEnd
                             complted:^(NSString * filePathNew){
                                 NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
@@ -386,6 +387,73 @@
     }
     return ret;
 }
+
+
+- (BOOL)generateReverseMV:(NSString*)filePath
+{
+    return [self generateReverseMV:filePath begin:0 end:-1];
+}
+- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd
+{
+    if(!filePath) return NO;
+    //生成反向的视频
+    {
+        if(isReverseGenerating_)
+        {
+            NSLog(@"正在生成反向视频中，不能再次进入");
+            return NO;
+        }
+        isReverseGenerating_ = YES;
+        if(reverseBG_)
+        {
+            PP_RELEASE(reverseBG_);
+        }
+        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
+        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
+        
+        VideoGenerater * vg = [VideoGenerater new];
+        vg.delegate = self;
+        vg.TagID = 2;
+        reverseGenerate_ = vg;
+        __weak ActionManager * weakSelf = self;
+        NSLog(@"begin generate reverse video....");
+        BOOL ret = [vg generateMVReverse:filePath
+                                  target:outputPath
+                                   begin:sourceBegin
+                                     end:sourceEnd
+                               audioFile:filePath
+                              audioBegin:sourceBegin
+                                complted:^(NSString * filePathNew){
+                                    NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
+                                    reverseGenerate_ = nil;
+                                    if(filePathNew)
+                                    {
+                                        isReverseHasGenerated_ = YES;
+                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
+                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
+                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
+                                        
+                                        __strong ActionManager * strongSelf = weakSelf;
+                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+                                        {
+                                            [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+                                        }
+                                    }
+                                    isReverseGenerating_ = NO;
+                                }];
+        if(!ret)
+        {
+            isReverseGenerating_ = NO;
+            isReverseHasGenerated_ = NO;
+            reverseGenerate_ = nil;
+            NSLog(@"generate reverse failure....");
+            return NO;
+        }
+    }
+    return YES;
+}
+
+
 - (void) generatePlayerItem:(NSArray *)mediaList
 {
     

@@ -17,7 +17,7 @@
 @interface ActionManager(player)<CLVideoAddFilterDelegate,GPUImageMovieDelegate>
 
 - (HCPlayerSimple *) getPlayer;
-- (HCPlayerSimple *) getReversePlayer;
+//- (HCPlayerSimple *) getReversePlayer;
 - (GPUImageView *) getFilterView;
 - (NSArray *) getGPUFilters;
 - (UIImage*) getFilteredIcon:(UIImage *)image index:(int)index;
@@ -25,8 +25,8 @@
 
 - (void) setFilterIndex:(int)filterIndex;
 - (int) getCurrentFilterIndex;
-- (BOOL) initPlayer:(HCPlayerSimple *)player reversePlayer:(HCPlayerSimple *)reversePlayer audioPlayer:(AVAudioPlayer *)audioPlayer;
-- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer;
+- (BOOL) initPlayer:(HCPlayerSimple *)player audioPlayer:(AVAudioPlayer *)audioPlayer;
+//- (BOOL) initReversePlayer:(HCPlayerSimple *)reversePlayer;
 
 - (BOOL) initAudioPlayer:(AVAudioPlayer *)audioPlayer;
 //注意，此函数一个VC只能初始化一次
@@ -37,7 +37,10 @@
 - (BOOL) generateMVByFilter:(int)filterIndex;
 - (void) removeGPUFilter;
 
+//将播放器的时间发送给管理器，用于自动切换素材
 - (void) setPlaySeconds:(CGFloat)seconds isReverse:(BOOL)isReverse;
+//根据素材，自动同步背景音乐
+- (void)syncAudioPlayer:(MediaWithAction *)media playerSeconds:(CGFloat)playerSeconds;
 
 #pragma mark - player control
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds;
