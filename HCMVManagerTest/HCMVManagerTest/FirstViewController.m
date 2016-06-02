@@ -592,10 +592,10 @@
 //                                                     } failure:^(CMTime requestTime, NSError *error, NSString *filePath) {
 //                                                     }];
 //    
-    [manager clear];
+    [manager clear:YES];
     [manager setBackMV:item buildReverse:YES];
     [NSThread sleepForTimeInterval:1];
-    [manager clear];
+    [manager clear:YES];
     [manager setBackMV:item buildReverse:YES];
 }
 - (void) changeImageViewContent:(NSString *)path index:(NSInteger)index size:(CGSize)size

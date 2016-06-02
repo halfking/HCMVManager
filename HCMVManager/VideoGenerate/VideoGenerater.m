@@ -1520,6 +1520,7 @@
                                                                             presetName : AVAssetExportPresetPassthrough ];
     
     NSString *exportPath = [[HCFileManager manager]getFileNameByTicks:@"action_media.mp4"];
+    exportPath = [[HCFileManager manager]tempFileFullPath:exportPath];
     
     if ([[ NSFileManager defaultManager ] fileExistsAtPath :exportPath])
         [[ NSFileManager defaultManager ] removeItemAtPath :exportPath error : nil ];

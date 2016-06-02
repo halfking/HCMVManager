@@ -521,9 +521,11 @@
 {
     if(audioPlayer_ && audioBg_)
     {
-        CGFloat secondsForAudio = media.secondsInArray
-        + audioBg_.secondsBegin - audioBg_.secondsInArray
-        + playerSeconds - media.secondsBegin;
+        CGFloat secondsForAudio = media.secondsInArray + playerSeconds - media.secondsBegin  //secondsInArray
+        - audioBg_.secondsInArray
+        + audioBg_.secondsBegin;
+        
+        
         if(secondsForAudio <0)
         {
             audioPlayer_.currentTime = 0;
@@ -531,7 +533,10 @@
         }
         else
         {
-            if(audioPlayer_.currentTime <secondsForAudio+SECONDS_ERRORRANGE)
+            NSLog(@"AM : check audioPlayer:%.4f,seconds:%.4f rate:%f",audioPlayer_.currentTime,secondsForAudio,audioPlayer_.rate);
+            //因为操作过程中视频可能要暂停，但音频不停，因此音频的播放时间应该在视频的前面，但是为了不产生中断感，设定一个参数来处理
+            if(audioPlayer_.currentTime < secondsForAudio
+               || fabs(audioPlayer_.currentTime - secondsForAudio) > self.secondsForAudioPlayerMaxRange)
             {
                 audioPlayer_.currentTime = secondsForAudio;
             }
@@ -703,7 +708,7 @@
 #ifndef __OPTIMIZE__
 //    [reversePlayer_ pause];
     [player_ pause];
-    [audioPlayer_ pause];
+//    [audioPlayer_ pause];
 #endif
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:actionChanged:type:)])
     {

@@ -35,6 +35,7 @@
 @synthesize audioVolume = audioVol_;
 @synthesize isGenerating = isGenerating_;
 @synthesize canSendPlayerMedia = needSendPlayControl_;
+@synthesize secondsForAudioPlayerMaxRange = secondsForAudioPlayerMaxRange_;
 //@synthesize moveFile = movieFile_;
 //@synthesize moveFileOrg = movieFileOrg_;
 +(id)shareObject
@@ -72,6 +73,7 @@
         currentMediaWithAction_ = nil;
         videoVol_ = 1;
         audioVol_ = 1;
+        secondsForAudioPlayerMaxRange_ = 0.5;
         [self setNeedPlaySync:YES];
         
         //        lastPlayerSeconds_ = 0;
@@ -94,7 +96,7 @@
     durationForAudio_ = 0;
     durationForTarget_ = 0;
     currentMediaWithAction_ = nil;
-    
+    secondsForAudioPlayerMaxRange_ = 0.5;
     videoVol_ = 1;
     audioVol_ = 1;
     
@@ -120,7 +122,8 @@
         audioPlayer_ = nil;
     }
 }
-- (void)clear
+
+- (void)clear:(BOOL)includeBaseFile
 {
     [self clearPlayers];
     
@@ -135,10 +138,9 @@
     isGenerating_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
+    secondsForAudioPlayerMaxRange_ = 0.5;
     [self setNeedPlaySync:YES];
     currentMediaWithAction_ = nil;
-    
-    
     
     [actionList_ removeAllObjects];
     [mediaList_ removeAllObjects];
@@ -157,9 +159,11 @@
     {
         [[HCFileManager manager]removeFileAtPath:reverseBG_.filePath];
     }
+    
     HCFileManager * manager = [HCFileManager manager];
     NSString * tempFilePath = [manager tempFileFullPath:nil];
     [[HCFileManager manager]removeFilesAtPath:tempFilePath matchRegex:@"^media_reverse_\\d+.*"];
+    
     NSString * localFilePath = [manager localFileFullPath:nil];
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^action_merge_\\d+.*"];
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+\\.[^\\.]+$"];
