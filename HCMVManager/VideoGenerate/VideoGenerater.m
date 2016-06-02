@@ -53,6 +53,7 @@
 @synthesize totalBeginTime = totalBeginTime_;
 @synthesize totalEndTimeForAudio = totalEndTimeForAudio_;
 @synthesize totalBeginTimeForAudio = totalBeginTimeForAudio_;
+@synthesize bitRate = bitRate_;
 #pragma mark - init
 - (instancetype)init
 {
@@ -80,6 +81,8 @@
     _compositeLyric = YES;
     bgAudioVolume_ = 1.0;
     singVolume_ = 1.0;
+    
+    bitRate_ = (long)(720 *480 * 8);
     //    defaultAudioScale_ = 44100;
     
     udManager_ = [UDManager sharedUDManager];
@@ -528,7 +531,7 @@
     NSNumber *width =  [NSNumber numberWithFloat:renderSize.width];
     NSNumber *height=  [NSNumber numberWithFloat:renderSize.height];
     
-    NSNumber * bitRate = [NSNumber numberWithInt:renderSize.width*renderSize.height*7.5];
+    NSNumber * bitRate = [NSNumber numberWithInt:(int)bitRate_];
     joinVideoExporter.videoSettings= @{
                                        AVVideoCodecKey: AVVideoCodecH264,
                                        AVVideoWidthKey: width,

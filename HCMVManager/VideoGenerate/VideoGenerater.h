@@ -54,6 +54,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
     CGFloat bgAudioVolume_;//伴奏音乐音量,0-1
     CGFloat singVolume_;//人声 0-1
 }
+@property (nonatomic,assign) long bitRate;//码流，默认为-1
 @property (nonatomic,PP_WEAK) id<VideoGeneraterDelegate> delegate;
 @property (nonatomic,assign) int orientation;
 @property (nonatomic, assign) BOOL useFontCamera;
