@@ -17,7 +17,7 @@
 
 #define SECONDS_NOTVALID 999999
 #define SECONDS_NOEND 999998
-#define SECONDS_ERRORRANGE  0.05
+#define SECONDS_ERRORRANGE  0.002
 @class MediaAction;
 @class MediaActionDo;
 @class MediaItem;
@@ -174,7 +174,7 @@
 //注意此时的Seconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (MediaWithAction *)findMediaItemAt:(CGFloat)secondsInArray;
 
-- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index;
+//- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index;
 //注意此时的posSeconds与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 - (BOOL) removeActionItem:(MediaAction *)action
                       at:(CGFloat)seccondsInArray;

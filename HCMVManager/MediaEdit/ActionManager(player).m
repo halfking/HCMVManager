@@ -472,56 +472,43 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
-    //    if(!needSendPlayControl_) return ;
+    if(media.Action.ActionType==SNormal)
+    {
+        NSLog(@"test");
+    }
+    [self setCurrentMediaWithAction:media];
     
-    MediaWithAction * mediaToPlay = media;
-    
-    currentMediaWithAction_ = media;
     if(!isGenerating_ || player_.playing)
     {
-        //    NSLog(@"mediaToPlay:%@",[mediaToPlay toDicionary]);
-        NSLog(@"action %d play:%@ (file:%.2f) inarray:%.2f end of file:%.2f",
-              action.ActionType,
-              [mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsEnd);
-        //        if(mediaToPlay.Action.ActionType!=SReverse
-        //           || [mediaToPlay.fileName rangeOfString:@"reverse_"].location==NSNotFound)
-        //        {
-        [reversePlayer_ pause];
+//        NSLog(@"action %d play:%@ (file:%.2f) inarray:%.2f end of file:%.2f",
+//              media.Action.ActionType,
+//              [media.fileName lastPathComponent],media.secondsBegin,media.secondsInArray,media.secondsEnd);
         
-        [player_ setRate:mediaToPlay.playRate];
         
-        //            //防止跳动
-        //            if(mediaToPlay.Action.ActionType==SReverse)
-        //            {
-        ////                //防止播到前面或后面跳动
-        ////                CGFloat secondsBegin = [self getReverseVideo].secondsDuration - reversePlayer_.secondsPlaying;
-        ////                CGFloat diff = mediaToPlay.secondsBegin - secondsBegin;
-        ////                [player_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-        ////
-        ////                if(audioPlayer_)
-        ////                {
-        ////                    audioPlayer_.currentTime = mediaToPlay.secondsInArray + (diff<0?diff:0);
-        ////                }
-        //                [player_ seek:mediaToPlay.secondsBegin accurate:YES];
-        //                if(audioPlayer_)
-        //                {
-        //                    audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-        //                }
-        //            }
-        //            else
-        if(mediaToPlay.Action.ActionType==SReverse || !mediaToPlay.Action.allowPlayerBeFaster || player_.secondsPlaying <mediaToPlay.secondsBegin)
+        [player_ setRate:media.playRate];
+        
+        //为了防止播放进度跳动，需检查是否需要Seek到指定位置
+        if(media.Action.ActionType==SReverse
+           || !media.Action.allowPlayerBeFaster
+           || player_.secondsPlaying <media.secondsBegin)
         {
-            NSLog(@"通过Media 更改播放器的时间：%.2f",mediaToPlay.secondsBegin);
-            [player_ seek:mediaToPlay.secondsBegin accurate:YES];
+            NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBegin);
+            //是否要禁用时间回调?
+            needSendPlayControl_ = NO;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                needSendPlayControl_ = YES;
+            });
+            
+            [player_ seek:media.secondsBegin accurate:YES];
             if(audioPlayer_ && audioBg_)
             {
-                audioPlayer_.currentTime = mediaToPlay.secondsInArray + audioBg_.secondsBegin;
-                NSLog(@"audio player pos changed:%.2f = (%.2f + %.2f)",audioPlayer_.currentTime,mediaToPlay.secondsInArray,audioBg_.secondsBegin);
+                audioPlayer_.currentTime = media.secondsInArray + audioBg_.secondsBegin;
+                NSLog(@"audio player pos changed:%.2f = (%.2f + %.2f)",audioPlayer_.currentTime,media.secondsInArray,audioBg_.secondsBegin);
             }
         }
         else
         {
-            NSLog(@"通过Media 属性%d，没有更改播放器的时间：%.2f-->%.2f",mediaToPlay.Action.allowPlayerBeFaster,player_.secondsPlaying, mediaToPlay.secondsBegin);
+            NSLog(@"通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBegin);
         }
         NSLog(@"player seconds:%.2f item:%.2f audio:%.2f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
               audioPlayer_? audioPlayer_.currentTime:-1);
@@ -529,40 +516,15 @@
         [player_ play];
         if(audioPlayer_)
         {
-//            if(mediaToPlay.playRate <0)
-//                audioPlayer_.rate = mediaToPlay.playRate;
-//            else
-//                audioPlayer_.rate = 1;
             [audioPlayer_ play];
         }
         player_.hidden = NO;
         reversePlayer_.hidden = YES;
-        NSLog(@"mediaplay:%@ player:(%.2f)",mediaToPlay.fileName,player_.secondsPlaying);
-        //        }
-        //        else
-        //        {
-        //            [player_ pause];
-        //            [reversePlayer_ setRate:mediaToPlay.playRate];
-        //
-        //            //防止播到前面或后面跳动
-        //            //            CGFloat secondsBegin = [self getReverseVideo].secondsDuration - player_.secondsPlaying;
-        //            //            [reversePlayer_ seek:MIN(mediaToPlay.secondsBegin,secondsBegin) accurate:YES];
-        //            [reversePlayer_ seek:mediaToPlay.secondsBegin accurate:YES];
-        //            [reversePlayer_ play];
-        //            if(audioPlayer_)
-        //            {
-        //                audioPlayer_.currentTime = mediaToPlay.secondsInArray;
-        //                [audioPlayer_ play];
-        //            }
-        //            NSLog(@"reversePlayer_ seconds:%.2f item:%.2f audio:%.2f",reversePlayer_.secondsPlaying,CMTimeGetSeconds(reversePlayer_.playerItem.currentTime),
-        //                  audioPlayer_? audioPlayer_.currentTime:-1);
-        //            reversePlayer_.hidden = NO;
-        //            player_.hidden = YES;
-        //        }
+        NSLog(@"mediaplay:%@ player:(%.2f)",media.fileName,player_.secondsPlaying);
     }
     else
     {
-        NSLog(@"genreateing ,mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[mediaToPlay.fileName lastPathComponent],mediaToPlay.secondsBegin,mediaToPlay.secondsInArray,mediaToPlay.secondsBegin);
+        NSLog(@"genreateing ,mediaplay:%@ (%.2f) inarray:%.2f begin:%.2f",[media.fileName lastPathComponent],media.secondsBegin,media.secondsInArray,media.secondsBegin);
         
         NSLog(@"pause in play functions");
         [player_ pause];
@@ -570,65 +532,73 @@
         [audioPlayer_ pause];
     }
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:play:)])
-        [self.delegate ActionManager:self play:mediaToPlay];
+        [self.delegate ActionManager:self play:media];
 }
-- (MediaWithAction *)findMediaByActionDo:(MediaActionDo *)action withSeconds:(CGFloat)secondsInArray
-{
-    MediaWithAction * mediaToPlay = nil;
-    if(action)
-    {
-        //Repeat 是将前面1秒的记录为Repeat，然后，将后面的整体切为一段，所以这时候要指向下一个对像
-        //时间无效，也应该指向下一个
-        if(secondsInArray == SECONDS_NOTVALID || (secondsInArray == SECONDS_NOEND && action.ActionType ==SRepeat && action.ReverseSeconds))
-        {
-            if(action.ActionType==SReverse && action.DurationInArray>0)
-            {
-                mediaToPlay = [self findMediaWithAction:action index:0];
-            }
-            else
-            {
-                mediaToPlay = [self findMediaWithAction:action index:-1];
-            }
-        }
-        else if(secondsInArray==SECONDS_NOEND)   //当前对像未结束
-        {
-            if(action.ActionType==SReverse)
-            {
-                if(action.DurationInArray >0)
-                {
-                    mediaToPlay = [self findMediaWithAction:action index:0];
-                }
-                else
-                {
-                    mediaToPlay = [self findMediaWithAction:action index:1];
-                }
-            }
-            else
-            {
-                mediaToPlay = [self findMediaWithAction:action index:0];
-            }
-        }
-        else
-        {
-            mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
-        }
-    }
-    //    else
-    //    {
-    //        mediaToPlay = [self findMediaItemAt:secondsInArray];
-    //    }
-    return mediaToPlay;
-}
+//- (MediaWithAction *)findMediaByActionDo:(MediaActionDo *)action withSeconds:(CGFloat)secondsInArray
+//{
+//    MediaWithAction * mediaToPlay = nil;
+//    if(action)
+//    {
+//        //Repeat 是将前面1秒的记录为Repeat，然后，将后面的整体切为一段，所以这时候要指向下一个对像
+//        //时间无效，也应该指向下一个
+//        if(secondsInArray == SECONDS_NOTVALID
+//           || (secondsInArray == SECONDS_NOEND
+//               && action.ActionType ==SRepeat
+//               && action.ReverseSeconds<0)
+//           )
+//        {
+//            if(action.ActionType==SReverse && action.DurationInArray>0)
+//            {
+//                if([action.Media isKindOfClass:[MediaWithAction class]])
+//                    mediaToPlay = (MediaWithAction *)action.Media;
+//                else
+//                    mediaToPlay = [self findMediaWithAction:action index:0]; //取当前这个
+//            }
+//            else
+//            {
+//                mediaToPlay = [self findMediaWithAction:action index:-1]; //取下一个Media
+//            }
+//        }
+//        else if(secondsInArray==SECONDS_NOEND)   //当前对像未结束
+//        {
+//            if(action.ActionType==SReverse)
+//            {
+//                if(action.DurationInArray >0)
+//                {
+//                    if([action.Media isKindOfClass:[MediaWithAction class]])
+//                        mediaToPlay = (MediaWithAction *)action.Media;
+//                    else
+//                        mediaToPlay = [self findMediaWithAction:action index:0];
+//                }
+//                else
+//                {
+//                    mediaToPlay = [self findMediaWithAction:action index:1];//取前一个
+//                }
+//            }
+//            else
+//            {
+//                if([action.Media isKindOfClass:[MediaWithAction class]])
+//                    mediaToPlay = (MediaWithAction *)action.Media;
+//                else
+//                    mediaToPlay = [self findMediaWithAction:action index:0];
+//            }
+//        }
+//        else
+//        {
+//            if([action.Media isKindOfClass:[MediaWithAction class]])
+//                mediaToPlay = (MediaWithAction *)action.Media;
+//            else
+//                mediaToPlay = [self findMediaItemAt:action.SecondsInArray - action.secondsBeginAdjust];
+//        }
+//    }
+//    return mediaToPlay;
+//}
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
+//    NSLog(@"播放器时间:%f",playerSeconds);
     //到开始或结束时，或者允许触发时，才可以操作
-    if(
-       //       playerSeconds>=SECONDS_ERRORRANGE
-       //       &&
-       //       playerSeconds <= videoBg_.secondsDuration - SECONDS_ERRORRANGE
-       //       &&
-       !needSendPlayControl_)
-        return ;
+    if(!needSendPlayControl_) return ;
+    
     //有动作未完成时，不接收时间的变化
     BOOL hasNotCompleted = NO;
     for (MediaActionDo * action in actionList_) {
@@ -644,6 +614,7 @@
     //有时候播放器定位不准，因此在某种情况下，也不作处理
     if(currentMediaWithAction_)
     {
+        //误差处理是否需要?
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
         if(currentMediaWithAction_.secondsBegin <=playerSeconds +diff && currentMediaWithAction_.secondsEnd > playerSeconds)
         {
@@ -660,26 +631,34 @@
             NSLog(@"??? %.2f <-- %.2f",playerSeconds,currentMediaWithAction_.secondsBegin);
 #endif
         }
+        else if(playerSeconds < currentMediaWithAction_.secondsBegin)
+        {
+            return;
+        }
     }
+    
+    //超过媒体最后时间
     if(playerSeconds >= videoBg_.secondsDuration - SECONDS_ERRORRANGE) return;
     
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
+    
 #ifndef __OPTIMIZE__
-    if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE)
+    if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_)
     {
+        NSLog(@"不可能的事情发生了，没有找到对应的播放时间");
+        NSLog(@"seconds:%.4f",playerSeconds);
+        NSLog(@"current:%@",currentMediaWithAction_);
+        NSLog(@"medialist:%@",mediaList_);
+        
         secondsInArray =[self getSecondsInArrayViaCurrentState:playerSeconds];
     }
-#endif
-#ifndef __OPTIMIZE__
     [player_ pause];
 #endif
-    MediaActionDo * itemDo = [self findActionAt:secondsInArray index:-1];
-    MediaWithAction * media  = itemDo?[self findMediaByActionDo:itemDo withSeconds:SECONDS_NOEND]:nil;
-    if(!media)
-    {
-        media = [self findMediaItemAt:secondsInArray];
-    }
     
+    //根据时间，寻找CurrentMedia之后的第一个匹配的素材
+    MediaWithAction * media  =  [self getMediaActionViaSecondsInArray:secondsInArray afterMedia:currentMediaWithAction_];
+    
+    //奇怪的，没有变化，为什么会走到这里
     if(currentMediaWithAction_ && media == currentMediaWithAction_)
     {
 #ifndef __OPTIMIZE__
@@ -687,10 +666,54 @@
 #endif
         return;
     }
-    else
-        currentMediaWithAction_ = media;
     
-    [self ActionManager:self play:itemDo media:media seconds:secondsInArray];
+    [self ActionManager:self play:nil media:media seconds:secondsInArray];
+}
+//根据时间，寻找CurrentMedia之后的第一个匹配的素材
+- (MediaWithAction *) getMediaActionViaSecondsInArray:(CGFloat)secondsInArray afterMedia:(MediaWithAction *)currentMedia
+{
+    MediaWithAction * media  =  nil;
+    
+    BOOL isBegin = NO;
+    MediaWithAction * prevMedia = nil;
+    for (MediaWithAction * item in mediaList_) {
+        if(item.secondsInArrayNotConfirm==YES) continue;
+        if(!currentMedia || currentMedia == item)
+        {
+            isBegin = YES;
+            prevMedia = item;
+            continue;
+        }
+        if(isBegin)
+        {
+            if(item.secondsInArray - SECONDS_ERRORRANGE <= secondsInArray
+               && (item.secondsDuration + item.secondsInArray > secondsInArray
+                   || item.Action.isOPCompleted == NO)
+               )
+            {
+                media = item;
+                break;
+            }
+            else
+            {
+                prevMedia = item;
+            }
+        }
+    }
+    if(!media)
+    {
+        if(actionList_.count==0)
+        {
+            media = [mediaList_ firstObject];
+        }
+        else
+        {
+            NSLog(@"不可能的事情发生了，没有找到对应的Media");
+            NSLog(@"secondsInArray:%.4f",secondsInArray);
+            NSLog(@"medialist:%@",mediaList_);
+        }
+    }
+    return media;
 }
 - (void)ActionManager:(ActionManager *)manager actionChanged:(MediaActionDo *)action type:(int)opType//0 add 1 update 2 remove
 {

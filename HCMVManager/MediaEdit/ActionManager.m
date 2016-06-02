@@ -9,6 +9,7 @@
 #import "ActionManager.h"
 #import "ActionManager(index).h"
 #import <hccoren/base.h>
+#import <hccoren/JSON.h>
 #import "MediaAction.h"
 #import "MediaItem.h"
 #import "MediaActionDo.h"
@@ -269,12 +270,16 @@
     {
         currentMediaWithAction_ = media;
     }
+    NSLog(@" 更新当前媒体:%@",currentMediaWithAction_?[currentMediaWithAction_ toString]:nil);
     [self setNeedPlaySync:YES];
 }
 //根据当前对像获取...
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds
 {
     CGFloat secondsInArray = playerSeconds;
+    
+    if(!currentMediaWithAction_) return secondsInArray;
+    
     MediaWithAction * nextItem = nil;
     if(currentMediaWithAction_)
     {
@@ -300,26 +305,6 @@
         {
             secondsInArray  = nextItem.secondsInArray;
         }
-//        if(!isValid || secondsInArray <0)
-//        {
-//            for (int i = (int)mediaList_.count-1;i>=0;i--){
-//                MediaWithAction * item = [mediaList_ objectAtIndex:i];
-//                if(!item.secondsInArrayNotConfirm)
-//                {
-//                    secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
-//                    if(secondsInArray>=0) break;
-//                }
-//            }
-//            //            for (MediaWithAction * item in mediaList_) {
-//            //                secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
-//            //                if(secondsInArray>=0) break;
-//            //            }
-//        }
-//        //如果没有合法的数据，则假定没有变化
-//        if(secondsInArray<0 && currentMediaWithAction_.Action.ActionType ==SNormal)
-//        {
-//            return playerSeconds;
-//        }
     }
     else
     {
@@ -356,21 +341,6 @@
             else
                 secondsInArray = lastItem.secondsInArray;
         }
-//        if(secondsInArray<0)
-//        {
-//            for (int i = (int)mediaList_.count-1;i>=0;i--){
-//                //        for (MediaWithAction * item in mediaList_) {
-//                MediaWithAction * item = [mediaList_ objectAtIndex:i];
-//                if(!item.secondsInArrayNotConfirm)
-//                {
-//                    if(item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
-//                    {
-//                        secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
-//                        break;
-//                    }
-//                }
-//            }
-//        }
     }
     return secondsInArray;
 }
@@ -421,8 +391,12 @@
         reverseGenerate_ = vg;
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");
-        BOOL ret = [vg generateMVReverse:filePath target:outputPath
-                                   begin:sourceBegin end:sourceEnd
+        BOOL ret = [vg generateMVReverse:filePath
+                                  target:outputPath
+                                   begin:sourceBegin
+                                     end:sourceEnd
+                            audioFile:filePath
+                              audioBegin:sourceBegin
                                 complted:^(NSString * filePathNew){
                                     NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
                                     reverseGenerate_ = nil;
@@ -1121,7 +1095,7 @@
             
             BOOL containsSeconds = [item containSecondsInArray:secondsInArray];
             
-            NSLog(@"[%d]find index:%d item[%d]: %.4f dur:%.4f media:%.2f-%.2f  targetSeconds:%.4f result:%d",i,
+            NSLog(@"[%d]find index:%d item[%d]: %.4f dur:%.4f media:%.2f-%.2f  targetSeconds:%.4f isfound:%d",i,
                   item.Index,
                   item.ActionType,item.SecondsInArray,item.DurationInSeconds,
                   item.Media.secondsBegin,item.Media.secondsEnd,
@@ -1132,29 +1106,12 @@
                 retItem = item;
                 break;
             }
-            //            //起hhko在当前时间前
-            //            if(item.SecondsInArray - secondsInArray < 0 - item.secondsBeginAdjust + SECONDS_ERRORRANGE )
-            //            {
-            //                if(item.DurationInArray <0 ||
-            //                   (item.DurationInArray>=0 && item.DurationInArray + item.SecondsInArray - secondsInArray > SECONDS_ERRORRANGE - item.secondsBeginAdjust))
-            //                {
-            //                    retItem = item;
-            //                    break;
-            //                }
-            //                else if(item.DurationInArray <0)
-            //                {
-            //                    retItem = item;
-            //                    break;
-            //                }
-            //            }
-            //            NSLog(@"find item:%@",retItem?@"OK":@"NO");
         }
-        
     }
-    if(secondsInArray<0||!retItem)
-    {
-        NSLog(@"not found");
-    }
+//    if(secondsInArray<0||!retItem)
+//    {
+//        NSLog(@"not found");
+//    }
     return retItem;
 }
 - (MediaWithAction *)findMediaItemAt:(CGFloat)secondsInArray
@@ -1176,43 +1133,58 @@
     NSLog(@"find media:%@",retItem?@"OK":@"NO");
     return retItem;
 }
-- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index
-{
-    MediaWithAction * retItem = nil;
-    int pos = 0;
-    MediaWithAction * nextItem = nil;
-    for (int i = (int)mediaList_.count -1; i>=0; i--) {
-        MediaWithAction * item = mediaList_[i];
-        if((action && item.Action.MediaActionID>0 &&
-            item.Action.MediaActionID == action.MediaActionID)
-           ||
-           (!action && item.Action.ActionType==SNormal))
-        {
-            if(pos==index || (index <0 && pos == 0 - index - 1))
-            {
-                retItem = item;
-                break;
-            }
-            pos ++;
-        }
-        else
-        {
-            nextItem = item;
-        }
-    }
-    NSLog(@"find media:%@",retItem?@"OK":@"NO");
-    if(index<0)
-    {
-        //最后了
-        if(!nextItem && action.Media.secondsEnd >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE)
-        {
-            nextItem = [mediaList_ firstObject];
-        }
-        return nextItem;
-    }
-    else
-        return retItem;
-}
+////根据Action取对应的素材信息，可能取当前Action的，或者之前，或者之后的
+//- (MediaWithAction *)findMediaWithAction:(MediaActionDo*)action index:(int)index
+//{
+//    MediaWithAction * retItem = nil;
+//    int pos = 0;
+//    MediaWithAction * nextItem = nil;
+//    NSMutableArray * mediaInActions = [NSMutableArray new];
+//    for (int i = 0;i< (int)mediaList_.count; i ++) {
+//        MediaWithAction * item = mediaList_[i];
+//        
+//        //根据MediaActionID来判断是否属于某个Action
+//        if((
+//            action
+//            && item.Action.MediaActionID>0
+//            &&
+//            item.Action.MediaActionID == action.MediaActionID
+//            )
+//           ||
+//           (
+//            !action
+//            && item.Action.ActionType==SNormal)
+//           )
+//        {
+//            [mediaInActions addObject:item];
+//        }
+//        else
+//        {
+//            nextItem = item;
+//        }
+//    }
+//    
+//    //取哪一个，负数表示之后的
+//    if(pos==index || (index <0 && pos == 0 - index - 1))
+//    {
+//        retItem = item;
+//        break;
+//    }
+//    pos ++;
+//    
+//    NSLog(@"find media:%@",retItem?@"OK":@"NO");
+//    if(index<0)
+//    {
+//        //最后了
+//        if(!nextItem && action.Media.secondsEnd >= [self getBaseVideo].secondsDuration - SECONDS_ERRORRANGE)
+//        {
+//            nextItem = [mediaList_ firstObject];
+//        }
+//        return nextItem;
+//    }
+//    else
+//        return retItem;
+//}
 - (BOOL)removeActionItem:(MediaAction *)action
                       at:(CGFloat)seccondsInArray
 {

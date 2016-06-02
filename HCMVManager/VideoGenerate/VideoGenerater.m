@@ -1335,6 +1335,8 @@
 - (BOOL)generateMVReverse:(NSString *)sourcePath target:(NSString *)targetPath
                     begin:(CGFloat)sourceBegin
                       end:(CGFloat)sourceEnd
+                audioFile:(NSString *)audioFilePath
+               audioBegin:(CGFloat)audioBegin
                  complted:(void (^)(NSString * filePath))complted
 {
     if(![HCFileManager isExistsFile:sourcePath])

@@ -289,7 +289,15 @@ static HCPlayerSimple *sharedPlayerView = nil;
             toleranceBefore:kCMTimeZero
              toleranceAfter:kCMTimeZero];
     
-    secondsPlaying_ = seconds;
+    //    if(fabs(CMTimeGetSeconds(player_.currentItem.currentTime) - seconds)>=0.01)
+    //    {
+    //刚刚Seek后，当前PlayerItem的时间并不会发生变化，有可能导致错误
+    [NSThread sleepForTimeInterval:0.01];
+    //    }
+//    NSLog(@"player current item:%f seconds:%f",CMTimeGetSeconds(player_.currentItem.currentTime),seconds);
+    
+    
+    secondsPlaying_ = CMTimeGetSeconds(player_.currentItem.currentTime);
     
     if(needAutoPlay_)
     {
@@ -478,6 +486,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
         if(player_)
         {
             [self clearObserver];
+            secondsPlaying_ = 0;
             [player_ replaceCurrentItemWithPlayerItem:item];
             [self addObserver];
             secondsEnd_ = -1;
@@ -515,7 +524,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
 {
     AVURLAsset *movieAsset = nil;
     NSLog(@"play item url:%@",[url absoluteString]);
-
+    
     movieAsset = [AVURLAsset URLAssetWithURL:url options:nil];
     AVPlayerItem * playerItem = [AVPlayerItem playerItemWithAsset:movieAsset];
     [self changeCurrentPlayerItem:playerItem];
@@ -647,16 +656,33 @@ static HCPlayerSimple *sharedPlayerView = nil;
         __weak HCPlayerSimple *weakSelf = self;
         __block BOOL timerDoing_;
         timerDoing_ = NO;
+        __weak AVPlayer * weakPlayer = player_;
         timeObserver_ = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1, 25)
                                                                   queue:NULL
                                                              usingBlock:^(CMTime time){
                                                                  if(weakSelf && !timerDoing_)
                                                                  {
                                                                      timerDoing_ = YES;
+                                                                     
+                                                                     if(!weakPlayer || weakPlayer.rate==0)
+                                                                     {
+                                                                         timerDoing_ = NO;
+                                                                         return;
+                                                                     }
                                                                      __strong HCPlayerSimple *strongSelf = weakSelf;
+                                                                     CGFloat seconds  = CMTimeGetSeconds([weakPlayer currentItem].currentTime);
+                                                                     //播放器好像定位不准，定位到4.5秒，可能从4.47秒开播
+                                                                     //注意正放与倒放
+                                                                     if((seconds <= secondsPlaying_ +0.001 && weakPlayer.rate>0)
+                                                                        ||
+                                                                        (seconds >= secondsPlaying_ -0.001 && weakPlayer.rate<0)
+                                                                        )
+                                                                     {
+                                                                         timerDoing_ = NO;
+                                                                         return;
+                                                                     }
+                                                                     secondsPlaying_ = seconds;
                                                                      
-                                                                     
-                                                                     CGFloat seconds  = CMTimeGetSeconds(time);
                                                                      [strongSelf setDurationWhenWithSeconds:seconds];
                                                                      
                                                                      [strongSelf videoPlayer:strongSelf
@@ -749,7 +775,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
     else if([keyPath isEqualToString:@"rate"])
     {
         //    if (kRateDidChangeKVO == context) {
-        NSLog(@"Player playback rate changed: %.5f seconds:%.1f/%.1f", self.player.rate,secondsPlaying_,secondsDuration_);
+        //        NSLog(@"Player playback rate changed: %.5f seconds:%.1f/%.1f", self.player.rate,secondsPlaying_,secondsDuration_);
         if (self.player.rate == 0.0 && self.playing) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.08 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self checkPause];
@@ -866,7 +892,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
     }
 }
 
-- (void)videoPlayer:(HCPlayerSimple *)videoPlayer timeDidChange:(CGFloat)secondsPlaying
+- (void)videoPlayer:(HCPlayerSimple *)videoPlayer timeDidChange:(CGFloat)seconds
 {
     [self hideActivityView];
     //显示歌词
@@ -877,7 +903,7 @@ static HCPlayerSimple *sharedPlayerView = nil;
     
     if ([videoPlayer.delegate respondsToSelector:@selector(playerSimple:timeDidChange:)])
     {
-        [videoPlayer.delegate playerSimple:videoPlayer timeDidChange:secondsPlaying];
+        [videoPlayer.delegate playerSimple:videoPlayer timeDidChange:seconds];
     }
 }
 

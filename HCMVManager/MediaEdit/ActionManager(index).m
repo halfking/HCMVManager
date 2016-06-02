@@ -362,7 +362,10 @@
     NSLog(@"VG  :reverse media video begin....");
     BOOL ret = [vg generateMVReverse:media.filePath
                               target:outputPath
-                               begin:media.secondsEnd end:media.secondsBegin
+                               begin:media.secondsEnd
+                                 end:media.secondsBegin
+                audioFile:media.filePath
+                          audioBegin:media.secondsEnd
                             complted:^(NSString * filePathNew){
                                 NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
                                 if(filePathNew)
