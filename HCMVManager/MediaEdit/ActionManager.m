@@ -114,11 +114,11 @@
         [player_ readyToRelease];
         player_ = nil;
     }
-//    if(reversePlayer_)
-//    {
-//        [reversePlayer_ readyToRelease];
-//        reversePlayer_ = nil;
-//    }
+    //    if(reversePlayer_)
+    //    {
+    //        [reversePlayer_ readyToRelease];
+    //        reversePlayer_ = nil;
+    //    }
     if(audioPlayer_)
     {
         audioPlayer_ = nil;
@@ -195,10 +195,10 @@
     {
         [player_ setVideoVolume:videoVol_];
     }
-//    if(reversePlayer_)
-//    {
-//        [reversePlayer_ setVideoVolume:videoVol_];
-//    }
+    //    if(reversePlayer_)
+    //    {
+    //        [reversePlayer_ setVideoVolume:videoVol_];
+    //    }
     NSLog(@"set vol:%.2f videovol:%.2f",audioVol,videoVol);
 }
 - (NSArray *) getMediaList
@@ -462,14 +462,14 @@
 - (BOOL)setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds
 {
     PP_RELEASE(audioBg_);
-//    if(audioPlayer_)
-//    {
-//        [audioPlayer_ pause];
-//    }
+    //    if(audioPlayer_)
+    //    {
+    //        [audioPlayer_ pause];
+    //    }
     if(!filePath) return NO;
     
     audioBg_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePath]];
-
+    
     AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:filePath]];
     if(!asset || asset.duration.value ==0) return NO;
     
@@ -500,7 +500,7 @@
     if(audioItem)
     {
         audioBg_ = [audioItem copyItem];
-//        audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
+        //        audioBg_.timeInArray = CMTimeMakeWithSeconds(0, audioItem.begin.timescale);
     }
     return YES;
 }
@@ -510,7 +510,7 @@
 - (BOOL)canAddAction:(MediaAction *)action seconds:(CGFloat)playerSeconds
 {
     if(isGenerating_) return NO;
-
+    
     if(playerSeconds<0||playerSeconds>= videoBg_.secondsDuration)
         return NO;
     else
@@ -838,15 +838,15 @@
 {
     needSendPlayControl_ = NO;
     [player_ pause];
-//    [reversePlayer_ pause];
+    //    [reversePlayer_ pause];
     //    [audioPlayer_ pause];
 }
 - (void)resumePlayer
 {
-//    if(player_.hidden==NO)
-        [player_ play];
-//    else
-//        [reversePlayer_ play];
+    //    if(player_.hidden==NO)
+    [player_ play];
+    //    else
+    //        [reversePlayer_ play];
     //    if(audioPlayer_)
     //    {
     //        [audioPlayer_ play];
@@ -948,21 +948,23 @@
     [self buildTimerForPlayerSync:durationInSeconds];
     
     //延时处理倒放视频的问题
-    __weak ActionManager * weakSelf = self;
-    __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.25f
-                                                                         block:^(id userInfo) {
-                                                                             [weakTimer2 invalidate];
-                                                                             weakTimer2 = nil;
-                                                                             if(action.ActionType==SReverse)
-                                                                             {
-                                                                                 __strong ActionManager * strongSelf = weakSelf;
-                                                                                 [strongSelf generateMediaFileViaAction:(MediaActionDo *)userInfo];
-                                                                             }
-                                                                             
-                                                                         } userInfo:action repeats:NO];
-    
-    [weakTimer2 fire];
-    //    needSendPlayControl_ = YES;
+    if(action.ActionType==SReverse)
+    {
+        __weak ActionManager * weakSelf = self;
+        __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.25f
+                                                                             block:^(id userInfo) {
+                                                                                 [weakTimer2 invalidate];
+                                                                                 weakTimer2 = nil;
+                                                                                 if(action.ActionType==SReverse)
+                                                                                 {
+                                                                                     __strong ActionManager * strongSelf = weakSelf;
+                                                                                     [strongSelf generateMediaFileViaAction:(MediaActionDo *)userInfo];
+                                                                                 }
+                                                                                 
+                                                                             } userInfo:action repeats:NO];
+        
+        [weakTimer2 fire];
+    }
     return YES;
 }
 - (void)buildTimerForPlayerSync:(CGFloat)secondsDurationInArray
@@ -978,7 +980,7 @@
                                                                     [timerForPlayerSync_ invalidate];
                                                                     timerForPlayerSync_ = nil;
                                                                 } userInfo:nil repeats:NO];
-
+    
     [timerForPlayerSync_ fire];
 }
 - (void)refreshSecondsEffectPlayer:(CGFloat)secondsEndInArray

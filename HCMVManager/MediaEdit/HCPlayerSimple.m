@@ -492,8 +492,6 @@ static HCPlayerSimple *sharedPlayerView = nil;
         }
         else
         {
-            
-            
             if([NSThread isMainThread])
             {
                 [self buildPlayerContents];
