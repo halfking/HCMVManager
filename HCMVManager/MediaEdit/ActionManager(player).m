@@ -667,7 +667,8 @@
         [player_ pause];
 #endif
         //这里可能需要放最后一个Media可能才合适。
-        media = [mediaList_ lastObject];
+        
+        media = [self findNextItem:currentMediaWithAction_];
         secondsInArray = media.secondsInArray;
     }
     else
@@ -687,6 +688,34 @@
     }
     [self ActionManager:self play:nil media:media seconds:secondsInArray];
     
+}
+- (MediaWithAction *)findNextItem:(MediaWithAction *)media
+{
+    BOOL isFind = NO;
+    MediaWithAction * nextItem = nil;
+    for (MediaWithAction * item  in mediaList_) {
+        if(item == media)
+        {
+            isFind = YES;
+        }
+        else if(isFind)
+        {
+            nextItem = item;
+            break;
+        }
+    }
+    if(!nextItem)
+    {
+        if(media == [mediaList_ lastObject])
+        {
+            nextItem = [mediaList_ firstObject];
+        }
+        else
+        {
+            nextItem = [mediaList_ lastObject];
+        }
+    }
+    return nextItem;
 }
 //根据时间，寻找CurrentMedia之后的第一个匹配的素材
 - (MediaWithAction *) getMediaActionViaSecondsInArray:(CGFloat)secondsInArray afterMedia:(MediaWithAction *)currentMedia
@@ -730,7 +759,8 @@
             NSLog(@"AM : 不可能的事情发生了，没有找到对应的Media");
             NSLog(@"AM : secondsInArray:%.4f",secondsInArray);
             NSLog(@"AM : medialist:%@",mediaList_);
-            media = [mediaList_ lastObject];
+//            media = [mediaList_ lastObject];
+            media = [self findNextItem:currentMedia];
         }
     }
     return media;

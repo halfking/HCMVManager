@@ -223,6 +223,8 @@
 		11754F8B1CD8891600F4DA09 /* CMD_GetUserMTVBySample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMD_GetUserMTVBySample.m; sourceTree = "<group>"; };
 		11ABAE9E1CF0E63F00E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
 		11ABAE9F1CF0E63F00E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
+		11C851241D01D9A20029229B /* HCMVManagerBundle.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HCMVManagerBundle.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		11C851261D01D9A20029229B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithActionView.h; sourceTree = "<group>"; };
 		11D595CF1CFB6E7100D96FAA /* MediaWithActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithActionView.m; sourceTree = "<group>"; };
 		11DE4A681CE384A700A0BE8D /* ActionManager(index).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActionManager(index).h"; sourceTree = "<group>"; };
@@ -355,6 +357,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		11C851211D01D9A20029229B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		11ED404D1CC6952B00561E33 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -448,6 +457,14 @@
 			path = AVReverse;
 			sourceTree = "<group>";
 		};
+		11C851251D01D9A20029229B /* HCMVManagerBundle */ = {
+			isa = PBXGroup;
+			children = (
+				11C851261D01D9A20029229B /* Info.plist */,
+			);
+			path = HCMVManagerBundle;
+			sourceTree = "<group>";
+		};
 		11DE4A671CE384A700A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,6 +509,7 @@
 				11754E531CD7507B00F4DA09 /* HCMVManager.podspec */,
 				11ED40531CC6952B00561E33 /* HCMVManager */,
 				11ED405F1CC6952B00561E33 /* HCMVManagerTests */,
+				11C851251D01D9A20029229B /* HCMVManagerBundle */,
 				11ED40521CC6952B00561E33 /* Products */,
 				11ED42B61CC8DBF400561E33 /* Frameworks */,
 				E633BE80FEF939434CF23008 /* Pods */,
@@ -503,6 +521,7 @@
 			children = (
 				11ED40511CC6952B00561E33 /* HCMVManager.framework */,
 				11ED405B1CC6952B00561E33 /* HCMVManagerTests.xctest */,
+				11C851241D01D9A20029229B /* HCMVManagerBundle.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -783,6 +802,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		11C851231D01D9A20029229B /* HCMVManagerBundle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11C851291D01D9A20029229B /* Build configuration list for PBXNativeTarget "HCMVManagerBundle" */;
+			buildPhases = (
+				11C851201D01D9A20029229B /* Sources */,
+				11C851211D01D9A20029229B /* Frameworks */,
+				11C851221D01D9A20029229B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HCMVManagerBundle;
+			productName = HCMVManagerBundle;
+			productReference = 11C851241D01D9A20029229B /* HCMVManagerBundle.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		11ED40501CC6952B00561E33 /* HCMVManager */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 11ED40651CC6952B00561E33 /* Build configuration list for PBXNativeTarget "HCMVManager" */;
@@ -833,6 +869,9 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = seenvoice.com;
 				TargetAttributes = {
+					11C851231D01D9A20029229B = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
 					11ED40501CC6952B00561E33 = {
 						CreatedOnToolsVersion = 7.3;
 					};
@@ -855,11 +894,19 @@
 			targets = (
 				11ED40501CC6952B00561E33 /* HCMVManager */,
 				11ED405A1CC6952B00561E33 /* HCMVManagerTests */,
+				11C851231D01D9A20029229B /* HCMVManagerBundle */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		11C851221D01D9A20029229B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		11ED404F1CC6952B00561E33 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -965,6 +1012,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		11C851201D01D9A20029229B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		11ED404C1CC6952B00561E33 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1056,6 +1110,38 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		11C851271D01D9A20029229B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = HCMVManagerBundle/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManagerBundle;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		11C851281D01D9A20029229B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = HCMVManagerBundle/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seenvoice.HCMVManagerBundle;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		11ED40631CC6952B00561E33 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1392,6 +1478,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		11C851291D01D9A20029229B /* Build configuration list for PBXNativeTarget "HCMVManagerBundle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11C851271D01D9A20029229B /* Debug */,
+				11C851281D01D9A20029229B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		11ED404B1CC6952B00561E33 /* Build configuration list for PBXProject "HCMVManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
