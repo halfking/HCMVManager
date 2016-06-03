@@ -449,7 +449,7 @@
     NSLog(@"filter generating %.2f....",progress);
     if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateProgress:isFilter:)])
     {
-        [self.delegate ActionManager:self generateProgress:progress isFilter:NO];
+        [self.delegate ActionManager:self generateProgress:progress isFilter:YES];
     }
 }
 
