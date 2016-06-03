@@ -355,6 +355,9 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
                     }]resume];
         
     }
+    
+    [session finishTasksAndInvalidate];
+    
     if(config.IsDebugMode)
     {
         NSURL * url1 =  nil;

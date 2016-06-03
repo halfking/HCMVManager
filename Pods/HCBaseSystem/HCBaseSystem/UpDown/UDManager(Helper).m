@@ -1159,16 +1159,16 @@
 //    }
 //    return NO;
 //}
-//- (BOOL)existFileAtPath:(NSString *)path
-//{
-//    NSFileManager* manager = [NSFileManager defaultManager];
-//    BOOL isDir = NO;
-//    BOOL ret  = NO;
-//    if ([manager fileExistsAtPath:path isDirectory:&isDir] ){
-//        ret = YES;
-//    }
-//    return ret;
-//}
+- (BOOL)existFileAtPath:(NSString *)path
+{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    BOOL ret  = NO;
+    if ([manager fileExistsAtPath:path isDirectory:&isDir] ){
+        ret = YES;
+    }
+    return ret;
+}
 
 #pragma mark --关于缓存的视频截图
 - (NSString *)getThumnatePath:(NSString *)filename minsecond:(int)minsecond size:(CGSize)size

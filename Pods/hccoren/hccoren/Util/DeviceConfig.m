@@ -25,7 +25,7 @@
 @implementation DeviceConfig
 {
     int isCheckingNetwork_;
-  
+    NSURLSessionDataTask * dataTask_;
 
 }
 //@synthesize HOST_IP1;
@@ -306,7 +306,7 @@ static DeviceConfig * infor = nil;
 {
     //    NSURL *url = [NSURL URLWithString:@"http://automation.whatismyip.com/n09230945.asp"];
     NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://ip.cn"] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:15];
-    [[NSURLSession sharedSession]dataTaskWithRequest:request
+    dataTask_ =  [[NSURLSession sharedSession]dataTaskWithRequest:request
                                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if(data && !error)
         {
@@ -328,6 +328,8 @@ static DeviceConfig * infor = nil;
         {
             NSLog(@"error:%@",[error localizedDescription]);
         }
+                                   
+                                   
     }];
 //    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 //    manager.responseSerializer = [AFHTTPResponseSerializer serializer];

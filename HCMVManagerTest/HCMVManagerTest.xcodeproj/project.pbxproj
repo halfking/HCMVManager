@@ -609,12 +609,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 118CE87F1CE1AF8D00290641 /* Build configuration list for PBXNativeTarget "HCMVManagerTest" */;
 			buildPhases = (
-				03F24912B3BA8824D4D192BA /* 📦 Check Pods Manifest.lock */,
+				03F24912B3BA8824D4D192BA /* [CP] Check Pods Manifest.lock */,
 				118CE8611CE1AF8D00290641 /* Sources */,
 				118CE8621CE1AF8D00290641 /* Frameworks */,
 				118CE8631CE1AF8D00290641 /* Resources */,
-				274AAA40660D01E1F52468F7 /* 📦 Embed Pods Frameworks */,
-				8AADC574551E491E117F0DF3 /* 📦 Copy Pods Resources */,
+				274AAA40660D01E1F52468F7 /* [CP] Embed Pods Frameworks */,
+				8AADC574551E491E117F0DF3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -689,14 +689,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03F24912B3BA8824D4D192BA /* 📦 Check Pods Manifest.lock */ = {
+		03F24912B3BA8824D4D192BA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -704,14 +704,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		274AAA40660D01E1F52468F7 /* 📦 Embed Pods Frameworks */ = {
+		274AAA40660D01E1F52468F7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -719,14 +719,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8AADC574551E491E117F0DF3 /* 📦 Copy Pods Resources */ = {
+		8AADC574551E491E117F0DF3 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

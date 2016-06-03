@@ -11,8 +11,8 @@
 {
     id timeObserver_;
     
-    NSURL *     currentPlayUrl_; //当前播放的媒体文件
-    NSString *  orgPath_; //由于边下边播，源Path与真实播的Path不一致
+//    NSURL *     currentPlayUrl_; //当前播放的媒体文件
+//    NSString *  orgPath_; //由于边下边播，源Path与真实播的Path不一致
     
     CGFloat secondsBegin_;
     CGFloat secondsEnd_;
@@ -27,9 +27,9 @@
     CGFloat waitingOffset_;
     UIImageView * waitingView_;
     
-    NSNumber *audioPlayerID_;
-    
-    BOOL needAutoPlay_;//是否需要在加载完成后自动开始播放
+//    NSNumber *audioPlayerID_;
+//    
+//    BOOL needAutoPlay_;//是否需要在加载完成后自动开始播放
     
     int pauseCount_;//即检测到播放速率为0的次数
     
@@ -470,11 +470,11 @@ static HCPlayerSimple *sharedPlayerView = nil;
 //    }
 }
 #pragma mark - player item
-//- (void)resetPlayItemKey
-//{
-//    self.playerItemKey =nil;
-//    PP_RELEASE(currentPlayUrl_);
-//}
+- (void)resetPlayItemKey
+{
+    self.key =nil;
+    PP_RELEASE(currentPlayUrl_);
+}
 - (void) changeCurrentPlayerItem:(AVPlayerItem *)item
 {
     if(playerItem_!=item)

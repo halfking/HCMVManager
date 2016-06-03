@@ -24,8 +24,16 @@
 
 @interface HCPlayerSimple : UIView
 {
+    @protected
+    NSURL *     currentPlayUrl_; //当前播放的媒体文件
+    NSString *  orgPath_; //由于边下边播，源Path与真实播的Path不一致
+    
+    NSNumber *audioPlayerID_;
+    BOOL needAutoPlay_;//是否需要在加载完成后自动开始播放
+    
     CGFloat secondsPlaying_;
     CGFloat playRate_;
+    
 }
 
 @property (nonatomic,PP_WEAK) id<HCPlayerSimpleDelegate> delegate;
@@ -64,7 +72,7 @@
 - (BOOL) isCurrentPath:(NSString *)path;
 
 - (NSURL *) getUrlFromString:(NSString *)urlString;
-
+- (void)resetPlayItemKey;
 - (CGFloat) getSecondsEnd;
 - (NSURL *) getCurrentUrl;
 - (CMTime) duration;

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'FFC3F6A6F4BC074C378D2D629E0F2D9C'
+               BlueprintIdentifier = '0DC8BCC337CBE1F795C675E87C3D1B3E'
                BlueprintName = 'HappyDNS'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libHappyDNS.a'>

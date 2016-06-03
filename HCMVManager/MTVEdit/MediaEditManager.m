@@ -4026,6 +4026,13 @@ static BOOL isGenerateAudioing_ = NO;
     //    [videoGenerater_ generatePreviewAVasset:nil];
 }
 #pragma mark - seenvideoqueue deleate
+- (void)VideoGenerater:(VideoGenerater *)queue generateReverseProgress:(CGFloat)progress
+{
+    if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:generateReverseProgress:)])
+    {
+        [self.delegate VideoGenerater:queue generateReverseProgress:progress];
+    }
+}
 - (void)VideoGenerater:(VideoGenerater *)queue didItemsChanged:(BOOL)finished
 {
     if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didItemsChanged:)])
