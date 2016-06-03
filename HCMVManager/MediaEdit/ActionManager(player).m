@@ -565,16 +565,16 @@
             }
             [self syncAudioPlayer:media playerSeconds:playerSeconds];
         }
-//        else
-//        {
-//            //end
-//            CGFloat end = [player_ getSecondsEnd];
-//            if(end>0 && playerSeconds >= end - SECONDS_ERRORRANGE)
-//            {
-//                [audioPlayer_ pause];
-//                audioPlayer_.currentTime = 0;
-//            }
-//        }
+        //        else
+        //        {
+        //            //end
+        //            CGFloat end = [player_ getSecondsEnd];
+        //            if(end>0 && playerSeconds >= end - SECONDS_ERRORRANGE)
+        //            {
+        //                [audioPlayer_ pause];
+        //                audioPlayer_.currentTime = 0;
+        //            }
+        //        }
     }
 }
 - (void) setPlayerReachEnd:(CGFloat)playerSeconds
@@ -653,31 +653,38 @@
     }
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
     
-#ifndef __OPTIMIZE__
+    
+    MediaWithAction * media = nil;
     if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_)
     {
+#ifndef __OPTIMIZE__
         NSLog(@"AM : 不可能的事情发生了，没有找到对应的播放时间");
         NSLog(@"AM : seconds:%.4f",playerSeconds);
         NSLog(@"AM : current:%@",currentMediaWithAction_);
         NSLog(@"AM : medialist:%@",mediaList_);
         
-        secondsInArray =[self getSecondsInArrayViaCurrentState:playerSeconds];
-    }
-    [player_ pause];
+        //        secondsInArray =[self getSecondsInArrayViaCurrentState:playerSeconds];
+        [player_ pause];
 #endif
-    
-    //根据时间，寻找CurrentMedia之后的第一个匹配的素材
-    MediaWithAction * media  =  [self getMediaActionViaSecondsInArray:secondsInArray afterMedia:currentMediaWithAction_];
-    
-    //奇怪的，没有变化，为什么会走到这里
-    if(currentMediaWithAction_ && media == currentMediaWithAction_)
+        //这里可能需要放最后一个Media可能才合适。
+        media = [mediaList_ lastObject];
+        secondsInArray = media.secondsInArray;
+    }
+    else
     {
+        //根据时间，寻找CurrentMedia之后的第一个匹配的素材
+        media  =  [self getMediaActionViaSecondsInArray:secondsInArray afterMedia:currentMediaWithAction_];
+        
+        //奇怪的，没有变化，为什么会走到这里
+        if(currentMediaWithAction_ && media == currentMediaWithAction_)
+        {
 #ifndef __OPTIMIZE__
-        [player_ play];
+            [player_ play];
 #endif
-        return;
+            if(player_.playing==NO) [player_ play];
+            return;
+        }
     }
-    
     [self ActionManager:self play:nil media:media seconds:secondsInArray];
     
 }
@@ -723,6 +730,7 @@
             NSLog(@"AM : 不可能的事情发生了，没有找到对应的Media");
             NSLog(@"AM : secondsInArray:%.4f",secondsInArray);
             NSLog(@"AM : medialist:%@",mediaList_);
+            media = [mediaList_ lastObject];
         }
     }
     return media;
