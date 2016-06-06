@@ -87,7 +87,8 @@
     GPUImageMovie *movieFile_;
     GPUImageOutput<GPUImageInput> *filters_;
 //    NSMutableArray * gpuMoveFileList_; //用于延时释放
-    GPUImageMovie *movieFileOrg_; //用于延时释放
+//    GPUImageMovie *movieFileOrg_; //用于延时释放
+    NSMutableArray * moveFileRemoveList_;
     
     int lastFilterIndex_;//上次合成时使用的过滤器
     int currentFilterIndex_;//本次选择的过滤器序号

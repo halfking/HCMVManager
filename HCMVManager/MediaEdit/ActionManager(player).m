@@ -122,7 +122,8 @@
     {
         [movieFile_ cancelProcessing];
         [movieFile_ removeAllTargets];
-        movieFileOrg_ = movieFile_;
+        [moveFileRemoveList_ addObject:movieFile_];
+//        movieFileOrg_ = movieFile_;
         //        [gpuMoveFileList_ addObject:movieFile_];
         
         movieFile_ = nil;
@@ -187,7 +188,8 @@
 {
     if(movieFile_||filterView_)
     {
-        movieFileOrg_ = movieFile_;
+        [moveFileRemoveList_ addObject:movieFile_];
+//        movieFileOrg_ = movieFile_;
         [movieFile_ cancelProcessing];
         
         //        if(filterView_)
@@ -224,8 +226,9 @@
         [movieFile_ startProcessing];
         //        });
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            movieFileOrg_ = nil;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            movieFileOrg_ = nil;
+            [self removeMovieFileList];
         });
     }
     else if(player_)
@@ -244,7 +247,13 @@
     }
     return YES;
 }
-
+- (void)removeMovieFileList
+{
+    if(moveFileRemoveList_ && moveFileRemoveList_.count>0)
+    {
+        [moveFileRemoveList_ removeObjectAtIndex:0];
+    }
+}
 - (BOOL) setGPUFilter:(int)index
 {
     if(!filterView_ || !filters_) return NO;
@@ -263,7 +272,8 @@
     {
         [movieFile_ cancelProcessing];
         
-        movieFileOrg_ = movieFile_;
+        [moveFileRemoveList_ addObject:movieFile_];
+//        movieFileOrg_ = movieFile_;
         //        [gpuMoveFileList_ addObject:movieFile_];
         
         [filters_ removeAllTargets];
@@ -286,8 +296,9 @@
         [player_ changeCurrentItemUrl:videoBg_.url];
         [player_ seek:seconds accurate:YES];
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            movieFileOrg_ = nil;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self removeMovieFileList];
+//            movieFileOrg_ = nil;
         });
     }
 }
@@ -579,6 +590,7 @@
 }
 - (void) setPlayerReachEnd:(CGFloat)playerSeconds
 {
+    needSendPlayControl_ = NO;
     if(audioPlayer_ && audioPlayer_.playing)
     {
         [audioPlayer_ pause];
@@ -587,6 +599,8 @@
         else
             audioPlayer_.currentTime = 0;
     }
+    [player_ seek:0 accurate:YES];
+    needSendPlayControl_ = YES;
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
@@ -609,29 +623,35 @@
     
     //不需要更换
     //有时候播放器定位不准，因此在某种情况下，也不作处理
+    //反向与正向有些不同
     if(currentMediaWithAction_)
     {
         //误差处理是否需要?
+        CGFloat minSeconds = currentMediaWithAction_.playRate <0?currentMediaWithAction_.secondsEnd:currentMediaWithAction_.secondsBegin;
+        CGFloat maxSeconds = currentMediaWithAction_.playRate<0?currentMediaWithAction_.secondsBegin:currentMediaWithAction_.secondsEnd;
+        
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
         BOOL needReturn = NO;
-        if(currentMediaWithAction_.secondsBegin <=playerSeconds +diff && currentMediaWithAction_.secondsEnd > playerSeconds)
+        if(minSeconds <=playerSeconds +diff && maxSeconds > playerSeconds)
         {
             needReturn = YES ;
         }
-        else if(isReverse && currentMediaWithAction_.secondsEnd <=playerSeconds + diff && currentMediaWithAction_.secondsBegin > playerSeconds)
-        {
-            needReturn = YES ;
-        }
-        else if(playerSeconds + 1 < currentMediaWithAction_.secondsBegin)
+        else if(playerSeconds + 1 < minSeconds)
         {
 #ifndef __OPTIMIZE__
             [player_ pause];
-            NSLog(@"??? %.2f <-- %.2f",playerSeconds,currentMediaWithAction_.secondsBegin);
+            NSLog(@"??? %.2f <-- %.2f",playerSeconds,minSeconds);
 #endif
         }
-        else if(playerSeconds < currentMediaWithAction_.secondsBegin)
+        else if(playerSeconds < minSeconds)
         {
-            needReturn = YES ;
+            if(currentMediaWithAction_.playRate >=0)
+                needReturn = YES ;
+            else
+            {
+                playerSeconds = minSeconds;
+                needReturn = NO;
+            }
         }
         if(needReturn)
         {

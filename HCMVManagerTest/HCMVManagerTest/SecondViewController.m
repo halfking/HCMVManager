@@ -696,6 +696,7 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
+    NSLog(@"player seconds:%f",cmTime);
     if(playerSimple == rPlayer_)
     {
         [manager_ setPlaySeconds:cmTime isReverse:YES];

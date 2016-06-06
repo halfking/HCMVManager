@@ -43,14 +43,15 @@
 - (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
 {
     DurationInSeconds = DurationInSecondsA;
-    if(DurationInSeconds >=0 )
-    {
-        self.isOPCompleted = YES;
-    }
-    else
-    {
-        self.isOPCompleted = NO;
-    }
+    //这里不能自动设置，否则会导致严重的BUG，是否完成的标识，应该在最外面进行设置
+//    if(DurationInSeconds >=0 )
+//    {
+//        self.isOPCompleted = YES;
+//    }
+//    else
+//    {
+//        self.isOPCompleted = NO;
+//    }
 }
 - (void)setSubActions:(NSString *)SubActionsA
 {

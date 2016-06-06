@@ -75,6 +75,7 @@
         audioVol_ = 1;
         secondsForAudioPlayerMaxRange_ = 0.5;
         _bitRate = (long)(720 *480 * 8);
+        moveFileRemoveList_ = [NSMutableArray new];
         [self setNeedPlaySync:YES];
         
         //        lastPlayerSeconds_ = 0;
