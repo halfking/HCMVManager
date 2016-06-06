@@ -38,6 +38,7 @@
 @synthesize secondsForAudioPlayerMaxRange = secondsForAudioPlayerMaxRange_;
 //@synthesize moveFile = movieFile_;
 //@synthesize moveFileOrg = movieFileOrg_;
+@synthesize minMediaDuration = minMediaDuration_;
 +(id)shareObject
 {
     static dispatch_once_t pred = 0;
@@ -76,6 +77,7 @@
         videoVol_ = 1;
         audioVol_ = 1;
         secondsForAudioPlayerMaxRange_ = 0.5;
+        minMediaDuration_ = SECONDS_MINRANGE;
         _bitRate = (long)(720 *480 * 8);
         moveFileRemoveList_ = [NSMutableArray new];
         [self setNeedPlaySync:YES];
@@ -101,6 +103,7 @@
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
+    
     currentMediaWithAction_ = nil;
     secondsForAudioPlayerMaxRange_ = 0.5;
     videoVol_ = 1;
@@ -991,7 +994,7 @@
         [timerForPlayerSync_ invalidate];
         timerForPlayerSync_ = nil;
     }
-    timerForPlayerSync_ = [HWWeakTimer scheduledTimerWithTimeInterval:MAX(0.15f,secondsDurationInArray- 0.1)
+    timerForPlayerSync_ = [HWWeakTimer scheduledTimerWithTimeInterval:MAX(minMediaDuration_,secondsDurationInArray- 0.1)
                                                                 block:^(id userInfo) {
                                                                     [self setNeedPlaySync:YES];
                                                                     [timerForPlayerSync_ invalidate];

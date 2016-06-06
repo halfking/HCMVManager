@@ -632,6 +632,7 @@
         
     }
     [pannel_ refresh];
+    [pannel_ setPlayMedia:[manager getCurrentMediaWithAction]];
 }
 - (void)thumnates:(id)sender
 {
@@ -829,8 +830,9 @@
 }
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
-    [pannel_ setPlayMedia:mediaToPlay];
     [pannel_ refresh];
+    [pannel_ setPlayMedia:mediaToPlay];
+    
     
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;

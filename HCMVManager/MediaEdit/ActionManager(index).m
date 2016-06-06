@@ -205,10 +205,11 @@
     BOOL needCheckAgagin = NO;
     int i = 0;
     for (MediaWithAction * media in actionMediaList) {
-        if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=SECONDS_MINRANGE)
+        if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=self.minMediaDuration)
         {
             NSLog(@" generate index:%d/%d",i,(int)actionMediaList.count);
             [self generateMediaFile:media];
+            
             needCheckAgagin = YES;
             break;
         }
@@ -240,11 +241,11 @@
         if(isGenerating_) return NO;
         isGenerating_ = YES;
     }
-    //再次整理数据，因为有可能有部分Media的长度不对的
+    //再次整理数据，因为有可能有部分Media的长度不对的，去掉过短的素材
     NSMutableArray * actionMediaList = [NSMutableArray new];
     CGFloat secondsInArray = 0;
     for (MediaWithAction * item in [self getMediaList]) {
-        if(item.playRate>0 || item.secondsDurationInArray > SECONDS_MINRANGE)
+        if(item.playRate>0 || item.secondsDurationInArray > self.minMediaDuration)
         {
             if(item.secondsInArray!=secondsInArray)
             {
@@ -369,7 +370,7 @@
             media = (MediaWithAction *)action.Media;
         }
     }
-    if(media && media.playRate <0 && media.secondsDurationInArray >=SECONDS_MINRANGE)
+    if(media && media.playRate <0 && media.secondsDurationInArray >=self.minMediaDuration)
     {
         return [self generateMediaFile:media];
     }
@@ -378,7 +379,7 @@
 - (BOOL)generateMediaFile:(MediaWithAction *)media
 {
 //    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
-     if(!media || (media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
+     if(!media || (media.playRate>0) || media.secondsDurationInArray<self.minMediaDuration)
         return NO;
     @synchronized (self) {
         if(isReverseMediaGenerating_)

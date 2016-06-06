@@ -20,8 +20,10 @@
 @property (nonatomic,PP_STRONG) MediaWithAction * mediaWithAction;
 @property (nonatomic,assign) int Index;
 @property (nonatomic,assign,readonly) CGFloat ContentWidth;
+@property (nonatomic,assign,readonly) BOOL isCurrent;
 - (void) setBaseWidth:(CGFloat)leftMarin widthPerSeconds:(CGFloat)widthPerSeconds;
-- (void)setCurrent:(BOOL)isCurrent;
+- (void) setCurrent:(BOOL)isCurrent;
+
 - (BOOL)setPlayerSeconds:(CGFloat)seconds;
 - (void) setData:(MediaWithAction *)media title:(NSString *)title;
 @end

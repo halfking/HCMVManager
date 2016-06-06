@@ -514,7 +514,7 @@
             NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBegin);
             //是否要禁用时间回调?
             needSendPlayControl_ = NO;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.minMediaDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 needSendPlayControl_ = YES;
             });
             

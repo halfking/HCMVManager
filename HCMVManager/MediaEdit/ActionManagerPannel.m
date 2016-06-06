@@ -50,10 +50,20 @@
 {
     if([NSThread isMainThread])
     {
+        MediaWithAction * media = nil;
+        for (MediaWithActionView * actionView  in lineViews_) {
+            if(actionView.isCurrent)
+            {
+                media = actionView.mediaWithAction;
+                break;
+            }
+        }
+        
         for (UIView * v in self.subviews) {
             [v removeFromSuperview];
         }
         [self buildViews];
+        [self setPlayMedia:media];
     }
     else
     {
@@ -66,21 +76,49 @@
 {
     manager_ = actionManager;
     top_ = 10;
-
+    
     [self refresh];
 }
 - (void) setPlayerSeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
 {
     if([NSThread isMainThread])
     {
+        int index = 0;
+        BOOL isIn = NO;
+        int  i = 0;
         for (MediaWithActionView * lineView  in lineViews_) {
-            [lineView setPlayerSeconds:playerSeconds];
+            if(lineView.isCurrent)
+            {
+                index = i;
+                isIn = [lineView setPlayerSeconds:playerSeconds];
+                if(!isIn)
+                {
+                    [lineView setCurrent:NO];
+                }
+                break;
+            }
+            i ++;
+        }
+        if(!isIn)
+        {
+            if(index < lineViews_.count -1)
+            {
+                MediaWithActionView * lineView =  lineViews_[index +1];
+                [lineView setCurrent:YES];
+                [lineView setPlayerSeconds:playerSeconds];
+            }
+            else if(index == lineViews_.count-1)
+            {
+                MediaWithActionView * lineView =  lineViews_[0];
+                [lineView setCurrent:YES];
+                [lineView setPlayerSeconds:playerSeconds];
+            }
         }
     }
     else
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self buildViews];
+            [self setPlayerSeconds:playerSeconds isReverse:isReverse];
         });
     }
 }
@@ -102,7 +140,7 @@
     else
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self buildViews];
+            [self setPlayMedia:playerMedia];
         });
     }
 }
@@ -119,6 +157,8 @@
     [ma fetchAsCore:bgVideo];
     [baseLine setData:ma title:@"base"];
     [self addSubview:baseLine];
+    
+    [lineViews_ removeAllObjects];
     
     NSArray * mediaList = [manager_ getMediaList];
     int index =1;

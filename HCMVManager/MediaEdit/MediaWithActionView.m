@@ -37,9 +37,11 @@
     if(isCurrent)
     {
         CGRect frame = lineView_.frame;
-        frame.size.height =4;
+        frame.size.height = 8;
         lineView_.frame = frame;
-        lineView_.backgroundColor = [UIColor redColor];
+        lineView_.backgroundColor = [UIColor purpleColor];
+        [lineView_ setNeedsDisplay];
+        _isCurrent = YES;
     }
     else
     {
@@ -47,6 +49,7 @@
         frame.size.height =2;
         lineView_.frame = frame;
         lineView_.backgroundColor = [UIColor blueColor];
+        _isCurrent = NO;
     }
 }
 - (BOOL)setPlayerSeconds:(CGFloat)seconds
@@ -59,12 +62,16 @@
         }
         return NO;
     }
-    if(seconds < mediaWithAction_.secondsBegin || seconds> mediaWithAction_.secondsEnd)
+    if((mediaWithAction_.playRate>0 && ( seconds < mediaWithAction_.secondsBegin || seconds> mediaWithAction_.secondsEnd))
+       ||
+       (mediaWithAction_.playRate<0 && ( seconds < mediaWithAction_.secondsEnd || seconds> mediaWithAction_.secondsBegin))
+       )
     {
         if(playerIndcator_)
         {
             playerIndcator_.hidden = YES;
         }
+        self.backgroundColor = [UIColor blueColor];
         return NO;
     }
     CGRect frame = lineView_.frame;
@@ -80,6 +87,7 @@
         playerIndcator_.hidden = NO;
         playerIndcator_.frame = frame;
     }
+    self.backgroundColor = [UIColor purpleColor];
     return YES;
 }
 - (void) buildBaseLine:(MediaWithAction *)media
