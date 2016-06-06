@@ -1414,6 +1414,14 @@
     {
         [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceBegin, asset.duration.timescale), CMTimeMakeWithSeconds(sourceEnd - sourceBegin, asset.duration.timescale))];
     }
+    NSLog(@"AG : generate reverse duration:%f",durationSeconds);
+    //小于最小值，倒放没有意义
+    if(durationSeconds < 0.01)
+    {
+        currentReverseSession_ = nil;
+        session = nil;
+        return NO;
+    }
     if(!timerForReverseExport_)
     {
         timerForReverseExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1

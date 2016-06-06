@@ -182,7 +182,7 @@
 {
     return [self generateMVWithWaterMarker:nil position:MP_RightBottom];
 }
-
+//生成视频，并检查反向片段是否已经生成
 -(BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
 {
     NSArray * actionMediaList = [self getMediaList];
@@ -190,7 +190,7 @@
     //检查是否都已经将反向视频处理好
     BOOL needCheckAgagin = NO;
     for (MediaWithAction * media in actionMediaList) {
-        if(media.playRate<0 && ![media isReverseMedia])
+        if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=SECONDS_MINRANGE)
         {
             [self generateMediaFile:media];
             needCheckAgagin = YES;
@@ -199,7 +199,7 @@
     }
     if(needCheckAgagin)
     {
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.25 * NSEC_PER_SEC);// 页面刷新的时间基数
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);// 页面刷新的时间基数
         dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             [self generateMVWithWaterMarker:waterMarker position:position];
         });
@@ -210,7 +210,7 @@
         return [self generateMVWithWaterMarker:waterMarker position:position needReverseCheck:NO];
     }
 }
-
+//使用此函数，请确认所有的反向片段已经生成
 - (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position needReverseCheck:(BOOL)needReverseCheck
 {
     //    if(![self needGenerateForOP])
@@ -224,23 +224,21 @@
     if(isGenerating_) return NO;
     isGenerating_ = YES;
     
-    NSArray * actionMediaList = [self getMediaList];
-    
-    //    //检查是否都已经将反向视频处理好
-    //    BOOL needCheckAgagin = NO;
-    //    for (MediaWithAction * media in actionMediaList) {
-    //        if(media.playRate<0 && ![media isReverseMedia])
-    //        {
-    //            [self generateMediaFile:media];
-    //            needCheckAgagin = YES;
-    //        }
-    //    }
-    //    if(needCheckAgagin)
-    //    {
-    //        isGenerating_  = NO;
-    //        [self generateMVWithWaterMarker:waterMarker position:position];
-    //        return NO;
-    //    }
+    //再次整理数据，因为有可能有部分Media的长度不对的
+    NSMutableArray * actionMediaList = [NSMutableArray new];
+    CGFloat secondsInArray = 0;
+    for (MediaWithAction * item in [self getMediaList]) {
+        if(item.playRate>0 || item.secondsDurationInArray > SECONDS_MINRANGE)
+        {
+            if(item.secondsInArray!=secondsInArray)
+            {
+                item.timeInArray = CMTimeMakeWithSeconds(secondsInArray, item.timeInArray.timescale);
+            }
+            [actionMediaList addObject:item];
+            secondsInArray += item.secondsDurationInArray;
+        }
+    }
+
     //动作 处理
     [self saveDraft];
     
@@ -345,7 +343,7 @@
             media = (MediaWithAction *)action.Media;
         }
     }
-    if(media && media.playRate <0)
+    if(media && media.playRate <0 && media.secondsDurationInArray >=SECONDS_MINRANGE)
     {
         return [self generateMediaFile:media];
     }
@@ -353,7 +351,7 @@
 }
 - (BOOL)generateMediaFile:(MediaWithAction *)media
 {
-    if(!media || ([media isReverseMedia]==NO && media.playRate>0))
+    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
         return NO;
     @synchronized (self) {
         if(isReverseMediaGenerating_)
