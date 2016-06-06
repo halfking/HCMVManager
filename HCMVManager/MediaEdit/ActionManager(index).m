@@ -150,6 +150,8 @@
     if(currentGenerate_)
     {
         [currentGenerate_ cancelExporter];
+        [currentGenerate_ setJoinVideoUrl: nil];
+        [currentGenerate_ clear];
         currentGenerate_ = nil;
     }
     if(currentFilterGen_)
@@ -160,15 +162,20 @@
     if(reverseGenerate_)
     {
         [reverseGenerate_ cancelExporter];
+        [reverseGenerate_ setJoinVideoUrl:nil];
+        [reverseGenerate_ clear];
         reverseGenerate_ = nil;
     }
     if(reverseMediaGenerate_)
     {
         [reverseMediaGenerate_ cancelExporter];
+        [reverseMediaGenerate_ setJoinVideoUrl:nil];
+        [reverseMediaGenerate_ clear];
         reverseMediaGenerate_ = nil;
     }
     isGenerating_ = NO;
     isReverseGenerating_ = NO;
+    isReverseMediaGenerating_ = NO;
     isGeneratingByFilter_ = NO;
 }
 - (BOOL) generateMV
@@ -359,6 +366,7 @@
         if([media isReverseMedia] && [[HCFileManager manager]existFileAtPath:media.filePath])
         {
             NSLog(@"已经生成了，不需要再处理....");
+            isReverseMediaGenerating_ = NO;
             return YES;
         }
     }
@@ -389,13 +397,17 @@
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
-                                reverseMediaGenerate_ = nil;
-                                isReverseMediaGenerating_ = NO;
+//                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];
+                                reverseMediaGenerate_ = nil;
+                                isReverseMediaGenerating_ = NO;
                             }];
     if(!ret)
     {
+        [reverseMediaGenerate_ setJoinVideoUrl:nil];
+        [reverseMediaGenerate_ clear];
+        reverseMediaGenerate_ = nil;
         isReverseMediaGenerating_ = NO;
     }
     return ret;
@@ -439,6 +451,8 @@
                               audioBegin:sourceBegin
                                 complted:^(NSString * filePathNew){
                                     NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
+                                    [reverseMediaGenerate_ setJoinVideoUrl:nil];
+                                    [reverseMediaGenerate_ clear];
                                     reverseGenerate_ = nil;
                                     if(filePathNew)
                                     {
@@ -457,9 +471,11 @@
                                 }];
         if(!ret)
         {
+            [reverseMediaGenerate_ setJoinVideoUrl:nil];
+            [reverseMediaGenerate_ clear];
+            reverseGenerate_ = nil;
             isReverseGenerating_ = NO;
             isReverseHasGenerated_ = NO;
-            reverseGenerate_ = nil;
             NSLog(@"generate reverse failure....");
             return NO;
         }
