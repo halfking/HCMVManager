@@ -1483,6 +1483,15 @@
     
     AVURLAsset * videoAsset = [[ AVURLAsset alloc ] initWithURL :[ NSURL fileURLWithPath:sourceFilePath] options : nil ];
     AVURLAsset * audioAsset =[[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:audioFilePath] options:nil];
+    if([videoAsset tracksWithMediaType : AVMediaTypeVideo].count==0 ||
+       [audioAsset tracksWithMediaType:AVMediaTypeAudio].count==0)
+    {
+        NSLog(@"AG : 文件中没有需要操作的数据");
+        if(complted)
+        {
+            complted(sourceFilePath);
+        }
+    }
     CGFloat audioDurationSeconds = CMTimeGetSeconds(audioAsset.duration);
     
     if(secondsBegin<0 || secondsBegin >= audioDurationSeconds)

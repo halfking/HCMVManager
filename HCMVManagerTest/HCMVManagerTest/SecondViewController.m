@@ -606,7 +606,7 @@
 {
     //    if([manager_ getFilterView])
     //    [manager_ setGPUFilter:0];
-    //    [manager_ removeGPUFilter];
+        [manager_ removeGPUFilter];
     [player_ pause];
     
     

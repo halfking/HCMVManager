@@ -107,7 +107,7 @@
     {
         renderSize = self.videoComposition.renderSize;
     }
-    else if (videoTracks.count)
+    else if (videoTracks.count>0)
     {
         renderSize = ((AVAssetTrack *)videoTracks[0]).naturalSize;
     }
@@ -210,11 +210,15 @@
     [self.writer startWriting];
     [self.reader startReading];
     
+    int nothingDone = 0;
     if (videoTracks.count > 0)
         [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)[videoTracks lastObject]).naturalTimeScale)];
-    else
+    else if(audioTracks.count>0)
         [self.writer startSessionAtSourceTime:CMTimeMake(0, ((AVAssetTrack *)[audioTracks lastObject]).naturalTimeScale)];
-    
+    else
+    {
+        NSLog(@"什么都没有？");
+    }
     __block BOOL videoCompleted = NO;
     __block BOOL audioCompleted = NO;
     __weak SDAVAssetExportSession * wself = self;
@@ -237,10 +241,12 @@
     }
     else {
         videoCompleted = YES;
+        nothingDone ++;
     }
     
     if (!self.audioOutput) {
         audioCompleted = YES;
+        nothingDone ++;
     } else {
         [self.audioInput requestMediaDataWhenReadyOnQueue:self.inputQueue usingBlock:^
          {
@@ -256,6 +262,11 @@
                  }
              }
          }];
+    }
+    if(nothingDone>=2)
+    {
+        _error = [NSError errorWithDomain:@"com.seenvoice.wutong" code:-989 userInfo:@{NSLocalizedDescriptionKey:@"没有需要处理的数据。",NSLocalizedFailureReasonErrorKey:@"没有找到音频或视频的输入轨."}];
+        [self complete];
     }
 }
 

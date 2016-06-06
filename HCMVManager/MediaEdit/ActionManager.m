@@ -407,7 +407,11 @@
     
     [self reindexAllActions];
     
-    
+    if(currentGenerate_)
+    {
+        [currentGenerate_ setJoinVideoUrl:nil];
+        [currentGenerate_ clear];
+    }
     
     return YES;
 }
@@ -456,6 +460,12 @@
     isGenerating_ = NO;
     
     [self changeFilterPlayerItem];
+    
+    if(currentGenerate_)
+    {
+        [currentGenerate_ setJoinVideoUrl:nil];
+        [currentGenerate_ clear];
+    }
     
     return YES;
 }
