@@ -433,6 +433,8 @@
     {
         [currentGenerate_ cancelExporter];
     }
+    [currentGenerate_ setJoinVideoUrl:nil];
+    [currentGenerate_ clear];
     currentGenerate_ = nil;
     
     CLVideoAddFilter *addFilter = [[CLVideoAddFilter alloc]init];

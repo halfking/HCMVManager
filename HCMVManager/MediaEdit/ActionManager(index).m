@@ -277,11 +277,15 @@
         [vg setTimeForAudioMerge:0 end:-1];
     }
     
-    if(currentGenerate_ && isGeneratingByFilter_)
+    if(currentFilterGen_ && isGeneratingByFilter_)
     {
-        [currentGenerate_ cancelExporter];
+        [currentFilterGen_ cancelFilter];
     }
     currentFilterGen_ = nil;
+    if(currentGenerate_)
+    {
+        [currentGenerate_ clear];
+    }
     
     currentGenerate_ = vg;
     //    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
@@ -387,6 +391,8 @@
                                 }
                                 reverseMediaGenerate_ = nil;
                                 isReverseMediaGenerating_ = NO;
+                                [reverseMediaGenerate_ setJoinVideoUrl:nil];
+                                [reverseMediaGenerate_ clear];
                             }];
     if(!ret)
     {

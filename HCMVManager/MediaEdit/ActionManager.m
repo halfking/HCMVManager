@@ -1458,6 +1458,7 @@
     {
         [self.delegate ActionManager:self genreateFailure:error isFilter:NO];
     }
+    [currentGenerate_ clear];
     currentGenerate_ = nil;
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
@@ -1472,6 +1473,7 @@
     {
         [self.delegate ActionManager:self generateOK:filePath cover:cover isFilter:NO];
     }
+    [currentGenerate_ clear];
     currentGenerate_ = nil;
 }
 @end
