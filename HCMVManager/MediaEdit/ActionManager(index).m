@@ -319,20 +319,29 @@
     ////        [self hideIndicatorView];
     //    }];
     needSendPlayControl_ = NO;
+    generateEnter_ = NO;
     BOOL ret = [self generateMediaListWithActions:actionMediaList complted:^(NSArray * mediaList)
                 {
+                    @synchronized (self) {
+                        if(generateEnter_) return ;
+                        generateEnter_ = YES;
+                    }
                     [vg generatePreviewAsset:mediaList
                                     bgVolume:audioVol_
                                   singVolume:videoVol_
                                   completion:^(BOOL finished)
                      {
-                         [vg generateMVFile:mediaList retryCount:0];
+                         if(![vg generateMVFile:mediaList retryCount:0])
+                         {
+                             generateEnter_ = NO;
+                         }
                      }];
                 }];
     if(!ret)
     {
         needSendPlayControl_ = YES;
         isGenerating_ = NO;
+        generateEnter_ = NO;
         NSLog(@"generate failure.");
     }
     return ret;
@@ -361,6 +370,7 @@
         if(isReverseMediaGenerating_)
         {
             NSLog(@"正在生成上一个，不能重入....");
+            NSLog(@"next media:%@",[media toString]);
             return NO;
         }
         isReverseMediaGenerating_ = YES;

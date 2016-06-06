@@ -100,6 +100,8 @@
     BOOL isGenerating_;             //是否正在生成过程中
     BOOL isReverseHasGenerated_;    //反向完整的视频是否生成完成
     
+    BOOL generateEnter_;            //防止生成重入，因为异步的生成反向视频可能导致重入两次
+    
     BOOL needSendPlayControl_;  //是否需要向前台发送播放信息，默认为YES
     BOOL needAudioPlayerSync_;  //是否需要检查音频播放器的同步状态，主要与视频播放器同步
     

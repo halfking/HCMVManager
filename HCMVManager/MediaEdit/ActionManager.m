@@ -1460,6 +1460,7 @@
     }
     [currentGenerate_ clear];
     currentGenerate_ = nil;
+    generateEnter_ = NO;
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
@@ -1475,5 +1476,6 @@
     }
     [currentGenerate_ clear];
     currentGenerate_ = nil;
+    generateEnter_ = NO;
 }
 @end
