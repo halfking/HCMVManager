@@ -189,13 +189,16 @@
     
     //检查是否都已经将反向视频处理好
     BOOL needCheckAgagin = NO;
+    int i = 0;
     for (MediaWithAction * media in actionMediaList) {
         if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=SECONDS_MINRANGE)
         {
+            NSLog(@" generate index:%d/%d",i,(int)actionMediaList.count);
             [self generateMediaFile:media];
             needCheckAgagin = YES;
             break;
         }
+        i ++;
     }
     if(needCheckAgagin)
     {
@@ -217,13 +220,14 @@
     //    {
     //        return NO;
     //    }
-    if(isGenerating_ || isReverseGenerating_)
-    {
-        [self cancelGenerate];
+    @synchronized (self) {
+        if(isGenerating_ || isReverseGenerating_)
+        {
+            [self cancelGenerate];
+        }
+        if(isGenerating_) return NO;
+        isGenerating_ = YES;
     }
-    if(isGenerating_) return NO;
-    isGenerating_ = YES;
-    
     //再次整理数据，因为有可能有部分Media的长度不对的
     NSMutableArray * actionMediaList = [NSMutableArray new];
     CGFloat secondsInArray = 0;
@@ -238,7 +242,7 @@
             secondsInArray += item.secondsDurationInArray;
         }
     }
-
+    
     //动作 处理
     [self saveDraft];
     
@@ -264,8 +268,8 @@
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgAudio:audioBg_];
-//        [vg setBgmUrl:audioBg_.url];
-//        [vg setTimeForAudioMerge:audioBg_.secondsInArray end:audioBg_.secondsDurationInArray];
+        //        [vg setBgmUrl:audioBg_.url];
+        //        [vg setTimeForAudioMerge:audioBg_.secondsInArray end:audioBg_.secondsDurationInArray];
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
@@ -395,7 +399,7 @@
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
-//                                reverseMediaGenerate_ = nil;
+                                //                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];
                                 reverseMediaGenerate_ = nil;
