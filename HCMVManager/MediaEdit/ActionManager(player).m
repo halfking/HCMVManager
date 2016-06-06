@@ -415,12 +415,25 @@
         NSLog(@"filter:%d not support.",filterIndex);
         return NO;
     }
-    if(isGeneratingByFilter_)
+    if(isGeneratingByFilter_||isGenerating_)
     {
         NSLog(@"正在生成中，请稍后进入...");
         return NO;
     }
     isGeneratingByFilter_ = YES;
+    
+    //防止内存不够
+    if(reverseMediaGenerate_ && isReverseGenerating_)
+    {
+        [reverseMediaGenerate_ cancelExporter];
+    }
+    reverseMediaGenerate_ = nil;
+    
+    if(currentGenerate_ && isGenerating_)
+    {
+        [currentGenerate_ cancelExporter];
+    }
+    currentGenerate_ = nil;
     
     CLVideoAddFilter *addFilter = [[CLVideoAddFilter alloc]init];
     currentFilterGen_ = addFilter;

@@ -277,6 +277,11 @@
         [vg setTimeForAudioMerge:0 end:-1];
     }
     
+    if(currentGenerate_ && isGeneratingByFilter_)
+    {
+        [currentGenerate_ cancelExporter];
+    }
+    currentFilterGen_ = nil;
     
     currentGenerate_ = vg;
     //    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
