@@ -20,7 +20,7 @@
 #define SECONDS_NOTVALID 999999
 #define SECONDS_NOEND 999998
 #define SECONDS_ERRORRANGE  0.002
-#define SECONDS_MINRANGE 0.1
+#define SECONDS_MINRANGE 0.05
 @class MediaAction;
 @class MediaActionDo;
 @class MediaItem;

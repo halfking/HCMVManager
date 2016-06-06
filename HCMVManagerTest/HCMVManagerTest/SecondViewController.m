@@ -563,7 +563,7 @@
     action.IsReverse = YES;
     
     
-    currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:01];
+    currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:1];
     return;
     
 //    [player_ pause];
@@ -783,25 +783,18 @@
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
+    [player_ pause];
     showTimeChanged_ = YES;
     
     [pannel_ setPlayMedia:mediaToPlay];
     [pannel_ refresh];
     
-    if(player_.hidden)
-        [rPlayer_ pause];
-    else
-        [player_ pause];
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
     NSLog(@"player:%.2f",[player_ secondsPlaying]);
     
-    
-    if(player_.hidden)
-        [rPlayer_ play];
-    else
-        [player_ play];
+    [player_ play];
     
     if(!mediaToPlay)
     {

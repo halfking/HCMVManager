@@ -364,7 +364,8 @@
 }
 - (BOOL)generateMediaFile:(MediaWithAction *)media
 {
-    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
+//    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
+     if(!media || (media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
         return NO;
     @synchronized (self) {
         if(isReverseMediaGenerating_)

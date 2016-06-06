@@ -145,7 +145,7 @@
         }
         return;
     }
-    
+    NSLog(@"VG :reverse time range:%f(duration:%f)",CMTimeGetSeconds(_timeRange.start),CMTimeGetSeconds(_timeRange.duration));
     NSDate *start = [NSDate new];
     _status = AVAssetReverseSessionStatusWaiting;
     __block NSError *error;
@@ -171,12 +171,16 @@
                                                sourcePixelBufferAttributes:nil];
     [writer addInput:writerInput];
     [writer startWriting];
+    
     CMTime startTime = kCMTimeZero;
+//    if(CMTIME_IS_VALID(_timeRange.start))
+//        startTime = _timeRange.start;
+    //这里一定要置为0
     [writer startSessionAtSourceTime:startTime];
     
     //
     if (CMTIMERANGE_IS_INVALID(_timeRange)) {
-        NSLog(@"time range not set, use whole timeRange");
+        NSLog(@"VG :time range not set, use whole timeRange");
         _timeRange = videoTrack.timeRange;
     }
     
@@ -194,9 +198,9 @@
     size_t frameSize = (naturalSize.width * naturalSize.height) * 3 / 2;
     size_t framePerSecondSize = frameSize * nominalFrameRate;
     
-    // here I gave a max cache memory limit,
-    // and caculate the max duration
-    size_t maxSize = 1024 * 1024 * 100;
+    //内存大小，1M
+    size_t maxSize = 1024 * 1024 * 1024;
+    //1M能存储的时长
     size_t maxDuration = floorl(maxSize / framePerSecondSize);
     maxDuration = MAX(1.0, maxDuration);
     
@@ -209,6 +213,7 @@
     NSLog(@"need to split reader video track to [%ld] clips", (unsigned long) clipCount);
     CMTime clipTime = CMTimeMakeWithSeconds(clipDuration, timeScale);
     
+    //切分成多段数据来合成
     CMTimeRange *timeRanges = malloc(clipCount * sizeof(CMTimeRange));
     CMTime endTime = CMTimeRangeGetEnd(videoTimeRange);
     for (NSUInteger i = 0; i < clipCount; i++) {
@@ -221,11 +226,13 @@
         CMTimeRange r = CMTimeRangeMake(startTime, durationTime);
         timeRanges[i] = r;
         endTime = startTime;
+        
+        NSLog(@"VG : range reverse begin:%f duration:%f",CMTimeGetSeconds(startTime),CMTimeGetSeconds(durationTime));
     }
-    
     _status = AVAssetReverseSessionStatusReversing;
     CFMutableArrayRef samples = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
     dispatch_async(_appendQueue, ^{
+        //逐段处理合成
         for (NSUInteger i = 0; i < clipCount; i++) {
             @autoreleasepool {
                 // read
@@ -233,6 +240,7 @@
                 CMTime clipStartTime = CMTimeMakeWithSeconds(clipDuration * i, timeScale);
                 CMTimeRange range = timeRanges[i];
                 reader.timeRange = range;
+                
                 NSDictionary *readerOutputSettings = [self readerSetting];
                 AVAssetReaderTrackOutput* readerOutput =
                 [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:videoTrack

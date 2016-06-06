@@ -549,6 +549,13 @@
 }
 - (void)thumnates:(id)sender
 {
+    MediaWithAction * media = [(MediaWithAction *)[[[ActionManager shareObject]getMediaList]firstObject]copyItem];
+    media.begin = CMTimeMakeWithSeconds(4.5, media.begin.timescale);
+    media.playRate = -1;
+    media.end = CMTimeMakeWithSeconds(4.4, media.end.timescale);
+    [[ActionManager shareObject]generateMediaFile:media];
+    
+    return;
     ActionManager * manager = [ActionManager shareObject];
     MediaItem * item = [manager getBaseVideo];
     if(!item)

@@ -1409,12 +1409,22 @@
     session.outputURL = outputURL;
     CGFloat durationSeconds= CMTimeGetSeconds(asset.duration);
     if(sourceBegin<0) sourceBegin = 0;
+    else if(sourceBegin > durationSeconds) sourceBegin = durationSeconds;
+    
     if(sourceEnd > durationSeconds) sourceEnd = durationSeconds;
+    else if(sourceEnd<0) sourceEnd = 0;
+    
+    durationSeconds = fabs(sourceEnd - sourceBegin);
+    
     if(durationSeconds>0)
     {
-        [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceBegin, asset.duration.timescale), CMTimeMakeWithSeconds(sourceEnd - sourceBegin, asset.duration.timescale))];
+        if(sourceEnd>sourceBegin)
+            [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceBegin, asset.duration.timescale), CMTimeMakeWithSeconds(durationSeconds, asset.duration.timescale))];
+        else
+            [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceEnd, asset.duration.timescale), CMTimeMakeWithSeconds(durationSeconds, asset.duration.timescale))];
     }
-    NSLog(@"AG : generate reverse duration:%f",durationSeconds);
+    NSLog(@"AG : generate reverse %f->%f duration:%f",sourceBegin,sourceEnd,durationSeconds);
+    
     //小于最小值，倒放没有意义
     if(durationSeconds < 0.01)
     {
