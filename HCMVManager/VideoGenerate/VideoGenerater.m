@@ -1491,6 +1491,7 @@
         {
             complted(sourceFilePath);
         }
+        return NO;
     }
     CGFloat audioDurationSeconds = CMTimeGetSeconds(audioAsset.duration);
     
