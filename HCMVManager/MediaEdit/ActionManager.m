@@ -67,6 +67,8 @@
         isReverseGenerating_ = NO;
         isReverseHasGenerated_ = NO;
         isGeneratingByFilter_ = NO;
+        isGeneratingWithCheck_ = NO;
+        isGenerateEnter_ = NO;
         isGenerating_ = NO;
         lastFilterIndex_ = 0;
         currentFilterIndex_ = 0;
@@ -91,6 +93,8 @@
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
+    isGeneratingWithCheck_ = NO;
+    isGenerateEnter_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
     [self setNeedPlaySync:YES];
@@ -139,6 +143,8 @@
     isGeneratingByFilter_ = NO;
     isReverseGenerating_ = NO;
     isGenerating_ = NO;
+    isGeneratingWithCheck_ = NO;
+    isGenerateEnter_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
     secondsForAudioPlayerMaxRange_ = 0.5;
@@ -1460,7 +1466,8 @@
     }
     [currentGenerate_ clear];
     currentGenerate_ = nil;
-    generateEnter_ = NO;
+    isGeneratingWithCheck_ = NO;
+    isGenerateEnter_ = NO;
 }
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover
 {
@@ -1476,6 +1483,7 @@
     }
     [currentGenerate_ clear];
     currentGenerate_ = nil;
-    generateEnter_ = NO;
+    isGeneratingWithCheck_ = NO;
+    isGenerateEnter_ = NO;
 }
 @end

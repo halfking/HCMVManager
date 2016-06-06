@@ -185,6 +185,14 @@
 //生成视频，并检查反向片段是否已经生成
 -(BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
 {
+    @synchronized (self) {
+        if(isGeneratingWithCheck_)
+        {
+            NSLog(@"正在生成中，不能重入(check)");
+            return YES;
+        }
+        isGeneratingWithCheck_ = YES;
+    }
     NSArray * actionMediaList = [self getMediaList];
     
     //检查是否都已经将反向视频处理好
@@ -204,8 +212,10 @@
     {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);// 页面刷新的时间基数
         dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            isGeneratingWithCheck_ = NO;
             [self generateMVWithWaterMarker:waterMarker position:position];
         });
+        
         return YES;
     }
     else
@@ -216,10 +226,6 @@
 //使用此函数，请确认所有的反向片段已经生成
 - (BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position needReverseCheck:(BOOL)needReverseCheck
 {
-    //    if(![self needGenerateForOP])
-    //    {
-    //        return NO;
-    //    }
     @synchronized (self) {
         if(isGenerating_ || isReverseGenerating_)
         {
@@ -319,12 +325,12 @@
     ////        [self hideIndicatorView];
     //    }];
     needSendPlayControl_ = NO;
-    generateEnter_ = NO;
+    isGenerateEnter_ = NO;
     BOOL ret = [self generateMediaListWithActions:actionMediaList complted:^(NSArray * mediaList)
                 {
                     @synchronized (self) {
-                        if(generateEnter_) return ;
-                        generateEnter_ = YES;
+                        if(isGenerateEnter_) return ;
+                        isGenerateEnter_ = YES;
                     }
                     [vg generatePreviewAsset:mediaList
                                     bgVolume:audioVol_
@@ -333,7 +339,7 @@
                      {
                          if(![vg generateMVFile:mediaList retryCount:0])
                          {
-                             generateEnter_ = NO;
+                             isGenerateEnter_ = NO;
                          }
                      }];
                 }];
@@ -341,7 +347,8 @@
     {
         needSendPlayControl_ = YES;
         isGenerating_ = NO;
-        generateEnter_ = NO;
+        isGenerateEnter_ = NO;
+        isGeneratingWithCheck_ = NO;
         NSLog(@"generate failure.");
     }
     return ret;
