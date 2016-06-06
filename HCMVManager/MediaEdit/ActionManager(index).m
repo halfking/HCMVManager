@@ -203,7 +203,7 @@
         dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             [self generateMVWithWaterMarker:waterMarker position:position];
         });
-        return NO;
+        return YES;
     }
     else
     {
