@@ -123,7 +123,7 @@
         [movieFile_ cancelProcessing];
         [movieFile_ removeAllTargets];
         [moveFileRemoveList_ addObject:movieFile_];
-//        movieFileOrg_ = movieFile_;
+        //        movieFileOrg_ = movieFile_;
         //        [gpuMoveFileList_ addObject:movieFile_];
         
         movieFile_ = nil;
@@ -189,7 +189,7 @@
     if(movieFile_||filterView_)
     {
         [moveFileRemoveList_ addObject:movieFile_];
-//        movieFileOrg_ = movieFile_;
+        //        movieFileOrg_ = movieFile_;
         [movieFile_ cancelProcessing];
         
         //        if(filterView_)
@@ -227,7 +227,7 @@
         //        });
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            movieFileOrg_ = nil;
+            //            movieFileOrg_ = nil;
             [self removeMovieFileList];
         });
     }
@@ -273,7 +273,7 @@
         [movieFile_ cancelProcessing];
         
         [moveFileRemoveList_ addObject:movieFile_];
-//        movieFileOrg_ = movieFile_;
+        //        movieFileOrg_ = movieFile_;
         //        [gpuMoveFileList_ addObject:movieFile_];
         
         [filters_ removeAllTargets];
@@ -298,7 +298,7 @@
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self removeMovieFileList];
-//            movieFileOrg_ = nil;
+            //            movieFileOrg_ = nil;
         });
     }
 }
@@ -602,7 +602,7 @@
     [player_ seek:0 accurate:YES];
     needSendPlayControl_ = YES;
 }
-- (void)setPlaySeconds:(CGFloat)playerSeconds isReverse:(BOOL)isReverse
+- (void)setPlaySeconds:(CGFloat)playerSeconds //isReverse:(BOOL)isReverse
 {
     if(playerSeconds>=0)
         [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
@@ -638,10 +638,13 @@
         }
         else if(playerSeconds + 1 < minSeconds)
         {
-#ifndef __OPTIMIZE__
-            [player_ pause];
-            NSLog(@"??? %.2f <-- %.2f",playerSeconds,minSeconds);
-#endif
+//#ifndef __OPTIMIZE__
+            if(isGenerating_)
+            {
+                [player_ pause];
+            }
+            NSLog(@"??? %.2f <-- %.2f isgenerating:%d",playerSeconds,minSeconds,isGenerating_);
+//#endif
         }
         else if(playerSeconds < minSeconds)
         {
@@ -664,17 +667,22 @@
         //        [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     }
     
+    BOOL autoPlay = player_.playing;
     //超过媒体最后时间
     if(playerSeconds >= videoBg_.secondsDurationInArray - SECONDS_ERRORRANGE)
     {
         [audioPlayer_ pause];
         audioPlayer_.currentTime = 0;
+        if(autoPlay)
+            [audioPlayer_ play];
         return;
     }
+    
     CGFloat secondsInArray = [self getSecondsInArrayViaCurrentState:playerSeconds];
     
-    
     MediaWithAction * media = nil;
+
+    
     if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_)
     {
 #ifndef __OPTIMIZE__
@@ -699,11 +707,22 @@
         //奇怪的，没有变化，为什么会走到这里
         if(currentMediaWithAction_ && media == currentMediaWithAction_)
         {
-#ifndef __OPTIMIZE__
-            [player_ play];
-#endif
-            if(player_.playing==NO) [player_ play];
+            if(autoPlay)
+            {
+                if(player_.playing==NO) [player_ play];
+            }
             return;
+        }
+    }
+    if(autoPlay)
+    {
+        [player_ play];
+    }
+    else
+    {
+        if(isGenerating_)
+        {
+            [player_ pause];
         }
     }
     [self ActionManager:self play:nil media:media seconds:secondsInArray];
@@ -779,7 +798,7 @@
             NSLog(@"AM : 不可能的事情发生了，没有找到对应的Media");
             NSLog(@"AM : secondsInArray:%.4f",secondsInArray);
             NSLog(@"AM : medialist:%@",mediaList_);
-//            media = [mediaList_ lastObject];
+            //            media = [mediaList_ lastObject];
             media = [self findNextItem:currentMedia];
         }
     }

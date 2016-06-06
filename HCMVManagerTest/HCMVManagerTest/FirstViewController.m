@@ -544,7 +544,7 @@
         [playerTimer_ invalidate];
         playerTimer_ = nil;
     }
-    [manager setPlaySeconds:playerSeconds_ isReverse:NO];
+    [manager setPlaySeconds:playerSeconds_ ];
     [pannel_ setPlayerSeconds:playerSeconds_ isReverse:NO];
 }
 - (void)thumnates:(id)sender

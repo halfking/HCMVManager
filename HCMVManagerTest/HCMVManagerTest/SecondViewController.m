@@ -697,13 +697,9 @@
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
     NSLog(@"player seconds:%f",cmTime);
-    if(playerSimple == rPlayer_)
+    if(playerSimple == player_)
     {
-        [manager_ setPlaySeconds:cmTime isReverse:YES];
-    }
-    else if(playerSimple == player_)
-    {
-        [manager_ setPlaySeconds:cmTime isReverse:NO];
+        [manager_ setPlaySeconds:cmTime];
         
         [pannel_ setPlayerSeconds:cmTime isReverse:NO];
     }
@@ -882,20 +878,21 @@
     [audioPlayer_ pause];
     
     
-    //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
-    if(manager_.isGenerating)
-    {
-        NSLog(@"正在生成中，不能重入");
-        [player_ seek:0 accurate:YES];
-        [player_ play];
-        return;
-    }
     if(![manager_ needGenerateForOP])
     {
         [player_ seek:0 accurate:YES];
         [player_ play];
         return ;
     }
+    //    [[VideoGenerater new]showMediaInfo:[manager_ getBaseVideo].filePath];
+    if(manager_.isGenerating)
+    {
+        NSLog(@"正在生成中，不能重入");
+//        [player_ seek:0 accurate:YES];
+//        [player_ play];
+        return;
+    }
+  
     NSLog(@"generate begin ....");
     
     [self showCurrentMediaes:0];
@@ -913,8 +910,9 @@
         [manager_ initAudioPlayer:nil];
         
         NSLog(@"pause in join 2");
-        [player_ seek:0 accurate:YES];
         [player_ pause];
+        [player_ seek:0 accurate:YES];
+        
     }
     
 }
