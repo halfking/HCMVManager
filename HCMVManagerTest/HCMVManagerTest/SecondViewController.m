@@ -739,6 +739,10 @@
     
     [self join:nil];
 }
+- (void)playerSimple:(HCPlayerSimple *)playerSimple reachBeginByReverse:(CGFloat)begin
+{
+    [manager_ ensureActions:begin];
+}
 - (void)resetAllButtons
 {
     slow_.selected = NO;

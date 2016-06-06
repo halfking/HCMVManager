@@ -824,8 +824,16 @@ static HCPlayerSimple *sharedPlayerView = nil;
     //    if(totalItemCount_<2){
     needAutoPlay_ = NO;
     self.playing = NO;
-    [self videoPlayerDidReachEnd:self];
-    
+    if(secondsPlaying_<=0.05 && !self.SendEndMsgWhenReverseToBegin)
+    {
+        [self setRate:1];
+        [self play];
+        [self videoPlayerDidReachBegin:self];
+    }
+    else
+    {
+        [self videoPlayerDidReachEnd:self];
+    }
     //    }
 }
 
@@ -879,6 +887,14 @@ static HCPlayerSimple *sharedPlayerView = nil;
         [videoPlayer.delegate playerSimple:videoPlayer reachEnd:[videoPlayer getSecondsEnd]];
     }
 }
+- (void)videoPlayerDidReachBegin:(HCPlayerSimple *)videoPlayer
+{
+    if ([videoPlayer.delegate respondsToSelector:@selector(playerSimple:reachBeginByReverse:)])
+    {
+        [videoPlayer.delegate playerSimple:videoPlayer reachBeginByReverse:secondsPlaying_];
+    }
+}
+
 
 - (void)videoPlayer:(HCPlayerSimple *)videoPlayer timeDidChange:(CGFloat)seconds
 {

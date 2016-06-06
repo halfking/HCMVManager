@@ -9,6 +9,7 @@
 @optional
 - (void)playerSimple:(HCPlayerSimple *)playerSimple itemReady:(AVPlayerItem *)item;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end;
+- (void)playerSimple:(HCPlayerSimple *)playerSimple reachBeginByReverse:(CGFloat)begin;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple loadedTimeRangeDidChange:(float)duration;
 - (void)playerSimple:(HCPlayerSimple *)playerSimple didFailWithError:(NSError *)error;
@@ -42,6 +43,7 @@
 @property (assign,nonatomic) CGRect mainBounds;
 @property (assign,nonatomic) BOOL playing;
 @property (assign,nonatomic,readonly) CGFloat secondsPlaying;
+@property (assign,nonatomic) BOOL SendEndMsgWhenReverseToBegin;  //倒退到头部时，是否要发送结束的信息，否则发送到达头部的信息
 //@property (nonatomic,strong) NSString * playerItemKey;
 //@property (nonatomic, assign) BOOL isEcoCancellationMode; //回音
 @property (nonatomic,assign) BOOL isNeverShowWaiting;   //永远不要显示等待窗

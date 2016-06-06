@@ -19,6 +19,8 @@
 #import "MediaEditManager.h"
 #import "VideoGenerater.h"
 #import "testPlayerVC.h"
+#import "MediaActionForReverse.h"
+
 @interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,VideoGeneraterDelegate>
 
 @end
@@ -44,12 +46,12 @@
     
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(left, top, 74, 44);
+        btn.frame = CGRectMake(left, top, 54, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"testclick" forState:UIControlStateNormal];
+        [btn setTitle:@"Click" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(clickTest:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
-        left += 74+10;
+        left += 54+10;
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -62,19 +64,28 @@
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(left, top, 64, 44);
+        btn.frame = CGRectMake(left, top, 54, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"testrap" forState:UIControlStateNormal];
+        [btn setTitle:@"Rap" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(TestRap:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
-        left += 64+10;
+        left += 54+10;
     }
     {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(left, top, 74, 44);
+        btn.frame = CGRectMake(left, top, 54, 44);
         btn.backgroundColor = [UIColor blueColor];
-        [btn setTitle:@"testshake" forState:UIControlStateNormal];
+        [btn setTitle:@"Shake" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(testShake:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+        left += 54+10;
+    }
+    {
+        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(left, top, 54, 44);
+        btn.backgroundColor = [UIColor blueColor];
+        [btn setTitle:@"SQ" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(testShackQuick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btn];
     }
     left = 20;
@@ -547,15 +558,90 @@
     [manager setPlaySeconds:playerSeconds_ ];
     [pannel_ setPlayerSeconds:playerSeconds_ isReverse:NO];
 }
+- (void)testShackQuick:(id)sender
+{
+    if(playerTimer_)
+    {
+        [playerTimer_ invalidate];
+        playerTimer_ = nil;
+    }
+    ActionManager * manager = [ActionManager shareObject];
+    
+    //    [manager setActionItemDuration:testAction_ duration:2];
+    
+    
+    if(clickIndex_ ==0){
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = -1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:1.5 from:1.5 duration:1];
+    }
+    
+    if(clickIndex_ ==1) {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = -1;
+        action.isOPCompleted = YES;
+        [manager setCurrentMediaWithAction:(MediaWithAction *)((MediaActionForReverse*)testAction_).normalMedia];
+        testAction_ = [manager addActionItem:action filePath:nil at:1.2 from:1.2 duration:2];
+    }
+    if(clickIndex_ ==2) {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = -1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:1.9 from:1.9 duration:1];
+    }
+    if(clickIndex_ ==3) {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = -1;
+        action.isOPCompleted = YES;
+        testAction_ = [manager addActionItem:action filePath:nil at:1.8 from:1.8 duration:1];
+    }
+    if(clickIndex_ ==4) {
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0 ;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.Rate = -1;
+        action.isOPCompleted = YES;
+        [manager setCurrentMediaWithAction:(MediaWithAction *)((MediaActionForReverse*)testAction_).normalMedia];
+        
+        testAction_ = [manager addActionItem:action filePath:nil at:1.6 from:1.6 duration:1];
+    }
+    clickIndex_ ++;
+    if(clickIndex_>5)
+    {
+        clickIndex_ = 0;
+        [manager removeActions];
+        
+    }
+    [pannel_ refresh];
+}
 - (void)thumnates:(id)sender
 {
-    MediaWithAction * media = [(MediaWithAction *)[[[ActionManager shareObject]getMediaList]firstObject]copyItem];
-    media.begin = CMTimeMakeWithSeconds(4.5, media.begin.timescale);
-    media.playRate = -1;
-    media.end = CMTimeMakeWithSeconds(4.4, media.end.timescale);
-    [[ActionManager shareObject]generateMediaFile:media];
-    
-    return;
+//    MediaWithAction * media = [(MediaWithAction *)[[[ActionManager shareObject]getMediaList]firstObject]copyItem];
+//    media.begin = CMTimeMakeWithSeconds(4.5, media.begin.timescale);
+//    media.playRate = -1;
+//    media.end = CMTimeMakeWithSeconds(4.4, media.end.timescale);
+//    [[ActionManager shareObject]generateMediaFile:media];
+//    
+//    return;
     ActionManager * manager = [ActionManager shareObject];
     MediaItem * item = [manager getBaseVideo];
     if(!item)

@@ -93,7 +93,7 @@
     }
 #endif
     
-    //    mediaList_ = [self combinateArrayItems:mediaList_];
+    mediaList_ = [self combinateArrayItems:mediaList_];
     
     
 #ifndef __OPTIMIZE__
@@ -128,18 +128,24 @@
     NSMutableArray * targetSource = [NSMutableArray new];
     MediaWithAction * lastItem = nil;
     for (MediaWithAction * item in source) {
-        if(lastItem
-           && lastItem.Action.ActionType == item.Action.ActionType
-           && [lastItem.fileName isEqualToString:item.fileName]==YES
-           && fabs(lastItem.secondsEnd - item.secondsBegin) < SECONDS_ERRORRANGE
-           && lastItem.playRate == item.playRate)
-        {
-            lastItem.end = item.end;
-        }
-        else
+        if(!lastItem
+           ||
+           (lastItem.playRate != item.playRate)
+           ||
+           !((lastItem.fileName == nil && item.fileName == nil)
+             || [lastItem.fileName isEqualToString:item.fileName]))
         {
             [targetSource addObject:item];
             lastItem = item;
+        }
+        else
+        {
+            lastItem.end = item.end;
+            if(item.Action.ActionType==SNormal || lastItem.Action.ActionType==SNormal)
+            {
+                lastItem.Action.ActionType = SNormal;
+                lastItem.Action.MediaActionID = [self getMediaActionID];
+            }
         }
     }
     return targetSource;
