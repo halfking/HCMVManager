@@ -35,7 +35,7 @@
 		11200A661CF2FCAA007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */; };
 		1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */; };
-		1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 1128E22C1D0693EE000C205B /* ActionManagerProgress.h */; };
+		1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 1128E22C1D0693EE000C205B /* ActionManagerProgress.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1128E22F1D0693EE000C205B /* ActionManagerProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1128E22D1D0693EE000C205B /* ActionManagerProgress.m */; };
 		114DE5F31CC9C87E004BE152 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F21CC9C87E004BE152 /* QuartzCore.framework */; };
 		114DE5F51CC9C8A8004BE152 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */; };
@@ -779,7 +779,6 @@
 				11DE4AA11CE4852500A0BE8D /* MediaActionForRAP.h in Headers */,
 				11DE4A9D1CE4852500A0BE8D /* MediaActionForFast.h in Headers */,
 				11DE4AA71CE4852500A0BE8D /* MediaWithAction.h in Headers */,
-				1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */,
 				11DE4A9B1CE4852500A0BE8D /* MediaActionDo.h in Headers */,
 				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
 				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
@@ -799,6 +798,7 @@
 				115EE26B1CEB2CA300768602 /* AVAssetToolsMacros.h in Headers */,
 				11754F8C1CD8891600F4DA09 /* CMD_GetUserMTVBySample.h in Headers */,
 				11D595D01CFB6E7100D96FAA /* MediaWithActionView.h in Headers */,
+				1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */,
 				11ABAEA01CF0E63F00E94CD9 /* ActionManagerPannel.h in Headers */,
 				11ED436D1CC903EB00561E33 /* LyricItem.h in Headers */,
 				11DE4AAC1CE4EC2500A0BE8D /* mediaedit_full.h in Headers */,
