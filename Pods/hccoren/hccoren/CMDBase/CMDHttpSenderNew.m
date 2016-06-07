@@ -12,6 +12,8 @@
 #import "HCBase.h"
 #import "CMDs.h"
 #import "DeviceConfig.h"
+#import "CommonUtil.h"
+#import "CommonUtil(Date).h"
 //#import "config.h"
 //#import "ASIHTTPRequest.h"
 //#import "ASIFormDataRequest.h"
@@ -107,7 +109,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(CMDHttpSenderNew)
                                 
 #ifdef LOGCMDTIME
                                 op.ticksForSendTime = [CommonUtil getDateTicks:[NSDate date]];
-                                NSLog(@"request:%@",operation.request.URL.absoluteString);
+                                NSLog(@"request:%@",request.URL.absoluteString);
                                 if(operation.responseData)
                                 {
                                     NSLog(@"responseObject = %@",[responseObject JSONRepresentationEx]);

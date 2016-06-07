@@ -114,11 +114,11 @@
     NSTimer * timerForPlayerSync_; //用于控制是否可以同步的播放器时间的代码
 }
 @property (nonatomic,PP_WEAK)NSObject<ActionManagerDelegate> * delegate;
-@property (nonatomic,assign,readonly) CGFloat audioVolume;
-@property (nonatomic,assign,readonly) CGFloat videoVolume;
-@property (nonatomic,assign,readonly) BOOL isGenerating;
-@property (nonatomic,assign) long bitRate;//合成视频的BitRate
-@property (nonatomic,assign) CGFloat minMediaDuration; //视频最小长度
+@property (nonatomic,assign,readonly) CGFloat audioVolume;      //背景音乐的音量
+@property (nonatomic,assign,readonly) CGFloat videoVolume;      //视频原声音的间量
+@property (nonatomic,assign,readonly) BOOL isGenerating;        //是否在生成中
+@property (nonatomic,assign) long bitRate;                      //合成视频的BitRate
+@property (nonatomic,assign) CGFloat minMediaDuration;          //视频最小长度
 @property (nonatomic,assign) BOOL needPlayerItem;
 @property (nonatomic,assign) BOOL canSendPlayerMedia; //是否可以向前端的播放器发送需要播放的对像。默认YES，在合成或一些未完成的操作时，需要关闭
 @property (nonatomic,assign) CGFloat secondsForAudioPlayerMaxRange;//因为操作过程中视频可能要暂停，但音频不停，因此音频的播放时间应该在视频的前面，但是为了不产生中断感，设定一个参数来处理
@@ -129,6 +129,7 @@
 - (void) clearPlayers;
 - (void) pausePlayer;
 - (void) resumePlayer;
+
 #pragma mark - action list manager
 - (BOOL) setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse;
 - (BOOL) setBackMV:(MediaItem *)bgMedia buildReverse:(BOOL)buildReverse;
@@ -136,11 +137,11 @@
 //设置背景音乐
 // beginSeconds 小于0 表示需要从轨的指定的位置(0-beginSeconds)开始播(timeInArray)，大于0，则表示从轨的开头开始播。在于0，同时表示从背景音乐的某个位置开始播。
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
-
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
 - (MediaItem *) getReverseVideo;
 - (MediaItem *) getBaseAudio;
+
 - (int) getLastFilterID;
 - (int) getCurrentFilterID;
 - (BOOL) isReverseFile:(NSString *)fileName;
@@ -157,11 +158,16 @@
 
 - (MediaWithAction *) getCurrentMediaWithAction;
 - (void)setCurrentMediaWithAction:(MediaWithAction *)media;
-//根据当前对像获取...
+
+//根据当前对像获取当前播放时间对应的整个视频队列的时间...
+//因为多个素材对应的原文件的信息（即播放器时间）可能重复，因此，只能从当前的对像往后找，第一个符合要求的即是
 - (CGFloat) getSecondsInArrayViaCurrentState:(CGFloat)playerSeconds;
 
+//获取每个新的Action的ID
 - (double) getMediaActionID;
+
 - (MediaActionDo *) findMediaActionDoByType:(int)actionType;
+
 //添加一个Action到队列中。如果基于源视频，则filePath直接传nil
 //posSeconds 为队列中时间 与播放器的时间不一定一致，因为有些操作可能导致当前播放器多次播放同一内容。
 //mediaBeginSeconds 为素材中的起始位置

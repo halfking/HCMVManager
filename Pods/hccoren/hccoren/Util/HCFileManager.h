@@ -55,6 +55,7 @@
 - (NSString *)checkPathForApplicationPathChanged:(NSString *)orgPath isExists:(BOOL*)isExists;
 
 #pragma mark - helper
++ (BOOL)    isBundleResource:(NSString *)filePath;
 + (BOOL)    isQiniuServer:(NSString *)urlString;
 + (NSString *)checkPath:(NSString *)path;
 + (BOOL)    isLocalFile:(NSString *)urlString;

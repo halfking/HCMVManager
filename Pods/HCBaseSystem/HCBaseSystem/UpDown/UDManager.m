@@ -706,6 +706,11 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(UDManager)
 //}
 - (NSString *) addDownloadProgress:(NSString *)fileUrl localFileExt:(NSString *)fileExt delegate:(id<UDDelegate>)delegate autoStart:(BOOL)autoStart
 {
+    return [self addDownloadProgress:fileUrl localFileExt:fileExt delegate:delegate autoStart:autoStart checkQiniuServer:YES];
+}
+
+- (NSString *) addDownloadProgress:(NSString *)fileUrl localFileExt:(NSString *)fileExt delegate:(id<UDDelegate>)delegate autoStart:(BOOL)autoStart checkQiniuServer:(BOOL)checkQiniuServer
+{
     if(!fileUrl || fileUrl.length==0) return nil;
     //    fileUrl = [fileUrl lowercaseString];
     NSString * key = [self getKey:fileUrl];
@@ -860,7 +865,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(UDManager)
     if(!autoStart) return key;
     
     //upload....
-    [self startDownloadByKey:key delegate:delegate];
+    [self startDownloadByKey:key delegate:delegate checkQiniuServer:checkQiniuServer];
     return key;
 }
 //获取已下载的文件大小
@@ -876,14 +881,18 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_NEW(UDManager)
     }
     return fileSize;
 }
-- (BOOL)startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate
+- (BOOL) startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate
+{
+    return [self startDownloadByKey:key delegate:delegate checkQiniuServer:YES];
+}
+- (BOOL)startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate checkQiniuServer:(BOOL)checkQiniuServer
 {
     if(![self isKeyValid:key]) return NO;
     UDInfo * item = [items_ objectForKey:key];
     if(!item) return NO;
     
     //get token
-    if(![HCFileManager isQiniuServer:item.RemoteUrl])
+    if(!checkQiniuServer || ![HCFileManager isQiniuServer:item.RemoteUrl])
     {
         [self startDownloadByItem:item delegate:delegate];
         return YES;

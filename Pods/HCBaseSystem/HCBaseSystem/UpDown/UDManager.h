@@ -55,6 +55,7 @@ typedef BOOL (^NeedStop)(NSString * filePath,NSString * key);
 
 
 - (NSString *)  addDownloadProgress:(NSString *)fileUrl localFileExt:(NSString *)fileExt delegate:(id<UDDelegate>)delegate  autoStart:(BOOL)autoStart;
+- (NSString *)  addDownloadProgress:(NSString *)fileUrl localFileExt:(NSString *)fileExt delegate:(id<UDDelegate>)delegate  autoStart:(BOOL)autoStart checkQiniuServer:(BOOL)checkQiniuServer;
 //- (NSInteger)   resumeDownloadProgress:(NSString *)key;//下载的位置由manager管理，外界不知
 
 - (BOOL)        stopAllUDs:(BOOL) byUser delegate:(id<UDDelegate>)delegate;        //停止所有上传和下载操作
@@ -64,7 +65,8 @@ typedef BOOL (^NeedStop)(NSString * filePath,NSString * key);
 - (BOOL)        stopAllUploads:(BOOL) byUser  delegate:(id<UDDelegate>)delegate;//停止所有上传进程
 
 - (BOOL)        startUploadItem:(NSString *)key delegate:(id<UDDelegate>)delegate;
-- (BOOL)        startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate;
+- (BOOL)        startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate ;
+- (BOOL)        startDownloadByKey:(NSString *)key delegate:(id<UDDelegate>)delegate checkQiniuServer:(BOOL)checkQiniuServer;
 - (NSDictionary *)itemList;
 
 #pragma mark - helper

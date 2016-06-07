@@ -569,6 +569,9 @@ static HCFileManager * hcFileManager = nil;
 //获取本地文件的全路径
 - (NSString *) localFileFullPath:(NSString *)fileUrl
 {
+    if(!fileUrl) return nil;
+    if([fileUrl isMatchedByRegex:@"/Appplication/" options:RKLCaseless inRange:NSMakeRange(0, fileUrl.length) error:nil])
+        return fileUrl;
     NSString * localPath = [self localFileDir];
     if(fileUrl && fileUrl.length>0)
     {
@@ -585,6 +588,10 @@ static HCFileManager * hcFileManager = nil;
 }
 - (NSString *) tempFileFullPath:(NSString *)fileUrl
 {
+    if(!fileUrl) return nil;
+    if([fileUrl isMatchedByRegex:@"/Appplication/" options:RKLCaseless inRange:NSMakeRange(0, fileUrl.length) error:nil])
+        return fileUrl;
+    
     NSString * localPath = [self tempFileDir];
     if(fileUrl && fileUrl.length>0)
     {
@@ -682,7 +689,10 @@ static HCFileManager * hcFileManager = nil;
 - (NSString *) getFileName:(NSString*)filePath
 {
     if(!filePath||filePath.length==0) return filePath;
-    
+    if([HCFileManager isBundleResource:filePath])
+    {
+        return filePath;
+    }
     NSString * rootPath = [self getRootPath];
     NSUInteger len = rootPath.length;
     
@@ -777,7 +787,11 @@ static HCFileManager * hcFileManager = nil;
     return applicationRoot_;
 }
 #pragma mark - helper
-
++ (BOOL)    isBundleResource:(NSString *)filePath
+{
+    if(!filePath || filePath.length < 2) return NO;
+    return [filePath rangeOfString:@"/Containers/Bundle/Application"].location!=NSNotFound;
+}
 + (BOOL) isQiniuServer:(NSString *)urlString
 {
     return [urlString rangeOfString:@"qiniucdn.com"].length>0 || [urlString rangeOfString:@"qiniu.seenvoice.com"].length>0

@@ -150,6 +150,8 @@
     isGenerateEnter_ = NO;
     currentFilterIndex_ = 0;
     lastFilterIndex_ = 0;
+    videoVol_ = 1;
+    audioVol_ = 1;
     secondsForAudioPlayerMaxRange_ = 0.5;
     _bitRate = (long)(720 *480 * 8);
     [self setNeedPlaySync:YES];
@@ -931,7 +933,7 @@
 {
     if(!action) return NO;
     if(![actionList_ containsObject:action]) return NO;
-    
+    if(action.isOPCompleted) return NO;  //如果已经完成的，则不能再设时长。如果需要更改，需要将其移除再Add进来
     needSendPlayControl_ = NO;
     
     [self pausePlayer];
