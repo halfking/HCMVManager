@@ -198,8 +198,8 @@
     size_t frameSize = (naturalSize.width * naturalSize.height) * 3 / 2;
     size_t framePerSecondSize = frameSize * nominalFrameRate;
     
-    //内存大小，1M
-    size_t maxSize = 1024 * 1024 * 1024;
+    //内存大小，2M
+    size_t maxSize = 2 * 1024 * 1024;
     //1M能存储的时长
     size_t maxDuration = floorl(maxSize / framePerSecondSize);
     maxDuration = MAX(1.0, maxDuration);
