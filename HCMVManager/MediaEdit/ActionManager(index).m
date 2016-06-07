@@ -92,7 +92,6 @@
         mediaList_ = [action processAction:orgMediaList secondsEffected:orgSecondsEffect];
     }
 #endif
-    
     mediaList_ = [self combinateArrayItems:mediaList_];
     
     
@@ -142,11 +141,23 @@
         {
             if(fabs(lastItem.secondsEnd - item.secondsBegin)<SECONDS_ERRORRANGE)
             {
-                lastItem.end = item.end;
-                if(item.Action.ActionType==SNormal || lastItem.Action.ActionType==SNormal)
+                
+                //Repeat 要立杆子，如果类型变了，就没有标识了
+                if(lastItem.Action.ActionType==SRepeat)
                 {
-                    lastItem.Action.ActionType = SNormal;
-                    lastItem.Action.MediaActionID = [self getMediaActionID];
+                    [targetSource addObject:item];
+                    lastItem = item;
+                }
+                else
+                {
+                    lastItem.end = item.end;
+                    
+                    if(item.Action.ActionType==SNormal || lastItem.Action.ActionType==SNormal)
+                    {
+                        lastItem.end = item.end;
+                        lastItem.Action.ActionType = SNormal;
+                        lastItem.Action.MediaActionID = [self getMediaActionID];
+                    }
                 }
             }
             else

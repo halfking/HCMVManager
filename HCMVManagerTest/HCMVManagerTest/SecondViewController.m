@@ -137,9 +137,15 @@
     
     [pannel_ refresh];
     
+    [progress_ setManager:[ActionManager shareObject]];
+    
     [self buildControls];
+
     
     [player_ play];
+    
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
     
 }
 - (void) viewDidDisappear:(BOOL)animated
@@ -242,9 +248,17 @@
         repeatTime_ = kCMTimeZero;
         
         CGFloat playerBottom =  self.view.frame.size.width/16 * 9;
-        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 10 + playerBottom,
+        
+        {
+            progress_ = [[ActionManagerProgress alloc]initWithFrame:CGRectMake(10, 10 + playerBottom, self.view.frame.size.width-20,
+                                                                               40)];
+            progress_.backgroundColor = [UIColor clearColor];
+            [self.view addSubview:progress_];
+        }
+        
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(10, 50 + playerBottom,
                                                                        self.view.frame.size.width -20,
-                                                                       top - 60 - playerBottom)];
+                                                                       top - 100 - playerBottom)];
         pannel_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:pannel_];
         
@@ -716,6 +730,11 @@
     if(playerSimple == player_)
     {
         [pannel_ setPlayerSeconds:cmTime isReverse:NO];
+        
+        CGFloat secondsInArray = [manager_ getSecondsInArrayViaCurrentState:cmTime];
+        
+        [progress_ setPlaySeconds:cmTime secondsInArray:secondsInArray];
+        
         [manager_ setPlaySeconds:cmTime];
     }
     
@@ -791,6 +810,7 @@
     
     [pannel_ refresh];
     [pannel_ setPlayMedia:mediaToPlay];
+    [progress_ setCurrentMedia:mediaToPlay];
     
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
@@ -853,7 +873,10 @@
     player_.key = nil;
     rPlayer_.key = nil;
     [player_ seek:0 accurate:YES];
-    [rPlayer_ seek:0 accurate:YES];
+//    [rPlayer_ seek:0 accurate:YES];
+    
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
     
     //    [self buildControls];
     
@@ -874,13 +897,21 @@
     [manager_ initAudioPlayer:audioPlayer_];
     //    [self buildControls];
     
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
+    
     [pannel_ refresh];
     
     [player_ play];
 }
 -(void)join:(UIButton *)sender
 {
+    [player_ pause];
     [player_ seek:0 accurate:YES];
+    
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
+    [manager_ setCurrentMediaWithAction:nil];
     [player_ play];
     return;
     

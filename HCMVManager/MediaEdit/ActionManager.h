@@ -184,6 +184,9 @@
                                  at:(CGFloat)playerSeconds;
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                                  inArray:(CGFloat)secondsInArray;
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                            inArray:(CGFloat)secondsInArray
+                changeCurrentAction:(BOOL)changeCurrentAction;
 //当长按时，我们并不知道一个Action的时长，需要结束时再给我们
 - (BOOL) setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds;
 - (BOOL) ensureActions:(CGFloat)playerSeconds; //将未完成的Action完成，一般用于播放完成

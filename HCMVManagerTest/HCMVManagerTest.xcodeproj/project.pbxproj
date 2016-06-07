@@ -25,6 +25,9 @@
 		11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A1F1CF2B90C007E8B20 /* filter_0@2x.png */; };
 		11200A2F1CF2E829007E8B20 /* ActionManager(player).m in Sources */ = {isa = PBXBuildFile; fileRef = 11200A2E1CF2E829007E8B20 /* ActionManager(player).m */; };
 		1122A2121CEB8549006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2111CEB8549006BB441 /* HCPlayerSimple.m */; };
+		1128E2321D06ADFB000C205B /* ActionManagerProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1128E2311D06ADFB000C205B /* ActionManagerProgress.m */; };
+		1128E2351D06B504000C205B /* flag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1128E2331D06B504000C205B /* flag@2x.png */; };
+		1128E2361D06B504000C205B /* flag@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1128E2341D06B504000C205B /* flag@3x.png */; };
 		115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */; };
 		115EE25D1CEAFC1A00768602 /* AVAssetToolsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EE25A1CEAFC1A00768602 /* AVAssetToolsConstants.m */; };
 		118CE86A1CE1AF8D00290641 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CE8691CE1AF8D00290641 /* main.m */; };
@@ -130,6 +133,10 @@
 		11200A2E1CF2E829007E8B20 /* ActionManager(player).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ActionManager(player).m"; sourceTree = "<group>"; };
 		1122A2101CEB8549006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
 		1122A2111CEB8549006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
+		1128E2301D06ADFB000C205B /* ActionManagerProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerProgress.h; sourceTree = "<group>"; };
+		1128E2311D06ADFB000C205B /* ActionManagerProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerProgress.m; sourceTree = "<group>"; };
+		1128E2331D06B504000C205B /* flag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@2x.png"; sourceTree = "<group>"; };
+		1128E2341D06B504000C205B /* flag@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@3x.png"; sourceTree = "<group>"; };
 		115EE2571CEAFC1A00768602 /* AVAssetReverseSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetReverseSession.h; sourceTree = "<group>"; };
 		115EE2581CEAFC1A00768602 /* AVAssetReverseSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetReverseSession.m; sourceTree = "<group>"; };
 		115EE2591CEAFC1A00768602 /* AVAssetToolsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetToolsConstants.h; sourceTree = "<group>"; };
@@ -551,6 +558,10 @@
 		11DE4A5A1CE2DD8E00A0BE8D /* MediaEdit */ = {
 			isa = PBXGroup;
 			children = (
+				1128E2331D06B504000C205B /* flag@2x.png */,
+				1128E2341D06B504000C205B /* flag@3x.png */,
+				1128E2301D06ADFB000C205B /* ActionManagerProgress.h */,
+				1128E2311D06ADFB000C205B /* ActionManagerProgress.m */,
 				1122A2101CEB8549006BB441 /* HCPlayerSimple.h */,
 				1122A2111CEB8549006BB441 /* HCPlayerSimple.m */,
 				11DE4A5B1CE2DDA500A0BE8D /* MediaAction.h */,
@@ -666,6 +677,7 @@
 				11200A201CF2B90C007E8B20 /* filter_0@2x.png in Resources */,
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
 				11CF23D61CFDA10A002851BD /* a.m4v in Resources */,
+				1128E2351D06B504000C205B /* flag@2x.png in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
 				11D595EE1CFC679B00D96FAA /* man.mp3 in Resources */,
 				11200A151CF2B14C007E8B20 /* lookup_LOMO.png in Resources */,
@@ -678,6 +690,7 @@
 				11200A141CF2B14C007E8B20 /* lookup_amatorka.png in Resources */,
 				11200A181CF2B14C007E8B20 /* lookup_黑白.png in Resources */,
 				11C850AC1D0066AE0029229B /* ywy.mp3 in Resources */,
+				1128E2361D06B504000C205B /* flag@3x.png in Resources */,
 				11D595CA1CFA0B2A00D96FAA /* test2.MOV in Resources */,
 				11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
@@ -776,6 +789,7 @@
 				11DE4A831CE4662500A0BE8D /* MediaActionForReverse.m in Sources */,
 				118CE8E41CE1B00D00290641 /* MaibaTables.m in Sources */,
 				118CE8F81CE1B00D00290641 /* Musician.m in Sources */,
+				1128E2321D06ADFB000C205B /* ActionManagerProgress.m in Sources */,
 				115EE25C1CEAFC1A00768602 /* AVAssetReverseSession.m in Sources */,
 				118CE8EE1CE1B00D00290641 /* CMD_GetUserMTVBySample.m in Sources */,
 				118CE8F51CE1B00D00290641 /* MTVLocal.m in Sources */,

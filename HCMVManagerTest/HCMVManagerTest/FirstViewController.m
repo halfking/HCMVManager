@@ -20,7 +20,7 @@
 #import "VideoGenerater.h"
 #import "testPlayerVC.h"
 #import "MediaActionForReverse.h"
-
+#import "ActionManagerProgress.h"
 @interface FirstViewController ()<ActionManagerDelegate,WTPlayerResourceDelegate,VideoGeneraterDelegate>
 
 @end
@@ -31,6 +31,8 @@
     UIScrollView * imagesContainer_;
     int kThumbImageTag_;
     ActionManagerPannel * pannel_;
+    
+    ActionManagerProgress * progress_;
     
     NSTimer * playerTimer_;
     CGFloat playerSeconds_;
@@ -134,7 +136,13 @@
         kThumbImageTag_ = 20000;
     }
     {
-        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(0, 150,
+        progress_ = [[ActionManagerProgress alloc]initWithFrame:CGRectMake(0, 150, self.view.frame.size.width,
+                                                                           50)];
+        progress_.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:progress_];
+    }
+    {
+        pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(0, 200,
                                                                        self.view.frame.size.width,
                                                                        self.view.frame.size.height - 150)];
         pannel_.backgroundColor = [UIColor grayColor];
@@ -150,6 +158,7 @@
     [ActionManager shareObject].delegate = self;
     
     [pannel_ refresh];
+    [progress_ setManager:[ActionManager shareObject]];
 }
 - (void)buildBaseData
 {
@@ -170,6 +179,7 @@
     }
     [pannel_ setActionManager:manager];
     [pannel_ refresh];
+    
 }
 #pragma  mark - buutons
 - (void)resetClick:(id)sender
@@ -183,6 +193,10 @@
     playerSeconds_ = 0;
     clickIndex_ =0;
     [pannel_ refresh];
+    
+    [progress_ reset];
+    [progress_ refresh];
+    
 }
 - (void)clickTest:(id)sender
 {
@@ -543,6 +557,8 @@
     
     [[ActionManager shareObject]setCurrentMediaWithAction:nil];
     [[ActionManager shareObject]setPlaySeconds:0];
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
     
     playerTimer_ = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChanged:) userInfo:nil repeats:YES];
 }
@@ -566,6 +582,10 @@
         playerTimer_ = nil;
     }
     [pannel_ setPlayerSeconds:playerSeconds_ isReverse:NO];
+    CGFloat secondsInArray = [manager getSecondsInArrayViaCurrentState:playerSeconds_];
+    
+    [progress_ setPlaySeconds:playerSeconds_ secondsInArray:secondsInArray];
+    
     [manager setPlaySeconds:playerSeconds_ ];
 }
 - (void)testShackQuick:(id)sender
@@ -842,6 +862,9 @@
 {
     [pannel_ refresh];
     [pannel_ setPlayMedia:mediaToPlay];
+    
+    [progress_ setCurrentMedia:mediaToPlay];
+    
     playerSeconds_ = mediaToPlay.secondsBegin;
     
     if(testAction_)

@@ -35,6 +35,8 @@
 		11200A661CF2FCAA007E8B20 /* filter_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */; };
 		1122A2151CEB90AE006BB441 /* HCPlayerSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */; };
+		1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 1128E22C1D0693EE000C205B /* ActionManagerProgress.h */; };
+		1128E22F1D0693EE000C205B /* ActionManagerProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1128E22D1D0693EE000C205B /* ActionManagerProgress.m */; };
 		114DE5F31CC9C87E004BE152 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F21CC9C87E004BE152 /* QuartzCore.framework */; };
 		114DE5F51CC9C8A8004BE152 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */; };
 		114DE5F71CC9C8EE004BE152 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114DE5F61CC9C8EE004BE152 /* Photos.framework */; };
@@ -209,6 +211,8 @@
 		11200A4E1CF2FCAA007E8B20 /* filter_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter_0@2x.png"; sourceTree = "<group>"; };
 		1122A2131CEB90AE006BB441 /* HCPlayerSimple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCPlayerSimple.h; sourceTree = "<group>"; };
 		1122A2141CEB90AE006BB441 /* HCPlayerSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HCPlayerSimple.m; sourceTree = "<group>"; };
+		1128E22C1D0693EE000C205B /* ActionManagerProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerProgress.h; sourceTree = "<group>"; };
+		1128E22D1D0693EE000C205B /* ActionManagerProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerProgress.m; sourceTree = "<group>"; };
 		114DE5F21CC9C87E004BE152 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		114DE5F41CC9C8A8004BE152 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		114DE5F61CC9C8EE004BE152 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -498,6 +502,8 @@
 				11DE4A981CE4852500A0BE8D /* MediaActionForSlow.m */,
 				11DE4A991CE4852500A0BE8D /* MediaWithAction.h */,
 				11DE4A9A1CE4852500A0BE8D /* MediaWithAction.m */,
+				1128E22C1D0693EE000C205B /* ActionManagerProgress.h */,
+				1128E22D1D0693EE000C205B /* ActionManagerProgress.m */,
 			);
 			path = MediaEdit;
 			sourceTree = "<group>";
@@ -773,6 +779,7 @@
 				11DE4AA11CE4852500A0BE8D /* MediaActionForRAP.h in Headers */,
 				11DE4A9D1CE4852500A0BE8D /* MediaActionForFast.h in Headers */,
 				11DE4AA71CE4852500A0BE8D /* MediaWithAction.h in Headers */,
+				1128E22E1D0693EE000C205B /* ActionManagerProgress.h in Headers */,
 				11DE4A9B1CE4852500A0BE8D /* MediaActionDo.h in Headers */,
 				11DE4A721CE384A700A0BE8D /* ActionManager.h in Headers */,
 				11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */,
@@ -1033,6 +1040,7 @@
 				1122A2161CEB90AE006BB441 /* HCPlayerSimple.m in Sources */,
 				11ED42F91CC8DF4D00561E33 /* MusicTag.m in Sources */,
 				11200A5D1CF2FCAA007E8B20 /* TBBlackWhiteFiter.m in Sources */,
+				1128E22F1D0693EE000C205B /* ActionManagerProgress.m in Sources */,
 				11ED435A1CC9002700561E33 /* MediaEditManager.m in Sources */,
 				11ABAEA11CF0E63F00E94CD9 /* ActionManagerPannel.m in Sources */,
 				11DE4AA81CE4852500A0BE8D /* MediaWithAction.m in Sources */,
@@ -1485,6 +1493,7 @@
 				11C851281D01D9A20029229B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		11ED404B1CC6952B00561E33 /* Build configuration list for PBXProject "HCMVManager" */ = {
 			isa = XCConfigurationList;

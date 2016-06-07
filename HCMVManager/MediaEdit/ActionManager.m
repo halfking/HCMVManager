@@ -879,6 +879,12 @@
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                             inArray:(CGFloat)secondsInArray
 {
+    return [self addActionItemDo:actionDo inArray:secondsInArray changeCurrentAction:YES];
+}
+- (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
+                            inArray:(CGFloat)secondsInArray
+                changeCurrentAction:(BOOL)changeCurrentAction
+{
     if(actionDo.isOPCompleted==NO) return nil;
     
     [self pausePlayer];
@@ -917,13 +923,23 @@
     
     //播当前这个
     MediaWithAction * media = [[item buildMaterialProcess:mediaList_]firstObject];
-    [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
-    if(actionDo.isOPCompleted)
+    
+    //影响当前播放对像
+    if(changeCurrentAction)
     {
-        [self buildTimerForPlayerSync:media.secondsDurationInArray];
+        [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
+        if(actionDo.isOPCompleted)
+        {
+            [self buildTimerForPlayerSync:media.secondsDurationInArray];
+        }
+        else
+            needSendPlayControl_ = NO;
     }
-    else
-        needSendPlayControl_ = NO;
+    else //不影响当前播放对像
+    {
+        [self buildTimerForPlayerSync:self.minMediaDuration];
+    }
+    
     return item;
     
     

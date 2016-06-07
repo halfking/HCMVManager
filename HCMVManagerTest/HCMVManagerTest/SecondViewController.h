@@ -10,13 +10,14 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-
+#import "ActionManagerProgress.h"
 #define RepeatTime 1.5
 @interface SecondViewController : UIViewController
 {
 //    AVPlayer * player;
 //    AVPlayerLayer * layer;
     CFTimeInterval pausedTime1;
+    ActionManagerProgress * progress_;
 }
 @property(strong, nonatomic) UIView * Preview;
 @property(strong, nonatomic) UIView * Progress;
