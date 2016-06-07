@@ -140,11 +140,19 @@
         }
         else
         {
-            lastItem.end = item.end;
-            if(item.Action.ActionType==SNormal || lastItem.Action.ActionType==SNormal)
+            if(fabs(lastItem.secondsEnd - item.secondsBegin)<SECONDS_ERRORRANGE)
             {
-                lastItem.Action.ActionType = SNormal;
-                lastItem.Action.MediaActionID = [self getMediaActionID];
+                lastItem.end = item.end;
+                if(item.Action.ActionType==SNormal || lastItem.Action.ActionType==SNormal)
+                {
+                    lastItem.Action.ActionType = SNormal;
+                    lastItem.Action.MediaActionID = [self getMediaActionID];
+                }
+            }
+            else
+            {
+                [targetSource addObject:item];
+                lastItem = item;
             }
         }
     }
@@ -378,8 +386,8 @@
 }
 - (BOOL)generateMediaFile:(MediaWithAction *)media
 {
-//    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
-     if(!media || (media.playRate>0) || media.secondsDurationInArray<self.minMediaDuration)
+    //    if(!media || ([media isReverseMedia]==NO && media.playRate>0) || media.secondsDurationInArray<SECONDS_MINRANGE)
+    if(!media || (media.playRate>0) || media.secondsDurationInArray<self.minMediaDuration)
         return NO;
     @synchronized (self) {
         if(isReverseMediaGenerating_)
@@ -518,7 +526,7 @@
 
 //- (BOOL) generateThumnates:(CGSize)thumnateSize contentSize:(CGSize)contentSize
 //{
-//    
+//
 //    return NO;
 //}
 @end

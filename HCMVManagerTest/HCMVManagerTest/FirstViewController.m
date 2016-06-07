@@ -542,21 +542,31 @@
     }
     
     [[ActionManager shareObject]setCurrentMediaWithAction:nil];
+    [[ActionManager shareObject]setPlaySeconds:0];
     
     playerTimer_ = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChanged:) userInfo:nil repeats:YES];
 }
 - (void)timeChanged:(NSTimer *)timer
 {
-    playerSeconds_ += 0.1;
+    
     ActionManager * manager = [ActionManager shareObject];
+    MediaWithAction * currentMedia = [manager getCurrentMediaWithAction];
+//    CGFloat secondsInArray = [manager getSecondsInArrayViaCurrentState:playerSeconds_];
+//    if(secondsInArray>=3.2) return;
+    if(currentMedia && currentMedia.playRate <0)
+        playerSeconds_ -= 0.1;
+    else
+        playerSeconds_ += 0.1;
+    
+    
     
     if(playerSeconds_ >= [manager getBaseVideo].secondsDuration)
     {
         [playerTimer_ invalidate];
         playerTimer_ = nil;
     }
-    [manager setPlaySeconds:playerSeconds_ ];
     [pannel_ setPlayerSeconds:playerSeconds_ isReverse:NO];
+    [manager setPlaySeconds:playerSeconds_ ];
 }
 - (void)testShackQuick:(id)sender
 {
@@ -832,7 +842,7 @@
 {
     [pannel_ refresh];
     [pannel_ setPlayMedia:mediaToPlay];
-    
+    playerSeconds_ = mediaToPlay.secondsBegin;
     
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;

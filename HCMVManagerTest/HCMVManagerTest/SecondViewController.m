@@ -715,9 +715,8 @@
     NSLog(@"player seconds:%f",cmTime);
     if(playerSimple == player_)
     {
-        [manager_ setPlaySeconds:cmTime];
-        
         [pannel_ setPlayerSeconds:cmTime isReverse:NO];
+        [manager_ setPlaySeconds:cmTime];
     }
     
     
@@ -790,8 +789,8 @@
     [player_ pause];
     showTimeChanged_ = YES;
     
-    [pannel_ setPlayMedia:mediaToPlay];
     [pannel_ refresh];
+    [pannel_ setPlayMedia:mediaToPlay];
     
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
@@ -881,6 +880,10 @@
 }
 -(void)join:(UIButton *)sender
 {
+    [player_ seek:0 accurate:YES];
+    [player_ play];
+    return;
+    
     [self showIndicatorView];
     
     

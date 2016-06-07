@@ -784,7 +784,8 @@
         {
             isBegin = YES;
             prevMedia = item;
-            continue;
+            if(currentMedia)
+                continue;
         }
         if(isBegin)
         {

@@ -33,23 +33,33 @@
 }
 - (void)setCurrent:(BOOL)isCurrent
 {
-    if(!lineView_) return;
-    if(isCurrent)
+    if(!lineView_)
     {
+        _isCurrent = isCurrent;
+        NSLog(@"no lineview....");
+        return;
+    }
+    if(isCurrent && !_isCurrent)
+    {
+        _isCurrent = YES;
         CGRect frame = lineView_.frame;
         frame.size.height = 8;
+        frame.origin.y -= 3;
         lineView_.frame = frame;
         lineView_.backgroundColor = [UIColor purpleColor];
         [lineView_ setNeedsDisplay];
-        _isCurrent = YES;
+        
     }
-    else
+    else if(_isCurrent && !isCurrent)
     {
+        _isCurrent = NO;
         CGRect frame = lineView_.frame;
         frame.size.height =2;
+        frame.origin.y +=3;
         lineView_.frame = frame;
         lineView_.backgroundColor = [UIColor blueColor];
-        _isCurrent = NO;
+        [lineView_ setNeedsDisplay];
+        
     }
 }
 - (BOOL)setPlayerSeconds:(CGFloat)seconds
@@ -71,15 +81,17 @@
         {
             playerIndcator_.hidden = YES;
         }
-        self.backgroundColor = [UIColor blueColor];
+//        self.backgroundColor = [UIColor blueColor];
         return NO;
     }
     CGRect frame = lineView_.frame;
-    frame.size.width = (seconds - mediaWithAction_.secondsBegin) * widthPerseconds_;
+    frame.origin.y +=3;
+    frame.size.height -= 4;
+    frame.size.width = fabs(seconds - mediaWithAction_.secondsBegin) * widthPerseconds_;
     if(!playerIndcator_)
     {
         playerIndcator_ = [[UIView alloc]initWithFrame:frame];
-        
+        playerIndcator_.backgroundColor = [UIColor redColor];
         [self addSubview:playerIndcator_];
     }
     else
@@ -87,14 +99,14 @@
         playerIndcator_.hidden = NO;
         playerIndcator_.frame = frame;
     }
-    self.backgroundColor = [UIColor purpleColor];
+//    self.backgroundColor = [UIColor purpleColor];
     return YES;
 }
 - (void) buildBaseLine:(MediaWithAction *)media
 {
     NSString * rightText = [NSString stringWithFormat:@"原长(%.2f)合成(%.2f)rate:(%.2f)",media.secondsDurationInArray, media.secondsDurationInArray/(media.playRate!=0?fabs(media.playRate):1),media.playRate];
     font_ = [UIFont systemFontOfSize:10];
-
+    
     CGSize rightSize = [rightText sizeWithAttributes:@{NSFontAttributeName:font_}];
     ContentWidth_ = widthPerseconds_ * media.secondsDurationInArray + rightSize.width + 10;
     NSString * leftTitle = title_?title_:[NSString stringWithFormat:@"%d-%d",Index_,media.Action.ActionType];
@@ -128,7 +140,7 @@
     if(duration<=0) duration = 5;
     
     int count = (int)roundf(duration + 0.5);
-   
+    
     
     UIView * containerView = [[UIView alloc]initWithFrame:frame];
     {
