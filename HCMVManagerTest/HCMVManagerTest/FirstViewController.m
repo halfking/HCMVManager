@@ -593,10 +593,17 @@
         playerTimer_ = nil;
     }
     
-    [[ActionManager shareObject]setCurrentMediaWithAction:nil];
-    [[ActionManager shareObject]setPlaySeconds:0];
-    [progress_ setCurrentMedia:nil];
+    NSArray * mediaList = [[ActionManager shareObject]getMediaList];
+    MediaWithAction * media = nil;
+    if(mediaList.count>0) media = [mediaList firstObject];
+    
+    [progress_ setCurrentMedia:media];
     [progress_ setPlaySeconds:0 secondsInArray:0];
+    
+    [[ActionManager shareObject]setCurrentMediaWithAction:media];
+    [[ActionManager shareObject]setPlaySeconds:0];
+    
+    [pannel_ refresh];
     
     playerTimer_ = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChanged:) userInfo:nil repeats:YES];
 }

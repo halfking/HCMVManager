@@ -36,6 +36,9 @@
 @property (nonatomic,PP_STRONG) UIColor * colorForTrack;
 @property (nonatomic,PP_STRONG) UIColor * colorForSlow;
 @property (nonatomic,PP_STRONG) UIColor * colorForFast;
+@property (nonatomic,PP_STRONG) UIColor * colorForRepeat;
+@property (nonatomic,PP_STRONG) UIColor * colorForReverse1;
+@property (nonatomic,PP_STRONG) UIColor * colorForReverse2;
 @property (nonatomic,assign) CGFloat durationForFlag;
 @property (nonatomic,PP_STRONG) NSString * flagImageName;
 @property (nonatomic,assign) BOOL autoHideFlag;

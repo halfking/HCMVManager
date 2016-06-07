@@ -34,6 +34,9 @@
         _colorForNormal = [UIColor yellowColor];
         _colorForFast = UIColorFromRGB(0xFF5500);
         _colorForSlow = UIColorFromRGB(0x00FFFF);
+        _colorForReverse1 = _colorForTrack;
+        _colorForReverse2 = _colorForNormal;
+        _colorForRepeat = _colorForNormal;
         _durationForFlag = 2;
         _flagImageName = @"flag.png";
         _autoHideFlag = YES;
@@ -476,16 +479,16 @@
     if(media.Action.ActionType == SReverse)
     {
         if(media.rateBeforeReverse <0)
-            return _colorForTrack;
+            return _colorForReverse1;
         else
-            return _colorForNormal;
+            return _colorForReverse2;
     }
     else if(media.Action.ActionType ==SSlow)
         return _colorForSlow;
     else if(media.Action.ActionType == SFast)
         return _colorForFast;
     else if(media.Action.ActionType == SRepeat)
-        return [UIColor redColor];
+        return _colorForRepeat;//[UIColor redColor];
     else
         return _colorForNormal;
 }
