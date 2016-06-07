@@ -267,7 +267,7 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = YES;
         acdo =  [manager addActionItem:action filePath:nil at:8 from:8 duration:1];
     }
@@ -904,7 +904,7 @@
     [progress_ setCurrentMedia:mediaToPlay];
     
     playerSeconds_ = mediaToPlay.secondsBeginBeforeReverse;
-    
+    NSLog(@"player seconds change:%f",playerSeconds_);
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;
     

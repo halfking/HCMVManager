@@ -11,6 +11,19 @@
 //慢速的颜色：＃00FFFF
 //快速的颜色：＃FF5500
 #define DEFAULT_TIPS @"长按滤镜为视频增加特效"
+
+@implementation AMProgressItem
+
+- (void)dealloc
+{
+    _barView = nil;
+    _media = nil;
+    NSLog(@"progressitem release.");
+    PP_SUPERDEALLOC;
+}
+
+@end
+
 @implementation ActionManagerProgress
 - (id)initWithFrame:(CGRect)frame
 {
@@ -112,12 +125,13 @@
             continue;
         }
         {
-            NSMutableDictionary * dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:media,@"media",
-                                         v,@"view",
-                                         [NSNumber numberWithBool:hasFlag],@"flag", nil];
-            [barViews_ addObject:dic];
+            AMProgressItem * item = [[AMProgressItem alloc]init];
+            item.media = media;
+            item.barView = v;
+            item.hasFlag = hasFlag;
+            [barViews_ addObject:item];
             [barBgView_ addSubview:v];
-            
+            item = nil;
             if(media == currentMedia_ && !full)
             {
                 [self checkPreMediaWidth:media prevMedia:prevMedia];
@@ -149,10 +163,10 @@
                 //                {
                 int viewCount = MIN((int)barViews_.count-1,i);
                 for (int j =viewCount; j>=0; j--) {
-                    NSDictionary * dic = barViews_[j];
+                    AMProgressItem * dic = barViews_[j];
                     
-                    UIView * prevView = [dic objectForKey:@"view"];
-                    MediaWithAction * item = [dic objectForKey:@"media"];
+                    UIView * prevView = dic.barView;
+                    MediaWithAction * item = dic.media;
                     
                     CGRect frame = prevView.frame;
                     frame.size.width = item.secondsDurationInArray * widthPerSeconds_;
@@ -176,9 +190,9 @@
     else
     {
         //处理最后一个的长度
-        NSDictionary * dic = [barViews_ lastObject];
-        UIView * v = [dic objectForKey:@"view"];
-        MediaWithAction * lastMedia = [dic objectForKey:@"media"];
+        AMProgressItem * dic = [barViews_ lastObject];
+        UIView * v = dic.barView;
+        MediaWithAction * lastMedia = dic.media;
         CGRect frame = v.frame;
         CGFloat width = lastMedia.secondsDurationInArray * widthPerSeconds_;
         if(lastMedia.rateBeforeReverse <0)
@@ -196,6 +210,7 @@
 }
 - (void)clearBarViews
 {
+    NSLog(@"AP : clear bar views");
     for (UIView * subView in barBgView_.subviews) {
         [subView removeFromSuperview];
     }
@@ -231,11 +246,13 @@
             UIView * barView =[self buildBarView:media hasFlag:&hasFlag];
             if(barView)
             {
-                NSMutableDictionary * dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:media,@"media",
-                                             barView,@"view",
-                                             [NSNumber numberWithBool:hasFlag],@"flag", nil];
-                [barViews_ addObject:dic];
+                AMProgressItem * item = [[AMProgressItem alloc]init];
+                item.media = media;
+                item.barView = barView;
+                item.hasFlag = hasFlag;
+                [barViews_ addObject:item];
                 [barBgView_ addSubview:barView];
+                item = nil;
             }
         }
         [self checkFlagIsValid:media.secondsInArray];
@@ -336,18 +353,18 @@
 {
     if(!_autoHideFlag) return ;
     
-    for (NSMutableDictionary * dic in barViews_) {
-        MediaWithAction * media = [dic objectForKey:@"media"];
-        BOOL hasFlag = [[dic objectForKey:@"flag"]boolValue];
+    for (AMProgressItem * dic in barViews_) {
+        MediaWithAction * media = dic.media;
+        BOOL hasFlag = dic.hasFlag;
         if(hasFlag && media.Action.ActionType==SRepeat)
         {
             if(secondsInArray- media.secondsInArray>self.durationForFlag)
             {
-                UIView * view = [dic objectForKey:@"view"];
+                UIView * view = dic.barView;
                 for (UIView * subView in view.subviews) {
                     [subView removeFromSuperview];
                 }
-                [dic setObject:[NSNumber numberWithBool:NO] forKey:@"flag"];
+                dic.hasFlag = NO;
             }
         }
     }
@@ -416,9 +433,9 @@
                 index = (int)barViews_.count-1;
             }
         }
-        NSDictionary * dic = [barViews_ objectAtIndex:index];
-        UIView * barView = [dic objectForKey:@"view"];
-        MediaWithAction * lastmedia = [dic objectForKey:@"media"];
+        AMProgressItem * dic = [barViews_ objectAtIndex:index];
+        UIView * barView = dic.barView;
+        MediaWithAction * lastmedia = dic.media;
         
         CGRect frame = barView.frame;
         
@@ -457,7 +474,12 @@
 - (UIColor *) getColorForMedia:(MediaWithAction *)media
 {
     if(media.Action.ActionType == SReverse)
-        return _colorForTrack;
+    {
+        if(media.rateBeforeReverse <0)
+            return _colorForTrack;
+        else
+            return _colorForNormal;
+    }
     else if(media.Action.ActionType ==SSlow)
         return _colorForSlow;
     else if(media.Action.ActionType == SFast)

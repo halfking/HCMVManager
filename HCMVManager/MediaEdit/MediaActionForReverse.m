@@ -88,7 +88,16 @@
             media.end = CMTimeMakeWithSeconds(0, media.end.timescale);
         }
         media.durationInPlaying = [self getDurationInFinal:sources];
-        media.playRate = self.Rate;
+        if(self.Rate>0)
+        {
+            NSLog(@"AM :确认反向的Rate大于0？");
+            media.playRate = 0 - self.Rate;
+            self.Rate = media.playRate;
+        }
+        else
+        {
+            media.playRate = self.Rate;
+        }
         [materialList_ addObject:media];
         self.Media = media;
     }

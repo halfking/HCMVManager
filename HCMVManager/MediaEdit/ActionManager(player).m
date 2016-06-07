@@ -522,7 +522,7 @@
         {
             NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBeginBeforeReverse);
             [player_ seek:media.secondsBeginBeforeReverse accurate:YES];
-            [NSThread sleepForTimeInterval:0.05];
+//            [NSThread sleepForTimeInterval:0.05];
             [self syncAudioPlayer:media playerSeconds:media.secondsBeginBeforeReverse];
             
         }
@@ -625,6 +625,7 @@
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds //isReverse:(BOOL)isReverse
 {
+    
     if(playerSeconds>=0)
         [self checkAudioPlayerSync:currentMediaWithAction_ playerSeconds:playerSeconds];
     
@@ -704,7 +705,7 @@
     MediaWithAction * media = nil;
 
     
-    if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_)
+    if(secondsInArray <=playerSeconds + SECONDS_ERRORRANGE && currentMediaWithAction_ && currentMediaWithAction_.secondsInArray>0)
     {
 #ifndef __OPTIMIZE__
         NSLog(@"AM : 不可能的事情发生了，没有找到对应的播放时间");

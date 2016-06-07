@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "MediaWithAction.h"
 #import "ActionManager.h"
+@interface AMProgressItem:NSObject
+@property (nonatomic,strong) UIView * barView;
+@property (nonatomic,strong) MediaWithAction * media;
+@property (nonatomic,assign) BOOL hasFlag;
+@end
+
 @interface ActionManagerProgress : UIView
 {
     NSMutableArray * mediaList_;
