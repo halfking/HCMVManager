@@ -980,6 +980,24 @@
         media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
     }
 #endif
+    if(!media)
+    {
+        NSArray * metaList = [action buildMaterialProcess:mediaList_];
+        if(metaList.count>0)
+        {
+            MediaWithAction * item = [metaList lastObject];
+            //reach end
+            if(item.secondsEnd +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
+            {
+                media = [mediaList_ firstObject];
+            }
+        }
+        else
+        {
+            media = [mediaList_ firstObject];
+        }
+    }
+
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
     //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下

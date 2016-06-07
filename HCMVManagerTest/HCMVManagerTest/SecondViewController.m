@@ -727,18 +727,20 @@
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
     NSLog(@"player seconds:%f",cmTime);
-    if(playerSimple == player_)
-    {
+//    if(playerSimple == player_)
+//    {
+//        [player_ pause];
         [pannel_ setPlayerSeconds:cmTime isReverse:NO];
         
         CGFloat secondsInArray = [manager_ getSecondsInArrayViaCurrentState:cmTime];
         
         [progress_ setPlaySeconds:cmTime secondsInArray:secondsInArray];
         
+//        [player_ play];
+        
         [manager_ setPlaySeconds:cmTime];
-    }
-    
-    
+        
+//    }
 }
 - (void)playerSimple:(HCPlayerSimple *)playerSimple reachEnd:(CGFloat)end
 {
@@ -792,15 +794,15 @@
 }
 - (void) showCurrentMediaes:(CGFloat)seconds
 {
-    NSLog(@"-------------** media at player:%.4f rplayer:%.4f**---------------",[player_ secondsPlaying],[rPlayer_ secondsPlaying]);
-    int index = 0;
-    NSArray * mediaList = [manager_ getMediaList];
-    for (MediaWithAction * item in mediaList) {
-        NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
-        NSLog(@"%@",[item toString]);
-        index ++;
-    }
-    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
+//    NSLog(@"-------------** media at player:%.4f rplayer:%.4f**---------------",[player_ secondsPlaying],[rPlayer_ secondsPlaying]);
+//    int index = 0;
+//    NSArray * mediaList = [manager_ getMediaList];
+//    for (MediaWithAction * item in mediaList) {
+//        NSLog(@"--%d-- type:%d",index,item.Action.ActionType);
+//        NSLog(@"%@",[item toString]);
+//        index ++;
+//    }
+//    NSLog(@"**--**--**--**--**--**--**--**--**--**--");
 }
 //当播放器的内容需要发生改变时
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
@@ -815,7 +817,7 @@
     
     NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
     NSLog(@"mediaItem:%@",[mediaToPlay toString]);
-    NSLog(@"player:%.2f",[player_ secondsPlaying]);
+    NSLog(@"player:%.2f playeritem:%f",[player_ secondsPlaying], CMTimeGetSeconds(player_.playerItem.currentTime));
     
     [player_ play];
     
@@ -911,7 +913,9 @@
     
     [progress_ setCurrentMedia:nil];
     [progress_ setPlaySeconds:0 secondsInArray:0];
+    [progress_ refresh];
     [manager_ setCurrentMediaWithAction:nil];
+    [pannel_ refresh];
     [player_ play];
     return;
     

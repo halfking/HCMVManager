@@ -85,14 +85,7 @@
     
     msgLabel_.text = defaultMsg_;
     
-    if(barBgView_)
-    {
-        for (UIView * bars in barBgView_.subviews) {
-            [bars removeFromSuperview];
-        }
-        [barViews_ removeAllObjects];
-    }
-    else
+    if(!barBgView_)
     {
         barBgView_ = [[UIView alloc]initWithFrame:CGRectMake(0, self.frame.size.height -self.barHeight-1, self.frame.size.width, self.barHeight+1)];
         barBgView_.backgroundColor = [UIColor darkGrayColor];
@@ -103,6 +96,8 @@
 }
 - (void)buildBarViews:(BOOL)full
 {
+    [self clearBarViews];
+    
     MediaWithAction * lastMedia = mediaList_ && mediaList_.count>0?[mediaList_ lastObject]:nil;
     CGFloat totalSeconds = lastMedia?lastMedia.secondsEndBeforeReverse>0?lastMedia.secondsEndBeforeReverse:15:15;
     widthPerSeconds_ = self.frame.size.width / totalSeconds;
@@ -111,7 +106,11 @@
     for (MediaWithAction * media in mediaList_) {
         BOOL hasFlag = NO;
         UIView * v = [self buildBarView:media hasFlag:&hasFlag];
-        if(v)
+        if(!v)
+        {
+            NSLog(@"view cannot be nil....");
+            continue;
+        }
         {
             NSMutableDictionary * dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:media,@"media",
                                          v,@"view",
@@ -137,7 +136,7 @@
     {
         CGFloat pos = media.secondsBeginBeforeReverse * widthPerSeconds_;
         BOOL isMatch = NO;
-        for (int i = mediaList_.count-1; i>=0; i --) {
+        for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * mm = mediaList_[i];
             if(mm==media)
             {
@@ -146,29 +145,30 @@
             }
             if(isMatch)
             {
-                if(barViews_.count>i)
-                {
-                    for (int j = i; j>=0; j--) {
-                        NSDictionary * dic = barViews_[j];
-                        
-                        UIView * prevView = [dic objectForKey:@"view"];
-                        MediaWithAction * item = [dic objectForKey:@"media"];
-                        
-                        CGRect frame = prevView.frame;
-                        frame.size.width = item.secondsDurationInArray * widthPerSeconds_;
-                        
-                        if(frame.origin.x > pos)
-                        {
-                            frame.size.width = 0;
-                        }
-                        else if(frame.origin.x + frame.size.width >pos)
-                        {
-                            CGFloat diff = pos - frame.origin.x;
-                            frame.size.width = diff;
-                        }
-                        prevView.frame = frame;
+                //                if(barViews_.count>i)
+                //                {
+                int viewCount = MIN((int)barViews_.count-1,i);
+                for (int j =viewCount; j>=0; j--) {
+                    NSDictionary * dic = barViews_[j];
+                    
+                    UIView * prevView = [dic objectForKey:@"view"];
+                    MediaWithAction * item = [dic objectForKey:@"media"];
+                    
+                    CGRect frame = prevView.frame;
+                    frame.size.width = item.secondsDurationInArray * widthPerSeconds_;
+                    
+                    if(frame.origin.x > pos)
+                    {
+                        frame.size.width = 0;
                     }
+                    else if(frame.origin.x + frame.size.width >pos)
+                    {
+                        CGFloat diff = pos - frame.origin.x;
+                        frame.size.width = diff;
+                    }
+                    prevView.frame = frame;
                 }
+                //                }
                 break;
             }
         }
@@ -194,21 +194,49 @@
         v.frame = frame;
     }
 }
+- (void)clearBarViews
+{
+    for (UIView * subView in barBgView_.subviews) {
+        [subView removeFromSuperview];
+    }
+    [barViews_ removeAllObjects];
+//    NSArray * mediaList = [manager_ getMediaList];
+//    if(mediaList)
+//        mediaList_ = [NSMutableArray arrayWithArray:mediaList];
+//    else
+//        mediaList_ = [NSMutableArray array];
+}
 - (void) addBarView:(MediaWithAction *)media
 {
     if([NSThread isMainThread])
     {
-        NSLog(@" progress add barview ");
-        int index = 1;
+        NSLog(@" progress add barview %@",[media toString]);
+        int index = 0;
         MediaWithAction * prevMedia = nil;
         for (MediaWithAction * mm in mediaList_) {
             if(mm == media) break;
             prevMedia = mm;
             index ++;
         }
+//        if(index ==0)
+//        {
+//            [self clearBarViews];
+//        }
+        
         if(barViews_.count <= index)
         {
             [self checkPreMediaWidth:media prevMedia:prevMedia];
+            
+            BOOL hasFlag = NO;
+            UIView * barView =[self buildBarView:media hasFlag:&hasFlag];
+            if(barView)
+            {
+                NSMutableDictionary * dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:media,@"media",
+                                             barView,@"view",
+                                             [NSNumber numberWithBool:hasFlag],@"flag", nil];
+                [barViews_ addObject:dic];
+                [barBgView_ addSubview:barView];
+            }
         }
         [self checkFlagIsValid:media.secondsInArray];
     }
@@ -352,7 +380,7 @@
     
     if(secondsInArray_ < currentMedia_.secondsInArray)
         secondsInArray_ = currentMedia_.secondsInArray;
-
+    
     defaultMsg_ = [self getTipsForMedia:currentMedia_];
     
     if([NSThread isMainThread])
@@ -373,8 +401,22 @@
         secondsInArray_ = secondsInArray;
         
         if(!barViews_||barViews_.count==0 ||!currentMedia_) return;
-        
-        NSDictionary * dic = [barViews_ lastObject];
+        int index = 0;
+        if(currentMedia_)
+        {
+            for (MediaWithAction * item in mediaList_) {
+                if(item == currentMedia_)
+                {
+                    break;
+                }
+                index ++;
+            }
+            if(index >= barViews_.count)
+            {
+                index = (int)barViews_.count-1;
+            }
+        }
+        NSDictionary * dic = [barViews_ objectAtIndex:index];
         UIView * barView = [dic objectForKey:@"view"];
         MediaWithAction * lastmedia = [dic objectForKey:@"media"];
         
@@ -393,7 +435,8 @@
             frame.size.width = (playerSeconds - lastmedia.secondsBeginBeforeReverse) * widthPerSeconds_;
         }
         barView.frame = frame;
-        
+        if(lastmedia.Action.ActionType==SRepeat)
+            NSLog(@" --- playerseconds %f -----\n view for %@ \n frame:%@",playerSeconds,[lastmedia toString],NSStringFromCGRect(frame));
         [self checkFlagIsValid:secondsInArray];
     }
     else
@@ -420,7 +463,7 @@
     else if(media.Action.ActionType == SFast)
         return _colorForFast;
     else if(media.Action.ActionType == SRepeat)
-        return _colorForNormal;
+        return [UIColor redColor];
     else
         return _colorForNormal;
 }

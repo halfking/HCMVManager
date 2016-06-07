@@ -501,6 +501,14 @@
 - (void)ActionManager:(ActionManager *)manager play:(MediaActionDo *)action media:(MediaWithAction *)media seconds:(CGFloat)seconds
 {
     [self setCurrentMediaWithAction:media];
+    needSendPlayControl_ = NO;
+    [self buildTimerForPlayerSync:media.secondsDurationInArray];
+//    if(media.Action.ActionType==SRepeat)
+//    {
+//        [player_ pause];
+//        NSLog(@"change....");
+//        [player_ play];
+//    }
     
     if(!isGenerating_ || player_.playing)
     {
@@ -508,23 +516,21 @@
         
         //为了防止播放进度跳动，需检查是否需要Seek到指定位置
         if(media.Action.ActionType==SReverse
+           || media.Action.ActionType == SRepeat
            || !media.Action.allowPlayerBeFaster
            || player_.secondsPlaying <media.secondsBeginBeforeReverse)
         {
             NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBeginBeforeReverse);
-            //是否要禁用时间回调?
-            needSendPlayControl_ = NO;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.minMediaDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                needSendPlayControl_ = YES;
-            });
-            
             [player_ seek:media.secondsBeginBeforeReverse accurate:YES];
+            [NSThread sleepForTimeInterval:0.05];
             [self syncAudioPlayer:media playerSeconds:media.secondsBeginBeforeReverse];
             
         }
         else
         {
             NSLog(@"AM : 通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBeginBeforeReverse);
+//            [player_ seek:media.secondsBeginBeforeReverse accurate:YES];
+//            [NSThread sleepForTimeInterval:0.05];
             [self syncAudioPlayer:media playerSeconds:player_.secondsPlaying];
         }
         [player_ play];
@@ -559,7 +565,7 @@
         }
         else
         {
-            NSLog(@"AM : check audioPlayer:%.4f,seconds:%.4f rate:%f",audioPlayer_.currentTime,secondsForAudio,audioPlayer_.rate);
+//            NSLog(@"AM : check audioPlayer:%.4f,seconds:%.4f rate:%f",audioPlayer_.currentTime,secondsForAudio,audioPlayer_.rate);
             //因为操作过程中视频可能要暂停，但音频不停，因此音频的播放时间应该在视频的前面，但是为了不产生中断感，设定一个参数来处理
             if(audioPlayer_.currentTime < secondsForAudio
                || fabs(audioPlayer_.currentTime - secondsForAudio) > self.secondsForAudioPlayerMaxRange)
@@ -569,13 +575,13 @@
             if(!audioPlayer_.playing)
                 [audioPlayer_ play];
         }
-        NSLog(@"AM : audio player sync changed:%.2f = (%.2f + %.2f-%.2f +%.2f - %.2f)",
-              audioPlayer_.currentTime,
-              media.secondsInArray,
-              audioBg_.secondsBegin,
-              audioBg_.secondsInArray,
-              playerSeconds,
-              media.secondsBeginBeforeReverse);
+//        NSLog(@"AM : audio player sync changed:%.2f = (%.2f + %.2f-%.2f +%.2f - %.2f)",
+//              audioPlayer_.currentTime,
+//              media.secondsInArray,
+//              audioBg_.secondsBegin,
+//              audioBg_.secondsInArray,
+//              playerSeconds,
+//              media.secondsBeginBeforeReverse);
     }
     
 }

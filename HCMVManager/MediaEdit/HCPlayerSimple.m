@@ -158,8 +158,11 @@ static HCPlayerSimple *sharedPlayerView = nil;
     
     [player_ play];
     player_.rate = playRate_;
-    
-    NSLog(@"player status:%d",(int)player_.status);
+#ifndef __OPTIMIZE__
+    [NSThread sleepForTimeInterval:0.01];
+    NSLog(@"player status:%d  item seconds:%f secondsPlay:%f",(int)player_.status, CMTimeGetSeconds(player_.currentTime),secondsPlaying_);
+#endif
+    secondsPlaying_ = CMTimeGetSeconds(player_.currentTime);
     if(player_.error)
     {
         [self changeFlagForPause];
@@ -294,10 +297,10 @@ static HCPlayerSimple *sharedPlayerView = nil;
     //刚刚Seek后，当前PlayerItem的时间并不会发生变化，有可能导致错误
     [NSThread sleepForTimeInterval:0.01];
     //    }
-//    NSLog(@"player current item:%f seconds:%f",CMTimeGetSeconds(player_.currentItem.currentTime),seconds);
-    
-    
+
     secondsPlaying_ = CMTimeGetSeconds(player_.currentItem.currentTime);
+    
+    NSLog(@"player current item:%f seconds:%f",CMTimeGetSeconds(player_.currentItem.currentTime),secondsPlaying_);
     
     if(needAutoPlay_)
     {
