@@ -504,38 +504,38 @@
     
     if(!isGenerating_ || player_.playing)
     {
-        [player_ setRate:media.playRate];
+        [player_ setRate:media.rateBeforeReverse];
         
         //为了防止播放进度跳动，需检查是否需要Seek到指定位置
         if(media.Action.ActionType==SReverse
            || !media.Action.allowPlayerBeFaster
-           || player_.secondsPlaying <media.secondsBegin)
+           || player_.secondsPlaying <media.secondsBeginBeforeReverse)
         {
-            NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBegin);
+            NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBeginBeforeReverse);
             //是否要禁用时间回调?
             needSendPlayControl_ = NO;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.minMediaDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 needSendPlayControl_ = YES;
             });
             
-            [player_ seek:media.secondsBegin accurate:YES];
-            [self syncAudioPlayer:media playerSeconds:media.secondsBegin];
+            [player_ seek:media.secondsBeginBeforeReverse accurate:YES];
+            [self syncAudioPlayer:media playerSeconds:media.secondsBeginBeforeReverse];
             
         }
         else
         {
-            NSLog(@"AM : 通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBegin);
+            NSLog(@"AM : 通过Media 属性%d，没有更改播放器的时间：%f-->%f",media.Action.allowPlayerBeFaster,player_.secondsPlaying, media.secondsBeginBeforeReverse);
             [self syncAudioPlayer:media playerSeconds:player_.secondsPlaying];
         }
         [player_ play];
         
         NSLog(@"AM : player seconds:%.4f item:%.4f audio:%.4f mediabegin:%.4f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
-              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBegin);
+              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBeginBeforeReverse);
     }
     else
     {
         NSLog(@"AM :  pause by GEN player seconds:%.4f item:%.4f audio:%.4f mediabegin:%.4f",player_.secondsPlaying,CMTimeGetSeconds(player_.playerItem.currentTime),
-              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBegin);
+              audioPlayer_? audioPlayer_.currentTime:-1,media.secondsBeginBeforeReverse);
         [player_ pause];
         //        [reversePlayer_ pause];
         [audioPlayer_ pause];
@@ -547,7 +547,7 @@
 {
     if(audioPlayer_ && audioBg_)
     {
-        CGFloat secondsForAudio = media.secondsInArray + playerSeconds - media.secondsBegin  //secondsInArray
+        CGFloat secondsForAudio = media.secondsInArray + playerSeconds - media.secondsBeginBeforeReverse  //secondsInArray
         - audioBg_.secondsInArray
         + audioBg_.secondsBegin;
         
@@ -575,7 +575,7 @@
               audioBg_.secondsBegin,
               audioBg_.secondsInArray,
               playerSeconds,
-              media.secondsBegin);
+              media.secondsBeginBeforeReverse);
     }
     
 }
@@ -642,8 +642,8 @@
     if(currentMediaWithAction_)
     {
         //误差处理是否需要?
-        CGFloat minSeconds = currentMediaWithAction_.playRate <0?currentMediaWithAction_.secondsEnd:currentMediaWithAction_.secondsBegin;
-        CGFloat maxSeconds = currentMediaWithAction_.playRate<0?currentMediaWithAction_.secondsBegin:currentMediaWithAction_.secondsEnd;
+        CGFloat minSeconds = currentMediaWithAction_.rateBeforeReverse <0?currentMediaWithAction_.secondsEndBeforeReverse:currentMediaWithAction_.secondsBeginBeforeReverse;
+        CGFloat maxSeconds = currentMediaWithAction_.rateBeforeReverse<0?currentMediaWithAction_.secondsBeginBeforeReverse:currentMediaWithAction_.secondsEndBeforeReverse;
         
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
         BOOL needReturn = NO;
@@ -663,7 +663,7 @@
         }
         else if(playerSeconds < minSeconds)
         {
-            if(currentMediaWithAction_.playRate >=0)
+            if(currentMediaWithAction_.rateBeforeReverse >=0)
                 needReturn = YES ;
             else
             {

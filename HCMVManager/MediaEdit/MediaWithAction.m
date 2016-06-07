@@ -15,6 +15,8 @@
 //@synthesize secondsInFinalArray;
 @synthesize durationInPlaying;
 @synthesize secondsInArrayNotConfirm;
+@synthesize secondsEndBeforeReverse,secondsBeginBeforeReverse;
+@synthesize rateBeforeReverse;
 -(id)init
 {
     self = [super init];
@@ -40,16 +42,17 @@
 
 - (NSString *) toString
 {
-    return [NSString stringWithFormat:@"%d-%ld(%.2f len:%.2f) file:(%.2f--%.2f)c:%.2f total:%.2f rate:%.2f file:%@",
+    return [NSString stringWithFormat:@"%d-%ld(%.2f len:%.2f) file:(%.2f--%.2f)c:%.2f total:%.2f rate:%.2f file:%@(%.2f-%.2f)",
             (int)self.Action.ActionType,
             (long)self.Action.MediaActionID,
             self.secondsInArray,
             self.secondsDurationInArray,
-            self.secondsBegin,self.secondsEnd,
+            self.secondsBeginBeforeReverse,self.secondsEndBeforeReverse,
             self.secondsChangedWithActionForPlayer,
             self.durationInPlaying,
             self.playRate,
-            self.fileName];
+            self.fileName,
+            self.secondsBegin,self.secondsEnd];
 }
 //是否同一个Asset
 - (BOOL) isSampleAsset:(MediaItemCore *)item
@@ -67,21 +70,63 @@
 - (CGFloat) getSecondsInArrayByPlaySeconds:(CGFloat)playerSeconds
 {
     CGFloat secondsInTrack = -1;
-    if(self.playRate>0)
+    if(self.isReversed)
     {
-        if(self.secondsBegin <= playerSeconds && self.secondsEnd > playerSeconds)
+        if(self.secondsBeginBeforeReverse > playerSeconds && self.secondsEndBeforeReverse <=playerSeconds)
         {
-            secondsInTrack = self.secondsInArray + playerSeconds - self.secondsBegin;
+            secondsInTrack = self.secondsInArray + self.secondsBeginBeforeReverse - playerSeconds;
         }
     }
     else
     {
-        if(self.secondsBegin > playerSeconds && self.secondsEnd <=playerSeconds)
+        if(self.playRate>0)
         {
-            secondsInTrack = self.secondsInArray + self.secondsBegin - playerSeconds;
+            if(self.secondsBegin <= playerSeconds && self.secondsEnd > playerSeconds)
+            {
+                secondsInTrack = self.secondsInArray + playerSeconds - self.secondsBegin;
+            }
+        }
+        else
+        {
+            if(self.secondsBegin > playerSeconds && self.secondsEnd <=playerSeconds)
+            {
+                secondsInTrack = self.secondsInArray + self.secondsBegin - playerSeconds;
+            }
         }
     }
     return secondsInTrack;
+}
+//- (void)setBegin:(CMTime)pbegin
+//{
+//    if(CMTimeGetSeconds(pbegin)==0 && self.Action.ActionType ==SReverse)
+//    {
+//        NSLog(@"check----");
+//    }
+//    [super setBegin:pbegin];
+//}
+- (void)setBegin:(CMTime)begin
+{
+    [super setBegin:begin];
+    if(self.isReversed==NO)
+    {
+        secondsBeginBeforeReverse = self.secondsBegin;
+    }
+}
+- (void)setEnd:(CMTime)end
+{
+    [super setEnd:end];
+    if(self.isReversed==NO)
+    {
+        secondsEndBeforeReverse = self.secondsEnd;
+    }
+}
+- (void)setPlayRate:(CGFloat)playRate
+{
+    [super setPlayRate:playRate];
+    if(self.isReversed==NO)
+    {
+        rateBeforeReverse = playRate;
+    }
 }
 - (void)dealloc
 {

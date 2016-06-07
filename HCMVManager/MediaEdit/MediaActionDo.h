@@ -23,6 +23,7 @@
 @property (nonatomic,PP_STRONG) MediaWithAction * mediaToPlay;
 - (void)fetchAsAction:(MediaAction *)action;
 - (MediaActionDo *)copyItemDo;
+- (void)setDurationInSecondsWithEx:(CGFloat)DurationInSecondsA;
 
 - (NSMutableArray *)processAction:(NSMutableArray *)sources secondsEffected:(CGFloat)secondsEffected;
 - (NSMutableArray *)ensureAction:(NSMutableArray *)sources durationInArray:(CGFloat)durationInArray;
@@ -31,7 +32,7 @@
 - (NSMutableArray *)splitArrayForAction:(NSArray *)sources insertIndex:(int *)insertIndex;
 - (MediaWithAction *)splitMediaItem:(MediaWithAction *)item splitSecondsInArray:(CGFloat)splitSecondsInArray;
 - (void)addMediaToArray:(NSArray*)items sources:(NSMutableArray *)sources insertIndex:(int)insertIndex;
-- (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;
+//- (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources;
 - (NSMutableArray *)buildMaterialProcess:(NSArray *)sources;
 //- (NSMutableArray *)buildMaterialOverlaped:(NSArray *)sources;
 - (void)ensureExistItemDuration:(int)beginIndex sources:(NSMutableArray *)sources;

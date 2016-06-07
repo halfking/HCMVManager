@@ -17,6 +17,10 @@
 @property (nonatomic,assign)CGFloat durationInPlaying;//实际播放的时间，与Rate相关,可以用视频来计算实际播放时长
 @property (nonatomic,assign) BOOL secondsInArrayNotConfirm;//在队列中的位置还没有确定，不参与相关的处理
 @property (nonatomic,assign) CGFloat secondsChangedWithActionForPlayer;//在此之前，有多少播放器的时长变化
+@property (nonatomic,assign) CGFloat secondsBeginBeforeReverse;     //生成反向文件前的开始时间
+@property (nonatomic,assign) CGFloat secondsEndBeforeReverse;       //生成反向文件前的结束时间
+@property (nonatomic,assign) CGFloat rateBeforeReverse;             //速度
+@property (nonatomic,assign) BOOL isReversed;                       //是否已经生成了反向文件，生成反向文件后，文件中的开始与结束时间均会发生变化
 //@property (nonatomic,assign) CGFloat durationInFinalArray;//在队列中占用的时长，Rate=1
 //@property (nonatomic,assign) CGFloat secondsInFinalArray;//基于Rate=1时的在队列中的位置时间。
 

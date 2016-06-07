@@ -92,8 +92,10 @@
         mediaList_ = [action processAction:orgMediaList secondsEffected:orgSecondsEffect];
     }
 #endif
-    mediaList_ = [self combinateArrayItems:mediaList_];
-    
+    if(action.isOPCompleted)
+    {
+        mediaList_ = [self combinateArrayItems:mediaList_];
+    }
     
 #ifndef __OPTIMIZE__
     hasItem = NO;
@@ -438,6 +440,10 @@
                                 {
                                     [media setFileName:filePathNew];
                                     CGFloat duration = media.secondsDurationInArray;
+                                    media.isReversed = YES;
+                                    media.secondsBeginBeforeReverse = media.secondsBegin;
+                                    media.secondsEndBeforeReverse = media.secondsEnd;
+                                    media.rateBeforeReverse = media.playRate;
                                     media.begin =  CMTimeMakeWithSeconds(0, media.begin.timescale);
                                     media.end = CMTimeMakeWithSeconds(duration, media.end.timescale);
                                     media.playRate = 0 - media.playRate;

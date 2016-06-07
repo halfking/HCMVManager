@@ -555,9 +555,9 @@
     {
         for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * item = mediaList_[i];
-            if(item.secondsBegin <= playerSeconds
-               && (item.secondsEnd > playerSeconds
-                   || (item.secondsEnd + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)) //到结束了
+            if(item.secondsBeginBeforeReverse <= playerSeconds
+               && (item.secondsEndBeforeReverse > playerSeconds
+                   || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)) //到结束了
                && ![self isReverseFile:item.fileName]
                && !item.secondsInArrayNotConfirm
                )
@@ -572,9 +572,9 @@
     {
         for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * item = mediaList_[i];
-            if(item.secondsBegin <= playerSeconds
-               && (item.secondsEnd > playerSeconds
-                   || (item.secondsEnd + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getReverseVideo].secondsDuration)) //到结束了
+            if(item.secondsBeginBeforeReverse <= playerSeconds
+               && (item.secondsEndBeforeReverse > playerSeconds
+                   || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getReverseVideo].secondsDuration)) //到结束了
                && [self isReverseFile:item.fileName]
                && !item.secondsInArrayNotConfirm
                )
@@ -594,22 +594,22 @@
             {
                 if(isReversePlayer)
                 {
-                    secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+                    secondsInFinal += playerSeconds - lastDo_.secondsBeginBeforeReverse;
                 }
                 else
                 {
-                    secondsInFinal += [self getReverseVideo].secondsDuration -  lastDo_.secondsBegin +  playerSeconds;
+                    secondsInFinal += [self getReverseVideo].secondsDuration -  lastDo_.secondsBeginBeforeReverse +  playerSeconds;
                     NSLog(@"不应该发生的事情。。。。");
                 }
             }
             else
             {
-                secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+                secondsInFinal += playerSeconds - lastDo_.secondsBeginBeforeReverse;
             }
         }
         else
         {
-            secondsInFinal += playerSeconds - lastDo_.secondsBegin;
+            secondsInFinal += playerSeconds - lastDo_.secondsBeginBeforeReverse;
         }
         
     }
@@ -955,7 +955,7 @@
     [self pausePlayer];
     
     //durationInseconds 会触发相关的更新事件
-    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
+//    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     
@@ -975,7 +975,7 @@
     //播下一个
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
 #ifndef __OPTIMIZE__
-    if(!media || media.secondsBegin < SECONDS_ERRORRANGE)
+    if(!media || media.secondsBeginBeforeReverse < SECONDS_ERRORRANGE)
     {
         media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
     }

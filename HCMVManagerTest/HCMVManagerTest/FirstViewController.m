@@ -144,7 +144,7 @@
     {
         pannel_ = [[ActionManagerPannel alloc]initWithFrame:CGRectMake(0, 200,
                                                                        self.view.frame.size.width,
-                                                                       self.view.frame.size.height - 150)];
+                                                                       self.view.frame.size.height - 200)];
         pannel_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:pannel_];
     }
@@ -365,14 +365,30 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = NO;
         testAction_ = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
+        
+        {
+            int index = 0;
+            for (MediaWithAction * item  in [manager getMediaList]) {
+                NSLog(@"AM : %d - %@",index,[item toString]);
+                index ++;
+            }
+        }
     }
-    
+   
     if(clickIndex_ ==7)
+    {
         [manager setActionItemDuration:testAction_ duration:2];
-    
+        {
+            int index = 0;
+            for (MediaWithAction * item  in [manager getMediaList]) {
+                NSLog(@"AM : %d - %@",index,[item toString]);
+                index ++;
+            }
+        }
+    }
     if(clickIndex_ ==8){
         MediaAction * action = [MediaAction new];
         action.ActionType = SReverse;
@@ -380,14 +396,29 @@
         action.ReverseSeconds = 0 ;
         action.IsOverlap = NO;
         action.IsMutex = NO;
-        action.Rate = 1;
+        action.Rate = -1;
         action.isOPCompleted = NO;
         testAction_ = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
+        {
+            int index = 0;
+            for (MediaWithAction * item  in [manager getMediaList]) {
+                NSLog(@"AM : %d - %@",index,[item toString]);
+                index ++;
+            }
+        }
     }
     
     if(clickIndex_ ==9)
+    {
         [manager setActionItemDuration:testAction_ duration:1];
-    
+        {
+            int index = 0;
+            for (MediaWithAction * item  in [manager getMediaList]) {
+                NSLog(@"AM : %d - %@",index,[item toString]);
+                index ++;
+            }
+        }
+    }
     if(clickIndex_ ==10){
         MediaAction * action = [MediaAction new];
         action.ActionType = SFast;
@@ -397,14 +428,21 @@
         action.IsMutex = NO;
         action.Rate = 2;
         action.isOPCompleted = NO;
-        testAction_ = [manager addActionItem:action filePath:nil at:7 from:7 duration:-1];
+        testAction_ = [manager addActionItem:action filePath:nil at:8 from:8 duration:-1];
+        {
+            int index = 0;
+            for (MediaWithAction * item  in [manager getMediaList]) {
+                NSLog(@"AM : %d - %@",index,[item toString]);
+                index ++;
+            }
+        }
     }
     if(clickIndex_ ==11)
         [manager ensureActions:[manager getBaseVideo].secondsDuration];
     //    [manager setActionItemDuration:testAction_ duration:[manager getBaseVideo].secondsDuration - 7];
     clickIndex_ ++;
-    if(clickIndex_ >11)
-        clickIndex_ = 0;
+//    if(clickIndex_ >11)
+//        clickIndex_ = 0;
     [pannel_ refresh];
 }
 - (void)TestRap:(id)sender
@@ -569,7 +607,7 @@
     MediaWithAction * currentMedia = [manager getCurrentMediaWithAction];
 //    CGFloat secondsInArray = [manager getSecondsInArrayViaCurrentState:playerSeconds_];
 //    if(secondsInArray>=3.2) return;
-    if(currentMedia && currentMedia.playRate <0)
+    if(currentMedia && currentMedia.rateBeforeReverse <0)
         playerSeconds_ -= 0.1;
     else
         playerSeconds_ += 0.1;
@@ -865,7 +903,7 @@
     
     [progress_ setCurrentMedia:mediaToPlay];
     
-    playerSeconds_ = mediaToPlay.secondsBegin;
+    playerSeconds_ = mediaToPlay.secondsBeginBeforeReverse;
     
     if(testAction_)
         testAction_.mediaToPlay = mediaToPlay;

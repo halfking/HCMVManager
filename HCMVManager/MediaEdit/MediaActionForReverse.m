@@ -129,6 +129,10 @@
             self.Media.begin = reversItem.begin;
             self.Media.end = reversItem.end;
         }
+        if(reversItem.secondsBegin ==0)
+        {
+            NSLog(@"check...begin...");
+        }
         MediaWithAction * normalItem = [mediaList objectAtIndex:1];
         normalItem.begin = reversItem.end;
         normalItem.end = reversItem.begin;
@@ -445,7 +449,7 @@
     }
     return NO;
 }
-- (void)setDurationInSeconds:(CGFloat)DurationInSecondsA
+- (void)setDurationInSecondsEx:(CGFloat)DurationInSecondsA
 {
     BOOL opCompleted = self.isOPCompleted;
     [super setDurationInSeconds:DurationInSecondsA];

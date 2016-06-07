@@ -104,7 +104,7 @@
 - (void)buildBarViews:(BOOL)full
 {
     MediaWithAction * lastMedia = mediaList_ && mediaList_.count>0?[mediaList_ lastObject]:nil;
-    CGFloat totalSeconds = lastMedia?lastMedia.secondsEnd>0?lastMedia.secondsEnd:15:15;
+    CGFloat totalSeconds = lastMedia?lastMedia.secondsEndBeforeReverse>0?lastMedia.secondsEndBeforeReverse:15:15;
     widthPerSeconds_ = self.frame.size.width / totalSeconds;
     
     MediaWithAction * prevMedia = nil;
@@ -135,7 +135,7 @@
     //Repeat 需要将之前的进度缩回去
     if(media.Action.ActionType==SRepeat)
     {
-        CGFloat pos = media.secondsBegin * widthPerSeconds_;
+        CGFloat pos = media.secondsBeginBeforeReverse * widthPerSeconds_;
         BOOL isMatch = NO;
         for (int i = mediaList_.count-1; i>=0; i --) {
             MediaWithAction * mm = mediaList_[i];
@@ -181,14 +181,14 @@
         MediaWithAction * lastMedia = [dic objectForKey:@"media"];
         CGRect frame = v.frame;
         CGFloat width = lastMedia.secondsDurationInArray * widthPerSeconds_;
-        if(lastMedia.playRate <0)
+        if(lastMedia.rateBeforeReverse <0)
         {
-            frame.origin.x = lastMedia.secondsBegin * widthPerSeconds_ - width;
+            frame.origin.x = lastMedia.secondsBeginBeforeReverse * widthPerSeconds_ - width;
             frame.size.width =  width;
         }
         else
         {
-            frame.origin.x = lastMedia.secondsBegin * widthPerSeconds_;
+            frame.origin.x = lastMedia.secondsBeginBeforeReverse * widthPerSeconds_;
             frame.size.width = width;
         }
         v.frame = frame;
@@ -221,7 +221,7 @@
 }
 - (UIView *)buildBarView:(MediaWithAction *)media hasFlag:(BOOL *)hasFlag
 {
-    CGFloat left = media.secondsBegin * widthPerSeconds_;
+    CGFloat left = media.secondsBeginBeforeReverse * widthPerSeconds_;
     CGFloat top = (barBgView_.frame.size.height - self.barHeight)/2.0f;
     UIView * barView = nil;
     CGRect frame = CGRectMake(left, top, widthPerSeconds_ * media.secondsDurationInArray, self.barHeight) ;
@@ -380,17 +380,17 @@
         
         CGRect frame = barView.frame;
         
-        if(lastmedia.playRate <0)
+        if(lastmedia.rateBeforeReverse <0)
         {
-            CGFloat width = (lastmedia.secondsBegin - playerSeconds) * widthPerSeconds_;
+            CGFloat width = (lastmedia.secondsBeginBeforeReverse - playerSeconds) * widthPerSeconds_;
             if(width<0) width = 0;
-            frame.origin.x = lastmedia.secondsBegin * widthPerSeconds_ - width;
+            frame.origin.x = lastmedia.secondsBeginBeforeReverse * widthPerSeconds_ - width;
             frame.size.width = width;
         }
         else
         {
-            frame.origin.x = lastmedia.secondsBegin * widthPerSeconds_;
-            frame.size.width = (playerSeconds - lastmedia.secondsBegin) * widthPerSeconds_;
+            frame.origin.x = lastmedia.secondsBeginBeforeReverse * widthPerSeconds_;
+            frame.size.width = (playerSeconds - lastmedia.secondsBeginBeforeReverse) * widthPerSeconds_;
         }
         barView.frame = frame;
         

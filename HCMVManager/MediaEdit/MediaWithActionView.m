@@ -72,9 +72,9 @@
         }
         return NO;
     }
-    if((mediaWithAction_.playRate>0 && ( seconds < mediaWithAction_.secondsBegin || seconds> mediaWithAction_.secondsEnd))
+    if((mediaWithAction_.rateBeforeReverse>0 && ( seconds < mediaWithAction_.secondsBeginBeforeReverse || seconds> mediaWithAction_.secondsEndBeforeReverse))
        ||
-       (mediaWithAction_.playRate<0 && ( seconds < mediaWithAction_.secondsEnd || seconds> mediaWithAction_.secondsBegin))
+       (mediaWithAction_.rateBeforeReverse<0 && ( seconds < mediaWithAction_.secondsEndBeforeReverse || seconds> mediaWithAction_.secondsBeginBeforeReverse))
        )
     {
         if(playerIndcator_)
@@ -87,7 +87,7 @@
     CGRect frame = lineView_.frame;
     frame.origin.y +=3;
     frame.size.height -= 4;
-    frame.size.width = fabs(seconds - mediaWithAction_.secondsBegin) * widthPerseconds_;
+    frame.size.width = fabs(seconds - mediaWithAction_.secondsBeginBeforeReverse) * widthPerseconds_;
     if(!playerIndcator_)
     {
         playerIndcator_ = [[UIView alloc]initWithFrame:frame];
@@ -121,7 +121,7 @@
                                        label:leftTitle
                                        begin:[NSString stringWithFormat:@"%.2f",media.secondsInArray]
                                          end:[NSString stringWithFormat:@"%.2f",media.secondsDurationInArray]
-                                 sourceBegin:[NSString stringWithFormat:@"%.2f",media.secondsBegin]
+                                 sourceBegin:[NSString stringWithFormat:@"%.2f(%d)",media.secondsBegin,media.isReversed]
                                    sourceEnd:[NSString stringWithFormat:@"%.2f",media.secondsEnd]
                                    rightText:rightText
                      ];
