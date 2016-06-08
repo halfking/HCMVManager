@@ -174,6 +174,7 @@
 #pragma mark - export
 - (void)cancelGenerate
 {
+    cancelReverseGenerate_ = YES;
     if(currentGenerate_)
     {
         [currentGenerate_ cancelExporter];
@@ -204,10 +205,33 @@
     isReverseGenerating_ = NO;
     isReverseMediaGenerating_ = NO;
     isGeneratingByFilter_ = NO;
+    //因为反向是循环调用，需要小心处理
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        cancelReverseGenerate_ = NO;
+    });
 }
 - (BOOL) generateMV
 {
     return [self generateMVWithWaterMarker:nil position:MP_RightBottom];
+}
+- (void)checkReverseGenerate
+{
+       NSArray * actionMediaList = [self getMediaList];
+    
+    //检查是否都已经将反向视频处理好
+    BOOL needCheckAgagin = NO;
+    int i = 0;
+    for (MediaWithAction * media in actionMediaList) {
+        if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=self.minMediaDuration)
+        {
+            NSLog(@"AM : reverse gen index:%d/%d",i,(int)actionMediaList.count);
+            [self generateMediaFile:media];
+            
+            needCheckAgagin = YES;
+            break;
+        }
+        i ++;
+    }
 }
 //生成视频，并检查反向片段是否已经生成
 -(BOOL) generateMVWithWaterMarker:(NSString *)waterMarker position:(WaterMarkerPosition)position
@@ -429,6 +453,8 @@
     vg.bitRate = self.bitRate;
     reverseMediaGenerate_ = vg;
     NSLog(@"VG  :reverse media video begin....");
+    
+    __weak ActionManager * weakSelf = self;
     BOOL ret = [vg generateMVReverse:media.filePath
                               target:outputPath
                                begin:media.secondsEnd
@@ -436,7 +462,6 @@
                            audioFile:media.filePath
                           audioBegin:media.secondsEnd
                             complted:^(NSString * filePathNew){
-                                NSLog(@"VG  : reveser video ok:%@",[filePathNew lastPathComponent]);
                                 if(filePathNew)
                                 {
                                     [media setFileName:filePathNew];
@@ -450,11 +475,18 @@
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
+                                NSLog(@"VG  : reveser video ok:%@ org:%f->%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse);
+
                                 //                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];
                                 reverseMediaGenerate_ = nil;
                                 isReverseMediaGenerating_ = NO;
+                                if(!cancelReverseGenerate_)
+                                {
+                                    [weakSelf checkReverseGenerate];
+                                }
+                                
                             }];
     if(!ret)
     {
