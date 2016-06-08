@@ -676,7 +676,7 @@
             {
                 CGFloat width = roundf(item.media.secondsDurationInArray * widthPerSeconds_+0.5);
                 CGFloat pos = roundf(widthPerSeconds_ * item.media.secondsBeginBeforeReverse + 0.5);
-                if(frame.origin.x != pos || frame.origin.x != currentPos || frame.size.width != width)
+                if(frame.origin.x != pos || frame.origin.x+frame.size.width > currentPos || frame.size.width != width)
                 {
                     frame.origin.x = pos;
                     frame.size.width = width;
@@ -739,6 +739,13 @@
     }
     ampItem.barView.frame = frame;
     
+    //不让出现断档
+    if(prevAmp && prevAmp.barView.frame.origin.x + prevAmp.barView.frame.size.width < currentPos)
+    {
+        CGRect frame = prevAmp.barView.frame;
+        frame.size.width = currentPos - frame.origin.x;
+        prevAmp.barView.frame = frame;
+    }
     
     //    [self checkPreMediaWidth:lastmedia prevMedia:preViewMedia checkCurrentWidth:NO];
     

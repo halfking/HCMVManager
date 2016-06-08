@@ -176,10 +176,10 @@
     }
     
     HCFileManager * manager = [HCFileManager manager];
-    NSString * tempFilePath = [manager tempFileFullPath:nil];
+    NSString * tempFilePath = [manager getFilePath:[manager tempFileDir]];
     [[HCFileManager manager]removeFilesAtPath:tempFilePath matchRegex:@"^media_reverse_\\d+.*"];
     
-    NSString * localFilePath = [manager localFileFullPath:nil];
+    NSString * localFilePath = [manager getFilePath:[manager localFileDir]];
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^action_merge_\\d+.*"];
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+\\.[^\\.]+$"];
     

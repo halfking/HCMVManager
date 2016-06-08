@@ -939,16 +939,16 @@
 }
 -(void)join:(UIButton *)sender
 {
-    [player_ pause];
-    [player_ seek:0 accurate:YES];
-    
-    [progress_ setCurrentMedia:nil];
-    [progress_ setPlaySeconds:0 secondsInArray:0];
-    [progress_ refresh];
-    [manager_ setCurrentMediaWithAction:nil];
-    [pannel_ refresh];
-    [player_ play];
-    return;
+//    [player_ pause];
+//    [player_ seek:0 accurate:YES];
+//    
+//    [progress_ setCurrentMedia:nil];
+//    [progress_ setPlaySeconds:0 secondsInArray:0];
+//    [progress_ refresh];
+//    [manager_ setCurrentMediaWithAction:nil];
+//    [pannel_ refresh];
+//    [player_ play];
+//    return;
     
     [self showIndicatorView];
     
@@ -994,6 +994,7 @@
         NSLog(@"pause in join 2");
         [player_ pause];
         [player_ seek:0 accurate:YES];
+        [progress_ reset];
         
     }
     
