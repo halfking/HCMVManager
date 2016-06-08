@@ -360,9 +360,20 @@
             {
                 currentItem = mm;
                 isFind = YES;
-                break;
             }
-            prevItem = mm;
+            else if(isFind) //后面的全部置为空
+            {
+                CGRect frame = mm.barView.frame;
+                if(frame.size.width >1)
+                {
+                    frame.size.width = 1;
+                    mm.barView.frame = frame;
+                }
+            }
+            else
+            {
+                prevItem = mm;
+            }
         }
         if(isFind)
         {
@@ -382,6 +393,8 @@
                 item.hasFlag = hasFlag;
                 [barViews_ addObject:item];
                 [barBgView_ addSubview:barView];
+                
+                currentItem = item;
                 
                 [self showProgress:currentItem prevItem:prevItem secondsInArray:media.secondsInArray checkAll:NO];
                 
@@ -631,14 +644,18 @@
     
     //处理之前的宽度
     CGFloat currentPos = roundf(ampItem.media.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
-    
+    CGFloat secondsLeftMargin = ampItem.media.secondsBeginBeforeReverse;
+    CGFloat secondsRightMargin = ampItem.media.secondsEndBeforeReverse;
     //倒放时，x是变化的
     if(ampItem.media.rateBeforeReverse <0)
     {
         currentPos = roundf((ampItem.media.secondsBeginBeforeReverse - duration)  * widthPerSeconds_+0.5);
+        secondsLeftMargin = ampItem.media.secondsEndBeforeReverse;
+        secondsRightMargin = ampItem.media.secondsBeginBeforeReverse;
     }
     
     BOOL isBefore = YES;
+    
     for (AMProgressItem * item in barViews_) {
         if(item == ampItem)
         {
@@ -652,39 +669,72 @@
             if(!checkAll &&
                (
                 (item.media.rateBeforeReverse >0 &&
-                 item.media.secondsEndBeforeReverse < ampItem.media.secondsEndBeforeReverse
-                 && item.media.secondsEndBeforeReverse < ampItem.media.secondsBeginBeforeReverse)
+                 item.media.secondsEndBeforeReverse <secondsLeftMargin)
                 ||(item.media.rateBeforeReverse <0 &&
-                   item.media.secondsBeginBeforeReverse < ampItem.media.secondsEndBeforeReverse
-                   && item.media.secondsBeginBeforeReverse < ampItem.media.secondsBeginBeforeReverse)
+                   item.media.secondsBeginBeforeReverse < secondsLeftMargin
+                   )
                 )
                && (!prevAmp || item !=prevAmp)
                )
             {
                 continue;
             }
+            
             if(item.media.rateBeforeReverse <0)
             {
                 //                if(frame.size.width >0)
                 //                {
+                
                 frame.origin.x = roundf(item.media.secondsEndBeforeReverse * widthPerSeconds_+0.5);
-                frame.size.width = roundf(item.media.secondsDurationInArray * widthPerSeconds_ + 0.5);
+                
+                //如果同色，则需要显示宽度为0
+                if(_colorForReverse1 == _colorForTrack)
+                {
+                    frame.size.width = 0;
+                }
+                else
+                {
+                    frame.size.width = roundf(item.media.secondsDurationInArray * widthPerSeconds_ + 0.5);
+                }
+                
                 item.barView.frame = frame;
-                //                }
             }
             else
             {
                 CGFloat width = roundf(item.media.secondsDurationInArray * widthPerSeconds_+0.5);
                 CGFloat pos = roundf(widthPerSeconds_ * item.media.secondsBeginBeforeReverse + 0.5);
-                if(frame.origin.x != pos || frame.origin.x+frame.size.width > currentPos || frame.size.width != width)
+                if(item.media.secondsBegin < secondsLeftMargin && item.media.secondsEnd >= secondsLeftMargin)
                 {
-                    frame.origin.x = pos;
-                    frame.size.width = width;
-                    if(frame.size.width + frame.origin.x > currentPos)
+                    if(frame.origin.x != pos || frame.origin.x+frame.size.width != currentPos || frame.size.width != width)
                     {
-                        frame.size.width = MAX(currentPos - frame.origin.x, 0);
+                        frame.origin.x = pos;
+                        frame.size.width = width;
+                        if(frame.size.width + frame.origin.x != currentPos)
+                        {
+                            frame.size.width = MAX(currentPos - frame.origin.x, 0);
+                        }
+                        item.barView.frame = frame;
                     }
-                    item.barView.frame = frame;
+                }
+                else if(item.media.secondsBegin >= secondsLeftMargin && item.media.secondsBegin < secondsRightMargin)
+                {
+                    if(frame.size.width >1)
+                    {
+                        frame.size.width = 1;
+                        item.barView.frame = frame;
+                    }
+                }
+                else if(item.media.secondsBegin >= secondsRightMargin)
+                {
+                    if(frame.size.width >1)
+                    {
+                        frame.size.width = 1;
+                        item.barView.frame = frame;
+                    }
+                }
+                else
+                {
+                    
                 }
             }
         }
