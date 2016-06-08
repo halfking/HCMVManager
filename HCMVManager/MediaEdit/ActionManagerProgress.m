@@ -81,6 +81,7 @@
         mediaList_ = [NSMutableArray array];
     if(mediaList_.count>0)
         currentMedia_ = [mediaList_ firstObject];
+    secondsInArray_ = 0;
     defaultMsg_ = DEFAULT_TIPS;
     msgLabel_.text = defaultMsg_;
     
@@ -147,20 +148,44 @@
     widthPerSeconds_ = self.frame.size.width / totalSeconds;
     
     MediaWithAction * prevMedia = nil;
+    
+    //查找需要显示旗帜的Repeat
+    MediaWithAction * lastRepeat = nil;
+    for (MediaWithAction * media in mediaList_) {
+        if(media == currentMedia_ && !full)
+        {
+            if(media.Action.ActionType == SRepeat)
+            {
+                lastRepeat = media;
+                break;
+            }
+        }
+        else
+        {
+            if(media.Action.ActionType == SRepeat)
+            {
+                lastRepeat = media;
+            }
+        }
+        prevMedia = media;
+    }
+    
     for (MediaWithAction * media in mediaList_) {
         BOOL hasFlag = NO;
-        UIView * v = [self buildBarView:media hasFlag:&hasFlag full:full];
+        BOOL buildFlag = lastRepeat && lastRepeat == media;
+        
+        if(media == currentMedia_ && !full)
+        {
+            [self checkPreMediaWidth:media prevMedia:prevMedia];
+        }
+        
+        UIView * v = [self buildBarView:media hasFlag:&hasFlag full:full buildFlag:full || buildFlag];
         if(!v)
         {
             NSLog(@"view cannot be nil....");
             continue;
         }
         {
-            if(media == currentMedia_ && !full)
-            {
-                [self checkPreMediaWidth:media prevMedia:prevMedia];
-            }
-            
             AMProgressItem * item = [[AMProgressItem alloc]init];
             item.media = media;
             item.barView = v;
@@ -168,10 +193,8 @@
             [barViews_ addObject:item];
             [barBgView_ addSubview:v];
             item = nil;
-            
-            if(!full && (media == currentMedia_ || !currentMedia_)) break;
         }
-        prevMedia = media;
+        if(!full && (media == currentMedia_ || !currentMedia_)) break;
     }
 }
 - (void)checkPreMediaWidth:(MediaWithAction *)media prevMedia:(MediaWithAction *)prevMedia
@@ -286,7 +309,7 @@
             [self checkPreMediaWidth:media prevMedia:prevMedia];
             
             BOOL hasFlag = NO;
-            UIView * barView =[self buildBarView:media hasFlag:&hasFlag full:NO];
+            UIView * barView =[self buildBarView:media hasFlag:&hasFlag full:NO buildFlag:YES];
             if(barView)
             {
                 AMProgressItem * item = [[AMProgressItem alloc]init];
@@ -309,7 +332,7 @@
 }
 // 显示具体的一个Bar，如果Bar属于当前正在处理的素材，则长度只显示1，由PlayerSeconds事件来决定显示多长
 // full 表示是否需要不考虑上述的条件，即直接显示全长
-- (UIView *)buildBarView:(MediaWithAction *)media hasFlag:(BOOL *)hasFlag full:(BOOL)full
+- (UIView *)buildBarView:(MediaWithAction *)media hasFlag:(BOOL *)hasFlag full:(BOOL)full buildFlag:(BOOL)buildFlag
 {
     CGFloat left = roundf(media.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
     CGFloat top = (barBgView_.frame.size.height - self.barHeight)/2.0f;
@@ -337,8 +360,13 @@
             *hasFlag = NO;
         }
         
-        if(media.Action.ActionType == SRepeat && (secondsInArray_ - media.secondsInArray <self.durationForFlag + 0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0) && _flagImageName)
+        if(buildFlag &&
+           media.Action.ActionType == SRepeat
+           && (secondsInArray_ - media.secondsInArray <self.durationForFlag + 0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0)
+           && _flagImageName)
         {
+            NSLog(@"AP : show type:%d flag:%f media:%f frame:%@",media.Action.ActionType,secondsInArray_,media.secondsInArray,NSStringFromCGRect(barView.frame));
+            
             UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
             imageView.image = [UIImage imageNamed:_flagImageName];
             [barView addSubview:imageView];
@@ -346,6 +374,8 @@
             {
                 *hasFlag = YES;
             }
+            //移除之前的对像的旗帜
+            [self removeFlagBeforeIndex:-1];
         }
     }
     else
@@ -399,7 +429,28 @@
         });
     }
 }
-
+- (void)removeFlagBeforeIndex:(int)index
+{
+    int i = 0;
+    if(index <0) index = 99999;
+    
+    for (AMProgressItem * dic in barViews_) {
+        MediaWithAction * media = dic.media;
+        BOOL hasFlag = dic.hasFlag;
+        if(hasFlag && media.Action.ActionType==SRepeat)
+        {
+            if(i < index)
+            {
+                UIView * view = dic.barView;
+                for (UIView * subView in view.subviews) {
+                    [subView removeFromSuperview];
+                }
+                dic.hasFlag = NO;
+            }
+            i ++;
+        }
+    }
+}
 - (void)checkFlagIsValid:(CGFloat)secondsInArray
 {
     if(!_autoHideFlag) return ;
@@ -431,11 +482,13 @@
     {
         if(mediaList_.count>0)
             currentMedia_ = [mediaList_ firstObject];
+        secondsInArray_ = currentMedia_?currentMedia_.secondsInArray:0;
         [self refresh];
     }
     else
     {
         currentMedia_ = media;
+        secondsInArray_ = currentMedia_.secondsInArray;
         
         //检查数据是否发生过变化
         if(mediaList_.count != [manager_ getMediaList].count)
@@ -496,17 +549,18 @@
         
         if(lastmedia.rateBeforeReverse <0)
         {
-            CGFloat x = 0;
             CGFloat width = roundf((lastmedia.secondsBeginBeforeReverse - playerSeconds) * widthPerSeconds_ +0.5);
+            CGFloat x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_ - width + 0.5);
             if(index >0)
             {
                 AMProgressItem * dicPrev = [barViews_ objectAtIndex:index-1];
-                x = dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width - width;
+                CGFloat x1 = dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width - width;
+                if(x1 < x)
+                {
+                    x = x1;
+                }
             }
-            else
-            {
-                x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_ - width + 0.5);
-            }
+            
             
             if(width<0) width = 0;
             frame.origin.x = x;
@@ -514,7 +568,7 @@
         }
         else
         {
-            CGFloat x = 0;
+            CGFloat x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
             CGFloat width = roundf((playerSeconds - lastmedia.secondsBeginBeforeReverse) * widthPerSeconds_ + 0.5);
             if(index >0)
             {
@@ -523,15 +577,12 @@
                 {
                     x = dicPrev.barView.frame.origin.x;
                 }
-                else
+                else if(x > dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width)
                 {
                     x = dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width;
                 }
             }
-            else
-            {
-                x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
-            }
+            
             frame.origin.x = x;
             frame.size.width = width;
         }

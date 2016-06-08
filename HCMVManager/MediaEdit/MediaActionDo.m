@@ -507,7 +507,7 @@
     
     CGFloat seconds = self.SecondsInArray;
     
-    long matchIndex = sources.count;
+    long matchIndex = 99999;
     
     for (MediaWithAction * item in sources) {
         if(item.secondsInArray + item.secondsDurationInArray <=seconds)
@@ -521,7 +521,8 @@
             if(fabs(item.secondsInArray - seconds) < SECONDS_ERRORRANGE)
             {
                 NSLog(@"split :org1 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
-                matchIndex = newSources.count;
+                if(matchIndex >= 99999)
+                    matchIndex = newSources.count;
                 [newSources addObject:item];
             }
             //拆分
@@ -531,8 +532,8 @@
                 MediaWithAction * secondItem =  [self splitMediaItem:item splitSecondsInArray:seconds];
                 NSLog(@"item:%f-%f",item.secondsInArray,item.secondsDurationInArray);
                 [newSources addObject:item];
-                
-                matchIndex = newSources.count;
+                if(matchIndex >= 99999)
+                    matchIndex = newSources.count;
                 
                 if(secondItem)
                 {
@@ -542,8 +543,9 @@
         }
         else
         {
-             NSLog(@"split :org3 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
-            matchIndex = newSources.count;
+            NSLog(@"split :org3 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
+            if(matchIndex >= 99999)
+                matchIndex = newSources.count;
             [newSources addObject:item];
         }
     }
