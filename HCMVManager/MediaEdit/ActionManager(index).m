@@ -228,7 +228,7 @@
     for (MediaWithAction * media in actionMediaList) {
         if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=self.minMediaDuration)
         {
-            NSLog(@" generate index:%d/%d",i,(int)actionMediaList.count);
+            NSLog(@"AM : reverse gen index:%d/%d",i,(int)actionMediaList.count);
             [self generateMediaFile:media];
             
             needCheckAgagin = YES;
@@ -248,6 +248,7 @@
     }
     else
     {
+        isGeneratingWithCheck_ = NO;
         return [self generateMVWithWaterMarker:waterMarker position:position needReverseCheck:NO];
     }
 }
