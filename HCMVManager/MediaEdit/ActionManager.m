@@ -840,7 +840,8 @@
         needSendPlayControl_ = NO;
         [self ActionManager:self play:item media:media seconds:SECONDS_NOEND];
     }
-    
+    //延时处理倒放视频的问题
+    [self doSomethingAfterProcess:item];
     
     return item;
 }
@@ -947,6 +948,8 @@
 //        [self buildTimerForPlayerSync:self.minMediaDuration];
         [player_ play];
     }
+    //延时处理倒放视频的问题
+    [self doSomethingAfterProcess:item];
     
     return item;
     
@@ -1012,7 +1015,13 @@
     [self buildTimerForPlayerSync:durationInSeconds];
     
     //延时处理倒放视频的问题
-    if(action.ActionType==SReverse)
+    [self doSomethingAfterProcess:action];
+    return YES;
+}
+- (void)doSomethingAfterProcess:(MediaActionDo *)action
+{
+    //延时处理倒放视频的问题
+    if(action.ActionType==SReverse && action.isOPCompleted)
     {
         __weak ActionManager * weakSelf = self;
         __block NSTimer * weakTimer2 = [HWWeakTimer scheduledTimerWithTimeInterval:0.25f
@@ -1029,7 +1038,6 @@
         
         [weakTimer2 fire];
     }
-    return YES;
 }
 - (void)buildTimerForPlayerSync:(CGFloat)secondsDurationInArray
 {
