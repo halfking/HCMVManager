@@ -619,7 +619,7 @@
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds secondsInArray:(CGFloat)secondsInArray
 {
-//    if(secondsInArray > 31) return;
+    //    if(secondsInArray > 31) return;
     if([NSThread isMainThread])
     {
         secondsInArray_ = secondsInArray;
@@ -674,111 +674,114 @@
         secondsRightMargin = ampItem.media.secondsBeginBeforeReverse;
     }
     
-    BOOL isBefore = YES;
-    
-    for (AMProgressItem * item in barViews_) {
-        if(item == ampItem)
-        {
-            isBefore = NO;
-            continue;
-        }
-        CGRect frame = item.barView.frame;
-        if(isBefore)
-        {
-            //远处的就不需要处理了
-            if(!checkAll &&
-               (
-                (item.media.rateBeforeReverse >0 &&
-                 item.media.secondsEndBeforeReverse <=secondsLeftMargin)
-                ||(item.media.rateBeforeReverse <0 &&
-                   item.media.secondsBeginBeforeReverse <= secondsLeftMargin
-                   )
-                )
-               && (!prevAmp || item !=prevAmp)
-               )
+    if(ampItem.media.Action.isOPCompleted)
+    {
+        BOOL isBefore = YES;
+        
+        for (AMProgressItem * item in barViews_) {
+            if(item == ampItem)
             {
+                isBefore = NO;
                 continue;
             }
-            
-            if(item.media.rateBeforeReverse <0)
+            CGRect frame = item.barView.frame;
+            if(isBefore)
             {
-                if(ampItem.media.rateBeforeReverse >0) //只有正向，才改变反向的位置
+                //远处的就不需要处理了
+                if(!checkAll &&
+                   (
+                    (item.media.rateBeforeReverse >0 &&
+                     item.media.secondsEndBeforeReverse <=secondsLeftMargin)
+                    ||(item.media.rateBeforeReverse <0 &&
+                       item.media.secondsBeginBeforeReverse <= secondsLeftMargin
+                       )
+                    )
+                   && (!prevAmp || item !=prevAmp)
+                   )
                 {
-                    if(frame.origin.x + frame.size.width > currentPos + currentWidth)
+                    continue;
+                }
+                
+                if(item.media.rateBeforeReverse <0)
+                {
+                    if(ampItem.media.rateBeforeReverse >0) //只有正向，才改变反向的位置
                     {
-                        frame.size.width -=  currentPos + currentWidth - frame.origin.x;
-                        frame.origin.x = currentPos + currentWidth;
-                    }
-                    else
-                    {
-                        frame.origin.x = roundf(item.media.secondsEndBeforeReverse * widthPerSeconds_+DIFF_RANGE);
-                        //如果同色，则需要显示宽度为0
-                        if(_colorForReverse1 == _colorForTrack)
+                        if(frame.origin.x + frame.size.width > currentPos + currentWidth)
                         {
-                            frame.size.width = 1;
+                            frame.size.width -=  currentPos + currentWidth - frame.origin.x;
+                            frame.origin.x = currentPos + currentWidth;
                         }
                         else
                         {
-                            frame.size.width = roundf(item.media.secondsDurationInArray * widthPerSeconds_ + DIFF_RANGE);
+                            frame.origin.x = roundf(item.media.secondsEndBeforeReverse * widthPerSeconds_+DIFF_RANGE);
+                            //如果同色，则需要显示宽度为0
+                            if(_colorForReverse1 == _colorForTrack)
+                            {
+                                frame.size.width = 1;
+                            }
+                            else
+                            {
+                                frame.size.width = roundf(item.media.secondsDurationInArray * widthPerSeconds_ + DIFF_RANGE);
+                            }
                         }
-                    }
-                    //                NSLog(@"-------reverse x:%f width:%f <--> %f(%f)",frame.origin.x,frame.size.width,currentPos, currentWidth);
-                    
-                    item.barView.frame = frame;
-                }
-            }
-            else
-            {
-                CGFloat width = roundf(item.media.secondsDurationInArray * widthPerSeconds_+DIFF_RANGE);
-                CGFloat pos = roundf(widthPerSeconds_ * item.media.secondsBeginBeforeReverse + DIFF_RANGE);
-                //                if(item==prevAmp)
-                //                {
-                //                    NSLog(@"test");
-                //                }
-                if(item.media.secondsBeginBeforeReverse <= secondsLeftMargin && item.media.secondsEndBeforeReverse > secondsLeftMargin
-                   && ampItem.media.rateBeforeReverse >0)
-                {
-                    if(frame.origin.x != pos || frame.origin.x+frame.size.width != currentPos || frame.size.width != width)
-                    {
-                        frame.origin.x = pos;
-                        frame.size.width = width;
-                        if(frame.size.width + frame.origin.x != currentPos)
-                        {
-                            frame.size.width = MAX(currentPos - frame.origin.x, 0);
-                        }
-                        item.barView.frame = frame;
-                    }
-                }
-                else if(item.media.secondsBeginBeforeReverse > secondsLeftMargin && item.media.secondsBeginBeforeReverse < secondsRightMargin)
-                {
-                    if(frame.size.width >1)
-                    {
-                        frame.size.width = 1;
-                        item.barView.frame = frame;
-                    }
-                }
-                else if(item.media.secondsBeginBeforeReverse >= secondsRightMargin)
-                {
-                    if(frame.size.width >1)
-                    {
-                        frame.size.width = 1;
+                        //                NSLog(@"-------reverse x:%f width:%f <--> %f(%f)",frame.origin.x,frame.size.width,currentPos, currentWidth);
+                        
                         item.barView.frame = frame;
                     }
                 }
                 else
                 {
-                    
+                    CGFloat width = roundf(item.media.secondsDurationInArray * widthPerSeconds_+DIFF_RANGE);
+                    CGFloat pos = roundf(widthPerSeconds_ * item.media.secondsBeginBeforeReverse + DIFF_RANGE);
+                    //                if(item==prevAmp)
+                    //                {
+                    //                    NSLog(@"test");
+                    //                }
+                    if(item.media.secondsBeginBeforeReverse <= secondsLeftMargin && item.media.secondsEndBeforeReverse > secondsLeftMargin
+                       && ampItem.media.rateBeforeReverse >0)
+                    {
+                        if(frame.origin.x != pos || frame.origin.x+frame.size.width != currentPos || frame.size.width != width)
+                        {
+                            frame.origin.x = pos;
+                            frame.size.width = width;
+                            if(frame.size.width + frame.origin.x != currentPos)
+                            {
+                                frame.size.width = MAX(currentPos - frame.origin.x, 0);
+                            }
+                            item.barView.frame = frame;
+                        }
+                    }
+                    else if(item.media.secondsBeginBeforeReverse > secondsLeftMargin && item.media.secondsBeginBeforeReverse < secondsRightMargin)
+                    {
+                        if(frame.size.width >1)
+                        {
+                            frame.size.width = 1;
+                            item.barView.frame = frame;
+                        }
+                    }
+                    else if(item.media.secondsBeginBeforeReverse >= secondsRightMargin)
+                    {
+                        if(frame.size.width >1)
+                        {
+                            frame.size.width = 1;
+                            item.barView.frame = frame;
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
                 }
             }
-        }
-        else
-        {
-            if(!checkAll) break;
-            
-            if(frame.size.width >0)
+            else
             {
-                frame.size.width = 0;
-                item.barView.frame = frame;
+                if(!checkAll) break;
+                
+                if(frame.size.width >0)
+                {
+                    frame.size.width = 0;
+                    item.barView.frame = frame;
+                }
             }
         }
     }
