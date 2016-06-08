@@ -439,15 +439,15 @@
     
     if(media!=currentMedia_ && currentMedia_)
     {
-        if(media.Action.ActionType == SReverse)
-        {
-            frame.origin.x = left - frame.size.width;
-            
-        }
-        else if(media.Action.ActionType == SRepeat)
-        {
-            //            frame.size.width = 1;
-        }
+//        if(media.Action.ActionType == SReverse)
+//        {
+//            frame.origin.x = left - frame.size.width;
+//            
+//        }
+//        else if(media.Action.ActionType == SRepeat)
+//        {
+//            //            frame.size.width = 1;
+//        }
         //        frame.origin.x += DIFF_RANGE;
         
         barView = [[UIView alloc]initWithFrame:frame];

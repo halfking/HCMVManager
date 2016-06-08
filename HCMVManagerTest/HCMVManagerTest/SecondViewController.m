@@ -593,73 +593,73 @@
     CMTime playerTime =  [player_.playerItem currentTime];
     CGFloat seconds = CMTimeGetSeconds(playerTime);
     
-    //    CMTime reverSeconds = [rPlayer_.playerItem currentTime];
-    //    CMTime reverDuration = [rPlayer_.playerItem duration];
+//    //    CMTime reverSeconds = [rPlayer_.playerItem currentTime];
+//    //    CMTime reverDuration = [rPlayer_.playerItem duration];
+//    
+    CGFloat secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
+//
+//    MediaAction * action = [MediaAction new];
+//    action.ActionType = SReverse;
+//    action.ReverseSeconds = 0;
+//    action.IsOverlap = NO;
+//    action.IsMutex = NO;
+//    action.isOPCompleted = YES;
+//    action.Rate = -1;
+//    action.IsReverse = YES;
+//    
+////    NSLog(@"** add action at seconds:%f",seconds);
+//    currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:1];
+//    return;
     
-//    CGFloat secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
-    
-    MediaAction * action = [MediaAction new];
-    action.ActionType = SReverse;
-    action.ReverseSeconds = 0;
-    action.IsOverlap = NO;
-    action.IsMutex = NO;
-    action.isOPCompleted = YES;
-    action.Rate = -1;
-    action.IsReverse = YES;
-    
-//    NSLog(@"** add action at seconds:%f",seconds);
-    currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:1];
-    return;
-    
-//    [player_ pause];
-//    if (!sender.selected) {
-//        NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
-//        MediaAction * action = [MediaAction new];
-//        action.ActionType = SReverse;
-//        action.ReverseSeconds = 0;
-//        action.IsOverlap = NO;
-//        action.IsMutex = NO;
-//        action.isOPCompleted = NO;
-//        action.Rate = -1;
-//        action.IsReverse = YES;
-//        
-//        
-//        currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1];
-//        if(currentAction_){
-//            sender.selected = YES;
-//        }
-//        
-//        
-//    } else {
-//        sender.selected = NO;
-//        [player_ pause];
-//        
-//        secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
-//        
-//        MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
-//        
-//        if(!actionDo)
-//        {
-//            secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
-//            actionDo = [manager_ findActionAt:secondsInTrack index:-1];
-//        }
-//        actionDo = currentAction_;// [manager_ findActionAt:secondsInTrack index:-1];
-//        if(actionDo)
-//        {
-//            //反向没有变速，可以直接获取
-//            //反向轨转成正向轨
-//            CGFloat duration = actionDo.Rate <0?secondsInTrack- actionDo.SecondsInArray:seconds - actionDo.Media.secondsBegin;
-//            //            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
-//            
-//            //            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
-//            //            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
-//            //            CGFloat duration = end - playerPos;
-//            
-//            NSLog(@"#######reverse:%.4f  trackseconds:%.4f duration:%.2f",seconds,secondsInTrack,duration);
-//            [manager_ setActionItemDuration:actionDo duration:duration];
-//        }
-//        
-//    }
+    [player_ pause];
+    if (!sender.selected) {
+        NSLog(@"#######reverse:%.4f  trackseconds:%.4f",seconds,secondsInTrack);
+        MediaAction * action = [MediaAction new];
+        action.ActionType = SReverse;
+        action.ReverseSeconds = 0;
+        action.IsOverlap = NO;
+        action.IsMutex = NO;
+        action.isOPCompleted = NO;
+        action.Rate = -1;
+        action.IsReverse = YES;
+        
+        
+        currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:-1];
+        if(currentAction_){
+            sender.selected = YES;
+        }
+        
+        
+    } else {
+        sender.selected = NO;
+        [player_ pause];
+        
+        secondsInTrack = [manager_ getSecondsInArrayViaCurrentState:seconds];
+        
+        MediaActionDo * actionDo = [manager_ findActionAt:secondsInTrack index:-1];
+        
+        if(!actionDo)
+        {
+            secondsInTrack = [manager_ getSecondsInArrayFromPlayer:seconds isReversePlayer:NO];
+            actionDo = [manager_ findActionAt:secondsInTrack index:-1];
+        }
+        actionDo = currentAction_;// [manager_ findActionAt:secondsInTrack index:-1];
+        if(actionDo)
+        {
+            //反向没有变速，可以直接获取
+            //反向轨转成正向轨
+            CGFloat duration = actionDo.Rate <0?secondsInTrack- actionDo.SecondsInArray:seconds - actionDo.Media.secondsBegin;
+            //            CGFloat duration = CMTimeGetSeconds(reverSeconds) - actionDo.Media.secondsBegin;
+            
+            //            CGFloat playerPos = CMTimeGetSeconds(reverDuration)-CMTimeGetSeconds(reverSeconds);
+            //            CGFloat end = [manager_ getSecondsInArrayFromPlayer:playerPos isReversePlayer:actionDo.IsReverse];
+            //            CGFloat duration = end - playerPos;
+            
+            NSLog(@"#######reverse:%.4f  trackseconds:%.4f duration:%.2f",seconds,secondsInTrack,duration);
+            [manager_ setActionItemDuration:actionDo duration:duration];
+        }
+        
+    }
 }
 -(void)slow:(UIButton *)sender
 {
