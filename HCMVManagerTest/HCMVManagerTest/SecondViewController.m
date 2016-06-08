@@ -190,7 +190,8 @@
         
         left += 60;
         
-        [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
+        [slow_ addTarget:self action:@selector(repeatLong:) forControlEvents:UIControlEventTouchUpInside];
+//        [slow_ addTarget:self action:@selector(slow:) forControlEvents:UIControlEventTouchUpInside];
         [fast_ addTarget:self action:@selector(fast:) forControlEvents:UIControlEventTouchUpInside];
         [joinBtn_ addTarget:self action:@selector(reset:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -250,8 +251,8 @@
         CGFloat playerBottom =  self.view.frame.size.width/16 * 9;
         
         {
-            progress_ = [[ActionManagerProgress alloc]initWithFrame:CGRectMake(10, 10 + playerBottom, self.view.frame.size.width-20,
-                                                                               40)];
+            progress_ = [[ActionManagerProgress alloc]initWithFrame:CGRectMake(10, 20 + playerBottom, self.view.frame.size.width-20,
+                                                                               30)];
             progress_.backgroundColor = [UIColor clearColor];
             [self.view addSubview:progress_];
         }
@@ -515,6 +516,36 @@
     [manager_ generateMVByFilter:5];
 }
 #pragma mark - buttons
+-(void)repeatLong:(UIButton *)sender
+{
+    if(manager_.isGenerating) return;
+  
+    repeatTime_ = player_.playerItem.currentTime;
+    NSLog(@"dot time = %.3f", CMTimeGetSeconds(repeatTime_));
+    //记录这个repeat的时间点(repeat片段的终点)
+    CGFloat secondsPlaying = CMTimeGetSeconds(repeatTime_);
+    MediaAction * action = [MediaAction new];
+    action.ActionType = SRepeat;
+    action.ReverseSeconds = 0;// - RepeatTime;
+    action.DurationInSeconds = 1;
+    action.IsOverlap = NO;
+    action.IsMutex = NO;
+    action.isOPCompleted = YES;
+    action.Rate = 1;
+    
+    MediaActionDo * doItem = [manager_ addActionItem:action filePath:nil at:secondsPlaying from:secondsPlaying duration:1];
+//    [player_ pause];
+//    [audioPlayer_ pause];
+    [NSThread sleepForTimeInterval:0.01];
+    NSLog(@"1 doitem :%f-%f",doItem.SecondsInArray,doItem.DurationInSeconds);
+    doItem = [manager_ addActionItemDo:doItem inArray:doItem.SecondsInArray + doItem.DurationInSeconds changeCurrentAction:NO];
+    NSLog(@"2 doitem :%f-%f",doItem.SecondsInArray,doItem.DurationInSeconds);
+    [manager_ addActionItemDo:doItem inArray:doItem.SecondsInArray + doItem.DurationInSeconds changeCurrentAction:NO];
+//    [player_ play];
+//    [audioPlayer_ play];
+    
+    
+}
 -(void)repeat:(UIButton *)sender
 {
     if(manager_.isGenerating) return;

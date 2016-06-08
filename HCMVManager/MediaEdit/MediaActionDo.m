@@ -198,22 +198,23 @@
     //    {
     //        NSLog(@"fast...");
     //    }
-    
-    NSMutableArray * materialList = [self buildMaterialProcess:sources];
-    if(!materialList || materialList.count==0)
-    {
-        return sources;
+    @synchronized (self) {
+        NSMutableArray * materialList = [self buildMaterialProcess:sources];
+        if(!materialList || materialList.count==0)
+        {
+            return sources;
+        }
+        
+        int insertIndex = 0;
+        NSMutableArray * newSources = [self splitArrayForAction:sources insertIndex:&insertIndex];
+        
+        [self addMediaToArray:materialList sources:newSources insertIndex:insertIndex];
+        
+        //    self.SecondsInArray  = ((MediaWithAction *)[materialList firstObject]).secondsInArray;
+        self.SecondsInArray = self.Media.secondsInArray;
+        self.DurationInSeconds = self.Media.secondsDurationInArray>0?self.Media.secondsDurationInArray:0 - self.Media.secondsDurationInArray;
+        return newSources;
     }
-    
-    int insertIndex = 0;
-    NSMutableArray * newSources = [self splitArrayForAction:sources insertIndex:&insertIndex];
-    
-    [self addMediaToArray:materialList sources:newSources insertIndex:insertIndex];
-    
-    //    self.SecondsInArray  = ((MediaWithAction *)[materialList firstObject]).secondsInArray;
-    self.SecondsInArray = self.Media.secondsInArray;
-    self.DurationInSeconds = self.Media.secondsDurationInArray>0?self.Media.secondsDurationInArray:0 - self.Media.secondsDurationInArray;
-    return newSources;
 }
 - (NSMutableArray *)ensureAction:(NSMutableArray *)sources durationInArray:(CGFloat)durationInArrayA
 {
@@ -410,7 +411,7 @@
 //- (NSMutableArray *)getMateriasInterrect:(CGFloat)seconds duration:(CGFloat)duration sources:(NSArray *)sources
 //{
 //    NSMutableArray * overlapList = [NSMutableArray new];
-//    
+//
 //    for (MediaWithAction * item in sources) {
 //        if(duration<0)
 //        {
@@ -511,6 +512,7 @@
     for (MediaWithAction * item in sources) {
         if(item.secondsInArray + item.secondsDurationInArray <=seconds)
         {
+            NSLog(@"split :org0 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType, item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
             [newSources addObject:item];
         }
         //第一个或跨界的
@@ -518,14 +520,16 @@
         {
             if(fabs(item.secondsInArray - seconds) < SECONDS_ERRORRANGE)
             {
+                NSLog(@"split :org1 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
                 matchIndex = newSources.count;
                 [newSources addObject:item];
             }
             //拆分
             else
             {
+                NSLog(@"split :org2 type:%d (%f--%f) insert:(%f--%f",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
                 MediaWithAction * secondItem =  [self splitMediaItem:item splitSecondsInArray:seconds];
-                
+                NSLog(@"item:%f-%f",item.secondsInArray,item.secondsDurationInArray);
                 [newSources addObject:item];
                 
                 matchIndex = newSources.count;
@@ -538,9 +542,12 @@
         }
         else
         {
+             NSLog(@"split :org3 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType,item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
+            matchIndex = newSources.count;
             [newSources addObject:item];
         }
     }
+    NSLog(@"match index :%d",(int)matchIndex);
     if(insertIndex)
     {
         *insertIndex = (int)matchIndex;

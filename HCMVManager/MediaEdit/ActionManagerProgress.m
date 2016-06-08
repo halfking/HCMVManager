@@ -128,6 +128,11 @@
             continue;
         }
         {
+            if(media == currentMedia_ && !full)
+            {
+                [self checkPreMediaWidth:media prevMedia:prevMedia];
+            }
+            
             AMProgressItem * item = [[AMProgressItem alloc]init];
             item.media = media;
             item.barView = v;
@@ -135,10 +140,7 @@
             [barViews_ addObject:item];
             [barBgView_ addSubview:v];
             item = nil;
-            if(media == currentMedia_ && !full)
-            {
-                [self checkPreMediaWidth:media prevMedia:prevMedia];
-            }
+          
             if(!full && (media == currentMedia_ || !currentMedia_)) break;
         }
         prevMedia = media;
@@ -192,8 +194,16 @@
     }
     else
     {
-        //处理最后一个的长度
+        //处理最后一个的长度，但不是当前对像
         AMProgressItem * dic = [barViews_ lastObject];
+        if(dic.media == currentMedia_ && barViews_.count>1)
+        {
+            dic = barViews_[barViews_.count-1];
+        }
+        else
+        {
+            return ;
+        }
         UIView * v = dic.barView;
         MediaWithAction * lastMedia = dic.media;
         CGRect frame = v.frame;
@@ -282,9 +292,10 @@
         }
         else if(media.Action.ActionType == SRepeat)
         {
-            
-            frame.size.width = 1;
+//            frame.size.width = 1;
         }
+        frame.origin.x += 0.5;
+        
         barView = [[UIView alloc]initWithFrame:frame];
         barView.backgroundColor = [self getColorForMedia:media];
         
@@ -293,7 +304,7 @@
             *hasFlag = NO;
         }
         
-        if(media.Action.ActionType == SRepeat && media.secondsInArray - secondsInArray_ <=2 && _flagImageName)
+        if(media.Action.ActionType == SRepeat && (secondsInArray_ - media.secondsInArray <self.durationForFlag + 0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0) && _flagImageName)
         {
             UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
             imageView.image = [UIImage imageNamed:_flagImageName];
@@ -306,7 +317,7 @@
     }
     else
     {
-        frame.origin.x = left;
+        frame.origin.x = left + 0.5;
         frame.size.width = 1;
         barView = [[UIView alloc]initWithFrame:frame];
         barView.backgroundColor = [self getColorForMedia:media];
@@ -317,7 +328,10 @@
         }
         if(media.Action.ActionType == SRepeat)
         {
-            if(media.secondsInArray - secondsInArray_ <=2 && _flagImageName)
+//            当前对像或在时间范围内
+            if( (media==currentMedia_ ||
+                 (secondsInArray_ - media.secondsInArray <self.durationForFlag +0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0))
+               && _flagImageName)
             {
                 UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
                 imageView.image = [UIImage imageNamed:_flagImageName];
@@ -361,7 +375,11 @@
         BOOL hasFlag = dic.hasFlag;
         if(hasFlag && media.Action.ActionType==SRepeat)
         {
-            if(secondsInArray- media.secondsInArray>self.durationForFlag)
+//            超时的，非当前对像的，不显示
+            if((secondsInArray- media.secondsInArray +0.01>self.durationForFlag)
+               ||
+               secondsInArray < media.secondsInArray
+               ||(currentMedia_ && currentMedia_!=media))
             {
                 UIView * view = dic.barView;
                 for (UIView * subView in view.subviews) {

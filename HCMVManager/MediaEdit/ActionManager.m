@@ -937,7 +937,8 @@
     }
     else //不影响当前播放对像
     {
-        [self buildTimerForPlayerSync:self.minMediaDuration];
+//        [self buildTimerForPlayerSync:self.minMediaDuration];
+        [player_ play];
     }
     
     return item;
