@@ -548,10 +548,10 @@
         action.IsMutex = NO;
         action.Rate = -1;
         action.isOPCompleted = NO;
-        testAction_ = [manager addActionItem:action filePath:nil at:6 from:6 duration:-1];
+        testAction_ = [manager addActionItem:action filePath:nil at:4 from:4 duration:-1];
     }
     if(clickIndex_ ==3)
-        [manager setActionItemDuration:testAction_ duration:3];
+        [manager setActionItemDuration:testAction_ duration:2.5];
     
     //test interrect
     if(clickIndex_ ==4){
@@ -579,7 +579,8 @@
         [manager ensureActions:[manager getBaseVideo].secondsDuration];
     
     clickIndex_ ++;
-    if(clickIndex_>6) clickIndex_ = 0;
+//    if(clickIndex_>6)
+//        clickIndex_ = 0;
     [pannel_ refresh];
 }
 //player times

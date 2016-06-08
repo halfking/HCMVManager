@@ -522,7 +522,7 @@
         {
             NSLog(@"通过Media 更改播放器的时间：%f",media.secondsBeginBeforeReverse);
             [player_ seek:media.secondsBeginBeforeReverse accurate:YES];
-//            [NSThread sleepForTimeInterval:0.05];
+            [NSThread sleepForTimeInterval:0.01];
             [self syncAudioPlayer:media playerSeconds:media.secondsBeginBeforeReverse];
             
         }
@@ -651,6 +651,8 @@
         //误差处理是否需要?
         CGFloat minSeconds = currentMediaWithAction_.rateBeforeReverse <0?currentMediaWithAction_.secondsEndBeforeReverse:currentMediaWithAction_.secondsBeginBeforeReverse;
         CGFloat maxSeconds = currentMediaWithAction_.rateBeforeReverse<0?currentMediaWithAction_.secondsBeginBeforeReverse:currentMediaWithAction_.secondsEndBeforeReverse;
+        
+        NSLog(@"rate :%f min:%f max:%f secondsplayer:%f",currentMediaWithAction_.rateBeforeReverse,minSeconds,maxSeconds,playerSeconds);
         
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
         BOOL needReturn = NO;

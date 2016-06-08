@@ -39,7 +39,7 @@
         _colorForReverse1 = [UIColor redColor];// _colorForTrack;
         _colorForReverse2 = [UIColor greenColor];// _colorForNormal;
 #else
-        colorForReverse1 = _colorForTrack;
+        _colorForReverse1 = _colorForTrack;
         _colorForReverse2 = _colorForNormal;
 #endif
         _colorForRepeat = _colorForNormal;
@@ -619,6 +619,7 @@
 }
 - (void)setPlaySeconds:(CGFloat)playerSeconds secondsInArray:(CGFloat)secondsInArray
 {
+//    if(secondsInArray > 31) return;
     if([NSThread isMainThread])
     {
         secondsInArray_ = secondsInArray;
@@ -688,9 +689,9 @@
             if(!checkAll &&
                (
                 (item.media.rateBeforeReverse >0 &&
-                 item.media.secondsEndBeforeReverse <secondsLeftMargin)
+                 item.media.secondsEndBeforeReverse <=secondsLeftMargin)
                 ||(item.media.rateBeforeReverse <0 &&
-                   item.media.secondsBeginBeforeReverse < secondsLeftMargin
+                   item.media.secondsBeginBeforeReverse <= secondsLeftMargin
                    )
                 )
                && (!prevAmp || item !=prevAmp)
@@ -734,7 +735,7 @@
                 //                {
                 //                    NSLog(@"test");
                 //                }
-                if(item.media.secondsBeginBeforeReverse < secondsLeftMargin && item.media.secondsEndBeforeReverse > secondsLeftMargin
+                if(item.media.secondsBeginBeforeReverse <= secondsLeftMargin && item.media.secondsEndBeforeReverse > secondsLeftMargin
                    && ampItem.media.rateBeforeReverse >0)
                 {
                     if(frame.origin.x != pos || frame.origin.x+frame.size.width != currentPos || frame.size.width != width)
@@ -748,7 +749,7 @@
                         item.barView.frame = frame;
                     }
                 }
-                else if(item.media.secondsBeginBeforeReverse >= secondsLeftMargin && item.media.secondsBeginBeforeReverse < secondsRightMargin)
+                else if(item.media.secondsBeginBeforeReverse > secondsLeftMargin && item.media.secondsBeginBeforeReverse < secondsRightMargin)
                 {
                     if(frame.size.width >1)
                     {
