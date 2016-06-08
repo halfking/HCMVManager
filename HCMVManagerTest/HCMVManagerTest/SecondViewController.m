@@ -607,7 +607,7 @@
     action.Rate = -1;
     action.IsReverse = YES;
     
-    
+//    NSLog(@"** add action at seconds:%f",seconds);
     currentAction_ = [manager_ addActionItem:action filePath:nil at:seconds from:seconds duration:1];
     return;
     
@@ -757,7 +757,7 @@
 #pragma mark - player delegate
 - (void)playerSimple:(HCPlayerSimple *)playerSimple timeDidChange:(CGFloat)cmTime
 {
-    NSLog(@"player seconds:%f",cmTime);
+//    NSLog(@"player seconds:%f",cmTime);
 //    if(playerSimple == player_)
 //    {
 //        [player_ pause];
@@ -839,16 +839,21 @@
 - (void)ActionManager:(ActionManager *)manager play:(MediaWithAction *)mediaToPlay
 {
     [player_ pause];
+    [NSThread sleepForTimeInterval:0.01];
+    [player_ pause];
     showTimeChanged_ = YES;
     
     [pannel_ refresh];
     [pannel_ setPlayMedia:mediaToPlay];
+    [player_ pause];
+    
+    
     [progress_ setCurrentMedia:mediaToPlay];
     
     
-    NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
-    NSLog(@"mediaItem:%@",[mediaToPlay toString]);
-    NSLog(@"player:%.2f playeritem:%f",[player_ secondsPlaying], CMTimeGetSeconds(player_.playerItem.currentTime));
+//    NSLog(@"mediaItem:%@",[mediaToPlay.fileName lastPathComponent]);
+//    NSLog(@"mediaItem:%@",[mediaToPlay toString]);
+    NSLog(@"**player:%.2f playeritem:%f media:%.2f",[player_ secondsPlaying], CMTimeGetSeconds(player_.playerItem.currentTime),mediaToPlay.secondsBegin);
     
     [player_ play];
     
@@ -939,16 +944,16 @@
 }
 -(void)join:(UIButton *)sender
 {
-//    [player_ pause];
-//    [player_ seek:0 accurate:YES];
-//    
-//    [progress_ setCurrentMedia:nil];
-//    [progress_ setPlaySeconds:0 secondsInArray:0];
-//    [progress_ refresh];
-//    [manager_ setCurrentMediaWithAction:nil];
-//    [pannel_ refresh];
-//    [player_ play];
-//    return;
+    [player_ pause];
+    [player_ seek:0 accurate:YES];
+    
+    [progress_ setCurrentMedia:nil];
+    [progress_ setPlaySeconds:0 secondsInArray:0];
+    [progress_ refresh];
+    [manager_ setCurrentMediaWithAction:nil];
+    [pannel_ refresh];
+    [player_ play];
+    return;
     
     [self showIndicatorView];
     

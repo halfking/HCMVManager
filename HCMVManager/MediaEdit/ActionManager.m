@@ -537,7 +537,14 @@
         return NO;
     else
     {
-        return YES;
+        if(!currentMediaWithAction_ || currentMediaWithAction_.Action.ActionType == SNormal)
+        {
+            return YES;
+        }
+        else
+        {
+            return NO;
+        }
     }
 }
 //将播放器时间转为原轨时间
