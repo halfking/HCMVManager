@@ -36,7 +36,10 @@
     item.durationInPlaying = self.durationInPlaying;
     item.secondsInArrayNotConfirm = self.secondsInArrayNotConfirm;
     item.secondsChangedWithActionForPlayer = self.secondsChangedWithActionForPlayer;
-    
+    item.secondsBeginBeforeReverse = self.secondsBeginBeforeReverse;
+    item.secondsEndBeforeReverse = self.secondsEndBeforeReverse;
+    item.isReversed = self.isReversed;
+    item.rateBeforeReverse = self.rateBeforeReverse;
     return item;
 }
 

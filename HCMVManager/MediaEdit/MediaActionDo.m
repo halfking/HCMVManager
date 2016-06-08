@@ -164,14 +164,30 @@
 //如果播放器时间不在本动作 范围内，则直接-1
 - (CGFloat) getSecondsInArray:(CGFloat)playerSeconds
 {
-    if(self.Media.secondsBegin <=playerSeconds + SECONDS_ERRORRANGE
-       && (self.Media.secondsEnd >= playerSeconds || self.DurationInArray <0) )
+    if([self.Media isKindOfClass:[MediaWithAction class]])
     {
-        return self.Media.secondsInArray + playerSeconds - self.Media.secondsBegin;
+        MediaWithAction * media = (MediaWithAction *)self.Media;
+        if(media.secondsBeginBeforeReverse <=playerSeconds + SECONDS_ERRORRANGE
+           && (media.secondsEndBeforeReverse >= playerSeconds || self.DurationInArray <0) )
+        {
+            return media.secondsInArray + playerSeconds - media.secondsBeginBeforeReverse;
+        }
+        else
+        {
+            return -1;
+        }
     }
     else
     {
-        return -1;
+        if(self.Media.secondsBegin <=playerSeconds + SECONDS_ERRORRANGE
+           && (self.Media.secondsEnd >= playerSeconds || self.DurationInArray <0) )
+        {
+            return self.Media.secondsInArray + playerSeconds - self.Media.secondsBegin;
+        }
+        else
+        {
+            return -1;
+        }
     }
 }
 - (BOOL) containSecondsInArray:(CGFloat)secondsInArray
@@ -573,7 +589,7 @@
     secondItem.durationInPlaying = -1;
     
     //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
-    CGFloat endSeconds = item.secondsBegin + splitSecondsInArray - item.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+    CGFloat endSeconds = item.secondsBeginBeforeReverse + splitSecondsInArray - item.secondsInArray; //如果起点在变化区域内:负值，否则为正值
     CMTime endTime = CMTimeMakeWithSeconds(endSeconds, item.end.timescale);
     item.end = endTime;
     

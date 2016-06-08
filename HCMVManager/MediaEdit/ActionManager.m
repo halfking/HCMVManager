@@ -341,7 +341,7 @@
                 {
                     notLastItem = item;
                 }
-                if(item.Action.ActionType==SNormal && item.secondsBegin <= playerSeconds && item.secondsEnd > playerSeconds)
+                if(item.Action.ActionType==SNormal && item.secondsBeginBeforeReverse <= playerSeconds && item.secondsEndBeforeReverse > playerSeconds)
                 {
                     secondsInArray = [item getSecondsInArrayByPlaySeconds:playerSeconds];
                     break;
