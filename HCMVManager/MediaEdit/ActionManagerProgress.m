@@ -207,7 +207,7 @@
     {
         if(index ==3)
         {
-            NSLog(@"media %d  %f-%f",currentMedia_.Action.ActionType,currentMedia_.secondsBegin,currentMedia_.secondsEnd);
+            NSLog(@"media %d  %f-%f",currentMedia_.Action.ActionType,currentMedia_.secondsBeginBeforeReverse,currentMedia_.secondsEndBeforeReverse);
         }
         [self showProgress:currentItem prevItem:prevItem secondsInArray:currentMedia_.secondsInArray checkAll:YES];
     }
@@ -507,7 +507,7 @@
             
         }
     }
-    NSLog(@"build barview type:%d time:%f-%f frame :%@",media.Action.ActionType,media.secondsBegin,media.secondsEnd, NSStringFromCGRect(barView.frame));
+    NSLog(@"build barview type:%d time:%f-%f frame :%@",media.Action.ActionType,media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse, NSStringFromCGRect(barView.frame));
     return barView;
 }
 - (void)refresh
@@ -734,7 +734,7 @@
                 //                {
                 //                    NSLog(@"test");
                 //                }
-                if(item.media.secondsBegin < secondsLeftMargin && item.media.secondsEnd > secondsLeftMargin
+                if(item.media.secondsBeginBeforeReverse < secondsLeftMargin && item.media.secondsEndBeforeReverse > secondsLeftMargin
                    && ampItem.media.rateBeforeReverse >0)
                 {
                     if(frame.origin.x != pos || frame.origin.x+frame.size.width != currentPos || frame.size.width != width)
@@ -748,7 +748,7 @@
                         item.barView.frame = frame;
                     }
                 }
-                else if(item.media.secondsBegin >= secondsLeftMargin && item.media.secondsBegin < secondsRightMargin)
+                else if(item.media.secondsBeginBeforeReverse >= secondsLeftMargin && item.media.secondsBeginBeforeReverse < secondsRightMargin)
                 {
                     if(frame.size.width >1)
                     {
@@ -756,7 +756,7 @@
                         item.barView.frame = frame;
                     }
                 }
-                else if(item.media.secondsBegin >= secondsRightMargin)
+                else if(item.media.secondsBeginBeforeReverse >= secondsRightMargin)
                 {
                     if(frame.size.width >1)
                     {
