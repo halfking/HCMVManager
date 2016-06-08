@@ -18,6 +18,7 @@
 {
     _barView = nil;
     _media = nil;
+    
     NSLog(@"progressitem release.");
     PP_SUPERDEALLOC;
 }
@@ -40,11 +41,36 @@
         _durationForFlag = 2;
         _flagImageName = @"flag.png";
         _autoHideFlag = YES;
+        _reverseUseNewLine = YES;
         
         defaultMsg_ = DEFAULT_TIPS;
         [self buildViews];
     }
     return self;
+}
+- (void)showFullTracks
+{
+    NSArray * mediaList = [manager_ getMediaList];
+    if(mediaList)
+        mediaList_ = [NSMutableArray arrayWithArray:mediaList];
+    else
+        mediaList_ = [NSMutableArray array];
+    
+    if(barBgView_)
+    {
+        for (UIView * bars in barBgView_.subviews) {
+            [bars removeFromSuperview];
+        }
+        [barViews_ removeAllObjects];
+    }
+    else
+    {
+        barBgView_ = [[UIView alloc]initWithFrame:CGRectMake(0, self.frame.size.height -self.barHeight-1, self.frame.size.width, self.barHeight+1)];
+        barBgView_.backgroundColor = [UIColor darkGrayColor];
+        [self addSubview:barBgView_];
+    }
+    
+    [self buildBarViews:YES];
 }
 - (void)reset
 {
@@ -53,6 +79,8 @@
         mediaList_ = [NSMutableArray arrayWithArray:mediaList];
     else
         mediaList_ = [NSMutableArray array];
+    if(mediaList_.count>0)
+        currentMedia_ = [mediaList_ firstObject];
     defaultMsg_ = DEFAULT_TIPS;
     msgLabel_.text = defaultMsg_;
     
@@ -70,7 +98,7 @@
         [self addSubview:barBgView_];
     }
     
-    [self buildBarViews:YES];
+    [self buildBarViews:NO];
 }
 - (void)setManager:(ActionManager *)manager
 {
@@ -121,7 +149,7 @@
     MediaWithAction * prevMedia = nil;
     for (MediaWithAction * media in mediaList_) {
         BOOL hasFlag = NO;
-        UIView * v = [self buildBarView:media hasFlag:&hasFlag];
+        UIView * v = [self buildBarView:media hasFlag:&hasFlag full:full];
         if(!v)
         {
             NSLog(@"view cannot be nil....");
@@ -140,7 +168,7 @@
             [barViews_ addObject:item];
             [barBgView_ addSubview:v];
             item = nil;
-          
+            
             if(!full && (media == currentMedia_ || !currentMedia_)) break;
         }
         prevMedia = media;
@@ -153,7 +181,7 @@
     //Repeat 需要将之前的进度缩回去
     if(media.Action.ActionType==SRepeat)
     {
-        CGFloat pos = media.secondsBeginBeforeReverse * widthPerSeconds_;
+        CGFloat pos = roundf(media.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
         BOOL isMatch = NO;
         for (int i = (int)mediaList_.count-1; i>=0; i --) {
             MediaWithAction * mm = mediaList_[i];
@@ -174,7 +202,7 @@
                     MediaWithAction * item = dic.media;
                     
                     CGRect frame = prevView.frame;
-                    frame.size.width = item.secondsDurationInArray * widthPerSeconds_;
+                    frame.size.width = roundf(item.secondsDurationInArray * widthPerSeconds_+0.5);
                     
                     if(frame.origin.x > pos)
                     {
@@ -207,15 +235,17 @@
         UIView * v = dic.barView;
         MediaWithAction * lastMedia = dic.media;
         CGRect frame = v.frame;
-        CGFloat width = lastMedia.secondsDurationInArray * widthPerSeconds_;
+        CGFloat width = roundf(lastMedia.secondsDurationInArray * widthPerSeconds_+0.5);
         if(lastMedia.rateBeforeReverse <0)
         {
-            frame.origin.x = lastMedia.secondsBeginBeforeReverse * widthPerSeconds_ - width;
+            CGFloat pos = roundf(widthPerSeconds_ * media.secondsBeginBeforeReverse + 0.5);
+            frame.origin.x = pos - width;
             frame.size.width =  width;
         }
         else
         {
-            frame.origin.x = lastMedia.secondsBeginBeforeReverse * widthPerSeconds_;
+            CGFloat pos = roundf(widthPerSeconds_ * media.secondsBeginBeforeReverse + 0.5);
+            frame.origin.x = pos;
             frame.size.width = width;
         }
         v.frame = frame;
@@ -228,11 +258,11 @@
         [subView removeFromSuperview];
     }
     [barViews_ removeAllObjects];
-//    NSArray * mediaList = [manager_ getMediaList];
-//    if(mediaList)
-//        mediaList_ = [NSMutableArray arrayWithArray:mediaList];
-//    else
-//        mediaList_ = [NSMutableArray array];
+    //    NSArray * mediaList = [manager_ getMediaList];
+    //    if(mediaList)
+    //        mediaList_ = [NSMutableArray arrayWithArray:mediaList];
+    //    else
+    //        mediaList_ = [NSMutableArray array];
 }
 - (void) addBarView:(MediaWithAction *)media
 {
@@ -246,17 +276,17 @@
             prevMedia = mm;
             index ++;
         }
-//        if(index ==0)
-//        {
-//            [self clearBarViews];
-//        }
+        //        if(index ==0)
+        //        {
+        //            [self clearBarViews];
+        //        }
         
         if(barViews_.count <= index)
         {
             [self checkPreMediaWidth:media prevMedia:prevMedia];
             
             BOOL hasFlag = NO;
-            UIView * barView =[self buildBarView:media hasFlag:&hasFlag];
+            UIView * barView =[self buildBarView:media hasFlag:&hasFlag full:NO];
             if(barView)
             {
                 AMProgressItem * item = [[AMProgressItem alloc]init];
@@ -277,12 +307,15 @@
         });
     }
 }
-- (UIView *)buildBarView:(MediaWithAction *)media hasFlag:(BOOL *)hasFlag
+// 显示具体的一个Bar，如果Bar属于当前正在处理的素材，则长度只显示1，由PlayerSeconds事件来决定显示多长
+// full 表示是否需要不考虑上述的条件，即直接显示全长
+- (UIView *)buildBarView:(MediaWithAction *)media hasFlag:(BOOL *)hasFlag full:(BOOL)full
 {
-    CGFloat left = media.secondsBeginBeforeReverse * widthPerSeconds_;
+    CGFloat left = roundf(media.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
     CGFloat top = (barBgView_.frame.size.height - self.barHeight)/2.0f;
     UIView * barView = nil;
-    CGRect frame = CGRectMake(left, top, widthPerSeconds_ * media.secondsDurationInArray, self.barHeight) ;
+    CGFloat width = roundf(widthPerSeconds_ * media.secondsDurationInArray + 0.5);
+    CGRect frame = CGRectMake(left, top, width, self.barHeight) ;
     if(media!=currentMedia_ && currentMedia_)
     {
         if(media.Action.ActionType == SReverse)
@@ -292,9 +325,9 @@
         }
         else if(media.Action.ActionType == SRepeat)
         {
-//            frame.size.width = 1;
+            //            frame.size.width = 1;
         }
-        frame.origin.x += 0.5;
+        //        frame.origin.x += 0.5;
         
         barView = [[UIView alloc]initWithFrame:frame];
         barView.backgroundColor = [self getColorForMedia:media];
@@ -317,8 +350,9 @@
     }
     else
     {
-        frame.origin.x = left + 0.5;
-        frame.size.width = 1;
+        frame.origin.x = left;// + 0.5;
+        if(!full)
+            frame.size.width = 1;
         barView = [[UIView alloc]initWithFrame:frame];
         barView.backgroundColor = [self getColorForMedia:media];
         
@@ -328,7 +362,7 @@
         }
         if(media.Action.ActionType == SRepeat)
         {
-//            当前对像或在时间范围内
+            //            当前对像或在时间范围内
             if( (media==currentMedia_ ||
                  (secondsInArray_ - media.secondsInArray <self.durationForFlag +0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0))
                && _flagImageName)
@@ -375,7 +409,7 @@
         BOOL hasFlag = dic.hasFlag;
         if(hasFlag && media.Action.ActionType==SRepeat)
         {
-//            超时的，非当前对像的，不显示
+            //            超时的，非当前对像的，不显示
             if((secondsInArray- media.secondsInArray +0.01>self.durationForFlag)
                ||
                secondsInArray < media.secondsInArray
@@ -462,15 +496,44 @@
         
         if(lastmedia.rateBeforeReverse <0)
         {
-            CGFloat width = (lastmedia.secondsBeginBeforeReverse - playerSeconds) * widthPerSeconds_;
+            CGFloat x = 0;
+            CGFloat width = roundf((lastmedia.secondsBeginBeforeReverse - playerSeconds) * widthPerSeconds_ +0.5);
+            if(index >0)
+            {
+                AMProgressItem * dicPrev = [barViews_ objectAtIndex:index-1];
+                x = dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width - width;
+            }
+            else
+            {
+                x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_ - width + 0.5);
+            }
+            
             if(width<0) width = 0;
-            frame.origin.x = lastmedia.secondsBeginBeforeReverse * widthPerSeconds_ - width;
+            frame.origin.x = x;
             frame.size.width = width;
         }
         else
         {
-            frame.origin.x = lastmedia.secondsBeginBeforeReverse * widthPerSeconds_;
-            frame.size.width = (playerSeconds - lastmedia.secondsBeginBeforeReverse) * widthPerSeconds_;
+            CGFloat x = 0;
+            CGFloat width = roundf((playerSeconds - lastmedia.secondsBeginBeforeReverse) * widthPerSeconds_ + 0.5);
+            if(index >0)
+            {
+                AMProgressItem * dicPrev = [barViews_ objectAtIndex:index-1];
+                if(dicPrev.media.Action.ActionType==SReverse && dicPrev.media.rateBeforeReverse <0)
+                {
+                    x = dicPrev.barView.frame.origin.x;
+                }
+                else
+                {
+                    x = dicPrev.barView.frame.origin.x + dicPrev.barView.frame.size.width;
+                }
+            }
+            else
+            {
+                x = roundf(lastmedia.secondsBeginBeforeReverse * widthPerSeconds_+0.5);
+            }
+            frame.origin.x = x;
+            frame.size.width = width;
         }
         barView.frame = frame;
         if(lastmedia.Action.ActionType==SRepeat)
@@ -534,5 +597,13 @@
         tips = @"长按滤镜为视频添加特效";
     }
     return tips;
+}
+- (void)dealloc
+{
+    manager_ = nil;
+    mediaList_ = nil;
+    barViews_ = nil;
+    barBgView_ = nil;
+    PP_SUPERDEALLOC;
 }
 @end

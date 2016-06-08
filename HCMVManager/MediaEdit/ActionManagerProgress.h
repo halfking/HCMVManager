@@ -39,6 +39,7 @@
 @property (nonatomic,PP_STRONG) UIColor * colorForRepeat;
 @property (nonatomic,PP_STRONG) UIColor * colorForReverse1;
 @property (nonatomic,PP_STRONG) UIColor * colorForReverse2;
+@property (nonatomic,assign) BOOL reverseUseNewLine;        //倒放模式使用新的条盖在上面，而不是将原来前面的条缩小
 @property (nonatomic,assign) CGFloat durationForFlag;
 @property (nonatomic,PP_STRONG) NSString * flagImageName;
 @property (nonatomic,assign) BOOL autoHideFlag;
@@ -46,6 +47,7 @@
 - (void)setManager:(ActionManager *)manager;
 - (void)reset;
 - (void)refresh;
+- (void)showFullTracks;
 
 - (void)setMsgString:(NSString *)msg;
 - (void)setCurrentMedia:(MediaWithAction *)media;
