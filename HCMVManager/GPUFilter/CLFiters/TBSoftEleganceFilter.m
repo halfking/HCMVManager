@@ -21,9 +21,9 @@
     }
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    UIImage *image = [UIImage imageNamed:@"lookup_soft_elegance_2.png"];
+    UIImage *image = [UIImage imageNamed:@"HCMVManager.bundle/lookup_soft_elegance_2.png"];
 #else
-    NSImage *image = [NSImage imageNamed:@"lookup_soft_elegance_2.png"];
+    NSImage *image = [NSImage imageNamed:@"HCMVManager.bundle/lookup_soft_elegance_2.png"];
 #endif
     
     NSAssert(image, @"To use GPUImageAmatorkaFilter you need to add lookup_soft_elegance_2.png from GPUImage/framework/Resources to your application bundle.");

@@ -21,9 +21,9 @@
     }
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    UIImage *image = [UIImage imageNamed:@"lookup_LOMO.png"];
+    UIImage *image = [UIImage imageNamed:@"HCMVManager.bundle/lookup_LOMO.png"];
 #else
-    NSImage *image = [NSImage imageNamed:@"lookup_LOMO.png"];
+    NSImage *image = [NSImage imageNamed:@"HCMVManager.bundle/lookup_LOMO.png"];
 #endif
     
     NSAssert(image, @"To use GPUImageAmatorkaFilter you need to add lookup_LOMO.png from GPUImage/framework/Resources to your application bundle.");

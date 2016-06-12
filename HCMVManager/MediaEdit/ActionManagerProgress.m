@@ -344,8 +344,18 @@
         {
             NSLog(@"AP : show type:%d flag:%f media:%f frame:%@",media.Action.ActionType,secondsInArray_,media.secondsInArray,NSStringFromCGRect(barView.frame));
             
+            UIImage * flagImage = nil;
+            
+            if(_flagImageName)
+            {
+                flagImage = [UIImage imageNamed:_flagImageName];
+            }
+            if(!flagImage)
+            {
+                flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.png"];
+            }
             UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
-            imageView.image = [UIImage imageNamed:_flagImageName];
+            imageView.image = flagImage;
             [barView addSubview:imageView];
             if(hasFlag)
             {
@@ -372,10 +382,20 @@
             //            当前对像或在时间范围内
             if( (media==currentMedia_ ||
                  (secondsInArray_ - media.secondsInArray <self.durationForFlag +0.01 && secondsInArray_ - media.secondsInArray + 0.01 >=0))
-               && _flagImageName)
+               )
             {
+                UIImage * flagImage = nil;
+                
+                if(_flagImageName)
+                {
+                    flagImage = [UIImage imageNamed:_flagImageName];
+                }
+                if(!flagImage)
+                {
+                    flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.png"];
+                }
                 UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
-                imageView.image = [UIImage imageNamed:_flagImageName];
+                imageView.image = flagImage;
                 
                 [barView addSubview:imageView];
                 if(hasFlag)
