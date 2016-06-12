@@ -82,7 +82,7 @@
     bgAudioVolume_ = 1.0;
     singVolume_ = 1.0;
     
-    bitRate_ = (long)(720 *480 * 8);
+    bitRate_ = (long)(540 *960 * 10);
     //    defaultAudioScale_ = 44100;
     
     udManager_ = [UDManager sharedUDManager];
@@ -96,7 +96,7 @@
     }
     else
     {
-        [self setRenderSize:CGSizeMake(1280, 720) orientation:self.orientation withFontCamera:self.useFontCamera];
+        [self setRenderSize:CGSizeMake(960, 540) orientation:self.orientation withFontCamera:self.useFontCamera];
         //        self.renderSize = CGSizeMake(1280, 720);
     }
     
@@ -115,7 +115,8 @@
 }
 - (void)setRenderSize:(CGSize)size orientation:(int)orient withFontCamera:(BOOL)useFontCamera
 {
-    self.orientation = orient;
+    if(orient>=0)
+        self.orientation = orient;
     self.useFontCamera = useFontCamera;
     renderSize_ = [self getSizeByOrientation:size];
 }
@@ -240,39 +241,6 @@
 }
 #pragma mark - join
 #pragma mark - join audio and mv
-////用于编辑或全本时
-//-(void) updateChooseQueueWithPlayerMedia:(NSArray *)mediaItemQueue bgAudioVolume:(CGFloat)volume singVolume:(CGFloat)singVolume
-//{
-//    [self resetParameters];
-//
-//    bgAudioVolume_ = volume;
-//    singVolume_ = singVolume;
-//
-////    VideoGenerater * vgen = [VideoGenerater new];
-////
-////    NSArray * items = [vgen checkMediaQueue:mediaItemQueue beginTime:kCMTimeZero endTime:kCMTimeZero resetBegin:NO];
-////    vgen = nil;
-////    //    NSArray * items = [self checkMediaQueue:mediaItemQueue beginTime:kCMTimeZero endTime:kCMTimeZero resetBegin:NO];
-////    [chooseQueue addObjectsFromArray:items];
-//
-//    //调用preview相关函数来确认assetIsReady
-//    [self generatePreviewAVasset:nil];
-//}
-//// 用于最终合成
-//- (void) updateChooseQueue:(NSArray *)mediaItemQueue completed:(void (^)(BOOL finished)) completion
-//{
-////    [chooseQueue removeAllObjects];
-////    VideoGenerater * vgen = [VideoGenerater new];
-////    NSArray * items = [vgen checkMediaQueue:mediaItemQueue beginTime:totalBeginTime_ endTime:totalEndTime_ resetBegin:YES];
-////    vgen = nil;
-////
-////    //    NSArray * items = [self checkMediaQueue:mediaItemQueue beginTime:totalBeginTime_ endTime:totalEndTime_ resetBegin:YES];
-////    [chooseQueue addObjectsFromArray:items];
-//
-//    //调用preview相关函数来确认assetIsReady
-//    [self generatePreviewAVasset:completion];
-//}
-
 - (BOOL)needRebuildPreviewMV:(NSArray *)mediaList bgVol:(CGFloat)bgVol singVol:(CGFloat)singVol
 {
     singVolume_ = singVol;
@@ -289,37 +257,14 @@
         }
     }
     return YES;
-    
-    //    lastGenerateKey_ = [self getKeyForMediaList:mediaList];
-    //    //比较开始与结束时间，如果有变化则重新合成，否则不需要处理
-    //    if(CMTimeCompare(totalEndTime_, kCMTimeZero)!=0)
-    //    {
-    //        if(_videoComposition)
-    //        {
-    //            AVMutableVideoCompositionInstruction * instructs = (AVMutableVideoCompositionInstruction*)[_videoComposition.instructions lastObject];
-    //            CGFloat secondsIN = CMTimeGetSeconds(instructs.timeRange.duration);
-    //            CGFloat secondsBegin = CMTimeGetSeconds(instructs.timeRange.start);
-    //
-    //            CGFloat secondsOrg = CMTimeGetSeconds(totalEndTime_) - CMTimeGetSeconds(totalBeginTime_);
-    //            CGFloat secondsBeginOrg = CMTimeGetSeconds(totalBeginTime_);
-    //
-    //            if(secondsIN >= secondsOrg - 0.1 && secondsIN <= secondsOrg + 0.1
-    //               && secondsBegin >= secondsBeginOrg - 0.1 && secondsBegin <= secondsBeginOrg + 0.1)
-    //            {
-    //
-    //            }
-    //            else
-    //            {
-    //                PP_RELEASE(_videoComposition);
-    //                return YES;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            return YES;
-    //        }
-    //    }
-    //    return NO;
+}
+- (BOOL) canMerge
+{
+    if(_videoComposition && _mixComposition && previewAVassetIsReady)
+    {
+        return YES;
+    }
+    return NO;
 }
 #pragma mark - PlayerItem
 #pragma mark - generate player item
@@ -419,7 +364,6 @@
                   completion:(void (^)(BOOL finished)) completion
 {
     previewAVassetIsReady = NO;
-    //    NSArray * chooseQueue = [[MediaListModel shareObject]getMediaList];
     singVolume_ = singVolume;
     bgAudioVolume_ = volume;
     
@@ -470,14 +414,7 @@
 
 
 #pragma mark - join
-- (BOOL) canMerge
-{
-    if(_videoComposition && _mixComposition && previewAVassetIsReady)
-    {
-        return YES;
-    }
-    return NO;
-}
+
 -(BOOL)generateMVFile:(NSArray *)mediaList retryCount:(int)retryCount
 {
     if (!previewAVassetIsReady) {
@@ -489,10 +426,7 @@
         [self generatePlayerItem:mediaList size:self.renderSize];
         return NO;
     }
-    
-    if(self.title)
-    {
-    }
+
     return [self generateMVFile:_videoComposition
                        composte:_mixComposition
                        audioMix:_audioMixOnce
@@ -540,6 +474,7 @@
                                            {
                                            AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
                                            AVVideoAverageBitRateKey:bitRate,
+                                           AVVideoMaxKeyFrameIntervalKey:@(15)
                                                //                                          AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
                                            },
                                        };
@@ -565,7 +500,6 @@
             [[NSRunLoop mainRunLoop] addTimer:timerForExport_ forMode:NSDefaultRunLoopMode];
         }
         timerForExport_.fireDate = [NSDate distantPast];
-        //        timerForExport_ = PP_RETAIN([NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkProgress:) userInfo:nil repeats:YES]);
         
         __weak SDAVAssetExportSession * weakJoin = joinVideoExporter;
         [joinVideoExporter exportAsynchronouslyWithCompletionHandler:^{
@@ -600,6 +534,7 @@
     }
     return NO;
 }
+#pragma mark - 从视频中截取一部分
 - (BOOL) generateMVSegmentsViaFile:(NSString *)filePath begin:(CGFloat) begin end:(CGFloat)end
 {
     return [self generateMVSegmentsViaFile:filePath begin:begin end:end targetSize:CGSizeZero];
@@ -768,29 +703,7 @@
     
     return YES;
 }
-//-(BOOL) generateFianlAudio:(NSArray *)audioItemQueue completed:(audioGenerateCompleted)completeHandler
-//{
-//    audioGenerateCompleted completed = ^(NSURL *audioUrl, NSError *error)
-//    {
-//        if(!joinAudioUrl || joinAudioUrl != audioUrl)
-//        {
-//            PP_RELEASE(joinAudioUrl);
-//            joinAudioUrl = PP_RETAIN(audioUrl);
-//        }
-//        if(completeHandler)
-//        {
-//            completeHandler(audioUrl,error);
-//        }
-//    };
-//    AudioGenerater * gen = [AudioGenerater new];
-//
-//    //合成文件存放到本地目录，而不是临时目录
-//    NSString * tempFileName = [gen getAudioFileNameByQueue:audioItemQueue];
-//    NSString * tempPath = [udManager_ localFileFullPath:tempFileName];
-//
-//    return [gen generateAudioWithAccompany:audioItemQueue filePath:tempPath beginSeconds:CMTimeGetSeconds(totalBeginTime_) endSeconds:CMTimeGetSeconds(totalEndTime_) overwrite:NO completed:completed];
-//    //    return [self generateAudioWithAccompany:audioItemQueue Accompany:bgvUrl overwrite:NO completed:completed];
-//}
+
 #pragma mark - new functions for generate
 - (BOOL) generateMV:(NSArray *)mediaList
         accompanyMV:(NSURL*)accompanyMV
@@ -838,251 +751,19 @@
                                  }];
 }
 
-//- (BOOL)generatePreviewWithActions:(NSArray *)mediaWithActions
-//                             audio:(NSString *)audioPath
-//                             begin:(CMTime)beginTime
-//                               end:(CMTime)endTime
-//                     bgAudioVolume:(CGFloat)volume
-//                        singVolume:(CGFloat)singVolume
-//                          progress:(MEProgress)progress
-//                             ready:(MEPlayerItemReady)itemReady
-//{
-//    if (joinVideoExporter) {
-//        [joinVideoExporter cancelExport];
-//        joinVideoExporter = nil;
-//    }
-//
-////    mixComposition = [[AVMutableComposition alloc] init];
-////    NSMutableArray *layers  = [[NSMutableArray alloc] init];
-////    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-////    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-////    AVMutableVideoCompositionLayerInstruction *curLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-////    //将当前层保存到音频层管理器中
-////
-////    AVAsset *curAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:path_]];
-////    AVAsset *rAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:rPath_]];
-//
-//
-//    //    for (int i = 0; i< items_.count; i ++) {
-//    //        SItem * tem = (SItem *)[items_ objectAtIndex:i];
-//    //        int32_t timeScale = curAsset.duration.timescale;
-//    //        CMTime start = CMTimeMakeWithSeconds(lastTime_, timeScale);
-//    //        CMTime diff;
-//    //        CMTime trackDur = videoTrack.timeRange.duration;
-//    //        if (isnan(CMTimeGetSeconds(trackDur))) {
-//    //            trackDur = kCMTimeZero;
-//    //        }
-//    //        NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //        AVAssetTrack * cTrack = [[curAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-//    //        AVAssetTrack * rTrack = [[rAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-//    //        switch (tem.type) {
-//    //            case SFast:
-//    //            {
-//    //                if (tem.sTime > lastTime_) {
-//    //                    //插入原视频片段<lasttime, tem.st>
-//    //                    diff = CMTimeMakeWithSeconds(tem.sTime - lastTime_, timeScale);
-//    //                    [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                    trackDur = videoTrack.timeRange.duration;
-//    //                    NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //                }
-//    //                //插入原视频片段<tem.st,tem.ed>，压缩range,使播放加速
-//    //                diff = CMTimeMakeWithSeconds(tem.eTime - tem.sTime, timeScale);
-//    //                start = CMTimeMakeWithSeconds(tem.sTime, timeScale);
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                [videoTrack scaleTimeRange:CMTimeRangeMake(trackDur, diff) toDuration:CMTimeMakeWithSeconds((tem.eTime- tem.sTime) / 2, timeScale)];
-//    //                lastTime_ = tem.eTime;
-//    //            }
-//    //                break;
-//    //            case SSlow:
-//    //            {
-//    //                if (tem.sTime > lastTime_) {
-//    //                    //插入原视频片段<lasttime, tem.st>
-//    //                    diff = CMTimeMakeWithSeconds(tem.sTime - lastTime_, timeScale);
-//    //                    [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                    trackDur = videoTrack.timeRange.duration;
-//    //                    NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //                }
-//    //                //插入原视频片段<tem.st,tem.ed>，延展range,使播放减速
-//    //                diff = CMTimeMakeWithSeconds(tem.eTime - tem.sTime, timeScale);
-//    //                start = CMTimeMakeWithSeconds(tem.sTime, timeScale);
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                [videoTrack scaleTimeRange:CMTimeRangeMake(trackDur, diff) toDuration:CMTimeMakeWithSeconds((tem.eTime- tem.sTime) * 2, timeScale)];
-//    //                lastTime_ = tem.eTime;
-//    //            }
-//    //                break;
-//    //            case SRepeat:
-//    //            {
-//    //                if (tem.sTime > lastTime_) {
-//    //                    //插入片段
-//    //                    diff = CMTimeMakeWithSeconds(tem.sTime - lastTime_, timeScale);
-//    //                    [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                    trackDur = videoTrack.timeRange.duration;
-//    //                    NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //                }
-//    //                //回退0.5s并反复插入
-//    //                diff = CMTimeMakeWithSeconds(0.5, timeScale);
-//    //                start = CMTimeMakeWithSeconds(tem.sTime - 0.5, timeScale);
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                trackDur = videoTrack.timeRange.duration;
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                trackDur = videoTrack.timeRange.duration;
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                trackDur = videoTrack.timeRange.duration;
-//    //                lastTime_ = tem.sTime;
-//    //            }
-//    //                break;
-//    //            case SReverse:
-//    //            {
-//    //                CGFloat stInOrigin = CMTimeGetSeconds(curAsset.duration) - tem.sTime;
-//    //                if (stInOrigin > lastTime_) {
-//    //                    //插入正向片段
-//    //                    diff = CMTimeMakeWithSeconds(tem.sTime - lastTime_, timeScale);
-//    //                    [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                    trackDur = videoTrack.timeRange.duration;
-//    //                    NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //                }
-//    //                //插入反向片段 rAsset<sTime, eTime>
-//    //                diff = CMTimeMakeWithSeconds(tem.eTime - tem.sTime, timeScale);
-//    //                start = CMTimeMakeWithSeconds(tem.sTime, timeScale);
-//    //                [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:rTrack atTime:trackDur error:nil];
-//    //                lastTime_ = CMTimeGetSeconds(curAsset.duration) - tem.eTime;
-//    //            }
-//    //                break;
-//    //            default:
-//    //            {
-//    //                NSLog(@"finish mark");
-//    //                if (tem.eTime && tem.eTime > lastTime_) {
-//    //                    diff = CMTimeMakeWithSeconds(tem.eTime - lastTime_, timeScale);
-//    //                    [videoTrack insertTimeRange:CMTimeRangeMake(start, diff) ofTrack:cTrack atTime:trackDur error:nil];
-//    //                    trackDur = videoTrack.timeRange.duration;
-//    //                    NSLog(@"videotrack dur = %.3f", CMTimeGetSeconds(trackDur));
-//    //                }
-//    //            }
-//    //                break;
-//    //        }
-//    //    }
-//    //
-//    //    [layers addObject:curLayerInstruction];
-//    //    mainInstruction.timeRange = videoTrack.timeRange;
-//    //    mainInstruction.layerInstructions = [[NSArray alloc] initWithArray:layers];
-//    //    mainComposition = [AVMutableVideoComposition videoComposition];
-//    //    mainComposition.instructions = [NSArray arrayWithObjects:mainInstruction,nil];
-//    //    mainComposition.frameDuration = CMTimeMake(1, 30);
-//    //    _RenderSize = [[curAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0].naturalSize;
-//    //    mainComposition.renderSize = _RenderSize;
-//    return NO;
-//}
-
-////检查队列中的视频数据，如果在设定的时间范围外的，排除，并且重新计算相对于设定的时间的起止位置
-////resetBegin 是否以新视频的起点位置作为0 点？否，则以原视频的位置作为原点计算位置。比如从原视频10秒开始，那么10秒的位置在新视频中为0
-//- (NSMutableArray *)checkMediaQueue:(NSArray*)mediaItemQueue beginTime:(CMTime)beginTime endTime:(CMTime)endTime resetBegin:(BOOL)resetBegin
-//{
-//    //重新生成chooseQueue
-//    previewAVassetIsReady = NO;
-//    NSLog(@" add items to choose queue");
-//    //    [chooseQueue removeAllObjects];
-//
-//    NSMutableArray * videoSegments = [NSMutableArray new];
-//    if(mediaItemQueue && mediaItemQueue.count>0)
-//    {
-//        for (PlayerMediaItem * item in mediaItemQueue) {
-//            VideoItem * vitem = [self transMediaToVideoItem:item];
-//            [videoSegments addObject:vitem];
-//        }
-//        //check items,and remove the items not need any more.
-//        NSMutableArray * removeList = [NSMutableArray new];
-//        for (VideoItem * gItem in ImgToVideoQueue) {
-//            BOOL isFind = NO;
-//            for (VideoItem * item in videoSegments) {
-//                if([item.path isEqualToString:gItem.path])
-//                {
-//                    item.status = gItem.status;
-//                    item.lastGenerateInterval = gItem.lastGenerateInterval;
-//                    isFind = YES;
-//                }
-//            }
-//            if(!isFind)
-//            {
-//                [removeList addObject:gItem];
-//            }
-//        }
-//        for (VideoItem * item in removeList) {
-//            [ImgToVideoQueue removeObject:item];
-//            [self removeFileAssociateWithPath:item.path];
-//        }
-//
-//        //check image2video
-//        for (VideoItem * item in videoSegments) {
-//            [self checkImgToVideoQueue:item atIndex:-1];
-//        }
-//
-//        //检查开始与结束时间的代码
-//        [removeList removeAllObjects];
-//        if(videoSegments && videoSegments.count>0 && CMTimeCompare(endTime, kCMTimeZero)>0)
-//        {
-//            for (VideoItem * item in videoSegments) {
-//                NSLog(@"item:%.1f(%.1f-%.1f)  begin:%.1f end:%.1f",CMTimeGetSeconds(item.stInQueue),
-//                      CMTimeGetSeconds(item.startTime),CMTimeGetSeconds(item.endTime),
-//                      CMTimeGetSeconds(beginTime),CMTimeGetSeconds(endTime));
-//
-//                CMTime duration = CMTimeSubtract(item.endTime, item.startTime);
-//                CMTime endInQueue = CMTimeAdd(item.stInQueue, duration);
-//                NSLog(@"duration:%.1f endIn:%.1f",CMTimeGetSeconds(duration),CMTimeGetSeconds(endInQueue));
-//                if(CMTimeCompare(endInQueue, beginTime)<=0 || CMTimeCompare(item.stInQueue, endTime)>=0)
-//                {
-//                    [removeList addObject:item];
-//                    continue;
-//                }
-//                else
-//                {
-//                    CMTime durationChanged = kCMTimeZero;
-//                    if(CMTimeCompare(item.stInQueue, beginTime)<0)
-//                    {
-//                        durationChanged = CMTimeSubtract(beginTime,item.stInQueue);
-//                        item.stInQueue = beginTime;
-//                        item.startTime = CMTimeAdd(item.startTime, durationChanged);
-//                        endInQueue = CMTimeSubtract(endInQueue, durationChanged);
-//                    }
-//                    if(CMTimeCompare(endInQueue, endTime)>0)
-//                    {
-//                        durationChanged = CMTimeSubtract(endInQueue, endTime);
-//                        item.endTime = CMTimeSubtract(item.endTime, durationChanged);
-//                    }
-//                    //重置起点的时间计数
-//                    if(resetBegin)
-//                    {
-//                        item.stInQueue = CMTimeSubtract(item.stInQueue, beginTime);
-//                    }
-//                }
-//                NSLog(@"item:%.1f(%.1f-%.1f)  begin:%.1f end:%.1f",CMTimeGetSeconds(item.stInQueue),
-//                      CMTimeGetSeconds(item.startTime),CMTimeGetSeconds(item.endTime),
-//                      CMTimeGetSeconds(beginTime),CMTimeGetSeconds(endTime));
-//            }
-//        }
-//        if(removeList.count>0)
-//        {
-//            [videoSegments removeObjectsInArray:removeList];
-//        }
-//
-//        PP_RELEASE(removeList);
-//    }
-//    return PP_AUTORELEASE(videoSegments);
-//}
-
-
-
+//根据素材信息，构建预监的PlayerItem，并且为合成文件作准备
 -(void) generatePlayerItem:(NSArray *)mediaList size:(CGSize)size
 {
     if(isGenerating_)
     {
-        NSLog(@"正在生成过程中，不能重入....");
+        NSLog(@"AG : 正在生成过程中，不能重入....");
         return;
     }
 #ifndef __OPTIMIZE__
     mediaTrackList_ = [NSMutableArray new];
 #endif
     isGenerating_ = YES;
-    BOOL isOverlap = YES; //在背景视频上添加视频
+    BOOL isOverlap = YES; //在背景视频上添加视频，素材不需要是相联的
     //注意此处需要处理是否根据一张图和一个音乐来合成视频。现在的检查不支持这种情况
     CMTime totalDuration = bgvUrl?[self getTotalDuration:bgvUrl]:kCMTimeZero;
     
@@ -1090,13 +771,15 @@
     PP_RELEASE(_videoComposition);
     PP_RELEASE(_audioMixOnce);
     
-    size = CGSizeZero;
+//    size = CGSizeZero;
+    
+    //没有背景视频，则设置几个参数，并且重新根据素材总长获取合成后的总长度
     if(totalDuration.value ==0)
     {
         isOverlap = NO; //多个视频分段相加
         totalDuration = [self getTotalDurationByList:mediaList];
     }
-    NSLog(@"total duration:%.2f",CMTimeGetSeconds(totalDuration));
+    NSLog(@"AG : 合成总长%.2f",CMTimeGetSeconds(totalDuration));
     
     CGFloat rate = self.mergeRate>0 ?self.mergeRate :1.0;
     if(rate!=1.0)
@@ -1127,48 +810,61 @@
     CMTime curTimeCnt = kCMTimeZero;
     
     
+    //逐段处理素材
+    //如果没有背景视频，素材则是自动联接在一起，不能重叠也不能分开
+    //如果有背景视频，则素材是贴在背景视频的不同的位置，素材可能重叠也可能分开
     if (mediaList && mediaList.count>0) {
-        //选择的素材>1
+        //图片生成的视频轨
         AVMutableCompositionTrack * imageTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
                                                                              preferredTrackID:kCMPersistentTrackID_Invalid];
-        
+        //视频轨
         AVMutableCompositionTrack * videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
                                                                              preferredTrackID:kCMPersistentTrackID_Invalid];
-        
+        //音频轨
         AVMutableCompositionTrack * audioTrack = nil;
         
+        //假定不需要素材中的音频
         BOOL needAudioTrack = NO;
         
-        //如果有背景视频，这里就是合并了，所以就不需要这个过程中的声音。
+        //检查当前素材中是否有音频信息
         AVAsset * testAsset = [self getVideoItemAsset:[mediaList objectAtIndex:0]];
         NSArray * testTracks = [testAsset tracksWithMediaType:AVMediaTypeAudio];
         if(testTracks.count>0)
             needAudioTrack = YES;
+        
+        //如果没有背景视频，并且素材中声音不被禁止，则需要初始化音频轨
         if(!bgvUrl && singVolume_>0 && needAudioTrack)
         {
             audioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
                                                      preferredTrackID:kCMPersistentTrackID_Invalid];
         }
         
+        //初始化层相关的信息
         AVMutableVideoCompositionLayerInstruction *imageLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:imageTrack];
         AVMutableVideoCompositionLayerInstruction *videoLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
         
         
-        
+        //图片与视频轨的计数
         NSInteger imageCnt = 0;
         NSInteger videoCnt = 0;
+        //前一段素材的最后位置，也是下一段素材的开始位置(当相联时）
+        //如果素材重叠，而且没有放到不同的层中，可能导致合成失败
         CMTimeValue lastTimeValue = 0;
         BOOL hasAudioTrack = NO;
+        
+        //逐段处理素材
         for (int i = 0 ; i < mediaList.count ; i ++ ) {
             MediaItem * curItem = [mediaList objectAtIndex:i];
             
-            if(curItem.secondsDurationInArray <=0) continue;
+            if(curItem.secondsDurationInArray <=0.001) continue;
             
+            //如果没有背景视频，则素材需要紧接在一起
             if(!isOverlap)
             {
                 curItem.timeInArray = CMTimeMake(lastTimeValue, totalDuration.timescale);
             }
             
+            //合成一段素材，并且获得素材结束的时间
             CMTime modalOffEtInQueue = [self compsiteOneItem:curItem
                                                        index:i
                                                lastTimeValue:lastTimeValue
@@ -1213,6 +909,7 @@
         }
         range = videoTrack.timeRange;
         
+        //如果有声音，加上声音。如果没有声音，加上声音会导致合成时报:最后帧时间错误
         if(audioTrack && hasAudioTrack)
         {
             AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:audioTrack];
@@ -1220,21 +917,24 @@
             [audioMixParams addObject:trackMix];
         }
     }
+    
     //有背景视频时，才比较总长度。因为多段视频合成时，可能有长度误差。
     if(CMTimeCompare(curTimeCnt, totalDuration)<0 && (bgmUrl || bgvUrl))
     {
         curTimeCnt = CMTimeMakeWithSeconds(CMTimeGetSeconds(totalDuration), (totalDuration.timescale>curTimeCnt.timescale?totalDuration.timescale:curTimeCnt.timescale));
     }
     
+    //合成背景视频，如果没有，则不合成
     if(isOverlap)
     {
         curTimeCnt = [self compositeBGVideo:mixComposition layers:layers maxTime:curTimeCnt size:&size rate:rate];
         range = CMTimeRangeMake(kCMTimeZero,curTimeCnt);
     }
+    
     NSLog(@"track range :%.2f",CMTimeGetSeconds(range.duration));
     
     
-    //音频混入
+    //背景音频混入
     if(bgmUrl || bgvUrl || joinAudioUrl)
     {
         NSMutableArray * audioParamters = [self compositeAudioArray:mixComposition maxTime:curTimeCnt rate:rate];
@@ -1277,104 +977,105 @@
         isGenerating_ = NO;
     });
 }
-- (void) generatePlayItemNew
-{
-    AVAsset * videoAsset = [AVURLAsset assetWithURL:self.bgvUrl];
-    
-    // 2 - Create AVMutableComposition object. This object will hold your AVMutableCompositionTrack instances.
-    AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
-    
-    // 3 - Video track
-    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
-                                                                        preferredTrackID:kCMPersistentTrackID_Invalid];
-    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                        ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
-                         atTime:kCMTimeZero error:nil];
-    
-    // 3.1 - Create AVMutableVideoCompositionInstruction
-    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration);
-    
-    // 3.2 - Create an AVMutableVideoCompositionLayerInstruction for the video track and fix the orientation.
-    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-    AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-    UIImageOrientation videoAssetOrientation_  = UIImageOrientationUp;
-    BOOL isVideoAssetPortrait_  = NO;
-    CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
-    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
-        videoAssetOrientation_ = UIImageOrientationRight;
-        isVideoAssetPortrait_ = YES;
-    }
-    if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
-        videoAssetOrientation_ =  UIImageOrientationLeft;
-        isVideoAssetPortrait_ = YES;
-    }
-    if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
-        videoAssetOrientation_ =  UIImageOrientationUp;
-    }
-    if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
-        videoAssetOrientation_ = UIImageOrientationDown;
-    }
-    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
-    [videolayerInstruction setOpacity:0.0 atTime:videoAsset.duration];
-    
-    // 3.3 - Add instructions
-    mainInstruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
-    
-    AVMutableVideoComposition *mainCompositionInst = [AVMutableVideoComposition videoComposition];
-    
-    CGSize naturalSize;
-    if(isVideoAssetPortrait_){
-        naturalSize = CGSizeMake(videoAssetTrack.naturalSize.height, videoAssetTrack.naturalSize.width);
-    } else {
-        naturalSize = videoAssetTrack.naturalSize;
-    }
-    
-    float renderWidth, renderHeight;
-    renderWidth = naturalSize.width;
-    renderHeight = naturalSize.height;
-    
-    mainCompositionInst.renderSize = CGSizeMake(renderWidth, renderHeight);
-    mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
-    mainCompositionInst.frameDuration = CMTimeMake(1, 30);
-    
-    //    [self applyVideoEffectsToComposition:mainCompositionInst size:naturalSize];
-    mainCompositionInst.animationTool = [self compositeTitleAndLyric:nil duration:videoAsset.duration size:naturalSize rate:1];
-    
-    _mixComposition = PP_RETAIN((AVMutableComposition*)mixComposition);
-    _videoComposition = PP_RETAIN((AVMutableVideoComposition*)mainCompositionInst);
-    _audioMixOnce = nil;
-    
-    previewAVassetIsReady = YES;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(sendPlayerItemToFront:) userInfo:nil repeats:NO];
-    });
-    
-}
-- (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition size:(CGSize)size
-{
-    UIImage *borderImage = nil;
-    
-    
-    borderImage = [self imageWithColor:[UIColor blueColor] rectSize:CGRectMake(0, 0, size.width, size.height)];
-    
-    
-    CALayer *backgroundLayer = [CALayer layer];
-    [backgroundLayer setContents:(id)[borderImage CGImage]];
-    backgroundLayer.frame = CGRectMake(0, 0, size.width, size.height);
-    [backgroundLayer setMasksToBounds:YES];
-    
-    CALayer *videoLayer = [CALayer layer];
-    videoLayer.frame = CGRectMake(40, 40,
-                                  size.width-(40*2), size.height-(40*2));
-    CALayer *parentLayer = [CALayer layer];
-    parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
-    [parentLayer addSublayer:backgroundLayer];
-    [parentLayer addSublayer:videoLayer];
-    
-    composition.animationTool = [AVVideoCompositionCoreAnimationTool
-                                 videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
-}
+//- (void) generatePlayItemNew
+//{
+//    AVAsset * videoAsset = [AVURLAsset assetWithURL:self.bgvUrl];
+//    
+//    // 2 - Create AVMutableComposition object. This object will hold your AVMutableCompositionTrack instances.
+//    AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
+//    
+//    // 3 - Video track
+//    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+//                                                                        preferredTrackID:kCMPersistentTrackID_Invalid];
+//    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+//                        ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
+//                         atTime:kCMTimeZero error:nil];
+//    
+//    // 3.1 - Create AVMutableVideoCompositionInstruction
+//    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+//    mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration);
+//    
+//    // 3.2 - Create an AVMutableVideoCompositionLayerInstruction for the video track and fix the orientation.
+//    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+//    AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+//    UIImageOrientation videoAssetOrientation_  = UIImageOrientationUp;
+//    BOOL isVideoAssetPortrait_  = NO;
+//    CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+//    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
+//        videoAssetOrientation_ = UIImageOrientationRight;
+//        isVideoAssetPortrait_ = YES;
+//    }
+//    if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
+//        videoAssetOrientation_ =  UIImageOrientationLeft;
+//        isVideoAssetPortrait_ = YES;
+//    }
+//    if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
+//        videoAssetOrientation_ =  UIImageOrientationUp;
+//    }
+//    if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
+//        videoAssetOrientation_ = UIImageOrientationDown;
+//    }
+//    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
+//    [videolayerInstruction setOpacity:0.0 atTime:videoAsset.duration];
+//    
+//    // 3.3 - Add instructions
+//    mainInstruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
+//    
+//    AVMutableVideoComposition *mainCompositionInst = [AVMutableVideoComposition videoComposition];
+//    
+//    CGSize naturalSize;
+//    if(isVideoAssetPortrait_){
+//        naturalSize = CGSizeMake(videoAssetTrack.naturalSize.height, videoAssetTrack.naturalSize.width);
+//    } else {
+//        naturalSize = videoAssetTrack.naturalSize;
+//    }
+//    
+//    float renderWidth, renderHeight;
+//    renderWidth = naturalSize.width;
+//    renderHeight = naturalSize.height;
+//    
+//    mainCompositionInst.renderSize = CGSizeMake(renderWidth, renderHeight);
+//    mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
+//    mainCompositionInst.frameDuration = CMTimeMake(1, 30);
+//    
+//    //    [self applyVideoEffectsToComposition:mainCompositionInst size:naturalSize];
+//    mainCompositionInst.animationTool = [self compositeTitleAndLyric:nil duration:videoAsset.duration size:naturalSize rate:1];
+//    
+//    _mixComposition = PP_RETAIN((AVMutableComposition*)mixComposition);
+//    _videoComposition = PP_RETAIN((AVMutableVideoComposition*)mainCompositionInst);
+//    _audioMixOnce = nil;
+//    
+//    previewAVassetIsReady = YES;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(sendPlayerItemToFront:) userInfo:nil repeats:NO];
+//    });
+//    
+//}
+//- (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition size:(CGSize)size
+//{
+//    UIImage *borderImage = nil;
+//    
+//    
+//    borderImage = [self imageWithColor:[UIColor blueColor] rectSize:CGRectMake(0, 0, size.width, size.height)];
+//    
+//    
+//    CALayer *backgroundLayer = [CALayer layer];
+//    [backgroundLayer setContents:(id)[borderImage CGImage]];
+//    backgroundLayer.frame = CGRectMake(0, 0, size.width, size.height);
+//    [backgroundLayer setMasksToBounds:YES];
+//    
+//    CALayer *videoLayer = [CALayer layer];
+//    videoLayer.frame = CGRectMake(40, 40,
+//                                  size.width-(40*2), size.height-(40*2));
+//    CALayer *parentLayer = [CALayer layer];
+//    parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
+//    [parentLayer addSublayer:backgroundLayer];
+//    [parentLayer addSublayer:videoLayer];
+//    
+//    composition.animationTool = [AVVideoCompositionCoreAnimationTool
+//                                 videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+//}
+#pragma mark - 生成反向视频
 - (BOOL)generateMVReverse:(NSString *)sourcePath
                    target:(NSString *)targetPath
                     begin:(CGFloat)sourceBegin
@@ -1416,6 +1117,7 @@
     
     durationSeconds = fabs(sourceEnd - sourceBegin);
     
+    // 计算开始时间与结束时间
     if(durationSeconds>0)
     {
         if(sourceEnd>sourceBegin)
@@ -1423,7 +1125,7 @@
         else
             [session setTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(sourceEnd, asset.duration.timescale), CMTimeMakeWithSeconds(durationSeconds, asset.duration.timescale))];
     }
-    NSLog(@"AG : generate reverse %f->%f duration:%f",sourceBegin,sourceEnd,durationSeconds);
+    NSLog(@"AG : 生成反向视频 %f->%f 时长:%f",sourceBegin,sourceEnd,durationSeconds);
     
     //小于最小值，倒放没有意义
     if(durationSeconds < 0.01)
@@ -1449,7 +1151,7 @@
         timerForReverseExport_.fireDate = [NSDate distantFuture];
         if (session.status == AVAssetReverseSessionStatusCompleted) {
             NSURL *outputURL = session.outputURL;
-            NSLog(@"reverse mv file finished:%@",[outputURL path]);
+            NSLog(@"AG : 反向视频完成:%@",[outputURL path]);
             if(audioFilePath && audioFilePath.length>0 && weakSelf)
             {
                 __strong VideoGenerater * strongSelf = weakSelf;
@@ -1475,7 +1177,7 @@
             }
         } else {
             
-            NSLog(@"rever failed");
+            NSLog(@"AG : 生成反向视频失败");
             if(complted)
             {
                 complted(nil);
@@ -1484,6 +1186,7 @@
     }];
     return YES;
 }
+//合并视频
 - (BOOL)combinateFileWithAudio:(NSString *)sourceFilePath
                  audioFilePath:(NSString *)audioFilePath
                   secondsBegin:(CGFloat)secondsBegin

@@ -88,7 +88,7 @@
         totalDuration = CMTimeMakeWithSeconds(TOTALSECONDS_DEFAULT, VIDEO_CTTIMESCALE);
         totalSecondsDuration_ = TOTALSECONDS_DEFAULT;
         //        renderSize = CGSizeMake(config.Height*config.Scale,config.Width*config.Scale);
-        renderSize = CGSizeMake(1280,720);
+        renderSize = CGSizeMake(540,960);
         itemHeight_ = 60;
         itemWidth_ = MIN(IMAGE_DURATION * 12, 100);
         
@@ -111,6 +111,7 @@
         {
             videoGenerater_.compositeLyric = YES;
         }
+        [videoGenerater_ setRenderSize:self.renderSize orientation:UIDeviceOrientationPortrait withFontCamera:NO];
         
         self.NotAddCover = NO;
         //        dispatch_JoinVideo_ = dispatch_queue_create("JoinVideoNew", DISPATCH_QUEUE_SERIAL);
@@ -4904,7 +4905,7 @@ static BOOL isGenerateAudioing_ = NO;
     
     deviceOrietation_ = 0;
     
-    renderSize = CGSizeMake(1280,720);
+    renderSize = CGSizeMake(540,960);
     
     
     PP_RELEASE(waterMarkFile_);

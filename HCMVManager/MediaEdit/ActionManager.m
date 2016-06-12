@@ -78,7 +78,8 @@
         audioVol_ = 1;
         secondsForAudioPlayerMaxRange_ = 0.5;
         minMediaDuration_ = SECONDS_MINRANGE;
-        _bitRate = (long)(720 *480 * 8);
+        _bitRate = (long)(540 *960 * 10);
+        _renderSize = CGSizeMake(540, 960);
         moveFileRemoveList_ = [NSMutableArray new];
         [self setNeedPlaySync:YES];
         
@@ -108,7 +109,8 @@
     secondsForAudioPlayerMaxRange_ = 0.5;
     videoVol_ = 1;
     audioVol_ = 1;
-    _bitRate = (long)(720 *480 * 8);
+    _bitRate = (long)(540 *960 * 10);
+    _renderSize = CGSizeMake(540, 960);
     
     
 }
@@ -153,7 +155,9 @@
     videoVol_ = 1;
     audioVol_ = 1;
     secondsForAudioPlayerMaxRange_ = 0.5;
-    _bitRate = (long)(720 *480 * 8);
+    _bitRate = (long)(540 *960 * 8);
+    _renderSize = CGSizeMake(540, 960);
+
     [self setNeedPlaySync:YES];
     currentMediaWithAction_ = nil;
     

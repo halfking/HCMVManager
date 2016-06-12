@@ -119,6 +119,7 @@
 @property (nonatomic,assign,readonly) CGFloat videoVolume;      //视频原声音的间量
 @property (nonatomic,assign,readonly) BOOL isGenerating;        //是否在生成中
 @property (nonatomic,assign) long bitRate;                      //合成视频的BitRate
+@property (nonatomic,assign) CGSize renderSize;                 //合成视频的大小
 @property (nonatomic,assign) CGFloat minMediaDuration;          //视频最小长度
 @property (nonatomic,assign) BOOL needPlayerItem;
 @property (nonatomic,assign) BOOL canSendPlayerMedia; //是否可以向前端的播放器发送需要播放的对像。默认YES，在合成或一些未完成的操作时，需要关闭

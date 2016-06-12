@@ -216,7 +216,7 @@
 }
 - (void)checkReverseGenerate
 {
-       NSArray * actionMediaList = [self getMediaList];
+    NSArray * actionMediaList = [self getMediaList];
     
     //检查是否都已经将反向视频处理好
     BOOL needCheckAgagin = NO;
@@ -324,6 +324,7 @@
     vg.delegate = self;
     vg.TagID = 1;
     vg.bitRate = self.bitRate;
+    
     if(audioBg_ && audioBg_.fileName)
     {
         [vg setBgAudio:audioBg_];
@@ -333,7 +334,7 @@
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
     
-    [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
+    [vg setRenderSize:self.renderSize orientation:or withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
     if(audioBg_)
@@ -452,6 +453,17 @@
     vg.TagID = 3;
     vg.bitRate = self.bitRate;
     reverseMediaGenerate_ = vg;
+    
+    if(media.degree >=0)
+    {
+        UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:media.degree];
+        
+        [vg setRenderSize:self.renderSize orientation:or withFontCamera:NO];
+    }
+    else
+    {
+        [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
+    }
     NSLog(@"VG  :reverse media video begin....");
     
     __weak ActionManager * weakSelf = self;
@@ -476,7 +488,7 @@
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
                                 NSLog(@"VG  : reveser video ok:%@ org:%f->%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse);
-
+                                
                                 //                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];
@@ -525,6 +537,9 @@
         vg.delegate = self;
         vg.TagID = 2;
         vg.bitRate = self.bitRate;
+       
+        [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
+        
         reverseGenerate_ = vg;
         __weak ActionManager * weakSelf = self;
         NSLog(@"begin generate reverse video....");

@@ -32,6 +32,7 @@
         self.KeyName = @"key";
         secondsDurationInArray = -1;
         playRate = 1;
+        degree = -1;
         
     }
     return self;
@@ -132,6 +133,9 @@
     self.isOnlyAudio = item.isOnlyAudio;
     self.renderSize = item.renderSize;
     self.fileNameGenerated = item.fileNameGenerated;
+    
+    self.degree = item.degree;
+    
 }
 - (BOOL)isReverseMedia
 {
