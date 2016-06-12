@@ -106,8 +106,9 @@
     //    [manager_ removeActions];
     
     NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
-    //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
-    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
+        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+    
+//    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
     //    oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //        oPath_ = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //       oPath_ = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];
@@ -944,16 +945,16 @@
 }
 -(void)join:(UIButton *)sender
 {
-    [player_ pause];
-    [player_ seek:0 accurate:YES];
-    
-    [progress_ setCurrentMedia:nil];
-    [progress_ setPlaySeconds:0 secondsInArray:0];
-    [progress_ refresh];
-    [manager_ setCurrentMediaWithAction:nil];
-    [pannel_ refresh];
-    [player_ play];
-    return;
+//    [player_ pause];
+//    [player_ seek:0 accurate:YES];
+//    
+//    [progress_ setCurrentMedia:nil];
+//    [progress_ setPlaySeconds:0 secondsInArray:0];
+//    [progress_ refresh];
+//    [manager_ setCurrentMediaWithAction:nil];
+//    [pannel_ refresh];
+//    [player_ play];
+//    return;
     
     [self showIndicatorView];
     

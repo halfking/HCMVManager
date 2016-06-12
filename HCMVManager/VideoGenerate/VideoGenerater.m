@@ -96,7 +96,7 @@
     }
     else
     {
-        [self setRenderSize:CGSizeMake(960, 540) orientation:self.orientation withFontCamera:self.useFontCamera];
+        [self setRenderSize:CGSizeMake(540, 960) orientation:UIInterfaceOrientationPortrait withFontCamera:self.useFontCamera];
         //        self.renderSize = CGSizeMake(1280, 720);
     }
     
@@ -153,6 +153,7 @@
 }
 - (CGSize) getSizeByOrientation:(CGSize)size
 {
+    if(self.orientation<=0) return size;
     if(UIDeviceOrientationIsPortrait(self.orientation) && size.width>size.height)
     {
         CGFloat w = size.width;
@@ -426,7 +427,7 @@
         [self generatePlayerItem:mediaList size:self.renderSize];
         return NO;
     }
-
+    
     return [self generateMVFile:_videoComposition
                        composte:_mixComposition
                        audioMix:_audioMixOnce
@@ -474,7 +475,7 @@
                                            {
                                            AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
                                            AVVideoAverageBitRateKey:bitRate,
-                                           AVVideoMaxKeyFrameIntervalKey:@(15)
+                                           AVVideoMaxKeyFrameIntervalKey:@(30)
                                                //                                          AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
                                            },
                                        };
@@ -763,6 +764,10 @@
     mediaTrackList_ = [NSMutableArray new];
 #endif
     isGenerating_ = YES;
+    //将传入的Size进行方向上纠正
+//    size = [self getSizeByOrientation:size];
+//    size = CGSizeMake(540, 960);
+    CGSize natureSize = CGSizeZero;
     BOOL isOverlap = YES; //在背景视频上添加视频，素材不需要是相联的
     //注意此处需要处理是否根据一张图和一个音乐来合成视频。现在的检查不支持这种情况
     CMTime totalDuration = bgvUrl?[self getTotalDuration:bgvUrl]:kCMTimeZero;
@@ -771,7 +776,7 @@
     PP_RELEASE(_videoComposition);
     PP_RELEASE(_audioMixOnce);
     
-//    size = CGSizeZero;
+    //    size = CGSizeZero;
     
     //没有背景视频，则设置几个参数，并且重新根据素材总长获取合成后的总长度
     if(totalDuration.value ==0)
@@ -875,7 +880,8 @@
                                                  videoLayers:videoLayerInstruction
                                                   audioTrack:audioTrack
                                                         rate:rate
-                                                        size:&size
+                                                        size:size
+                                                  natureSize:&natureSize
                                                hasAudioTrack:&hasAudioTrack];
             
             if(CMTimeCompare(modalOffEtInQueue, kCMTimeZero)==0) continue;
@@ -942,6 +948,11 @@
     }
     
     joinTimeRange_ = range;
+    //    size = natureSize;
+    //        size = [self scaleSize:natureSize WithTarget:size];
+    
+    size = [self getSize:size withMedialList:mediaList];
+    
     //set values
     {
         bgmMix.inputParameters = audioMixParams;
@@ -977,24 +988,189 @@
         isGenerating_ = NO;
     });
 }
+- (CGSize) getSize:(CGSize)size withMedialList:(NSArray *)mediaList
+{
+    AVAssetTrack * sourceTrack = nil;
+    if(bgmUrl)
+    {
+        AVURLAsset * asset = [AVURLAsset assetWithURL:bgmUrl];
+        if(asset && [asset tracksWithMediaType:AVMediaTypeVideo].count>0)
+        {
+            sourceTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+        }
+    }
+    if(!sourceTrack && mediaList.count>0)
+    {
+        MediaItem * item = [mediaList firstObject];
+        
+        AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:item.filePath]];
+        if(asset && [asset tracksWithMediaType:AVMediaTypeVideo].count>0)
+        {
+            sourceTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+        }
+    }
+    CGSize natureSize = sourceTrack.naturalSize;
+    int degree = [self degressFromVideoFileWithTrack:sourceTrack];
+    //将Size的方向转成一致，因为Nature默认是横屏，因此Size也要默认转成横屏
+    switch (degree) {
+        case 90:
+        case 270:
+//            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
+            if(natureSize.width > natureSize.height)
+                natureSize = CGSizeMake(natureSize.height, natureSize.width);
+            if(size.width > size.height)
+                size = CGSizeMake(size.height, size.width);
+            break;
+        default:
+//            if(self.orientation>=0 && UIInterfaceOrientationIsLandscape(self.orientation))
+            if(natureSize.width < natureSize.height)
+                natureSize = CGSizeMake(natureSize.height, natureSize.width);
+            if(size.width < size.height)
+                size = CGSizeMake(size.height, size.width);
+            break;
+    }
+    CGFloat rate1 = natureSize.width /natureSize.height;
+    CGFloat rate2 = size.width / size.height;
+    if(rate1>=rate2)
+    {
+        return CGSizeMake(size.width, size.width / rate1);
+    }
+    else
+    {
+        return CGSizeMake(size.height * rate1, size.height);
+    }
+}
+- (CGFloat) getRate:(CGSize)size widthTrack:(AVAssetTrack *)sourceTrack
+{
+    if(!sourceTrack) return 1;
+    CGSize natureSize = sourceTrack.naturalSize;
+    int degree = [self degressFromVideoFileWithTrack:sourceTrack];
+    //将Size的方向转成一致，因为Nature默认是横屏，因此Size也要默认转成横屏
+    switch (degree) {
+        case 90:
+        case 270:
+            //            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
+            if(natureSize.width > natureSize.height)
+                natureSize = CGSizeMake(natureSize.height, natureSize.width);
+            if(size.width > size.height)
+                size = CGSizeMake(size.height, size.width);
+            break;
+        default:
+            //            if(self.orientation>=0 && UIInterfaceOrientationIsLandscape(self.orientation))
+            if(natureSize.width < natureSize.height)
+                natureSize = CGSizeMake(natureSize.height, natureSize.width);
+            if(size.width < size.height)
+                size = CGSizeMake(size.height, size.width);
+            break;
+    }
+    CGFloat rate1 = natureSize.width /natureSize.height;
+    CGFloat rate2 = size.width / size.height;
+    if(rate1>=rate2)
+    {
+        return size.width/natureSize.width;
+    }
+    else
+    {
+        return size.height / natureSize.height;
+    }
+}
+////将Size最大可能地进行匹配
+//- (CGSize)scaleSize:(CGSize)natureSize WithTarget:(CGSize)targetSize
+//{
+//    if(natureSize.width >0&&natureSize.height >0 && targetSize.width>0 && targetSize.height>0)
+//    {
+//        CGFloat rate1 = natureSize.width /natureSize.height;
+//        CGFloat rate2 = targetSize.width / targetSize.height;
+//        if(rate1 >=1 && rate2>=1)
+//        {
+//            if(rate1>=rate2)
+//            {
+//                return CGSizeMake(targetSize.width, targetSize.width / rate1);
+//            }
+//            else
+//            {
+//                return CGSizeMake(targetSize.height * rate1, targetSize.height);
+//            }
+//        }
+//        else
+//        {
+//            if(rate1>=rate2)
+//            {
+//                return CGSizeMake(targetSize.height * rate1, targetSize.height);
+//            }
+//            else
+//            {
+//                return CGSizeMake(targetSize.width, targetSize.width / rate1);
+//            }
+//        }
+//
+//    }
+//    else if(natureSize.width>0 && natureSize.height >0)
+//    {
+//        return natureSize;
+//    }
+//    else
+//    {
+//        return targetSize;
+//    }
+//}
+//- (CGFloat)scaleRateSize:(CGSize)natureSize withTargetSize:(CGSize)targetSize
+//{
+//    if(natureSize.width >0&&natureSize.height >0 && targetSize.width>0 && targetSize.height>0)
+//    {
+//        CGFloat rate1 = natureSize.width /natureSize.height;
+//        CGFloat rate2 = targetSize.width / targetSize.height;
+//        if(rate1 >=1 && rate2>=1)
+//        {
+//            if(rate1>=rate2)
+//            {
+//                return targetSize.width/natureSize.width;
+//            }
+//            else
+//            {
+//                return targetSize.height /natureSize.height;
+//            }
+//        }
+//        else
+//        {
+//            if(rate1>=rate2)
+//            {
+//                return targetSize.width /natureSize.height;
+//            }
+//            else
+//            {
+//                return targetSize.height/natureSize.width;
+//            }
+//        }
+//
+//    }
+//    else if(natureSize.width>0 && natureSize.height >0)
+//    {
+//        return 1;
+//    }
+//    else
+//    {
+//        return 1;
+//    }
+//}
 //- (void) generatePlayItemNew
 //{
 //    AVAsset * videoAsset = [AVURLAsset assetWithURL:self.bgvUrl];
-//    
+//
 //    // 2 - Create AVMutableComposition object. This object will hold your AVMutableCompositionTrack instances.
 //    AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
-//    
+//
 //    // 3 - Video track
 //    AVMutableCompositionTrack *videoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
 //                                                                        preferredTrackID:kCMPersistentTrackID_Invalid];
 //    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
 //                        ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
 //                         atTime:kCMTimeZero error:nil];
-//    
+//
 //    // 3.1 - Create AVMutableVideoCompositionInstruction
 //    AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
 //    mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration);
-//    
+//
 //    // 3.2 - Create an AVMutableVideoCompositionLayerInstruction for the video track and fix the orientation.
 //    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
 //    AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
@@ -1017,53 +1193,53 @@
 //    }
 //    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
 //    [videolayerInstruction setOpacity:0.0 atTime:videoAsset.duration];
-//    
+//
 //    // 3.3 - Add instructions
 //    mainInstruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
-//    
+//
 //    AVMutableVideoComposition *mainCompositionInst = [AVMutableVideoComposition videoComposition];
-//    
+//
 //    CGSize naturalSize;
 //    if(isVideoAssetPortrait_){
 //        naturalSize = CGSizeMake(videoAssetTrack.naturalSize.height, videoAssetTrack.naturalSize.width);
 //    } else {
 //        naturalSize = videoAssetTrack.naturalSize;
 //    }
-//    
+//
 //    float renderWidth, renderHeight;
 //    renderWidth = naturalSize.width;
 //    renderHeight = naturalSize.height;
-//    
+//
 //    mainCompositionInst.renderSize = CGSizeMake(renderWidth, renderHeight);
 //    mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
 //    mainCompositionInst.frameDuration = CMTimeMake(1, 30);
-//    
+//
 //    //    [self applyVideoEffectsToComposition:mainCompositionInst size:naturalSize];
 //    mainCompositionInst.animationTool = [self compositeTitleAndLyric:nil duration:videoAsset.duration size:naturalSize rate:1];
-//    
+//
 //    _mixComposition = PP_RETAIN((AVMutableComposition*)mixComposition);
 //    _videoComposition = PP_RETAIN((AVMutableVideoComposition*)mainCompositionInst);
 //    _audioMixOnce = nil;
-//    
+//
 //    previewAVassetIsReady = YES;
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(sendPlayerItemToFront:) userInfo:nil repeats:NO];
 //    });
-//    
+//
 //}
 //- (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition size:(CGSize)size
 //{
 //    UIImage *borderImage = nil;
-//    
-//    
+//
+//
 //    borderImage = [self imageWithColor:[UIColor blueColor] rectSize:CGRectMake(0, 0, size.width, size.height)];
-//    
-//    
+//
+//
 //    CALayer *backgroundLayer = [CALayer layer];
 //    [backgroundLayer setContents:(id)[borderImage CGImage]];
 //    backgroundLayer.frame = CGRectMake(0, 0, size.width, size.height);
 //    [backgroundLayer setMasksToBounds:YES];
-//    
+//
 //    CALayer *videoLayer = [CALayer layer];
 //    videoLayer.frame = CGRectMake(40, 40,
 //                                  size.width-(40*2), size.height-(40*2));
@@ -1071,7 +1247,7 @@
 //    parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
 //    [parentLayer addSublayer:backgroundLayer];
 //    [parentLayer addSublayer:videoLayer];
-//    
+//
 //    composition.animationTool = [AVVideoCompositionCoreAnimationTool
 //                                 videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
 //}
@@ -1360,7 +1536,10 @@
         }
         if(self.waterMarkFile && self.waterMarkFile.length>2)
         {
-            CALayer * wmLayer = [ImagesToVideo buildWaterMarkerLayer:self.waterMarkFile renderSize:size orientation:self.orientation position:self.waterMarkerPosition];
+            CALayer * wmLayer = [ImagesToVideo buildWaterMarkerLayer:self.waterMarkFile
+                                                          renderSize:size
+                                                         orientation:self.orientation
+                                                            position:self.waterMarkerPosition];
             if(wmLayer)
                 [parentLayer addSublayer:wmLayer];
         }
@@ -1436,7 +1615,8 @@
                videoLayers:(AVMutableVideoCompositionLayerInstruction*)videoLayerInstruction
                 audioTrack:(AVMutableCompositionTrack *)audioTrack
                       rate:(CGFloat)rate
-                      size:(CGSize *)size
+                      size:(CGSize) size
+                natureSize:(CGSize *)natureSize
              hasAudioTrack:(BOOL *) hasAudioTrack
 {
 #ifndef __OPTIMIZE__
@@ -1564,9 +1744,9 @@
                         toDuration: CMTimeMake(duration.value/rate,duration.timescale)];
         
         CGSize  curItemSize = curTrack.naturalSize;
-        if(size && ((*size).width ==0 || (*size).height ==0 ))
+        if(natureSize && ((*natureSize).width ==0 || (*natureSize).height ==0 ))
         {
-            *size = [self getSizeByOrientation:curItemSize];
+            *natureSize = [self getSizeByOrientation:curItemSize];
         }
         
         CMTimeRange drange = CMTimeRangeMake(modalInStInQueue, duration);
@@ -1644,12 +1824,26 @@
                 NSLog(@"join video:(insert video) %@",[error localizedDescription]);
                 return kCMTimeZero;
             }
-            if(size && ((*size).width ==0 || (*size).height ==0 ))
+            if(natureSize && ((*natureSize).width ==0 || (*natureSize).height ==0 ))
             {
-                *size = videoTrack.naturalSize;
-                //            *size = [self getSizeByOrientation:videoTrack.naturalSize];
+                *natureSize = curTrack.naturalSize;
             }
-            [videoTrack setPreferredTransform:curTrack.preferredTransform];
+            if(size.width==0||size.height==0)
+            {
+                [videoTrack setPreferredTransform:curTrack.preferredTransform];
+            }
+            else
+            {
+                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
+                {
+                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack];
+                    CGAffineTransform transfer = CGAffineTransformIdentity;
+                    transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+                    [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                }
+                [videoTrack setPreferredTransform:curTrack.preferredTransform];
+            }
+            
             NSLog(@"videoTrack\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",videoTrack.preferredTransform.a,videoTrack.preferredTransform.b,videoTrack.preferredTransform.c,videoTrack.preferredTransform.d,videoTrack.preferredTransform.tx,videoTrack.preferredTransform.ty);
         }
         if(curAudioTrack && audioTrack){
@@ -1660,7 +1854,7 @@
                                   error:&error];
             if(error)
             {
-                NSLog(@"join video:(insert audio) error: %@",[error localizedDescription]);
+                NSLog(@"AG : join video:(insert audio) error: %@",[error localizedDescription]);
                 //                return kCMTimeZero;
             }
             if(hasAudioTrack)
@@ -1697,18 +1891,6 @@
                                 toDuration:durationScaled];
             }
         }
-        //        NSLog(@"track range2 :%.2f",CMTimeGetSeconds(videoTrack.timeRange.duration));
-        //        if((self.orientation>0 && self.orientation <= UIDeviceOrientationFaceUp ) || self.useFontCamera)
-        //        {
-        //            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize orientation:self.orientation withFontCamera:self.useFontCamera isCreateByCover:NO]
-        //                                         atTime:curItem.timeInArray];
-        //        }
-        //        else
-        //        {
-        //            [videoLayerInstruction setTransform:[self layerTrans:curAsset withTargetSize:self.renderSize] atTime:curItem.timeInArray];
-        //        }
-        
-        //        [videoLayerInstruction setTransform:curTrack.preferredTransform  atTime:curItem.timeInArray];
         
         [videoLayerInstruction setOpacity:1.0 atTime:modalInStInQueue];
         [videoLayerInstruction setOpacity:0.0 atTime:modalOffEtInQueue];
@@ -2010,16 +2192,16 @@
     CMTime startTime = mediaBegin;
     CMTime duration =  asset.duration;
     
-//    CMTime timeInArray = CMTimeMake(0, bgScale);
+    //    CMTime timeInArray = CMTimeMake(0, bgScale);
     //因为背景音乐是完整的，所以如果截取一部分时，要注意重新定位开始的时间
-//    if(CMTimeCompare(mediaBegin,kCMTimeZero)>0.0001)
-//    {
-//        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaBegin), bgScale);
-//    }
-//    else if(CMTimeCompare(mediaBegin,kCMTimeZero)<0.0001)  //不从开始的位置加音乐
-//    {
-//        timeInArray = CMTimeMakeWithSeconds(0 - CMTimeGetSeconds(mediaBegin), bgScale);
-//    }
+    //    if(CMTimeCompare(mediaBegin,kCMTimeZero)>0.0001)
+    //    {
+    //        startTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaBegin), bgScale);
+    //    }
+    //    else if(CMTimeCompare(mediaBegin,kCMTimeZero)<0.0001)  //不从开始的位置加音乐
+    //    {
+    //        timeInArray = CMTimeMakeWithSeconds(0 - CMTimeGetSeconds(mediaBegin), bgScale);
+    //    }
     if(CMTimeCompare(mediaEnd, kCMTimeZero)>0)
     {
         duration = CMTimeMakeWithSeconds(CMTimeGetSeconds(mediaEnd) - CMTimeGetSeconds(mediaBegin), bgScale);
@@ -2189,6 +2371,94 @@
         renderSize.width *= rate2/rate1;
     }
     return renderSize;
+}
+//将所有的方向转成标准方向，即角度为0
+-(CGAffineTransform)layerTransfterWithTrack:(AVAssetTrack *)track
+                             withTargetSize:(CGSize)targetSize
+                               outputDegree:(int)outputDegreen
+{
+    CGSize natureSize = track.naturalSize;
+    CGSize renderSize = CGSizeZero;
+    
+    float scale  = 1;
+    int degree = [self degressFromVideoFileWithTrack:track];
+    
+    
+    CGFloat rate1 = targetSize.width/targetSize.height;
+    CGFloat rate2 = natureSize.width/natureSize.height;
+    if((rate2>=1 && rate1 >=1) ||(rate2<=1 && rate1<=1))
+    {
+        scale  = MIN(targetSize.width/natureSize.width , targetSize.height/natureSize.height);
+    }
+    else
+    {
+        scale  = MIN(targetSize.width/natureSize.height , targetSize.height/natureSize.width);
+    }
+    
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    if(scale!=1)
+    {
+        transform = CGAffineTransformScale(transform, scale, scale);
+    }
+    switch (degree) {
+        case 0:
+        {
+            renderSize = CGSizeMake(targetSize.height, targetSize.width);
+            CGAffineTransform CGAffineTransform = CGAffineTransformIdentity;
+            transform = CGAffineTransformConcat(transform, CGAffineTransform);
+        }
+            break;
+        case 180:
+        {
+            renderSize = CGSizeMake(targetSize.height, targetSize.width);
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation( M_PI * 180 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(renderSize.height, renderSize.width));
+        }
+            break;
+        case 270:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation(  M_PI * 270 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, renderSize.height));
+        }
+            break;
+        default:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation(- M_PI * 90 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformMakeTranslation(0 - renderSize.width, renderSize.height);
+            //            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(renderSize.width, 0-renderSize.width));
+            
+            break;
+        }
+    }
+    return transform;
+}
+- (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack
+{
+    int degress = -1;
+    if(videoTrack)
+    {
+        CGAffineTransform t = videoTrack.preferredTransform;
+        
+        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+            // Portrait
+            degress = 90;
+        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+            // PortraitUpsideDown
+            degress = 270;
+        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+            // LandscapeRight
+            degress = 0;
+        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+            // LandscapeLeft
+            degress = 180;
+        }
+    }
+    
+    return degress;
 }
 -(CGAffineTransform)layerTrans:(AVAsset *)testAsset withTargetSize:(CGSize)tsize orientation:(UIDeviceOrientation)orientation withFontCamera:(BOOL) useFontCamera isCreateByCover:(BOOL)isCreateByCover
 {

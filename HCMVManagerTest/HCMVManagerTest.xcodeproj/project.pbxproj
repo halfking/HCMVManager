@@ -81,6 +81,7 @@
 		11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE971CEEE84000E94CD9 /* test3.MOV */; };
 		11ABAE9B1CEEEC6300E94CD9 /* ActionManagerPannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */; };
 		11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */; };
+		11B906BE1D0D4A6B004E1038 /* HCMVManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 11B906BD1D0D4A6B004E1038 /* HCMVManager.bundle */; };
 		11C850A51CFED0830029229B /* testPlayerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C850A41CFED0830029229B /* testPlayerVC.m */; };
 		11C850AC1D0066AE0029229B /* ywy.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11C850AB1D0066AE0029229B /* ywy.mp3 */; };
 		11CF23D61CFDA10A002851BD /* a.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11CF23D41CFDA10A002851BD /* a.m4v */; };
@@ -242,6 +243,7 @@
 		11ABAE991CEEEC6300E94CD9 /* ActionManagerPannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManagerPannel.h; sourceTree = "<group>"; };
 		11ABAE9A1CEEEC6300E94CD9 /* ActionManagerPannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerPannel.m; sourceTree = "<group>"; };
 		11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.mp4; sourceTree = "<group>"; };
+		11B906BD1D0D4A6B004E1038 /* HCMVManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HCMVManager.bundle; sourceTree = "<group>"; };
 		11C850A31CFED0830029229B /* testPlayerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testPlayerVC.h; sourceTree = "<group>"; };
 		11C850A41CFED0830029229B /* testPlayerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testPlayerVC.m; sourceTree = "<group>"; };
 		11C850AB1D0066AE0029229B /* ywy.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ywy.mp3; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 		118CE8841CE1B00D00290641 /* HCMVManager */ = {
 			isa = PBXGroup;
 			children = (
+				11B906BD1D0D4A6B004E1038 /* HCMVManager.bundle */,
 				118CE8D01CE1B00D00290641 /* VideoGenerate */,
 				118CE8871CE1B00D00290641 /* Lyric */,
 				118CE88E1CE1B00D00290641 /* MTVDB */,
@@ -684,6 +687,7 @@
 				11D595D31CFC222200D96FAA /* watermark_MtvPlus@2x.png in Resources */,
 				118CE8831CE1AFB600290641 /* Podfile in Resources */,
 				11200A121CF2B14C007E8B20 /* filterImage.png in Resources */,
+				11B906BE1D0D4A6B004E1038 /* HCMVManager.bundle in Resources */,
 				11200A161CF2B14C007E8B20 /* lookup_miss_etikate.png in Resources */,
 				11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */,
 				11200A171CF2B14C007E8B20 /* lookup_soft_elegance_2.png in Resources */,

@@ -157,7 +157,7 @@
     secondsForAudioPlayerMaxRange_ = 0.5;
     _bitRate = (long)(540 *960 * 8);
     _renderSize = CGSizeMake(540, 960);
-
+    
     [self setNeedPlaySync:YES];
     currentMediaWithAction_ = nil;
     
@@ -852,7 +852,6 @@
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                                  at:(CGFloat)playerSeconds
 {
-    if(actionDo.isOPCompleted==NO) return nil;
     needSendPlayControl_ = NO;
     [self pausePlayer];
     
@@ -868,26 +867,7 @@
     }
     return [self addActionItemDo:actionDo inArray:secondsInArray];
 }
-- (void)pausePlayer
-{
-    needSendPlayControl_ = NO;
-    [player_ pause];
-    //    [reversePlayer_ pause];
-    //    [audioPlayer_ pause];
-}
-- (void)resumePlayer
-{
-    //    if(player_.hidden==NO)
-    [player_ play];
-    //    else
-    //        [reversePlayer_ play];
-    //    if(audioPlayer_)
-    //    {
-    //        [audioPlayer_ play];
-    //    }
-    [self setNeedPlaySync:YES];
-    //    needSendPlayControl_ = YES;
-}
+
 - (MediaActionDo *) addActionItemDo:(MediaActionDo *)actionDo
                             inArray:(CGFloat)secondsInArray
 {
@@ -897,11 +877,34 @@
                             inArray:(CGFloat)secondsInArray
                 changeCurrentAction:(BOOL)changeCurrentAction
 {
-    if(actionDo.isOPCompleted==NO) return nil;
-    
+    MediaActionDo * item = nil;//[actionDo copyItemDo];
+    if(actionDo.isOPCompleted==NO)
+    {
+        BOOL hasAction = NO;
+        for (MediaActionDo * item in actionList_) {
+            if(item==actionDo)
+            {
+                hasAction = YES;
+                break;
+            }
+        }
+        if(hasAction)
+        {
+            item = [actionDo copyItemDo];
+            [self setActionItemDuration:actionDo duration:secondsInArray - actionDo.SecondsInArray];
+        }
+        else
+        {
+            item = actionDo;
+        }
+    }
+    else
+    {
+        item = [actionDo copyItemDo];
+    }
     [self pausePlayer];
     
-    MediaActionDo * item = [actionDo copyItemDo];
+    
     
     //    //Repeat，需要将定位放到前面
     //    if(item.ActionType==SRepeat)
@@ -949,7 +952,7 @@
     }
     else //不影响当前播放对像
     {
-//        [self buildTimerForPlayerSync:self.minMediaDuration];
+        //        [self buildTimerForPlayerSync:self.minMediaDuration];
         [player_ play];
     }
     //延时处理倒放视频的问题
@@ -957,7 +960,26 @@
     
     return item;
     
-    
+}
+- (void)pausePlayer
+{
+    needSendPlayControl_ = NO;
+    [player_ pause];
+    //    [reversePlayer_ pause];
+    //    [audioPlayer_ pause];
+}
+- (void)resumePlayer
+{
+    //    if(player_.hidden==NO)
+    [player_ play];
+    //    else
+    //        [reversePlayer_ play];
+    //    if(audioPlayer_)
+    //    {
+    //        [audioPlayer_ play];
+    //    }
+    [self setNeedPlaySync:YES];
+    //    needSendPlayControl_ = YES;
 }
 //针对长按等操作，延后设置Action时长
 - (BOOL)setActionItemDuration:(MediaActionDo *)action duration:(CGFloat)durationInSeconds
@@ -970,7 +992,7 @@
     [self pausePlayer];
     
     //durationInseconds 会触发相关的更新事件
-//    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
+    //    action.Media.end = CMTimeMakeWithSeconds(action.Media.secondsBegin + durationInSeconds, action.Media.end.timescale);
     action.DurationInSeconds = durationInSeconds;
     action.DurationInArray = durationInSeconds;
     
@@ -1012,7 +1034,7 @@
             media = [mediaList_ firstObject];
         }
     }
-
+    
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
     //因为切换播放进程时，有可能播放器会发送时间过来，导致切换出现BUG，所以延时处理一下

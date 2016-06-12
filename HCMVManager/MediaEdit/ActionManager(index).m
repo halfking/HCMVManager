@@ -333,7 +333,6 @@
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
-    
     [vg setRenderSize:self.renderSize orientation:or withFontCamera:NO];
     
     [vg setTimeForMerge:0 end:-1];
