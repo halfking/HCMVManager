@@ -991,9 +991,9 @@
 - (CGSize) getSize:(CGSize)size withMedialList:(NSArray *)mediaList
 {
     AVAssetTrack * sourceTrack = nil;
-    if(bgmUrl)
+    if(bgvUrl)
     {
-        AVURLAsset * asset = [AVURLAsset assetWithURL:bgmUrl];
+        AVURLAsset * asset = [AVURLAsset assetWithURL:bgvUrl];
         if(asset && [asset tracksWithMediaType:AVMediaTypeVideo].count>0)
         {
             sourceTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
@@ -1016,9 +1016,9 @@
         case 90:
         case 270:
 //            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
-            if(natureSize.width > natureSize.height)
+            if(natureSize.width < natureSize.height)
                 natureSize = CGSizeMake(natureSize.height, natureSize.width);
-            if(size.width > size.height)
+            if(size.width < size.height)
                 size = CGSizeMake(size.height, size.width);
             break;
         default:
@@ -1050,9 +1050,9 @@
         case 90:
         case 270:
             //            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
-            if(natureSize.width > natureSize.height)
+            if(natureSize.width < natureSize.height)
                 natureSize = CGSizeMake(natureSize.height, natureSize.width);
-            if(size.width > size.height)
+            if(size.width < size.height)
                 size = CGSizeMake(size.height, size.width);
             break;
         default:

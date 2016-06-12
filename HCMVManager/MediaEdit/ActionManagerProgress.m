@@ -354,6 +354,9 @@
             {
                 flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.png"];
             }
+            if(!flagImage)
+                flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.tiff"];
+            
             UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
             imageView.image = flagImage;
             [barView addSubview:imageView];
@@ -394,6 +397,8 @@
                 {
                     flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.png"];
                 }
+                if(!flagImage)
+                    flagImage = [UIImage imageNamed:@"HCMVManager.bundle/flag.tiff"];
                 UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, top - 14, 7.5, 16)];
                 imageView.image = flagImage;
                 

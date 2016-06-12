@@ -51,7 +51,6 @@
 		11B906B21D0D2F83004E1038 /* lookup_soft_elegance_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A401CF2FCAA007E8B20 /* lookup_soft_elegance_2.png */; };
 		11B906B31D0D2F83004E1038 /* lookup_黑白.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A411CF2FCAA007E8B20 /* lookup_黑白.png */; };
 		11B906B41D0D2F88004E1038 /* filterImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A3A1CF2FCAA007E8B20 /* filterImage.png */; };
-		11B906B91D0D3026004E1038 /* flag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11B906B51D0D301B004E1038 /* flag@2x.png */; };
 		11B906BA1D0D3028004E1038 /* flag@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11B906B71D0D3023004E1038 /* flag@3x.png */; };
 		11B906BC1D0D309B004E1038 /* HCMVManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 11B906BB1D0D309B004E1038 /* HCMVManager.bundle */; };
 		11D595D01CFB6E7100D96FAA /* MediaWithActionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -927,7 +926,6 @@
 				11B906B21D0D2F83004E1038 /* lookup_soft_elegance_2.png in Resources */,
 				11B906BA1D0D3028004E1038 /* flag@3x.png in Resources */,
 				11B906B31D0D2F83004E1038 /* lookup_黑白.png in Resources */,
-				11B906B91D0D3026004E1038 /* flag@2x.png in Resources */,
 				11B906B41D0D2F88004E1038 /* filterImage.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
