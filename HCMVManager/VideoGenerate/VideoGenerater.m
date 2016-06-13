@@ -1441,6 +1441,9 @@
      ^(void) {
          if(assetExport.status == AVAssetExportSessionStatusCompleted)
          {
+#ifndef __OPTIMIZE__
+             [self showMediaInfo:[assetExport.outputURL path]];
+#endif
              if(complted)
              {
                  complted([assetExport.outputURL path]);
@@ -1448,7 +1451,7 @@
          }
          else
          {
-             NSLog(@"export failure:%@",[assetExport.error localizedDescription]);
+             NSLog(@"VG :export failure:%@",[assetExport.error localizedDescription]);
              if(complted)
              {
                  complted(sourceFilePath);
@@ -3063,6 +3066,7 @@
     NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",transAsset.a,transAsset.b,transAsset.c,transAsset.d,transAsset.tx,transAsset.ty);
     NSLog(@"asset\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",transTrack.a,transTrack.b,transTrack.c,transTrack.d,transTrack.tx,transTrack.ty);
     NSLog(@"asset\t\t:size:%@",NSStringFromCGSize(size));
+    NSLog(@"asset\t\t:duration:%f size:%ld",CMTimeGetSeconds(asset.duration),[[HCFileManager manager]fileSizeAtPath:filePath]);
     NSLog(@"asset\t\t-------- end -------------");
     
     asset = nil;

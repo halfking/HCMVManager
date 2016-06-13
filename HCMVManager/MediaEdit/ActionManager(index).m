@@ -463,7 +463,7 @@
     {
         [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
     }
-    NSLog(@"VG  :reverse media video begin....");
+    NSLog(@"VG  :reverse media video begin..duration:%f..",media.secondsDurationInArray);
     
     __weak ActionManager * weakSelf = self;
     BOOL ret = [vg generateMVReverse:media.filePath
@@ -486,8 +486,9 @@
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
                                 }
-                                NSLog(@"VG  : reveser video ok:%@ org:%f->%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse);
                                 
+                                NSLog(@"VG  : reveser ok:%@ org filerange:%f->%f duration:%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
+                                      );
                                 //                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];

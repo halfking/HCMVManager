@@ -1045,7 +1045,7 @@
     }
     
     NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
-    if(action.ActionType==SReverse && player_.secondsPlaying > media.secondsBegin + 0.2)
+    if(action.ActionType==SReverse && player_.secondsPlaying > media.secondsBegin + 0.15)
     {
         media = [[action buildMaterialProcess:mediaList_ ] firstObject];
     }
@@ -1119,15 +1119,14 @@
         if(action.ActionType==SReverse)
         {
             CGFloat duration = playerSeconds - action.Media.secondsBegin;
-            
-            //            currentSeconds = reverseBG_.secondsDuration - currentSeconds;
-            //            CGFloat duration = MAX(action.SecondsInArray - currentSeconds - secondsEffectPlayer_,0);
+            if(duration<0) duration = 0 - duration;
             [self setActionItemDuration:action duration:duration];
         }
         else
         {
             CGFloat duration = [self getSecondsInArrayFromPlayer:playerSeconds isReversePlayer:action.IsReverse];
             duration -= action.SecondsInArray;
+            if(duration<0) duration = 0 - duration;
             [self setActionItemDuration:action duration:duration];
         }
         //        needSendPlayControl_ = YES;
