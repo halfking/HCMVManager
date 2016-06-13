@@ -1011,7 +1011,6 @@
     
     [self ActionManager:self actionChanged:action type:1];
     
-    //    [self reindexAllActions];
     
     //播下一个
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
@@ -1038,6 +1037,13 @@
             media = [mediaList_ firstObject];
         }
     }
+    
+    NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
+    if(action.ActionType==SReverse && player_.secondsPlaying > media.secondsBegin + 0.2)
+    {
+        media = [[action buildMaterialProcess:mediaList_ ] firstObject];
+    }
+
     
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     

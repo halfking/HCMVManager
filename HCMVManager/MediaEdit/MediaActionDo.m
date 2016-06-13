@@ -268,6 +268,34 @@
     
     
 }
+- (MediaWithAction *) getMediaForPlayer:(CGFloat)playerSeconds
+{
+    NSArray * mediaList = [self buildMaterialProcess:nil];
+    if(!mediaList) return nil;
+    for (MediaWithAction * item in mediaList) {
+        
+        if(item.secondsBegin <= playerSeconds + SECONDS_ERRORRANGE &&
+           item.secondsEnd > playerSeconds)
+        {
+            return item;
+        }
+    }
+    return nil;
+}
+- (MediaWithAction *) getMediaForSecondsInArray:(CGFloat)secondsInArray
+{
+    NSArray * mediaList = [self buildMaterialProcess:nil];
+    if(!mediaList) return nil;
+    for (MediaWithAction * item in mediaList) {
+        
+        if(item.secondsInArray <= secondsInArray + SECONDS_ERRORRANGE &&
+           item.secondsInArray + item.secondsDurationInArray > secondsInArray)
+        {
+            return item;
+        }
+    }
+    return nil;
+}
 #pragma mark - split op
 //- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
 //                                   atSeconds:(CGFloat)seconds

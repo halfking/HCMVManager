@@ -45,7 +45,7 @@
         normalItem = nil;
     }
     //先取正反向
-    if(!item)
+    if(!item && sources && sources.count>0)
     {
         MediaWithAction * sourceItem = nil;
         for (MediaWithAction * mm in sources) {
@@ -466,6 +466,19 @@
     [self ensureMediaDuration:DurationInSecondsA];
     self.isOPCompleted = opCompleted;
     
+}
+- (MediaWithAction *) getMediaForPlayer:(CGFloat)playerSeconds
+{
+    MediaWithAction * media = [super getMediaForPlayer:playerSeconds];
+    if(media)
+    {
+//        NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
+        if(playerSeconds > media.secondsBegin + 0.2 && materialList_.count>0)
+        {
+            media = [materialList_ firstObject];
+        }
+    }
+    return media;
 }
 #pragma mark - split op
 //- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps

@@ -46,6 +46,9 @@
 
 - (CGFloat) getFinalDurationForMedia:(MediaWithAction *)media;
 - (MediaWithAction *)toMediaWithAction:(NSArray *)sources;
+- (MediaWithAction *) getMediaForPlayer:(CGFloat)playerSeconds;
+- (MediaWithAction *) getMediaForSecondsInArray:(CGFloat)secondsInArray;
+
 //- (MediaWithAction *)splitMediaItemAtSeconds:(NSArray *)overlaps
 //                                   atSeconds:(CGFloat)seconds
 //                                        from:(CGFloat)mediaBeginSeconds

@@ -93,7 +93,7 @@
     {
         item = nil;
     }
-    if(!item)
+    if(!item && sources && sources.count>0)
     {
         MediaWithAction * sourceItem = nil;
         for (MediaWithAction * mm in sources) {
