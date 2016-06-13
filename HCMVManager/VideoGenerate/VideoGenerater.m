@@ -1049,13 +1049,13 @@
     {
         targetSize =  CGSizeMake(size.height * rate1, size.height);
     }
-    if(fabs(targetSize.width -968)<1)
+    if(fabs(targetSize.width -960)<1)
     {
-        targetSize.width = 968;
+        targetSize.width = 960;
     }
-    if(fabs(targetSize.height - 560)<1)
+    if(fabs(targetSize.height - 540)<1)
     {
-        targetSize.height = 560;
+        targetSize.height = 540;
     }
     return targetSize;
 }
