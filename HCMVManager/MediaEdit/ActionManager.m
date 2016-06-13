@@ -1026,7 +1026,7 @@
     {
         isPlayerSync = NO;
     }
-    if(isPlayerSync && media)
+    if(!isPlayerSync && media)
     {
         NSLog(@"AM :播放器不同步，表示是Click");
     }
