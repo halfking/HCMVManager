@@ -559,6 +559,26 @@ BOOL const DefaultTransitionShouldAnimate = YES;
     
 }
 #pragma mark - get lpresentTime	CMTime	yric animates
+//镜像旋转位置
++ (WaterMarkerPosition)positionMirror:(WaterMarkerPosition)position
+{
+    WaterMarkerPosition result = position;
+    switch (position) {
+        case MP_LeftTop:
+            result = MP_RightBottom;
+            break;
+        case MP_LeftBottom:
+            result = MP_RightTop;
+            break;
+        case MP_RightBottom:
+            result = MP_LeftTop;
+            break;
+        default:
+            result = MP_LeftBottom;
+            break;
+    }
+    return result;
+}
 + (CALayer *)buildWaterMarkerLayer:(NSString *)imageFilePath renderSize:(CGSize)renderSize orientation:(int)orientation position:(WaterMarkerPosition)position
 {
     UIImage * image = [UIImage imageNamed:imageFilePath];
@@ -569,13 +589,24 @@ BOOL const DefaultTransitionShouldAnimate = YES;
     if(image){
         CGFloat scale = 1;
         BOOL isPortrait = NO;
-//        CGAffineTransform transfer = CGAffineTransformIdentity;
+        BOOL needRotationImage = NO;
+        //        CGAffineTransform transfer = CGAffineTransformIdentity;
         switch (orientation) {
             case UIDeviceOrientationLandscapeLeft:
-            case UIDeviceOrientationLandscapeRight:
                 scale = renderSize.width * 1.5 / 720;
                 break;
+            case UIDeviceOrientationLandscapeRight:
+                scale = renderSize.width * 1.5 / 720;
+                position = [self positionMirror:position];
+                needRotationImage = YES;
+                break;
             case UIDeviceOrientationPortraitUpsideDown:
+                image = [image imageRotatedByRadians: 0 - M_PI_2];
+                scale = renderSize.height * 1.5 / 720;
+                isPortrait = YES;
+                position = [self positionMirror:position];
+                needRotationImage = YES;
+                break;
             default:
                 image = [image imageRotatedByRadians: 0 - M_PI_2];
                 scale = renderSize.height * 1.5 / 720;
@@ -587,14 +618,18 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         {
             image = [image imageByScalingProportionallyToSize:CGSizeMake(imgSize.width * scale, imgSize.height * scale)];
         }
+        if(needRotationImage)
+        {
+            image = [image imageRotatedByDegrees:180];
+        }
         imgSize = image.size;
         
         //放在一点，看清楚
         
-//#ifndef __OPTIMIZE__
-//        imgSize.width *=2;
-//        imgSize.height *=2;
-//#endif
+        //#ifndef __OPTIMIZE__
+        //        imgSize.width *=2;
+        //        imgSize.height *=2;
+        //#endif
         CGSize imageOrgSize = imgSize;
         
         
@@ -608,24 +643,24 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         if(!isPortrait)
         {
             CGFloat margin = 20 * renderSize.width / 720;
-//            CGFloat scale = renderSize.width/180;
-//            transfer = CGAffineTransformScale(transfer, scale, scale);
-//            imgSize.width *= scale;
-//            imgSize.height *= scale;
-//             position = MP_RightBottom;
+            //            CGFloat scale = renderSize.width/180;
+            //            transfer = CGAffineTransformScale(transfer, scale, scale);
+            //            imgSize.width *= scale;
+            //            imgSize.height *= scale;
+            //             position = MP_RightBottom;
             if(position== MP_LeftTop)
             {
                 frame = CGRectMake(margin,
                                    renderSize.height - margin - imgSize.height,
                                    imageOrgSize.width,imageOrgSize.height);
-               
+                
             }
             else if(position == MP_LeftBottom)
             {
                 frame = CGRectMake(margin,
                                    margin,
                                    imageOrgSize.width,imageOrgSize.height);
-              
+                
                 
             }
             else if(position == MP_RightBottom)
@@ -644,12 +679,12 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         else //需要考虑视频的旋转加成
         {
             CGFloat margin = 20 * renderSize.height / 720;
-//            CGFloat scale = renderSize.height/720;
-//            transfer = CGAffineTransformScale(transfer, scale, scale);
-//
-//            imgSize.width *= scale;
-//            imgSize.height *= scale;
-//
+            //            CGFloat scale = renderSize.height/720;
+            //            transfer = CGAffineTransformScale(transfer, scale, scale);
+            //
+            //            imgSize.width *= scale;
+            //            imgSize.height *= scale;
+            //
             if(position== MP_LeftTop)
             {
                 frame =  CGRectMake(margin,margin ,imageOrgSize.width,imageOrgSize.height);
@@ -674,7 +709,7 @@ BOOL const DefaultTransitionShouldAnimate = YES;
         
         backgroundLayer.frame = frame;
         [backgroundLayer setContents:(id)[image CGImage]];
-//        [backgroundLayer setAffineTransform:transfer];
+        //        [backgroundLayer setAffineTransform:transfer];
         
         return backgroundLayer;
     }

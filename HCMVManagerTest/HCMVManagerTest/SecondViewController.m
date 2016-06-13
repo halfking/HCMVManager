@@ -931,7 +931,7 @@
     
     //    [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:YES];
     baseVideo_ = [manager_ getBaseVideo];
-    reverseVideo_ = [manager_ getReverseVideo];
+//    reverseVideo_ = [manager_ getReverseVideo];
     
     [manager_ initAudioPlayer:audioPlayer_];
     //    [self buildControls];

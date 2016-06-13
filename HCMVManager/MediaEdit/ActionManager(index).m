@@ -509,78 +509,78 @@
     return ret;
 }
 
-
-- (BOOL)generateReverseMV:(NSString*)filePath
-{
-    return [self generateReverseMV:filePath begin:0 end:-1];
-}
-- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd
-{
-    if(!filePath) return NO;
-    //生成反向的视频
-    {
-        if(isReverseGenerating_)
-        {
-            NSLog(@"正在生成反向视频中，不能再次进入");
-            return NO;
-        }
-        isReverseGenerating_ = YES;
-        if(reverseBG_)
-        {
-            PP_RELEASE(reverseBG_);
-        }
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
-        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
-        
-        VideoGenerater * vg = [VideoGenerater new];
-        vg.delegate = self;
-        vg.TagID = 2;
-        vg.bitRate = self.bitRate;
-       
-        [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
-        
-        reverseGenerate_ = vg;
-        __weak ActionManager * weakSelf = self;
-        NSLog(@"begin generate reverse video....");
-        BOOL ret = [vg generateMVReverse:filePath
-                                  target:outputPath
-                                   begin:sourceBegin
-                                     end:sourceEnd
-                               audioFile:filePath
-                              audioBegin:sourceBegin
-                                complted:^(NSString * filePathNew){
-                                    NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
-                                    [reverseMediaGenerate_ setJoinVideoUrl:nil];
-                                    [reverseMediaGenerate_ clear];
-                                    reverseGenerate_ = nil;
-                                    if(filePathNew)
-                                    {
-                                        isReverseHasGenerated_ = YES;
-                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
-                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
-                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
-                                        
-                                        __strong ActionManager * strongSelf = weakSelf;
-                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
-                                        {
-                                            [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
-                                        }
-                                    }
-                                    isReverseGenerating_ = NO;
-                                }];
-        if(!ret)
-        {
-            [reverseMediaGenerate_ setJoinVideoUrl:nil];
-            [reverseMediaGenerate_ clear];
-            reverseGenerate_ = nil;
-            isReverseGenerating_ = NO;
-            isReverseHasGenerated_ = NO;
-            NSLog(@"generate reverse failure....");
-            return NO;
-        }
-    }
-    return YES;
-}
+//
+//- (BOOL)generateReverseMV:(NSString*)filePath
+//{
+//    return [self generateReverseMV:filePath begin:0 end:-1];
+//}
+//- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd
+//{
+//    if(!filePath) return NO;
+//    //生成反向的视频
+//    {
+//        if(isReverseGenerating_)
+//        {
+//            NSLog(@"正在生成反向视频中，不能再次进入");
+//            return NO;
+//        }
+//        isReverseGenerating_ = YES;
+////        if(reverseBG_)
+////        {
+////            PP_RELEASE(reverseBG_);
+////        }
+//        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
+//        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
+//        
+//        VideoGenerater * vg = [VideoGenerater new];
+//        vg.delegate = self;
+//        vg.TagID = 2;
+//        vg.bitRate = self.bitRate;
+//       
+//        [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
+//        
+//        reverseGenerate_ = vg;
+//        __weak ActionManager * weakSelf = self;
+//        NSLog(@"begin generate reverse video....");
+//        BOOL ret = [vg generateMVReverse:filePath
+//                                  target:outputPath
+//                                   begin:sourceBegin
+//                                     end:sourceEnd
+//                               audioFile:filePath
+//                              audioBegin:sourceBegin
+//                                complted:^(NSString * filePathNew){
+//                                    NSLog(@"genreate reveser video ok:%@",[filePathNew lastPathComponent]);
+//                                    [reverseMediaGenerate_ setJoinVideoUrl:nil];
+//                                    [reverseMediaGenerate_ clear];
+//                                    reverseGenerate_ = nil;
+//                                    if(filePathNew)
+//                                    {
+//                                        isReverseHasGenerated_ = YES;
+//                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
+//                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
+//                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
+//                                        
+//                                        __strong ActionManager * strongSelf = weakSelf;
+//                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+//                                        {
+//                                            [strongSelf.delegate ActionManager:strongSelf reverseGenerated:reverseBG_];
+//                                        }
+//                                    }
+//                                    isReverseGenerating_ = NO;
+//                                }];
+//        if(!ret)
+//        {
+//            [reverseMediaGenerate_ setJoinVideoUrl:nil];
+//            [reverseMediaGenerate_ clear];
+//            reverseGenerate_ = nil;
+//            isReverseGenerating_ = NO;
+//            isReverseHasGenerated_ = NO;
+//            NSLog(@"generate reverse failure....");
+//            return NO;
+//        }
+//    }
+//    return YES;
+//}
 
 
 - (void) generatePlayerItem:(NSArray *)mediaList

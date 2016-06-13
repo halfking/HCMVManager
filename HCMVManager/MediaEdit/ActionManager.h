@@ -50,7 +50,7 @@
 @interface ActionManager : NSObject<VideoGeneraterDelegate>
 {
     MediaItem * audioBg_;    //音频背景
-    MediaItem * reverseBG_;  //倒序的视频
+//    MediaItem * reverseBG_;  //倒序的视频
     MediaItem * videoBg_;    //源视频
     MediaWithAction * videoBgAction_; //暂存的源视频Action
     
@@ -67,7 +67,7 @@
     
     //每次播放一个循环，将会生成一个视频
     NSMutableArray * videoBGHistroy_;
-    NSMutableArray * reverseBgHistory_;
+//    NSMutableArray * reverseBgHistory_;
     NSMutableArray * actionsHistory_;
     NSMutableArray * filterHistory_;
     
@@ -141,7 +141,7 @@
 - (BOOL) setBackAudio:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds;
 - (BOOL) setBackAudio:(MediaItem *)audioItem;
 - (MediaItem *) getBaseVideo;
-- (MediaItem *) getReverseVideo;
+//- (MediaItem *) getReverseVideo;
 - (MediaItem *) getBaseAudio;
 
 - (int) getLastFilterID;

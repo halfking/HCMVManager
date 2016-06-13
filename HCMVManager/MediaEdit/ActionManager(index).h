@@ -23,8 +23,8 @@
 //从原文件中切一部分内容生成新文件
 - (BOOL)generateMediaFileViaAction:(MediaActionDo *)action;
 - (BOOL)generateMediaFile:(MediaWithAction *)media;
-- (BOOL)generateReverseMV:(NSString*)filePath;
-- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd;
+//- (BOOL)generateReverseMV:(NSString*)filePath;
+//- (BOOL)generateReverseMV:(NSString*)filePath begin:(CGFloat)sourceBegin end:(CGFloat)sourceEnd;
 
 
 - (void) generatePlayerItem:(NSArray *)mediaList;
