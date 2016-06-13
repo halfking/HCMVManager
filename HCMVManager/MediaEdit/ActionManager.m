@@ -61,7 +61,7 @@
         [manager_ setIsFragment:NO];
         
         videoBGHistroy_ = [NSMutableArray new];
-//        reverseBgHistory_ = [NSMutableArray new];
+        //        reverseBgHistory_ = [NSMutableArray new];
         actionsHistory_ = [NSMutableArray new];
         
         manager_.delegate = self;
@@ -170,14 +170,14 @@
         [[HCFileManager manager]removeFileAtPath:item.filePath];
     }
     
-//    for (int i = 0;i<reverseBgHistory_.count;i++) {
-//        MediaItem * item = reverseBgHistory_[i];
-//        [[HCFileManager manager]removeFileAtPath:item.filePath];
-//    }
-//    if(reverseBG_ && reverseBG_.filePath)
-//    {
-//        [[HCFileManager manager]removeFileAtPath:reverseBG_.filePath];
-//    }
+    //    for (int i = 0;i<reverseBgHistory_.count;i++) {
+    //        MediaItem * item = reverseBgHistory_[i];
+    //        [[HCFileManager manager]removeFileAtPath:item.filePath];
+    //    }
+    //    if(reverseBG_ && reverseBG_.filePath)
+    //    {
+    //        [[HCFileManager manager]removeFileAtPath:reverseBG_.filePath];
+    //    }
     
     HCFileManager * manager = [HCFileManager manager];
     NSString * tempFilePath = [manager getFilePath:[manager tempFileDir]];
@@ -188,12 +188,12 @@
     [[HCFileManager manager]removeFilesAtPath:localFilePath matchRegex:@"^\\d+\\.[^\\.]+$"];
     
     [videoBGHistroy_ removeAllObjects];
-//    [reverseBgHistory_ removeAllObjects];
+    //    [reverseBgHistory_ removeAllObjects];
     [actionsHistory_ removeAllObjects];
     
     PP_RELEASE(audioBg_);
     PP_RELEASE(videoBg_);
-//    PP_RELEASE(reverseBG_);
+    //    PP_RELEASE(reverseBG_);
     
     durationForSource_ = 0;
     durationForAudio_ = 0;
@@ -367,23 +367,29 @@
 #pragma mark - action list manager
 - (BOOL) checkIsNeedChangeBG:(NSString *)filePath
 {
-    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
+    NSString * filePathOrg = videoBg_.filePath;
+    if([filePath isEqualToString:filePathOrg])
     {
-        [self.delegate ActionManager:self generateOK:videoBg_.filePath cover:nil isFilter:NO];
+        return NO;
     }
-//    if(isReverseHasGenerated_ && videoBg_ )
-//    {
-//        NSString * filePathOrg = videoBg_.filePath;
-//        if([filePath isEqualToString:filePathOrg])
-//        {
-//            if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
-//            {
-//                [self.delegate ActionManager:self reverseGenerated:reverseBG_];
-//            }
-//            return NO;
-//        }
-//        isReverseHasGenerated_ = NO;
-//    }
+    return YES;
+    //    if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:generateOK:cover:isFilter:)])
+    //    {
+    //        [self.delegate ActionManager:self generateOK:videoBg_.filePath cover:nil isFilter:NO];
+    //    }
+    //    if(isReverseHasGenerated_ && videoBg_ )
+    //    {
+    //        NSString * filePathOrg = videoBg_.filePath;
+    //        if([filePath isEqualToString:filePathOrg])
+    //        {
+    //            if(self.delegate && [self.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
+    //            {
+    //                [self.delegate ActionManager:self reverseGenerated:reverseBG_];
+    //            }
+    //            return NO;
+    //        }
+    //        isReverseHasGenerated_ = NO;
+    //    }
     return YES;
 }
 
@@ -410,11 +416,11 @@
         PP_RELEASE(videoBgAction_);
     }
     //生成反向的视频
-//    if(buildReverse)
-//    {
-//        isReverseGenerating_ = NO;
-//        [self generateReverseMV:filePath];
-//    }
+    //    if(buildReverse)
+    //    {
+    //        isReverseGenerating_ = NO;
+    //        [self generateReverseMV:filePath];
+    //    }
     
     videoBgAction_ = [self getNormalActionForBase];
     currentMediaWithAction_ = nil;
@@ -465,11 +471,11 @@
         
         PP_RELEASE(videoBgAction_);
     }
-//    //生成反向的视频
-//    if(buildReverse)
-//    {
-//        [self generateReverseMV:videoBg_.filePath];
-//    }
+    //    //生成反向的视频
+    //    if(buildReverse)
+    //    {
+    //        [self generateReverseMV:videoBg_.filePath];
+    //    }
     
     videoBgAction_ = [self getNormalActionForBase];
     
@@ -566,40 +572,40 @@
     
     MediaWithAction * lastDo_ = nil;
     int index = 0;
-//    if(!isReversePlayer)
-//    {
-        for (int i = (int)mediaList_.count-1; i>=0; i --) {
-            MediaWithAction * item = mediaList_[i];
-            if(item.secondsBeginBeforeReverse <= playerSeconds
-               && (item.secondsEndBeforeReverse > playerSeconds
-                   || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)) //到结束了
-               && ![self isReverseFile:item.fileName]
-               && !item.secondsInArrayNotConfirm
-               )
-            {
-                index = i;
-                lastDo_ = item;
-                break;
-            }
+    //    if(!isReversePlayer)
+    //    {
+    for (int i = (int)mediaList_.count-1; i>=0; i --) {
+        MediaWithAction * item = mediaList_[i];
+        if(item.secondsBeginBeforeReverse <= playerSeconds
+           && (item.secondsEndBeforeReverse > playerSeconds
+               || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)) //到结束了
+           && ![self isReverseFile:item.fileName]
+           && !item.secondsInArrayNotConfirm
+           )
+        {
+            index = i;
+            lastDo_ = item;
+            break;
         }
-//    }
-//    else
-//    {
-//        for (int i = (int)mediaList_.count-1; i>=0; i --) {
-//            MediaWithAction * item = mediaList_[i];
-//            if(item.secondsBeginBeforeReverse <= playerSeconds
-//               && (item.secondsEndBeforeReverse > playerSeconds
-//                   || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getReverseVideo].secondsDuration)) //到结束了
-//               && [self isReverseFile:item.fileName]
-//               && !item.secondsInArrayNotConfirm
-//               )
-//            {
-//                index = i;
-//                lastDo_ = item;
-//                break;
-//            }
-//        }
-//    }
+    }
+    //    }
+    //    else
+    //    {
+    //        for (int i = (int)mediaList_.count-1; i>=0; i --) {
+    //            MediaWithAction * item = mediaList_[i];
+    //            if(item.secondsBeginBeforeReverse <= playerSeconds
+    //               && (item.secondsEndBeforeReverse > playerSeconds
+    //                   || (item.secondsEndBeforeReverse + SECONDS_ERRORRANGE>=playerSeconds && playerSeconds +SECONDS_ERRORRANGE >= [self getReverseVideo].secondsDuration)) //到结束了
+    //               && [self isReverseFile:item.fileName]
+    //               && !item.secondsInArrayNotConfirm
+    //               )
+    //            {
+    //                index = i;
+    //                lastDo_ = item;
+    //                break;
+    //            }
+    //        }
+    //    }
     if(lastDo_)
     {
         secondsInFinal = lastDo_.secondsInArray;
@@ -1043,7 +1049,7 @@
     {
         media = [[action buildMaterialProcess:mediaList_ ] firstObject];
     }
-
+    
     
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
@@ -1302,7 +1308,7 @@
     if((actionList_.count>0 || currentFilterIndex_!=lastFilterIndex_) && videoBGHistroy_.count>0 )
     {
         [videoBGHistroy_ addObject:videoBg_];
-//        [reverseBgHistory_ addObject:reverseBG_];
+        //        [reverseBgHistory_ addObject:reverseBG_];
         [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
         [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
         
@@ -1311,7 +1317,7 @@
     else if(videoBGHistroy_.count==0)
     {
         [videoBGHistroy_ addObject:videoBg_];
-//        [reverseBgHistory_ addObject:reverseBG_];
+        //        [reverseBgHistory_ addObject:reverseBG_];
         [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
         [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     }
@@ -1324,23 +1330,23 @@
 }
 - (BOOL) resetOrigin
 {
-//    if(videoBGHistroy_.count>0)
-//    {
-//        videoBg_ = [videoBGHistroy_ firstObject];
-////        reverseBG_ = [reverseBgHistory_ firstObject];
-//    }
+    //    if(videoBGHistroy_.count>0)
+    //    {
+    //        videoBg_ = [videoBGHistroy_ firstObject];
+    ////        reverseBG_ = [reverseBgHistory_ firstObject];
+    //    }
     
     currentMediaWithAction_ = nil;
     
     [actionsHistory_ removeAllObjects];
-//    [reverseBgHistory_ removeAllObjects];
+    //    [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
     [filterHistory_ removeAllObjects];
     [actionList_ removeAllObjects];
     
     [videoBGHistroy_ addObject:videoBg_];
-//    if(reverseBG_)
-//        [reverseBgHistory_ addObject:reverseBG_];
+    //    if(reverseBG_)
+    //        [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
@@ -1357,24 +1363,24 @@
     if(videoBGHistroy_.count>0)
     {
         videoBg_ = [videoBGHistroy_ firstObject];
-//        reverseBG_ = [reverseBgHistory_ firstObject];
+        //        reverseBG_ = [reverseBgHistory_ firstObject];
     }
-//    currentFilterIndex_ = 0;
-//    lastFilterIndex_ = 0;
+    //    currentFilterIndex_ = 0;
+    //    lastFilterIndex_ = 0;
     currentMediaWithAction_ = nil;
     
     
     [actionList_ removeAllObjects];
     
     [actionsHistory_ removeAllObjects];
-//    [reverseBgHistory_ removeAllObjects];
+    //    [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
     [filterHistory_ removeAllObjects];
     
     
     [videoBGHistroy_ addObject:videoBg_];
-//    if(reverseBG_)
-//        [reverseBgHistory_ addObject:reverseBG_];
+    //    if(reverseBG_)
+    //        [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
@@ -1389,22 +1395,22 @@
 - (BOOL) setLastDraftAsOrigin
 {
     if(videoBGHistroy_.count==0)
-       return NO;
-       
+        return NO;
+    
     videoBg_ = [videoBGHistroy_ lastObject];
-//    reverseBG_ = [reverseBgHistory_ lastObject];
+    //    reverseBG_ = [reverseBgHistory_ lastObject];
     
     currentMediaWithAction_ = nil;
     
     [actionsHistory_ removeAllObjects];
-//    [reverseBgHistory_ removeAllObjects];
+    //    [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
     [filterHistory_ removeAllObjects];
     [actionList_ removeAllObjects];
     
     [videoBGHistroy_ addObject:videoBg_];
-//    if(reverseBG_)
-//        [reverseBgHistory_ addObject:reverseBG_];
+    //    if(reverseBG_)
+    //        [reverseBgHistory_ addObject:reverseBG_];
     [actionsHistory_ addObject:[NSArray arrayWithArray:actionList_]];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
@@ -1426,14 +1432,14 @@
     currentMediaWithAction_ = nil;
     
     videoBg_ = [videoBGHistroy_ lastObject];
-//    reverseBG_ = [reverseBgHistory_ lastObject];
+    //    reverseBG_ = [reverseBgHistory_ lastObject];
     currentFilterIndex_ = [[filterHistory_ lastObject]intValue];
     [actionList_ removeAllObjects];
     //    [actionList_ addObjectsFromArray:[actionsHistory_ lastObject]];
     
     [actionsHistory_ removeObjectAtIndex:actionsHistory_.count-1];
     [videoBGHistroy_ removeObjectAtIndex:videoBGHistroy_.count-1];
-//    [reverseBgHistory_ removeObjectAtIndex:reverseBgHistory_.count-1];
+    //    [reverseBgHistory_ removeObjectAtIndex:reverseBgHistory_.count-1];
     [filterHistory_ removeObjectAtIndex:filterHistory_.count-1];
     
     videoBgAction_ = [self getNormalActionForBase];
@@ -1452,18 +1458,18 @@
     currentMediaWithAction_ = nil;
     
     videoBg_ = [videoBGHistroy_ objectAtIndex:1];
-//    reverseBG_ = [reverseBgHistory_ objectAtIndex:1];
+    //    reverseBG_ = [reverseBgHistory_ objectAtIndex:1];
     currentFilterIndex_ = [[filterHistory_ objectAtIndex:1]intValue];
     [actionList_ removeAllObjects];
     //不要赋值
     //        [actionList_ addObjectsFromArray:[actionsHistory_ objectAtIndex:1]];
     [actionsHistory_ removeAllObjects];
-//    [reverseBgHistory_ removeAllObjects];
+    //    [reverseBgHistory_ removeAllObjects];
     [videoBGHistroy_ removeAllObjects];
     [filterHistory_ removeAllObjects];
     
     [actionsHistory_ addObject:actionList_];
-//    [reverseBgHistory_ addObject:reverseBG_];
+    //    [reverseBgHistory_ addObject:reverseBG_];
     [videoBGHistroy_ addObject:videoBg_];
     [filterHistory_ addObject:[NSNumber numberWithInt:currentFilterIndex_]];
     
@@ -1485,8 +1491,8 @@
         return NO;
     if(baseVideo)
         *baseVideo = [videoBGHistroy_ objectAtIndex:index];
-//    if(reverseVideo)
-//        *reverseVideo = [reverseBgHistory_ objectAtIndex:index];
+    //    if(reverseVideo)
+    //        *reverseVideo = [reverseBgHistory_ objectAtIndex:index];
     if(*actionList)
         *actionList = [actionsHistory_ objectAtIndex:index];
     if(*filterID)

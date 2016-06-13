@@ -652,7 +652,7 @@
         CGFloat minSeconds = currentMediaWithAction_.rateBeforeReverse <0?currentMediaWithAction_.secondsEndBeforeReverse:currentMediaWithAction_.secondsBeginBeforeReverse;
         CGFloat maxSeconds = currentMediaWithAction_.rateBeforeReverse<0?currentMediaWithAction_.secondsBeginBeforeReverse:currentMediaWithAction_.secondsEndBeforeReverse;
         
-        NSLog(@"rate :%f min:%f max:%f secondsplayer:%f",currentMediaWithAction_.rateBeforeReverse,minSeconds,maxSeconds,playerSeconds);
+//        NSLog(@"rate :%f min:%f max:%f secondsplayer:%f",currentMediaWithAction_.rateBeforeReverse,minSeconds,maxSeconds,playerSeconds);
         
         CGFloat diff = MIN(SECONDS_ERRORRANGE *2,currentMediaWithAction_.secondsDurationInArray/2);
         BOOL needReturn = NO;

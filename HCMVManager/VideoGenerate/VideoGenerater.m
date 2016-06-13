@@ -1262,12 +1262,12 @@
 {
     if(![HCFileManager isExistsFile:sourcePath])
     {
-        NSLog(@"file not exists:%@",sourcePath);
+        NSLog(@"AG : reverse source file not exists:%@",sourcePath);
         return NO;
     }
     if(!targetPath||targetPath.length<2)
     {
-        NSLog(@"target file name is nil");
+        NSLog(@"AG : reverse target file name is nil");
         return NO;
     }
     if([HCFileManager isExistsFile:targetPath])
