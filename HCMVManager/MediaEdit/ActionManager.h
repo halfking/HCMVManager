@@ -206,6 +206,7 @@
                       at:(CGFloat)seccondsInArray;
 
 - (BOOL) removeActionItem:(MediaActionDo *)actionDo;
+- (BOOL) removeActionItemsInArray:(NSArray *)actions;
 - (BOOL) removeActions;
 
 - (MediaActionDo *) getMediaActionDo:(MediaAction *)action;

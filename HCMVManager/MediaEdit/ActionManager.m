@@ -1020,6 +1020,7 @@
     
     //播下一个
     MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+    //        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
 #ifndef __OPTIMIZE__
     if(!media || media.secondsBeginBeforeReverse < SECONDS_ERRORRANGE)
     {
@@ -1043,13 +1044,14 @@
             media = [mediaList_ firstObject];
         }
     }
-    
-    NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
-    if(action.ActionType==SReverse && player_.secondsPlaying > media.secondsBegin + 0.15)
+
+    if(media && ((action.ActionType==SReverse  && player_.secondsPlaying > media.secondsBegin + 0.15) ||
+       (action.IsOverlap && player_.secondsPlaying + 0.1 < durationInSeconds + media.secondsBegin))
+       )
     {
         media = [[action buildMaterialProcess:mediaList_ ] firstObject];
     }
-    
+    NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
     
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
     
@@ -1274,6 +1276,31 @@
         return YES;
     }
     return NO;
+}
+- (BOOL) removeActionItemsInArray:(NSArray *)actions
+{
+    if(!actions || actions.count==0) return NO;
+    for (int i = (int)actions.count-1; i >=0;i --) {
+        
+        MediaActionDo * actionDo = actions[i];
+        BOOL beginDec = NO;
+        for (MediaActionDo * item in actionList_) {
+            if(item == actionDo)
+            {
+                beginDec = YES;
+            }
+            if(beginDec)
+            {
+                item.Index --;
+            }
+        }
+        secondsEffectPlayer_ -= [actionDo secondsEffectPlayer];
+        [actionList_ removeObject:actionDo];
+        [self ActionManager:self actionChanged:actionDo type:2];
+    }
+    
+    [self reindexAllActions];
+    return YES;
 }
 - (BOOL) removeActions
 {
