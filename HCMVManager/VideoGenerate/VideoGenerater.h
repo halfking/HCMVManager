@@ -175,6 +175,8 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 
 #pragma mark - new functions for generate
 - (void) showMediaInfo:(NSString *)filePath;
+- (UIDeviceOrientation) checkOrieataionForTrack:(AVAssetTrack *)track filePath:(NSString *)filePath;
+- (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack filePath:(NSString*)filePath;
 - (NSMutableArray *) getMediaTrackList;
 + (CGAffineTransform) getPlayerTrans:(UIDeviceOrientation)orientation
                         defaultTrans:(CGAffineTransform)defaultTrans;

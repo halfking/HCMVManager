@@ -401,16 +401,16 @@
         //        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
         CGAffineTransform t = videoTrack.preferredTransform;
         
-        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+        if(fabs(t.a) < 0.00001 && fabs(t.b-1.0)<0.00001  && fabs(t.c + 1 )<0.00001 && fabs(t.d)<0.00001){
             // Portrait
             degress = 90;
-        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+        }else if(fabs(t.a)<0.00001 && t.b == -1.0 && t.c == 1.0 && fabs(t.d)<0.00001){
             // PortraitUpsideDown
             degress = 270;
-        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+        }else if(fabs(t.a-1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d-1) <0.00001){
             // LandscapeRight
             degress = 0;
-        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+        }else if(fabs(t.a +1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d +1)<0.00001){
             // LandscapeLeft
             degress = 180;
         }
@@ -429,16 +429,16 @@
         //        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
         CGAffineTransform t = videoTrack.preferredTransform;
         
-        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+        if(fabs(t.a) < 0.00001 && fabs(t.b-1.0)<0.00001  && fabs(t.c + 1 )<0.00001 && fabs(t.d)<0.00001){
             // Portrait
             degress = 90;
-        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+        }else if(fabs(t.a)<0.00001 && t.b == -1.0 && t.c == 1.0 && fabs(t.d)<0.00001){
             // PortraitUpsideDown
             degress = 270;
-        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+        }else if(fabs(t.a-1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d-1) <0.00001){
             // LandscapeRight
             degress = 0;
-        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+        }else if(fabs(t.a +1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d +1)<0.00001){
             // LandscapeLeft
             degress = 180;
         }

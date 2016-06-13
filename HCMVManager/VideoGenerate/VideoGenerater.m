@@ -765,8 +765,14 @@
 #endif
     isGenerating_ = YES;
     //将传入的Size进行方向上纠正
-//    size = [self getSizeByOrientation:size];
-//    size = CGSizeMake(540, 960);
+    //    size = [self getSizeByOrientation:size];
+    //    size = CGSizeMake(540, 960);
+    if(size.width < size.height)
+    {
+        CGFloat temp = size.width;
+        size.width = size.height;
+        size.height = temp;
+    }
     CGSize natureSize = CGSizeZero;
     BOOL isOverlap = YES; //在背景视频上添加视频，素材不需要是相联的
     //注意此处需要处理是否根据一张图和一个音乐来合成视频。现在的检查不支持这种情况
@@ -991,12 +997,14 @@
 - (CGSize) getSize:(CGSize)size withMedialList:(NSArray *)mediaList
 {
     AVAssetTrack * sourceTrack = nil;
+    NSString * filePath = nil;
     if(bgvUrl)
     {
         AVURLAsset * asset = [AVURLAsset assetWithURL:bgvUrl];
         if(asset && [asset tracksWithMediaType:AVMediaTypeVideo].count>0)
         {
             sourceTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+            filePath = [bgvUrl path];
         }
     }
     if(!sourceTrack && mediaList.count>0)
@@ -1007,22 +1015,23 @@
         if(asset && [asset tracksWithMediaType:AVMediaTypeVideo].count>0)
         {
             sourceTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]firstObject];
+            filePath = item.filePath;
         }
     }
     CGSize natureSize = sourceTrack.naturalSize;
-    int degree = [self degressFromVideoFileWithTrack:sourceTrack];
+    int degree = [self degressFromVideoFileWithTrack:sourceTrack filePath:filePath];
     //将Size的方向转成一致，因为Nature默认是横屏，因此Size也要默认转成横屏
     switch (degree) {
         case 90:
         case 270:
-//            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
+            //            if(self.orientation>=0 && UIInterfaceOrientationIsPortrait(self.orientation))
             if(natureSize.width < natureSize.height)
                 natureSize = CGSizeMake(natureSize.height, natureSize.width);
             if(size.width < size.height)
                 size = CGSizeMake(size.height, size.width);
             break;
         default:
-//            if(self.orientation>=0 && UIInterfaceOrientationIsLandscape(self.orientation))
+            //            if(self.orientation>=0 && UIInterfaceOrientationIsLandscape(self.orientation))
             if(natureSize.width < natureSize.height)
                 natureSize = CGSizeMake(natureSize.height, natureSize.width);
             if(size.width < size.height)
@@ -1040,11 +1049,11 @@
         return CGSizeMake(size.height * rate1, size.height);
     }
 }
-- (CGFloat) getRate:(CGSize)size widthTrack:(AVAssetTrack *)sourceTrack
+- (CGFloat) getRate:(CGSize)size widthTrack:(AVAssetTrack *)sourceTrack filePath:(NSString *)filePath
 {
     if(!sourceTrack) return 1;
     CGSize natureSize = sourceTrack.naturalSize;
-    int degree = [self degressFromVideoFileWithTrack:sourceTrack];
+    int degree = [self degressFromVideoFileWithTrack:sourceTrack filePath:filePath];
     //将Size的方向转成一致，因为Nature默认是横屏，因此Size也要默认转成横屏
     switch (degree) {
         case 90:
@@ -1837,14 +1846,41 @@
             }
             else
             {
+                int degreeTarget = [self degressFromVideoFileWithTrack:videoTrack filePath:curItem.filePath];
+                int degreeSource = [self degressFromVideoFileWithTrack:videoTrack];
                 if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
                 {
-                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack];
+                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
                     CGAffineTransform transfer = CGAffineTransformIdentity;
-                    transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
-                    [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                    if(degreeSource!=degreeTarget || !CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform))
+                    {
+                        transfer = [self getLayerTransfer:degreeTarget size:size];
+                    }
+                    if(rate!=1)
+                    {
+                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+                    }
+                    if(!CGAffineTransformIsIdentity(transfer))
+                    {
+                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
+                    }
+                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
+                    {
+                        if(degreeSource!=degreeTarget)
+                        {
+                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
+                        }
+                        else
+                        {
+                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                        }
+                    }
                 }
-                [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                else
+                {
+                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                }
             }
             
             NSLog(@"videoTrack\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",videoTrack.preferredTransform.a,videoTrack.preferredTransform.b,videoTrack.preferredTransform.c,videoTrack.preferredTransform.d,videoTrack.preferredTransform.tx,videoTrack.preferredTransform.ty);
@@ -1905,6 +1941,68 @@
     [mediaTrackList_ addObject:trackInfo];
 #endif
     return modalOffEtInQueue;
+}
+- (CGAffineTransform) getTrackTransfer:(int)degree size:(CGSize)size
+{
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    switch (degree) {
+        case 0:
+            break;
+        case 90:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation( M_PI * 90 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            //为什么拍摄的视频需要偏移？
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(size.width, 0));
+        }
+            break;
+        case 180:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation( M_PI * 180 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(size.height, size.width));
+        }
+            break;
+        case 270:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation(  M_PI * 270 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0, size.height));
+        }
+            break;
+    }
+    return transform;
+}
+- (CGAffineTransform) getLayerTransfer:(int)degree size:(CGSize)size
+{
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    switch (degree) {
+        case 0:
+            break;
+        case 90:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation( - M_PI * 90 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            //            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(size.width, 0));
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(0,size.height));
+        }
+            break;
+        case 180:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation( - M_PI * 180 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(size.height, size.width));
+        }
+            break;
+        case 270:
+        {
+            CGAffineTransform videoTransform = CGAffineTransformMakeRotation(  - M_PI * 270 / 180);
+            transform = CGAffineTransformConcat(transform, videoTransform);
+            transform = CGAffineTransformConcat(transform, CGAffineTransformMakeTranslation(size.width, 0));
+        }
+            break;
+    }
+    return transform;
 }
 //此函数暂时未用
 - (BOOL)compositeOneAudioItem:(MediaItem *)curAudioItem composition:(AVMutableComposition*)composition audioMixParams:(NSMutableArray *) audioMixParams audioTimeScale:(CMTimeScale)audioTimeScale
@@ -2441,27 +2539,99 @@
 }
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack
 {
+    //    int degress = -1;
+    //    if(videoTrack)
+    //    {
+    //        CGAffineTransform t = videoTrack.preferredTransform;
+    //
+    //        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+    //            // Portrait
+    //            degress = 90;
+    //        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+    //            // PortraitUpsideDown
+    //            degress = 270;
+    //        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+    //            // LandscapeRight
+    //            degress = 0;
+    //        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+    //            // LandscapeLeft
+    //            degress = 180;
+    //        }
+    //    }
+    //
+    //    return degress;
+    return [self degressFromVideoFileWithTrack:videoTrack filePath:nil];
+}
+- (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack filePath:(NSString*)filePath
+{
     int degress = -1;
     if(videoTrack)
     {
         CGAffineTransform t = videoTrack.preferredTransform;
         
-        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+        if(fabs(t.a) < 0.00001 && fabs(t.b-1.0)<0.00001  && fabs(t.c + 1 )<0.00001 && fabs(t.d)<0.00001){
             // Portrait
             degress = 90;
-        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+        }else if(fabs(t.a)<0.00001 && t.b == -1.0 && t.c == 1.0 && fabs(t.d)<0.00001){
             // PortraitUpsideDown
             degress = 270;
-        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+        }else if(fabs(t.a-1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d-1) <0.00001){
             // LandscapeRight
             degress = 0;
-        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+        }else if(fabs(t.a +1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d +1)<0.00001){
             // LandscapeLeft
             degress = 180;
         }
     }
+    if(filePath && filePath.length>0)
+    {
+        NSString * recordDir = [[UDManager sharedUDManager]recordDir];
+        
+        //由于录制视频时，可能没有写入正确的方向，因此，需要检查
+        if([filePath rangeOfString:recordDir].location!=NSNotFound)
+        {
+            CGSize natureSize = videoTrack.naturalSize;
+            if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
+            {
+                degress += 90;
+            }
+            else if(natureSize.width > natureSize.height && (degress==90||degress==270))
+            {
+                if(degress==90)
+                    degress = 180;
+                else
+                    degress = 0;
+            }
+        }
+    }
     
     return degress;
+}
+- (UIDeviceOrientation) checkOrieataionForTrack:(AVAssetTrack *)track filePath:(NSString *)filePath
+{
+    UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromVideo:track];
+    NSString * recordDir = [[UDManager sharedUDManager]recordDir];
+    
+    //由于录制视频时，可能没有写入正确的方向，因此，需要检查
+    if([filePath rangeOfString:recordDir].location!=NSNotFound)
+    {
+        CGSize natureSize = track.naturalSize;
+        if(natureSize.width < natureSize.height && UIDeviceOrientationIsLandscape(or))
+        {
+            if(or == UIDeviceOrientationLandscapeRight)
+                or = UIDeviceOrientationPortraitUpsideDown;
+            else
+                or = UIDeviceOrientationPortrait;
+        }
+        else if(natureSize.width > natureSize.height && UIDeviceOrientationIsPortrait(or))
+        {
+            if(or == UIDeviceOrientationPortraitUpsideDown)
+                or = UIDeviceOrientationLandscapeRight;
+            else
+                or = UIDeviceOrientationLandscapeLeft;
+        }
+    }
+    return or;
 }
 -(CGAffineTransform)layerTrans:(AVAsset *)testAsset withTargetSize:(CGSize)tsize orientation:(UIDeviceOrientation)orientation withFontCamera:(BOOL) useFontCamera isCreateByCover:(BOOL)isCreateByCover
 {
