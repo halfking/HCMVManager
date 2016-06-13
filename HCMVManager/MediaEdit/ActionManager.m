@@ -1017,40 +1017,50 @@
     
     [self ActionManager:self actionChanged:action type:1];
     
-    
-    //播下一个
-    MediaWithAction * media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
-    //        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
-#ifndef __OPTIMIZE__
-    if(!media || media.secondsBeginBeforeReverse < SECONDS_ERRORRANGE)
+    //检查播放器是否同步在走，如果是同步，表示长按，直接播下一个素材，如果不是同步，则表示Click，播当前素材
+    BOOL isPlayerSync = YES;
+    MediaWithAction * media = [action buildMaterialProcess:mediaList_].count>0?[[action buildMaterialProcess:mediaList_]firstObject]:nil;
+    if(media && ((action.ActionType==SReverse  && player_.secondsPlaying > media.secondsBegin + 0.15) ||
+                 (action.IsOverlap && player_.secondsPlaying + 0.1 < durationInSeconds + media.secondsBegin))
+       )
     {
-        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+        isPlayerSync = NO;
     }
-#endif
-    if(!media)
+    if(isPlayerSync && media)
     {
-        NSArray * metaList = [action buildMaterialProcess:mediaList_];
-        if(metaList.count>0)
+        NSLog(@"AM :播放器不同步，表示是Click");
+    }
+    else
+    {
+        NSLog(@"AM :播放器同步，表示是长按");
+        //播下一个
+        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+        //        media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+#ifndef __OPTIMIZE__
+        if(!media || media.secondsBeginBeforeReverse < SECONDS_ERRORRANGE)
         {
-            MediaWithAction * item = [metaList lastObject];
-            //reach end
-            if(item.secondsEnd +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
+            media = [self findMediaItemAt:action.SecondsInArray + action.DurationInArray+SECONDS_ERRORRANGE];
+        }
+#endif
+        if(!media)
+        {
+            NSArray * metaList = [action buildMaterialProcess:mediaList_];
+            if(metaList.count>0)
+            {
+                MediaWithAction * item = [metaList lastObject];
+                //reach end
+                if(item.secondsEnd +SECONDS_ERRORRANGE >= [self getBaseVideo].secondsDuration)
+                {
+                    media = [mediaList_ firstObject];
+                }
+            }
+            else
             {
                 media = [mediaList_ firstObject];
             }
         }
-        else
-        {
-            media = [mediaList_ firstObject];
-        }
     }
 
-    if(media && ((action.ActionType==SReverse  && player_.secondsPlaying > media.secondsBegin + 0.15) ||
-       (action.IsOverlap && player_.secondsPlaying + 0.1 < durationInSeconds + media.secondsBegin))
-       )
-    {
-        media = [[action buildMaterialProcess:mediaList_ ] firstObject];
-    }
     NSLog(@"playerSeconds:%f (%f) media:%f->%f",player_.secondsPlaying,CMTimeGetSeconds(player_.currentPlayer.currentItem.currentTime), media.secondsBegin,media.secondsEnd);
     
     [self ActionManager:self play:action media:media seconds:SECONDS_NOTVALID];
