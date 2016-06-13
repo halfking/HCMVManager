@@ -106,7 +106,8 @@
     //    [manager_ removeActions];
     
     NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
-        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+//        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
+    oPath_ = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
     
 //    oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"MOV"];
 //        oPath_ = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];

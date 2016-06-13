@@ -1040,14 +1040,24 @@
     }
     CGFloat rate1 = natureSize.width /natureSize.height;
     CGFloat rate2 = size.width / size.height;
+    CGSize targetSize = CGSizeZero;
     if(rate1>=rate2)
     {
-        return CGSizeMake(size.width, size.width / rate1);
+        targetSize =  CGSizeMake(size.width, size.width / rate1);
     }
     else
     {
-        return CGSizeMake(size.height * rate1, size.height);
+        targetSize =  CGSizeMake(size.height * rate1, size.height);
     }
+    if(fabs(targetSize.width -968)<1)
+    {
+        targetSize.width = 968;
+    }
+    if(fabs(targetSize.height - 560)<1)
+    {
+        targetSize.height = 560;
+    }
+    return targetSize;
 }
 - (CGFloat) getRate:(CGSize)size widthTrack:(AVAssetTrack *)sourceTrack filePath:(NSString *)filePath
 {
@@ -1856,7 +1866,7 @@
                     {
                         transfer = [self getLayerTransfer:degreeTarget size:size];
                     }
-                    if(rate!=1)
+                    if(scaleRate!=1)
                     {
                         transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
                     }

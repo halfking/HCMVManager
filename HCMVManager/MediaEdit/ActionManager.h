@@ -121,6 +121,7 @@
 @property (nonatomic,assign) long bitRate;                      //合成视频的BitRate
 @property (nonatomic,assign) CGSize renderSize;                 //合成视频的大小
 @property (nonatomic,assign) CGFloat minMediaDuration;          //视频最小长度
+@property (nonatomic,assign) CGFloat minActionDuration;         //最小的ActionDuration长度,即单击时，加入的事件的时间长度
 @property (nonatomic,assign) BOOL needPlayerItem;
 @property (nonatomic,assign) BOOL canSendPlayerMedia; //是否可以向前端的播放器发送需要播放的对像。默认YES，在合成或一些未完成的操作时，需要关闭
 @property (nonatomic,assign) CGFloat secondsForAudioPlayerMaxRange;//因为操作过程中视频可能要暂停，但音频不停，因此音频的播放时间应该在视频的前面，但是为了不产生中断感，设定一个参数来处理

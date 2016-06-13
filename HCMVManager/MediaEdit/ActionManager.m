@@ -81,6 +81,9 @@
         _bitRate = (long)(540 *960 * 10);
         _renderSize = CGSizeMake(540, 960);
         moveFileRemoveList_ = [NSMutableArray new];
+        
+        _minActionDuration = 0;
+        
         [self setNeedPlaySync:YES];
         
         //        lastPlayerSeconds_ = 0;
@@ -104,6 +107,7 @@
     durationForSource_ = 0;
     durationForAudio_ = 0;
     durationForTarget_ = 0;
+    _minActionDuration = 0;
     
     currentMediaWithAction_ = nil;
     secondsForAudioPlayerMaxRange_ = 0.5;
@@ -155,6 +159,7 @@
     videoVol_ = 1;
     audioVol_ = 1;
     secondsForAudioPlayerMaxRange_ = 0.5;
+    _minActionDuration = 0;
     _bitRate = (long)(540 *960 * 8);
     _renderSize = CGSizeMake(540, 960);
     
@@ -999,6 +1004,8 @@
     if(action.isOPCompleted) return NO;  //如果已经完成的，则不能再设时长。如果需要更改，需要将其移除再Add进来
     needSendPlayControl_ = NO;
     
+    if(self.minActionDuration>0 && durationInSeconds<self.minActionDuration) durationInSeconds = self.minActionDuration;
+    
     [self pausePlayer];
     
     //durationInseconds 会触发相关的更新事件
@@ -1020,7 +1027,7 @@
     //检查播放器是否同步在走，如果是同步，表示长按，直接播下一个素材，如果不是同步，则表示Click，播当前素材
     BOOL isPlayerSync = YES;
     MediaWithAction * media = [action buildMaterialProcess:mediaList_].count>0?[[action buildMaterialProcess:mediaList_]firstObject]:nil;
-    if(media && ((action.ActionType==SReverse  && player_.secondsPlaying > media.secondsBegin + 0.15) ||
+    if(media && ((action.ActionType==SReverse  && player_.secondsPlaying > media.secondsEnd + 0.15) ||
                  (action.IsOverlap && player_.secondsPlaying + 0.1 < durationInSeconds + media.secondsBegin))
        )
     {

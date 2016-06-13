@@ -333,8 +333,14 @@
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
-    [vg setRenderSize:self.renderSize orientation:or withFontCamera:NO];
-    
+    if(videoBg_.renderSize.width <= self.renderSize.width && videoBg_.renderSize.height <=self.renderSize.width)
+    {
+        [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
+    }
+    else
+    {
+        [vg setRenderSize:self.renderSize orientation:or withFontCamera:NO];
+    }
     [vg setTimeForMerge:0 end:-1];
     if(audioBg_)
     {
@@ -532,14 +538,14 @@
 ////        }
 //        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"reverse.mp4"];
 //        NSString * outputPath = [[HCFileManager manager]tempFileFullPath:fileName];
-//        
+//
 //        VideoGenerater * vg = [VideoGenerater new];
 //        vg.delegate = self;
 //        vg.TagID = 2;
 //        vg.bitRate = self.bitRate;
-//       
+//
 //        [vg setRenderSize:self.renderSize orientation:-1 withFontCamera:NO];
-//        
+//
 //        reverseGenerate_ = vg;
 //        __weak ActionManager * weakSelf = self;
 //        NSLog(@"begin generate reverse video....");
@@ -560,7 +566,7 @@
 //                                        reverseBG_ = [manager_ getMediaItem:[NSURL fileURLWithPath:filePathNew]];
 //                                        reverseBG_.begin = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsEnd,videoBg_.end.timescale);
 //                                        reverseBG_.end = CMTimeMakeWithSeconds(videoBg_.secondsDuration - videoBg_.secondsBegin,videoBg_.begin.timescale);
-//                                        
+//
 //                                        __strong ActionManager * strongSelf = weakSelf;
 //                                        if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(ActionManager:reverseGenerated:)])
 //                                        {
