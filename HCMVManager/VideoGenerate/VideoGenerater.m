@@ -1341,6 +1341,7 @@
     }
     timerForReverseExport_.fireDate = [NSDate distantPast];
     __weak VideoGenerater * weakSelf = self;
+    __block BOOL isCalled = NO;
     [session reverseAsynchronouslyWithCompletionHandler:^{
         currentReverseSession_ = nil;
         timerForReverseExport_.fireDate = [NSDate distantFuture];
@@ -1355,26 +1356,29 @@
                                                      complted:^(NSString *filePath) {
                                                          if(complted)
                                                          {
+                                                             isCalled = YES;
                                                              complted(filePath);
                                                          }
                                                      }];
-                if(!ret && complted)
+                if(!ret && complted && !isCalled)
                 {
+                    isCalled = YES;
                     complted(nil);
                 }
             }
             else
             {
-                if(complted)
+                if(complted && !isCalled)
                 {
+                    isCalled = YES;
                     complted([outputURL path]);
                 }
             }
         } else {
-            
             NSLog(@"AG : 生成反向视频失败");
-            if(complted)
+            if(complted && !isCalled)
             {
+                isCalled = YES;
                 complted(nil);
             }
         }
@@ -1399,15 +1403,23 @@
     
     AVURLAsset * videoAsset = [[ AVURLAsset alloc ] initWithURL :[ NSURL fileURLWithPath:sourceFilePath] options : nil ];
     AVURLAsset * audioAsset =[[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:audioFilePath] options:nil];
-    if([videoAsset tracksWithMediaType : AVMediaTypeVideo].count==0 ||
-       [audioAsset tracksWithMediaType:AVMediaTypeAudio].count==0)
+    if([videoAsset tracksWithMediaType : AVMediaTypeVideo].count==0)
     {
-        NSLog(@"AG : 文件中没有需要操作的数据");
+        NSLog(@"AG : 文件中没有需要操作的视频数据");
         if(complted)
         {
             complted(sourceFilePath);
         }
         return NO;
+    }
+    else if([audioAsset tracksWithMediaType:AVMediaTypeAudio].count==0)
+    {
+        NSLog(@"AG : 文件中没有需要操作的音频数据");
+        if(complted)
+        {
+            complted(sourceFilePath);
+        }
+        return YES;
     }
     CGFloat audioDurationSeconds = CMTimeGetSeconds(audioAsset.duration);
     

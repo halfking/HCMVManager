@@ -73,7 +73,7 @@
 }
 - (BOOL)isReverseMedia
 {
-    if(self.fileName && self.fileName.length>0 && self.isReversed >0)
+    if(self.fileName && self.fileName.length>0 && (self.isReversed >0||[self.fileName rangeOfString:@"reverse_"].location!=NSNotFound))
         return YES;
     else
         return NO;

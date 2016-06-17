@@ -9,12 +9,12 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "1.5.3"
+  s.version      = "1.5.4"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
 1.5.3   反向视频生成后，被切割时，起止时间可能导致的错误。另外，增加了反向视频生成失败，重试2次的规则。2次失败则抛弃。
-
+1.5.4   解决生成反向视频中，合成音频时，音频文件不存在的情况下，导致的合成失败，多次调用Block的Bug
                    DESC
 
   s.homepage     = "https://github.com/halfking/HCMVManager"

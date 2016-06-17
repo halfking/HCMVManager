@@ -500,7 +500,7 @@
                                     NSLog(@"VG  : reveser ok:%@ org filerange:%f->%f duration:%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
                                           );
                                 }
-                                else
+                                else if(media.isReversed<=0) //防止内部重复调用，导致死循环
                                 {
                                     NSLog(@"VG  : reveser failure:%@ org filerange:%f->%f duration:%f",@"null",media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
                                           );
