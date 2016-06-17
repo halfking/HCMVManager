@@ -401,7 +401,12 @@
 - (BOOL)setBackMV:(NSString *)filePath begin:(CGFloat)beginSeconds end:(CGFloat)endSeconds  buildReverse:(BOOL)buildReverse
 {
     if(![self checkIsNeedChangeBG:filePath]) return NO;
-    
+ 
+    if(!filePath||filePath.length==0)
+    {
+        NSLog(@"AM :不能使用空文件作基础文件");
+        return NO;
+    }
     if(isGenerating_ || isReverseGenerating_) return NO;
     isGenerating_ = YES;
     //设置正向视频

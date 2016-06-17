@@ -757,7 +757,7 @@
 }
 - (void)clearFiles
 {
-    NSLog(@"seenvoice queue clear files...");
+    NSLog(@"model list  clear files...");
     
     for(MediaItem * item in mediaList_)
     {

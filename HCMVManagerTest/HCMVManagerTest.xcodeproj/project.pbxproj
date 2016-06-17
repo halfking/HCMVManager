@@ -74,9 +74,6 @@
 		11B906CA1D0E8B0D004E1038 /* HCMVManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 11B906C91D0E8B0D004E1038 /* HCMVManager.bundle */; };
 		11C850A51CFED0830029229B /* testPlayerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C850A41CFED0830029229B /* testPlayerVC.m */; };
 		11C850AC1D0066AE0029229B /* ywy.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11C850AB1D0066AE0029229B /* ywy.mp3 */; };
-		11CF23D61CFDA10A002851BD /* a.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11CF23D41CFDA10A002851BD /* a.m4v */; };
-		11CF23D71CFDA10A002851BD /* b.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11CF23D51CFDA10A002851BD /* b.m4v */; };
-		11D595CA1CFA0B2A00D96FAA /* test2.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 11D595C91CFA0B2A00D96FAA /* test2.MOV */; };
 		11D595CD1CFAE9AE00D96FAA /* MediaWithActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D595CC1CFAE9AE00D96FAA /* MediaWithActionView.m */; };
 		11D595D31CFC222200D96FAA /* watermark_MtvPlus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */; };
 		11D595EE1CFC679B00D96FAA /* man.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11D595ED1CFC679B00D96FAA /* man.mp3 */; };
@@ -91,6 +88,8 @@
 		11DE4A861CE4665100A0BE8D /* MediaActionForNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A851CE4665100A0BE8D /* MediaActionForNormal.m */; };
 		11DE4A891CE4837A00A0BE8D /* MediaActionDo.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */; };
 		11DE4A8C1CE483F300A0BE8D /* MediaWithAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */; };
+		11F4D3901D13FD7B009499A4 /* IMG_0394.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 11F4D38F1D13FC54009499A4 /* IMG_0394.mp4 */; };
+		11F4D3941D140235009499A4 /* movie_34948659.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 11F4D3921D140235009499A4 /* movie_34948659.m4v */; };
 		E96A6F695FC5EC548AA60E3A /* libPods-HCMVManagerTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */; };
 /* End PBXBuildFile section */
 
@@ -227,9 +226,6 @@
 		11C850A31CFED0830029229B /* testPlayerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testPlayerVC.h; sourceTree = "<group>"; };
 		11C850A41CFED0830029229B /* testPlayerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testPlayerVC.m; sourceTree = "<group>"; };
 		11C850AB1D0066AE0029229B /* ywy.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ywy.mp3; sourceTree = "<group>"; };
-		11CF23D41CFDA10A002851BD /* a.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = a.m4v; sourceTree = "<group>"; };
-		11CF23D51CFDA10A002851BD /* b.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = b.m4v; sourceTree = "<group>"; };
-		11D595C91CFA0B2A00D96FAA /* test2.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = test2.MOV; sourceTree = "<group>"; };
 		11D595CB1CFAE9AE00D96FAA /* MediaWithActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithActionView.h; sourceTree = "<group>"; };
 		11D595CC1CFAE9AE00D96FAA /* MediaWithActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithActionView.m; sourceTree = "<group>"; };
 		11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "watermark_MtvPlus@2x.png"; sourceTree = "<group>"; };
@@ -256,6 +252,8 @@
 		11DE4A881CE4837A00A0BE8D /* MediaActionDo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaActionDo.m; sourceTree = "<group>"; };
 		11DE4A8A1CE483F300A0BE8D /* MediaWithAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithAction.h; sourceTree = "<group>"; };
 		11DE4A8B1CE483F300A0BE8D /* MediaWithAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaWithAction.m; sourceTree = "<group>"; };
+		11F4D38F1D13FC54009499A4 /* IMG_0394.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = IMG_0394.mp4; sourceTree = "<group>"; };
+		11F4D3921D140235009499A4 /* movie_34948659.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = movie_34948659.m4v; sourceTree = "<group>"; };
 		434CC33D0F344C0779A83627 /* Pods-HCMVManagerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HCMVManagerTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-HCMVManagerTest/Pods-HCMVManagerTest.release.xcconfig"; sourceTree = "<group>"; };
 		A74F31E12DABA8AADE8A9013 /* libPods-HCMVManagerTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HCMVManagerTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -366,12 +364,11 @@
 		118CE8681CE1AF8D00290641 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11F4D3921D140235009499A4 /* movie_34948659.m4v */,
+				11F4D38F1D13FC54009499A4 /* IMG_0394.mp4 */,
 				11C850AB1D0066AE0029229B /* ywy.mp3 */,
-				11CF23D41CFDA10A002851BD /* a.m4v */,
-				11CF23D51CFDA10A002851BD /* b.m4v */,
 				11D595ED1CFC679B00D96FAA /* man.mp3 */,
 				11D595D21CFC222200D96FAA /* watermark_MtvPlus@2x.png */,
-				11D595C91CFA0B2A00D96FAA /* test2.MOV */,
 				11ABAE9C1CEF29BB00E94CD9 /* test2.mp4 */,
 				11ABAE971CEEE84000E94CD9 /* test3.MOV */,
 				118CE8691CE1AF8D00290641 /* main.m */,
@@ -646,9 +643,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11CF23D71CFDA10A002851BD /* b.m4v in Resources */,
 				118CE87B1CE1AF8D00290641 /* LaunchScreen.storyboard in Resources */,
-				11CF23D61CFDA10A002851BD /* a.m4v in Resources */,
 				118CE8781CE1AF8D00290641 /* Assets.xcassets in Resources */,
 				11D595EE1CFC679B00D96FAA /* man.mp3 in Resources */,
 				11D595D31CFC222200D96FAA /* watermark_MtvPlus@2x.png in Resources */,
@@ -656,10 +651,11 @@
 				11B906CA1D0E8B0D004E1038 /* HCMVManager.bundle in Resources */,
 				11ABAE9D1CEF29C200E94CD9 /* test2.mp4 in Resources */,
 				11C850AC1D0066AE0029229B /* ywy.mp3 in Resources */,
-				11D595CA1CFA0B2A00D96FAA /* test2.MOV in Resources */,
+				11F4D3901D13FD7B009499A4 /* IMG_0394.mp4 in Resources */,
 				11ABAE981CEEE84000E94CD9 /* test3.MOV in Resources */,
 				118CE8DF1CE1B00D00290641 /* Info.plist in Resources */,
 				118CE8761CE1AF8D00290641 /* Main.storyboard in Resources */,
+				11F4D3941D140235009499A4 /* movie_34948659.m4v in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

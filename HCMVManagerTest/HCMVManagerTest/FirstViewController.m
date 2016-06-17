@@ -168,6 +168,9 @@
 //        NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"mp4"];
 //    NSString * path = [[NSBundle mainBundle]pathForResource:@"test2" ofType:@"MOV"];
         NSString * path = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"IMG_0394" ofType:@"mp4"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"0-0-1466157642551" ofType:@"mp4"];
+//    NSString * path = [[NSBundle mainBundle]pathForResource:@"movie_34948659" ofType:@"m4v"];
     //    NSString * path = [[NSBundle mainBundle]pathForResource:@"up" ofType:@"MOV"];
     //    NSString * path = [[NSBundle mainBundle]pathForResource:@"upset" ofType:@"MOV"];
     //    NSString * path = [[NSBundle mainBundle]pathForResource:@"lanleft" ofType:@"MOV"];

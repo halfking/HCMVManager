@@ -2559,31 +2559,32 @@
     }
     return transform;
 }
+//返回原始的Degreee
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack
 {
-    //    int degress = -1;
-    //    if(videoTrack)
-    //    {
-    //        CGAffineTransform t = videoTrack.preferredTransform;
-    //
-    //        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
-    //            // Portrait
-    //            degress = 90;
-    //        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
-    //            // PortraitUpsideDown
-    //            degress = 270;
-    //        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
-    //            // LandscapeRight
-    //            degress = 0;
-    //        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
-    //            // LandscapeLeft
-    //            degress = 180;
-    //        }
-    //    }
-    //
-    //    return degress;
-    return [self degressFromVideoFileWithTrack:videoTrack filePath:nil];
+    int degress = -1;
+    if(videoTrack)
+    {
+        CGAffineTransform t = videoTrack.preferredTransform;
+        
+        if(fabs(t.a) < 0.00001 && fabs(t.b-1.0)<0.00001  && fabs(t.c + 1 )<0.00001 && fabs(t.d)<0.00001){
+            // Portrait
+            degress = 90;
+        }else if(fabs(t.a)<0.00001 && t.b == -1.0 && t.c == 1.0 && fabs(t.d)<0.00001){
+            // PortraitUpsideDown
+            degress = 270;
+        }else if(fabs(t.a-1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d-1) <0.00001){
+            // LandscapeRight
+            degress = 0;
+        }else if(fabs(t.a +1)<0.00001 && t.b == 0 && t.c == 0 && fabs(t.d +1)<0.00001){
+            // LandscapeLeft
+            degress = 180;
+        }
+    }
+    return degress;
+//    return [self degressFromVideoFileWithTrack:videoTrack filePath:nil];
 }
+//返回正确的Degree
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack filePath:(NSString*)filePath
 {
     int degress = -1;
@@ -2605,24 +2606,33 @@
             degress = 180;
         }
     }
-    if(filePath && filePath.length>0)
+    
+    CGSize natureSize = videoTrack.naturalSize;
+    if(degress==0 && natureSize.width < natureSize.height)
     {
-        NSString * recordDir = [[UDManager sharedUDManager]recordDir];
-        
-        //由于录制视频时，可能没有写入正确的方向，因此，需要检查
-        if([filePath rangeOfString:recordDir].location!=NSNotFound)
+        degress = 90;
+    }
+    else
+    {
+        if(filePath && filePath.length>0)
         {
-            CGSize natureSize = videoTrack.naturalSize;
-            if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
+            NSString * recordDir = [[UDManager sharedUDManager]recordDir];
+            
+            //由于录制视频时，可能没有写入正确的方向，因此，需要检查
+            if([filePath rangeOfString:recordDir].location!=NSNotFound)
             {
-                degress += 90;
-            }
-            else if(natureSize.width > natureSize.height && (degress==90||degress==270))
-            {
-                if(degress==90)
-                    degress = 180;
-                else
-                    degress = 0;
+                CGSize natureSize = videoTrack.naturalSize;
+                if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
+                {
+                    degress += 90;
+                }
+                else if(natureSize.width > natureSize.height && (degress==90||degress==270))
+                {
+                    if(degress==90)
+                        degress = 180;
+                    else
+                        degress = 0;
+                }
             }
         }
     }
@@ -3168,7 +3178,7 @@
 
 - (void)clearFiles
 {
-    NSLog(@"seenvoice queue clear files...");
+    NSLog(@"VG : clear files...");
     
     //remove other files match temp file
     [udManager_ removeTempVideos];

@@ -339,6 +339,11 @@
     }
     
     UIDeviceOrientation or = [[MediaEditManager shareObject]orientationFromDegree:videoBg_.degree];
+    //有部分没有正确设置方向的视频
+    if(videoBg_.degree==0 && videoBg_.renderSize.width< videoBg_.renderSize.height)
+    {
+        or = UIDeviceOrientationPortrait;
+    }
     if(videoBg_.renderSize.width <= self.renderSize.width && videoBg_.renderSize.height <=self.renderSize.width)
     {
         [vg setRenderSize:videoBg_.renderSize orientation:or withFontCamera:NO];
