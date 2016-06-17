@@ -21,12 +21,12 @@
 @class VideoGenerater;
 
 @protocol VideoGeneraterDelegate <NSObject>
-- (void)VideoGenerater:(VideoGenerater*)queue didPlayerItemReady:(AVPlayerItem *)playerItem;
-- (void)VideoGenerater:(VideoGenerater *)queue didItemsChanged:(BOOL)finished;
-- (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress;
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateFailure:(NSString *)msg error:(NSError *)error;
 - (void)VideoGenerater:(VideoGenerater *)queue didGenerateCompleted:(NSURL *)fileUrl cover:(NSString *)cover;
-
+@optional
+- (void)VideoGenerater:(VideoGenerater *)queue generateProgress:(CGFloat)progress;
+- (void)VideoGenerater:(VideoGenerater *)queue didItemsChanged:(BOOL)finished;
+- (void)VideoGenerater:(VideoGenerater*)queue didPlayerItemReady:(AVPlayerItem *)playerItem;
 - (void)VideoGenerater:(VideoGenerater *)queue generateReverseProgress:(CGFloat)progress;
 
 @end
