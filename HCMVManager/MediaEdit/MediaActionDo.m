@@ -617,7 +617,7 @@
     secondItem.durationInPlaying = -1;
     
     //重新计算前半部中超出的内容长度:素材有效内容起点 + 持续时长
-    CGFloat endSeconds = item.secondsBeginBeforeReverse + splitSecondsInArray - item.secondsInArray; //如果起点在变化区域内:负值，否则为正值
+    CGFloat endSeconds = item.secondsBegin + splitSecondsInArray - item.secondsInArray; //如果起点在变化区域内:负值，否则为正值
     CMTime endTime = CMTimeMakeWithSeconds(endSeconds, item.end.timescale);
     item.end = endTime;
     
@@ -628,7 +628,8 @@
         item.secondsChangedWithActionForPlayer = 0;
     
     secondItem.begin = item.end;
-    secondItem.timeInArray = CMTimeMakeWithSeconds(item.secondsInArray + item.secondsDurationInArray, secondItem.timeInArray.timescale);
+//    secondItem.timeInArray = CMTimeMakeWithSeconds(item.secondsInArray + item.secondsDurationInArray, secondItem.timeInArray.timescale);
+    secondItem.timeInArray = CMTimeMakeWithSeconds(splitSecondsInArray, secondItem.timeInArray.timescale);
     secondItem.durationInPlaying = [self getFinalDurationForMedia:secondItem];
     secondItem.secondsChangedWithActionForPlayer = orgEffect - item.secondsChangedWithActionForPlayer;
     

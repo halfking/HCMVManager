@@ -14,7 +14,8 @@
 #import <Photos/Photos.h>
 #import <AssetsLibrary/ALAssetsLibrary.h>
 #import "mvconfig.h"
-
+#define DEFAULT_VIDEOWIDTH  540
+#define DEFAULT_VIDEOHEIGHT 960
 @class MediaItem;
 
 @class VideoGenerater;

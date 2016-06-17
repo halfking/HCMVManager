@@ -25,6 +25,7 @@
         self.TableName = @"mediawithaction";
         self.KeyName = @"key";
         self.secondsInArrayNotConfirm = NO;
+        self.isReversed = 0;
     }
     return self;
 }
@@ -70,10 +71,17 @@
         return NO;
     }
 }
+- (BOOL)isReverseMedia
+{
+    if(self.fileName && self.fileName.length>0 && self.isReversed >0)
+        return YES;
+    else
+        return NO;
+}
 - (CGFloat) getSecondsInArrayByPlaySeconds:(CGFloat)playerSeconds
 {
     CGFloat secondsInTrack = -1;
-    if(self.isReversed)
+    if(self.isReversed>0)
     {
         if(self.secondsBeginBeforeReverse > playerSeconds && self.secondsEndBeforeReverse <=playerSeconds)
         {
@@ -109,16 +117,24 @@
 //}
 - (void)setBegin:(CMTime)begin
 {
+    if(self.isReversed>0) //对反向视频进行切割时
+    {
+        secondsEndBeforeReverse -= (CMTimeGetSeconds(begin) - self.secondsBegin);
+    }
     [super setBegin:begin];
-    if(self.isReversed==NO)
+    if(self.isReversed==0)
     {
         secondsBeginBeforeReverse = self.secondsBegin;
     }
 }
 - (void)setEnd:(CMTime)end
 {
+    if(self.isReversed>0) //对反向视频进行切割时
+    {
+        secondsBeginBeforeReverse += self.secondsEnd - CMTimeGetSeconds(end);
+    }
     [super setEnd:end];
-    if(self.isReversed==NO)
+    if(self.isReversed==0)
     {
         secondsEndBeforeReverse = self.secondsEnd;
     }
@@ -126,7 +142,7 @@
 - (void)setPlayRate:(CGFloat)playRate
 {
     [super setPlayRate:playRate];
-    if(self.isReversed==NO)
+    if(self.isReversed==0)
     {
         rateBeforeReverse = playRate;
     }

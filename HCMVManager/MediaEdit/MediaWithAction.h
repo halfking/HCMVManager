@@ -20,7 +20,7 @@
 @property (nonatomic,assign) CGFloat secondsBeginBeforeReverse;     //生成反向文件前的开始时间
 @property (nonatomic,assign) CGFloat secondsEndBeforeReverse;       //生成反向文件前的结束时间
 @property (nonatomic,assign) CGFloat rateBeforeReverse;             //速度
-@property (nonatomic,assign) BOOL isReversed;                       //是否已经生成了反向文件，生成反向文件后，文件中的开始与结束时间均会发生变化
+@property (nonatomic,assign) int isReversed;                       //是否已经生成了反向文件，生成反向文件后，文件中的开始与结束时间均会发生变化,0未生成，1生成 <0失败，具体值为失败次数
 //@property (nonatomic,assign) CGFloat durationInFinalArray;//在队列中占用的时长，Rate=1
 //@property (nonatomic,assign) CGFloat secondsInFinalArray;//基于Rate=1时的在队列中的位置时间。
 

@@ -224,11 +224,14 @@
     for (MediaWithAction * media in actionMediaList) {
         if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=self.minMediaDuration)
         {
-            NSLog(@"AM : reverse gen index:%d/%d",i,(int)actionMediaList.count);
-            [self generateMediaFile:media];
-            
-            needCheckAgagin = YES;
-            break;
+            if(media.isReversed >=-1)//失败一次以内，或者没有生成
+            {
+                NSLog(@"AM : reverse gen index:%d/%d",i,(int)actionMediaList.count);
+                [self generateMediaFile:media];
+                
+                needCheckAgagin = YES;
+                break;
+            }
         }
         i ++;
     }
@@ -252,11 +255,14 @@
     for (MediaWithAction * media in actionMediaList) {
         if(media.playRate<0 && ![media isReverseMedia] && media.secondsDurationInArray >=self.minMediaDuration)
         {
+            if(media.isReversed>=-1)
+            {
             NSLog(@"AM : reverse gen index:%d/%d",i,(int)actionMediaList.count);
             [self generateMediaFile:media];
             
             needCheckAgagin = YES;
             break;
+            }
         }
         i ++;
     }
@@ -291,7 +297,7 @@
     NSMutableArray * actionMediaList = [NSMutableArray new];
     CGFloat secondsInArray = 0;
     for (MediaWithAction * item in [self getMediaList]) {
-        if(item.playRate>0 || item.secondsDurationInArray > self.minMediaDuration)
+        if(item.playRate>0 && item.secondsDurationInArray > self.minMediaDuration) //反向视频如果生成了，则就会有正向的效果
         {
             if(item.secondsInArray!=secondsInArray)
             {
@@ -479,11 +485,11 @@
                            audioFile:media.filePath
                           audioBegin:media.secondsEnd
                             complted:^(NSString * filePathNew){
-                                if(filePathNew)
+                                if(filePathNew && filePathNew.length>0)
                                 {
                                     [media setFileName:filePathNew];
                                     CGFloat duration = media.secondsDurationInArray;
-                                    media.isReversed = YES;
+                                    media.isReversed = 1;
                                     media.secondsBeginBeforeReverse = media.secondsBegin;
                                     media.secondsEndBeforeReverse = media.secondsEnd;
                                     media.rateBeforeReverse = media.playRate;
@@ -491,10 +497,16 @@
                                     media.end = CMTimeMakeWithSeconds(duration, media.end.timescale);
                                     media.playRate = 0 - media.playRate;
                                     media.url = [NSURL fileURLWithPath:filePathNew];
+                                    NSLog(@"VG  : reveser ok:%@ org filerange:%f->%f duration:%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
+                                          );
                                 }
-                                
-                                NSLog(@"VG  : reveser ok:%@ org filerange:%f->%f duration:%f",[filePathNew lastPathComponent],media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
-                                      );
+                                else
+                                {
+                                    NSLog(@"VG  : reveser failure:%@ org filerange:%f->%f duration:%f",@"null",media.secondsBeginBeforeReverse,media.secondsEndBeforeReverse,media.secondsDurationInArray
+                                          );
+                                    media.isReversed --;
+                                }
+                               
                                 //                                reverseMediaGenerate_ = nil;
                                 [reverseMediaGenerate_ setJoinVideoUrl:nil];
                                 [reverseMediaGenerate_ clear];
@@ -508,6 +520,7 @@
                             }];
     if(!ret)
     {
+        media.isReversed --;
         [reverseMediaGenerate_ setJoinVideoUrl:nil];
         [reverseMediaGenerate_ clear];
         reverseMediaGenerate_ = nil;

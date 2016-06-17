@@ -82,21 +82,21 @@
     bgAudioVolume_ = 1.0;
     singVolume_ = 1.0;
     
-    bitRate_ = (long)(540 *960 * 10);
+    bitRate_ = (long)(DEFAULT_VIDEOWIDTH *DEFAULT_VIDEOHEIGHT * 10);
     //    defaultAudioScale_ = 44100;
     
     udManager_ = [UDManager sharedUDManager];
     DeviceConfig * config = [DeviceConfig config];
     _volRampSeconds = 0;
     _waterMarkerPosition = MP_RightTop;
-    if(config.Height < 500)
+    if(config.Height < DEFAULT_VIDEOWIDTH)
     {
         [self setRenderSize:CGSizeMake(config.Height * config.Scale, config.Width * config.Scale) orientation:self.orientation withFontCamera:self.useFontCamera];
         //        self.renderSize = CGSizeMake(config.Height * config.Scale, config.Width * config.Scale);
     }
     else
     {
-        [self setRenderSize:CGSizeMake(540, 960) orientation:UIInterfaceOrientationPortrait withFontCamera:self.useFontCamera];
+        [self setRenderSize:CGSizeMake(DEFAULT_VIDEOWIDTH, DEFAULT_VIDEOHEIGHT) orientation:UIInterfaceOrientationPortrait withFontCamera:self.useFontCamera];
         //        self.renderSize = CGSizeMake(1280, 720);
     }
     
@@ -1049,13 +1049,13 @@
     {
         targetSize =  CGSizeMake(size.height * rate1, size.height);
     }
-    if(fabs(targetSize.width -960)<1)
+    if(fabs(targetSize.width - DEFAULT_VIDEOHEIGHT)<1)
     {
-        targetSize.width = 960;
+        targetSize.width = DEFAULT_VIDEOHEIGHT;
     }
-    if(fabs(targetSize.height - 540)<1)
+    if(fabs(targetSize.height - DEFAULT_VIDEOWIDTH)<1)
     {
-        targetSize.height = 540;
+        targetSize.height = DEFAULT_VIDEOWIDTH;
     }
     return targetSize;
 }
@@ -2935,8 +2935,8 @@
         height = 320;
     }
     else{
-        width = 568;
-        height = 320;
+        width = DEFAULT_VIDEOWIDTH;
+        height = DEFAULT_VIDEOHEIGHT;
     }
     CGSize size = CGSizeMake(width, height);
     
