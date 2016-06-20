@@ -1868,41 +1868,80 @@
             }
             else
             {
-                int degreeTarget = [self degressFromVideoFileWithTrack:videoTrack filePath:curItem.filePath];
-                int degreeSource = [self degressFromVideoFileWithTrack:videoTrack];
-                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
-                {
-                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
-                    CGAffineTransform transfer = CGAffineTransformIdentity;
-                    if(degreeSource!=degreeTarget || !CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform))
+                    int degreeTarget = [self degressFromVideoFileWithTrack:curTrack filePath:curItem.filePath];
+                    int degreeSource = [self degressFromVideoFileWithTrack:curTrack];
+                    if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
                     {
-                        transfer = [self getLayerTransfer:degreeTarget size:size];
-                    }
-                    if(scaleRate!=1)
-                    {
-                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
-                    }
-                    if(!CGAffineTransformIsIdentity(transfer))
-                    {
-                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
-                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
-                    }
-                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
-                    {
-                        if(degreeSource!=degreeTarget)
+                        CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
+                        CGAffineTransform transfer = CGAffineTransformIdentity;
+                        if(degreeSource!=degreeTarget
+                           || (!CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform) && index>0)
+                           //第一个对像时，VideoTrack未设置方向，因此，不要在这里进行控制
+                           )
                         {
-                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
+                            transfer = [self getLayerTransfer:degreeTarget size:size];
                         }
-                        else
+                        if(scaleRate!=1)
                         {
-                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                            transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+                        }
+                        if(!CGAffineTransformIsIdentity(transfer))
+                        {
+                            [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                            [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
+                        }
+                        if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
+                        {
+                            if(degreeSource!=degreeTarget)
+                            {
+                                [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
+                            }
+                            else
+                            {
+                                [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                            }
                         }
                     }
-                }
-                else
-                {
-                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
-                }
+                    else
+                    {
+                        [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                    }
+                
+//                int degreeTarget = [self degressFromVideoFileWithTrack:videoTrack filePath:curItem.filePath];
+//                int degreeSource = [self degressFromVideoFileWithTrack:videoTrack];
+//                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
+//                {
+//                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
+//                    CGAffineTransform transfer = CGAffineTransformIdentity;
+//                    if(degreeSource!=degreeTarget || !CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform))
+//                    {
+//                        transfer = [self getLayerTransfer:degreeTarget size:size];
+//                    }
+//                    if(scaleRate!=1)
+//                    {
+//                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+//                    }
+//                    if(!CGAffineTransformIsIdentity(transfer))
+//                    {
+//                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+//                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
+//                    }
+//                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
+//                    {
+//                        if(degreeSource!=degreeTarget)
+//                        {
+//                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
+//                        }
+//                        else
+//                        {
+//                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
+//                }
             }
             
             NSLog(@"videoTrack\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",videoTrack.preferredTransform.a,videoTrack.preferredTransform.b,videoTrack.preferredTransform.c,videoTrack.preferredTransform.d,videoTrack.preferredTransform.tx,videoTrack.preferredTransform.ty);
@@ -2612,30 +2651,30 @@
     {
         degress = 90;
     }
-    else
-    {
-        if(filePath && filePath.length>0)
-        {
-            NSString * recordDir = [[UDManager sharedUDManager]recordDir];
-            
-            //由于录制视频时，可能没有写入正确的方向，因此，需要检查
-            if([filePath rangeOfString:recordDir].location!=NSNotFound)
-            {
-                CGSize natureSize = videoTrack.naturalSize;
-                if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
-                {
-                    degress += 90;
-                }
-                else if(natureSize.width > natureSize.height && (degress==90||degress==270))
-                {
-                    if(degress==90)
-                        degress = 180;
-                    else
-                        degress = 0;
-                }
-            }
-        }
-    }
+//    else
+//    {
+//        if(filePath && filePath.length>0)
+//        {
+//            NSString * recordDir = [[UDManager sharedUDManager]recordDir];
+//            
+//            //由于录制视频时，可能没有写入正确的方向，因此，需要检查
+//            if([filePath rangeOfString:recordDir].location!=NSNotFound)
+//            {
+//                CGSize natureSize = videoTrack.naturalSize;
+//                if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
+//                {
+//                    degress += 90;
+//                }
+//                else if(natureSize.width > natureSize.height && (degress==90||degress==270))
+//                {
+//                    if(degress==90)
+//                        degress = 180;
+//                    else
+//                        degress = 0;
+//                }
+//            }
+//        }
+//    }
     
     return degress;
 }
