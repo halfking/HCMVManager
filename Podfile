@@ -8,8 +8,8 @@ target 'HCMVManager' do
   # Pods for HCMVManager
 
   pod 'HCMinizip'
-  pod 'hccoren’,'~>0.4.0'
-  pod 'HCBaseSystem’,'~>0.3.7'
+  pod 'hccoren’,'~>0.4.2'
+  pod 'HCBaseSystem’,'~>0.3.9'
   pod 'GPUImage'
   target 'HCMVManagerTests' do
     inherit! :search_paths

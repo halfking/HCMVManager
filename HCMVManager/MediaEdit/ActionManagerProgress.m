@@ -10,7 +10,7 @@
 #import "MediaWithAction.h"
 //慢速的颜色：＃00FFFF
 //快速的颜色：＃FF5500
-#define DEFAULT_TIPS @"长按滤镜为视频增加特效"
+#define DEFAULT_TIPS @"" //@"长按滤镜为视频增加特效"
 #define DIFF_RANGE 0
 @implementation AMProgressItem
 
@@ -492,16 +492,16 @@
     if(secondsInArray_ < currentMedia_.secondsInArray)
         secondsInArray_ = currentMedia_.secondsInArray;
     
-    defaultMsg_ = [self getTipsForMedia:currentMedia_];
+    NSString * msg = [self getTipsForMedia:currentMedia_];
     
     if([NSThread isMainThread])
     {
-        msgLabel_.text = defaultMsg_;
+        msgLabel_.text = msg;
     }
     else
     {
         dispatch_sync(dispatch_get_main_queue(), ^{
-            msgLabel_.text = defaultMsg_;
+            msgLabel_.text = msg;
         });
     }
 }
@@ -736,7 +736,7 @@
     defaultMsg_ = msg;
     if(msgLabel_)
     {
-        msgLabel_.text = msg;
+        msgLabel_.text = msg?msg:@"";
     }
 }
 - (UIColor *) getColorForMedia:(MediaWithAction *)media
@@ -778,7 +778,7 @@
     }
     else
     {
-        tips = @"长按滤镜为视频添加特效";
+        tips = defaultMsg_;// @"长按滤镜为视频添加特效";
     }
     return tips;
 }
