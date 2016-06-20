@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "1.5.7"
+  s.version      = "1.5.8"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 1.5.4   解决生成反向视频中，合成音频时，音频文件不存在的情况下，导致的合成失败，多次调用Block的Bug
 1.5.5   将VideoGenerate中的Delegate改成Optional
 1.5.6   将默认的角度为0的视频，自动转成标准的有方向的视频。角度为0时，则根据高宽来判断是否为横屏。解决从微信下载的视频方向错误的问题。
-1.5.7   修改ActionProgress的默认文字显示
+1.5.8   修改ActionProgress的默认文字显示
                    DESC
 
   s.homepage     = "https://github.com/halfking/HCMVManager"

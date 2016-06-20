@@ -733,11 +733,15 @@
 }
 - (void)setMsgString:(NSString *)msg
 {
-    defaultMsg_ = msg;
+//    defaultMsg_ = msg;
     if(msgLabel_)
     {
         msgLabel_.text = msg?msg:@"";
     }
+}
+- (void)setDefaultMsg:(NSString *)msg
+{
+    defaultMsg_ = msg;
 }
 - (UIColor *) getColorForMedia:(MediaWithAction *)media
 {

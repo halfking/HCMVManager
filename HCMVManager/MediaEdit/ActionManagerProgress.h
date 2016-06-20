@@ -50,7 +50,7 @@
 - (void)showFullTracks;
 
 - (void)setMsgString:(NSString *)msg;
-
+- (void)setDefaultMsg:(NSString *)msg;
 //设置当前正在显示的对像
 - (void)setCurrentMedia:(MediaWithAction *)media;
 //与播放器时间同步
