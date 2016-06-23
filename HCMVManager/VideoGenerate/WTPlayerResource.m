@@ -965,7 +965,7 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
             if(!isWarning)
             {
                 isWarning = YES;
-                [generator cancelAllCGImageGeneration];
+//                [generator cancelAllCGImageGeneration];
                 
                 if(failure)
                 {
@@ -974,8 +974,9 @@ static void soundCompletionCallback (SystemSoundID mySSID, void* myself) {
             }
         }
         if (result == AVAssetImageGeneratorCancelled) {
-            if(failure)
+            if(failure && !isWarning)
             {
+                isWarning = YES;
                 failure(CMTimeMake([time floatValue]*30, 30),nil,@"用户取消");
             }
         }

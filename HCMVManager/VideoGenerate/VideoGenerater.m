@@ -489,7 +489,7 @@
     
     
     if (mixComposition && videoComposition) {
-        
+        exportTicksBegin_ = [NSDate date].timeIntervalSince1970;
         if(!timerForExport_)
         {
             timerForExport_ = PP_RETAIN([NSTimer timerWithTimeInterval:0.1
@@ -3046,6 +3046,25 @@
     else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:generateProgress:)])
     {
         [self.delegate VideoGenerater:self generateProgress:joinVideoExporter.progress];
+    }
+    //超过30秒，没有生成进度
+    if(joinVideoExporter.progress < 0.01  && [NSDate date].timeIntervalSince1970 - exportTicksBegin_ >=15)
+    {
+        NSString * msg = @"合成视频异常！";
+        NSError * error = [self buildError:[NSString stringWithFormat:@"合成视频异常,进度一直为%f。",joinVideoExporter.progress]];
+        [self cancelExporter];
+        
+        //防止Cancel后再发进度
+        [NSThread sleepForTimeInterval:0.2];
+        
+        if(failureBlock_)
+        {
+            failureBlock_(self,msg,error);
+        }
+        else if(self.delegate && [self.delegate respondsToSelector:@selector(VideoGenerater:didGenerateFailure:error:)])
+        {
+            [self.delegate VideoGenerater:self didGenerateFailure:msg error:error];
+        }
     }
 }
 - (void)checkReverseProgress:(NSTimer *)timer

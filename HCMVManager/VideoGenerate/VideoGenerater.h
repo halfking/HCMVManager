@@ -44,6 +44,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
     MECompleted completedBlock_;
     MEFailure failureBlock_;
     
+    long exportTicksBegin_;
     
     float joinVideoProgress;
     
