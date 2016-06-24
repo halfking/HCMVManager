@@ -655,7 +655,7 @@
     }
     
     //音频混入
-    
+    if(!self.removeAudioWhenSubtractMV)
     {
         NSArray * audioTrackList = [asset tracksWithMediaType:AVMediaTypeAudio];
         if(audioTrackList.count>0)

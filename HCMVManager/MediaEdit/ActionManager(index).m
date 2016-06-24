@@ -321,6 +321,9 @@
     NSLog(@"**--**--**--**--**--**--**--**--**--**--");
     
     VideoGenerater * vg = [[VideoGenerater alloc]init];
+
+    vg.forceAddAudioTrack = self.NotAllowAudioTrackEmpty;
+
     [vg resetGenerateInfo];
     vg.waterMarkFile = waterMarker;
     vg.waterMarkerPosition = position;

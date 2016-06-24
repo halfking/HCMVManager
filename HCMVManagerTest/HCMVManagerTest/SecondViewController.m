@@ -105,7 +105,7 @@
     manager_.delegate = self;
     //    [manager_ removeActions];
     
-    NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
+//    NSString * audioPath  = [[NSBundle mainBundle] pathForResource:@"ywy" ofType:@"mp3"];
 //        oPath_ = [[NSBundle mainBundle] pathForResource:@"test2" ofType:@"mp4"];
     oPath_ = [[NSBundle mainBundle]pathForResource:@"test3" ofType:@"MOV"];
 //    oPath_ = [[NSBundle mainBundle]pathForResource:@"IMG_0394" ofType:@"mp4"];
@@ -127,7 +127,8 @@
     {
         [manager_ setBackMV:oPath_ begin:0 end:-1 buildReverse:NO];
     }
-    [manager_ setBackAudio:audioPath begin:-5 end:-1];
+    manager_.NotAllowAudioTrackEmpty = YES;
+//    [manager_ setBackAudio:audioPath begin:-5 end:-1];
     
     baseVideo_ = [manager_ getBaseVideo];
     
@@ -230,8 +231,8 @@
         subtract_.backgroundColor = [UIColor grayColor];
         [self.view addSubview:subtract_];
         
-        //        [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
-        [subtract_ addTarget:self action:@selector(generateFilterItem) forControlEvents:UIControlEventTouchUpInside];
+                [subtract_ addTarget:self action:@selector(subtractMV:) forControlEvents:UIControlEventTouchUpInside];
+//        [subtract_ addTarget:self action:@selector(generateFilterItem) forControlEvents:UIControlEventTouchUpInside];
         
         top += 46;
         
@@ -486,10 +487,17 @@
     {
         [manager_ setGPUFilter:index];
     }
+    
+    if(index >=4)
+    {
+        [manager_ generateMVByFilter:index];
+    }
 }
 - (void) subtractMV:(id)sender
 {
     VideoGenerater * vg = [VideoGenerater new];
+    vg.forceAddAudioTrack = YES;
+    vg.removeAudioWhenSubtractMV = YES;
     [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
         NSLog(@"video generater progress %.1f",progress);
         
@@ -502,7 +510,9 @@
         NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
         [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
         
-        [player_ changeCurrentItemPath:filePath];
+        [manager_ setBackMV:filePath begin:0 end:-1 buildReverse:NO];
+        
+//        [player_ changeCurrentItemPath:filePath];
         [NSThread sleepForTimeInterval:0.2];
         [player_ play];
         
@@ -511,7 +521,7 @@
         
     }];
     
-    if([vg generateMVSegmentsViaFile:baseVideo_.filePath begin:0 end:5 targetSize:CGSizeMake(100, 100)])
+    if([vg generateMVSegmentsViaFile:baseVideo_.filePath begin:0 end:5 targetSize:baseVideo_.renderSize])
     {
         [vg generateMVFile:nil retryCount:0];
     }
@@ -1009,31 +1019,32 @@
     }
     
 }
-- (void)subtractMV
-{
-    VideoGenerater * vg = [VideoGenerater new];
-    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
-        NSLog(@"progress %f",progress);
-    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
-        NSLog(@"playerItem Ready");
-        
-    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
-        NSLog(@"generate completed.  %@",[mvUrl path]);
-        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
-        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
-        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
-        
-        [self hideIndicatorView];
-        
-    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
-        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
-        [self hideIndicatorView];
-    }];
-    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10 targetSize:CGSizeMake(100, 100)])
-    {
-        [vg generateMVFile:nil retryCount:0];
-    }
-}
+//- (void)subtractMV
+//{
+//    VideoGenerater * vg = [VideoGenerater new];
+//    vg.forceAddAudioTrack = YES;
+//    [vg setBlock:^(VideoGenerater *queue, CGFloat progress) {
+//        NSLog(@"progress %f",progress);
+//    } ready:^(VideoGenerater *queue, AVPlayerItem *playerItem) {
+//        NSLog(@"playerItem Ready");
+//        
+//    } completed:^(VideoGenerater *queue, NSURL *mvUrl, NSString *coverPath) {
+//        NSLog(@"generate completed.  %@",[mvUrl path]);
+//        NSString * fileName = [[HCFileManager manager]getFileNameByTicks:@"subtract.mp4"];
+//        NSString * filePath = [[HCFileManager manager]localFileFullPath:fileName];
+//        [HCFileManager copyFile:[mvUrl path] target:filePath overwrite:YES];
+//        
+//        [self hideIndicatorView];
+//        
+//    } failure:^(VideoGenerater *queue, NSString *msg, NSError *error) {
+//        NSLog(@"generate failure:%@ error:%@",msg,[error localizedDescription]);
+//        [self hideIndicatorView];
+//    }];
+//    if([vg generateMVSegmentsViaFile:oPath_ begin:2 end:10 targetSize:CGSizeMake(100, 100)])
+//    {
+//        [vg generateMVFile:nil retryCount:0];
+//    }
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
