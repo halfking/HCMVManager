@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HCMVManager"
-  s.version      = "1.6.2"
+  s.version      = "1.6.3"
   s.summary      = "这是一个与视频录制与剪辑相关核心库。"
   s.description  = <<-DESC
 这是一个特定的核心库。包含了常用录像、剪辑、合成、及视频滤镜相关的功能。
@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
 1.6.0   修正 视频合成出错时，进度不往前，卡死的问题。修正视频取截图失败时，不再取其它图的BUG
 1.6.1   发现GPUImage在处理视频时，如果视频中没有音频轨，将导致Crash。因此在处理之前，将检查是否有音频轨。
 1.6.2   所有合成的视频中均加入音频轨，防止没有音频轨的问题出现
+1.6.3   在ActionManager与MediaEditManager增加上述的控制变量
                    DESC
 
   s.homepage     = "https://github.com/halfking/HCMVManager"

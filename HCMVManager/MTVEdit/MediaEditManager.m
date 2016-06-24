@@ -3869,6 +3869,8 @@ static BOOL isGenerateAudioing_ = NO;
         videoGenerater_.mergeRate = mergeRate_;
         videoGenerater_.volRampSeconds = volRampSeconds_;
         
+        videoGenerater_.forceAddAudioTrack = self.NotAllowAudioTrackEmpty;
+        
         [videoGenerater_ setTimeForMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
         [videoGenerater_ setTimeForAudioMerge:secondsBeginForMerge_ end:secondsEndForMerge_];
         

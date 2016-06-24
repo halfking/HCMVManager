@@ -112,6 +112,7 @@ typedef void (^GenerateThumnates)(MediaItem * mItem,BOOL isSuccess);
 @property (nonatomic,PP_STRONG) NSString * userAudioDownKey;//用户唱的音频Key
 @property (nonatomic,readonly,PP_STRONG) MediaItem * backgroundVideo;
 @property (nonatomic,readonly,PP_STRONG) AudioItem * backgroundAudio;
+@property (nonatomic,assign) BOOL NotAllowAudioTrackEmpty;      //合成的视频中，是否允许音轨为空
 @property (nonatomic,readonly,PP_STRONG) NSString * coverImageUrl;
 @property (nonatomic,assign) BOOL NotAddCover;
 @property (nonatomic,assign) CGFloat TempTotalSeconds; //当未设置背景视频时，并不知总长度是多少，会导致录音有问题。这里可以临时使用，默认60X60
