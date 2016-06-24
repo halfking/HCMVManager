@@ -53,6 +53,8 @@
 		11B906C61D0E8A6A004E1038 /* lookup_soft_elegance_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A401CF2FCAA007E8B20 /* lookup_soft_elegance_2.png */; };
 		11B906C71D0E8A6A004E1038 /* lookup_黑白.png in Resources */ = {isa = PBXBuildFile; fileRef = 11200A411CF2FCAA007E8B20 /* lookup_黑白.png */; };
 		11B906C81D0E8A73004E1038 /* flag@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11B906B71D0D3023004E1038 /* flag@3x.png */; };
+		11C77D931D1D8AAE0020C027 /* empty.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11C77D921D1D8AAE0020C027 /* empty.mp3 */; };
+		11C77D941D1D8AAE0020C027 /* empty.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 11C77D921D1D8AAE0020C027 /* empty.mp3 */; };
 		11D595D01CFB6E7100D96FAA /* MediaWithActionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11D595D11CFB6E7100D96FAA /* MediaWithActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D595CF1CFB6E7100D96FAA /* MediaWithActionView.m */; };
 		11DE4A701CE384A700A0BE8D /* ActionManager(index).h in Headers */ = {isa = PBXBuildFile; fileRef = 11DE4A681CE384A700A0BE8D /* ActionManager(index).h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -231,6 +233,7 @@
 		11B906B51D0D301B004E1038 /* flag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@2x.png"; sourceTree = "<group>"; };
 		11B906B71D0D3023004E1038 /* flag@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@3x.png"; sourceTree = "<group>"; };
 		11B906BB1D0D309B004E1038 /* HCMVManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HCMVManager.bundle; sourceTree = "<group>"; };
+		11C77D921D1D8AAE0020C027 /* empty.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = empty.mp3; sourceTree = "<group>"; };
 		11C851241D01D9A20029229B /* HCMVManagerBundle.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HCMVManagerBundle.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C851261D01D9A20029229B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11D595CE1CFB6E7100D96FAA /* MediaWithActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaWithActionView.h; sourceTree = "<group>"; };
@@ -550,6 +553,7 @@
 				11ED435F1CC9003300561E33 /* Report */,
 				11ED43641CC903EB00561E33 /* Lyric */,
 				11ED40561CC6952B00561E33 /* Info.plist */,
+				11C77D921D1D8AAE0020C027 /* empty.mp3 */,
 				11B906B51D0D301B004E1038 /* flag@2x.png */,
 				11B906B71D0D3023004E1038 /* flag@3x.png */,
 				11ED43231CC8F1C400561E33 /* vdcManager_full.h */,
@@ -920,6 +924,7 @@
 			files = (
 				11B906C01D0E8A61004E1038 /* filterImage.png in Resources */,
 				11B906C11D0E8A64004E1038 /* filter_0@2x.png in Resources */,
+				11C77D941D1D8AAE0020C027 /* empty.mp3 in Resources */,
 				11B906C21D0E8A6A004E1038 /* lookup-Effect-1.png in Resources */,
 				11B906C81D0E8A73004E1038 /* flag@3x.png in Resources */,
 				11B906C31D0E8A6A004E1038 /* lookup_amatorka.png in Resources */,
@@ -936,6 +941,7 @@
 			files = (
 				11FDE7AE1CD539CE00090925 /* Podfile in Resources */,
 				11B906BC1D0D309B004E1038 /* HCMVManager.bundle in Resources */,
+				11C77D931D1D8AAE0020C027 /* empty.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

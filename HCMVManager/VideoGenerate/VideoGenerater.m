@@ -81,6 +81,7 @@
     _compositeLyric = YES;
     bgAudioVolume_ = 1.0;
     singVolume_ = 1.0;
+    _forceAddAudioTrack = NO;
     
     bitRate_ = (long)(DEFAULT_VIDEOWIDTH *DEFAULT_VIDEOHEIGHT * 10);
     //    defaultAudioScale_ = 44100;
@@ -111,6 +112,7 @@
     totalBeginTime_ = kCMTimeZero;
     totalEndTime_ = kCMTimeZero;
     _waterMarkerPosition = MP_RightTop;
+    
     //    [chooseQueue removeAllObjects];
 }
 - (void)setRenderSize:(CGSize)size orientation:(int)orient withFontCamera:(BOOL)useFontCamera
@@ -820,6 +822,8 @@
     CMTimeRange range = kCMTimeRangeZero;
     CMTime curTimeCnt = kCMTimeZero;
     
+    //假定不需要素材中的音频
+    BOOL needAudioTrack = NO;
     
     //逐段处理素材
     //如果没有背景视频，素材则是自动联接在一起，不能重叠也不能分开
@@ -834,8 +838,7 @@
         //音频轨
         AVMutableCompositionTrack * audioTrack = nil;
         
-        //假定不需要素材中的音频
-        BOOL needAudioTrack = NO;
+        
         
         //检查当前素材中是否有音频信息
         AVAsset * testAsset = [self getVideoItemAsset:[mediaList objectAtIndex:0]];
@@ -952,7 +955,16 @@
         NSMutableArray * audioParamters = [self compositeAudioArray:mixComposition maxTime:curTimeCnt rate:rate];
         [audioMixParams addObjectsFromArray:audioParamters];
     }
-    
+    //如果需要强制添加音乐轨
+    else if(!needAudioTrack && self.forceAddAudioTrack){
+        NSMutableArray * audioParamters = [self compositeEmptyAudioArray:mixComposition maxTime:curTimeCnt rate:rate];
+        if(audioParamters)
+            [audioMixParams addObjectsFromArray:audioParamters];
+        else
+        {
+            NSLog(@"cannot add track by empty.mp3,please check file.");
+        }
+    }
     joinTimeRange_ = range;
     //    size = natureSize;
     //        size = [self scaleSize:natureSize WithTarget:size];
@@ -1660,8 +1672,10 @@
     [trackInfo setObject:curItem.fileName forKey:@"filename"];
 #endif
     AVAsset *curAsset = [self getVideoItemAsset:curItem];
-    if(hasAudioTrack)
-        *hasAudioTrack = NO;
+    
+    //    if(hasAudioTrack)
+    //        *hasAudioTrack = NO;
+    
     if(!curAsset || CMTimeGetSeconds(curAsset.duration)<0.01)
     {
         NSLog(@"join video: %@ duration:%.1f skipped",curItem.fileName,CMTimeGetSeconds(curAsset.duration));
@@ -1868,80 +1882,80 @@
             }
             else
             {
-                    int degreeTarget = [self degressFromVideoFileWithTrack:curTrack filePath:curItem.filePath];
-                    int degreeSource = [self degressFromVideoFileWithTrack:curTrack];
-                    if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
+                int degreeTarget = [self degressFromVideoFileWithTrack:curTrack filePath:curItem.filePath];
+                int degreeSource = [self degressFromVideoFileWithTrack:curTrack];
+                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
+                {
+                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
+                    CGAffineTransform transfer = CGAffineTransformIdentity;
+                    if(degreeSource!=degreeTarget
+                       || (!CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform) && index>0)
+                       //第一个对像时，VideoTrack未设置方向，因此，不要在这里进行控制
+                       )
                     {
-                        CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
-                        CGAffineTransform transfer = CGAffineTransformIdentity;
-                        if(degreeSource!=degreeTarget
-                           || (!CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform) && index>0)
-                           //第一个对像时，VideoTrack未设置方向，因此，不要在这里进行控制
-                           )
+                        transfer = [self getLayerTransfer:degreeTarget size:size];
+                    }
+                    if(scaleRate!=1)
+                    {
+                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+                    }
+                    if(!CGAffineTransformIsIdentity(transfer))
+                    {
+                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
+                    }
+                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
+                    {
+                        if(degreeSource!=degreeTarget)
                         {
-                            transfer = [self getLayerTransfer:degreeTarget size:size];
+                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
                         }
-                        if(scaleRate!=1)
+                        else
                         {
-                            transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
-                        }
-                        if(!CGAffineTransformIsIdentity(transfer))
-                        {
-                            [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
-                            [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
-                        }
-                        if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
-                        {
-                            if(degreeSource!=degreeTarget)
-                            {
-                                [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
-                            }
-                            else
-                            {
-                                [videoTrack setPreferredTransform:curTrack.preferredTransform];
-                            }
+                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
                         }
                     }
-                    else
-                    {
-                        [videoTrack setPreferredTransform:curTrack.preferredTransform];
-                    }
+                }
+                else
+                {
+                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                }
                 
-//                int degreeTarget = [self degressFromVideoFileWithTrack:videoTrack filePath:curItem.filePath];
-//                int degreeSource = [self degressFromVideoFileWithTrack:videoTrack];
-//                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
-//                {
-//                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
-//                    CGAffineTransform transfer = CGAffineTransformIdentity;
-//                    if(degreeSource!=degreeTarget || !CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform))
-//                    {
-//                        transfer = [self getLayerTransfer:degreeTarget size:size];
-//                    }
-//                    if(scaleRate!=1)
-//                    {
-//                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
-//                    }
-//                    if(!CGAffineTransformIsIdentity(transfer))
-//                    {
-//                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
-//                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
-//                    }
-//                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
-//                    {
-//                        if(degreeSource!=degreeTarget)
-//                        {
-//                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
-//                        }
-//                        else
-//                        {
-//                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
-//                        }
-//                    }
-//                }
-//                else
-//                {
-//                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
-//                }
+                //                int degreeTarget = [self degressFromVideoFileWithTrack:videoTrack filePath:curItem.filePath];
+                //                int degreeSource = [self degressFromVideoFileWithTrack:videoTrack];
+                //                if(size.width != curTrack.naturalSize.width || size.height != curTrack.naturalSize.height)
+                //                {
+                //                    CGFloat scaleRate = [self getRate:size widthTrack:curTrack filePath:curItem.filePath];
+                //                    CGAffineTransform transfer = CGAffineTransformIdentity;
+                //                    if(degreeSource!=degreeTarget || !CGAffineTransformEqualToTransform(curTrack.preferredTransform,videoTrack.preferredTransform))
+                //                    {
+                //                        transfer = [self getLayerTransfer:degreeTarget size:size];
+                //                    }
+                //                    if(scaleRate!=1)
+                //                    {
+                //                        transfer = CGAffineTransformScale(transfer, scaleRate, scaleRate);
+                //                    }
+                //                    if(!CGAffineTransformIsIdentity(transfer))
+                //                    {
+                //                        [videoLayerInstruction setTransform:transfer atTime:modalInStInQueue];
+                //                        [videoLayerInstruction setTransform:CGAffineTransformIdentity atTime:modalOffEtInQueue];
+                //                    }
+                //                    if(CGAffineTransformIsIdentity(videoTrack.preferredTransform))
+                //                    {
+                //                        if(degreeSource!=degreeTarget)
+                //                        {
+                //                            [videoTrack setPreferredTransform:[self getTrackTransfer:degreeTarget size:size]];
+                //                        }
+                //                        else
+                //                        {
+                //                            [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                //                        }
+                //                    }
+                //                }
+                //                else
+                //                {
+                //                    [videoTrack setPreferredTransform:curTrack.preferredTransform];
+                //                }
             }
             
             NSLog(@"videoTrack\t\t:trans:%.1f-%.1f-%.1f-%.1f-----%.1f-%.1f",videoTrack.preferredTransform.a,videoTrack.preferredTransform.b,videoTrack.preferredTransform.c,videoTrack.preferredTransform.d,videoTrack.preferredTransform.tx,videoTrack.preferredTransform.ty);
@@ -2231,7 +2245,44 @@
     }
     return curTimeCnt;
 }
-
+//添加空的音乐轨
+- (NSMutableArray *)compositeEmptyAudioArray:(AVMutableComposition *)mixComposition maxTime:(CMTime)curTimeCnt rate:(CGFloat)rate
+{
+    NSMutableArray * audioMixParams = [[NSMutableArray alloc] init];
+    
+    //    [NSBundle mainBundle]pathForResource:@"/HCMVManager/empty" ofType:@"mp3";
+    NSString * path = [[NSBundle mainBundle]pathForResource:@"empty" ofType:@"mp3"];
+    if(!path)
+    {
+        path = [[NSBundle mainBundle]pathForResource:@"HCMVManager.bundle/empty" ofType:@"mp3"];
+    }
+    if(!path) return nil;
+    
+    NSURL * url = [NSURL fileURLWithPath:path];
+    if(!url) return nil;
+    
+    AVMutableAudioMixInputParameters * trackMix = nil;
+    //如果用背景音乐，而不是原视频中的音乐
+    trackMix =
+    [self addAudioTrackWithUrl:url
+                     composite:mixComposition
+                       maxTime:curTimeCnt
+                          rate:1
+        needScaleIfRateNotZero:NO
+                           vol:0
+                   timeInArray:kCMTimeZero
+                    mediaBegin:CMTimeMakeWithSeconds(0, DEFAULT_AUDIOTIMESCALE)
+                      mediaEnd:kCMTimeZero
+                volRampSeconds:_volRampSeconds];
+    
+    
+    if(trackMix)
+        [audioMixParams addObject:trackMix];
+    
+    
+    
+    return audioMixParams;
+}
 //一定要注意码率，码率最好一致，否则可能会导致失败
 - (NSMutableArray *)compositeAudioArray:(AVMutableComposition *)mixComposition maxTime:(CMTime)curTimeCnt rate:(CGFloat)rate
 {
@@ -2436,7 +2487,7 @@
     }
     else
     {
-        [trackMix setVolume:bgAudioVolume_ atTime:timeInArray];
+        [trackMix setVolume:vol atTime:timeInArray];
     }
     NSError * error = nil;
     //默认视频长度大于音频长度
@@ -2621,7 +2672,7 @@
         }
     }
     return degress;
-//    return [self degressFromVideoFileWithTrack:videoTrack filePath:nil];
+    //    return [self degressFromVideoFileWithTrack:videoTrack filePath:nil];
 }
 //返回正确的Degree
 - (int)degressFromVideoFileWithTrack:(AVAssetTrack *)videoTrack filePath:(NSString*)filePath
@@ -2651,30 +2702,30 @@
     {
         degress = 90;
     }
-//    else
-//    {
-//        if(filePath && filePath.length>0)
-//        {
-//            NSString * recordDir = [[UDManager sharedUDManager]recordDir];
-//            
-//            //由于录制视频时，可能没有写入正确的方向，因此，需要检查
-//            if([filePath rangeOfString:recordDir].location!=NSNotFound)
-//            {
-//                CGSize natureSize = videoTrack.naturalSize;
-//                if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
-//                {
-//                    degress += 90;
-//                }
-//                else if(natureSize.width > natureSize.height && (degress==90||degress==270))
-//                {
-//                    if(degress==90)
-//                        degress = 180;
-//                    else
-//                        degress = 0;
-//                }
-//            }
-//        }
-//    }
+    //    else
+    //    {
+    //        if(filePath && filePath.length>0)
+    //        {
+    //            NSString * recordDir = [[UDManager sharedUDManager]recordDir];
+    //
+    //            //由于录制视频时，可能没有写入正确的方向，因此，需要检查
+    //            if([filePath rangeOfString:recordDir].location!=NSNotFound)
+    //            {
+    //                CGSize natureSize = videoTrack.naturalSize;
+    //                if(natureSize.width < natureSize.height && (degress == 0 ||degress == 180))
+    //                {
+    //                    degress += 90;
+    //                }
+    //                else if(natureSize.width > natureSize.height && (degress==90||degress==270))
+    //                {
+    //                    if(degress==90)
+    //                        degress = 180;
+    //                    else
+    //                        degress = 0;
+    //                }
+    //            }
+    //        }
+    //    }
     
     return degress;
 }

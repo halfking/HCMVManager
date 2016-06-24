@@ -61,7 +61,7 @@ typedef void (^MEFailure)(VideoGenerater *queue,NSString * msg,NSError * error);
 @property (nonatomic, assign) int orientation;
 @property (nonatomic, assign) BOOL useFontCamera;   //当前视频是否用前置摄像头拍摄？
 @property (nonatomic, assign) BOOL bgAudioCanScale;//背景音乐是否要根据视频拉伸或加速？
-
+@property (nonatomic, assign) BOOL forceAddAudioTrack;//是否强制要有音频轨
 @property (nonatomic, assign,readonly) CMTime totalBeginTime; //合成结果位于整个伴奏的起始时间
 @property (nonatomic, assign,readonly) CMTime totalEndTime;   //合成结果位于整个伴奏的终止时间
 @property (nonatomic, assign,readonly) CMTime totalBeginTimeForAudio; //音频合成结果位于整个音频伴奏的起始时间
