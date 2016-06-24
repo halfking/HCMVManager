@@ -415,6 +415,17 @@
         NSLog(@"filter:%d not support.",filterIndex);
         return NO;
     }
+    //无声音时，合成滤镜会Crash
+    
+    AVURLAsset * asset = [AVURLAsset assetWithURL:videoBg_.url];
+    NSArray * tracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+    if(tracks.count==0)
+    {
+        NSLog(@"视频中没有音频，无法加滤镜");
+        return NO;
+    }
+    
+    
     if(isGeneratingByFilter_||isGenerating_)
     {
         NSLog(@"正在生成中，请稍后进入...");
