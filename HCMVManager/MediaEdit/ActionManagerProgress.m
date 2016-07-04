@@ -728,7 +728,7 @@
         frame.size.width = currentPos - frame.origin.x;
         prevAmp.barView.frame = frame;
     }
-    
+//    NSLog(@"frame:%@",NSStringFromCGRect(frame));
     [self checkFlagIsValid:secondsInArray];
 }
 - (void)setMsgString:(NSString *)msg

@@ -117,10 +117,10 @@
 //}
 - (void)setBegin:(CMTime)begin
 {
-    if(self.isReversed>0) //对反向视频进行切割时
-    {
-        secondsEndBeforeReverse -= (CMTimeGetSeconds(begin) - self.secondsBegin);
-    }
+//    if(self.isReversed>0) //对反向视频进行切割时
+//    {
+//        secondsEndBeforeReverse -= (CMTimeGetSeconds(begin) - self.secondsBegin);
+//    }
     [super setBegin:begin];
     if(self.isReversed==0)
     {
@@ -129,10 +129,10 @@
 }
 - (void)setEnd:(CMTime)end
 {
-    if(self.isReversed>0) //对反向视频进行切割时
-    {
-        secondsBeginBeforeReverse += self.secondsEnd - CMTimeGetSeconds(end);
-    }
+//    if(self.isReversed>0) //对反向视频进行切割时
+//    {
+//        secondsBeginBeforeReverse += self.secondsEnd - CMTimeGetSeconds(end);
+//    }
     [super setEnd:end];
     if(self.isReversed==0)
     {

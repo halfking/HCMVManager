@@ -558,6 +558,7 @@
         {
             NSLog(@"split :org0 type:%d (%f--%f) insert:(%f--%f)",item.Action.ActionType, item.secondsInArray,item.secondsDurationInArray,seconds,self.DurationInSeconds);
             [newSources addObject:item];
+
         }
         //第一个或跨界的
         else if(item.secondsInArray <=seconds && item.secondsDurationInArray + item.secondsInArray > seconds)
@@ -594,6 +595,8 @@
         }
     }
     NSLog(@"match index :%d",(int)matchIndex);
+    if(matchIndex >= 99999)
+        matchIndex = newSources.count;
     if(insertIndex)
     {
         *insertIndex = (int)matchIndex;
